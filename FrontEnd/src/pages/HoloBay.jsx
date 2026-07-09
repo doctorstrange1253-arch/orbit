@@ -22,7 +22,7 @@ import GlowName from '../cosmic/GlowName';
 import Nameplate from '../cosmic/Nameplate';
 import ItemIcon from '../cosmic/itemIcons';
 import { useShop, useBuyCosmetic, useEquipCosmetic } from '../cosmic/useShop';
-import { COSMETIC_RENDER, bgClassFor, decoClassFor, effectClassFor, plateClassFor } from '../cosmic/cosmetics';
+import { COSMETIC_RENDER, bgClassFor, decoClassFor, effectClassFor } from '../cosmic/cosmetics';
 import { rarityOf, rarityVars, cardGlowClass, RARITY_ORDER } from '../cosmic/rarity';
 import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
