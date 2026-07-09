@@ -94,7 +94,12 @@ function Preview({ item }) {
         <span className="np-content">Aa</span>
       </span>
     );
-  if (item.type === 'name_glow') return <span className={meta.glowClass} style={{ fontSize: 22 }}>Aa</span>;
+  if (item.type === 'name_glow')
+    return (
+      <span className="inline-grid h-11 w-11 place-items-center rounded-lg" style={PREVIEW_DISC}>
+        <span className={meta.glowClass} style={ { fontSize: 20 } }>Aa</span>
+      </span>
+    );
   if (item.type === 'background' && meta.swatch)
     return <span className="inline-block w-12 h-12 rounded-lg" style={{ background: meta.swatch }} />;
   return <ItemIcon item={item} size={44} color={rarityOf(item.rarity).color} />;
@@ -116,7 +121,7 @@ function StoreCard({ item, onBuy, onEquip, busy }) {
       whileHover={{ y: -4 }}
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
       style={rarityVars(item.rarity)}
-      className={`group relative flex flex-col gap-3 rounded-2xl border border-white/10 p-4 backdrop-blur-md ${glow}`}
+      className={`group cv-auto relative flex flex-col gap-3 rounded-2xl border border-white/10 p-4 backdrop-blur-md ${glow}`}
     >
       {/* card body glass */}
       <div className="absolute inset-0 rounded-2xl -z-10" style={{ background: 'rgba(18,20,33,.75)' }} />
@@ -224,7 +229,7 @@ export default function Shop() {
   }, [catalog]);
 
   return (
-    <div className="relative min-h-screen">
+    <div className="cosmic-page relative min-h-screen">
       {/* ── field: near-black with three radial nebula glows ── */}
       <div
         className="pointer-events-none fixed inset-0 -z-10"

@@ -10,7 +10,7 @@ try {
 
 const api = axios.create({
   // Fallback to absolute Render URL in production if VITE_API_URL is missing/malformed
-  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://orbit-p563.onrender.com/api' : '/api'),
+  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://skillswap-backend-mb4k.onrender.com/api' : '/api'),
   // Generous timeout so a Render free-tier cold start (instance waking from
   // sleep, ~30–60s) doesn't abort before the server is ready to respond.
   timeout: 45000,

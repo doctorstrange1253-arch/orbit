@@ -61,7 +61,7 @@ export default function PhotonsChip({ variant = 'nav', className = '' }) {
   const openShop = () => navigate('/shop');      // Nebula Store (spend Photons)
   const openMissions = () => {
     // "+" means EARN — explain how first, then route to the missions hub.
-    addToast('✦ Earn Photons by completing missions — taking you there…', 'info', 2200);
+    addToast('Complete missions to earn Photons — taking you there…', 'info', 2200);
     setTimeout(() => navigate('/orbit'), 600);
   };
   const zero = amount <= 0;

@@ -181,3 +181,24 @@ exports.buyFreeze = async (req, res) => {
 // Exposed so the admin Player Inspector (Mission Control C5) can render the exact
 // same shape the end-user sees.
 exports.shapeOrbit = shapeOrbit;
+
+// GET /api/orbit/ledger — the viewer's recent Photon flows (earn + spend), used
+// by the Mission Log / Photon history page. Read-only; newest first.
+exports.getLedger = async (req, res) => {
+    try {
+        const PhotonLedger = require("../models/PhotonLedger");
+        const limit = Math.min(parseInt(req.query.limit, 10) || 60, 200);
+        const rows = await PhotonLedger.find({ userId: req.user.id })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .select("delta source createdAt")
+            .lean();
+        const entries = rows.map((r) => ({ delta: r.delta, source: r.source, at: r.createdAt }));
+        const earned = entries.reduce((s, e) => (e.delta > 0 ? s + e.delta : s), 0);
+        const spent = entries.reduce((s, e) => (e.delta < 0 ? s - e.delta : s), 0);
+        return res.status(200).json({ entries, summary: { earned, spent, count: entries.length } });
+    } catch (err) {
+        console.error("getLedger error:", err);
+        return res.status(500).json({ message: "Could not load your Photon history" });
+    }
+};

@@ -22,7 +22,7 @@ import GlowName from '../cosmic/GlowName';
 import Nameplate from '../cosmic/Nameplate';
 import ItemIcon from '../cosmic/itemIcons';
 import { useShop, useBuyCosmetic, useEquipCosmetic } from '../cosmic/useShop';
-import { COSMETIC_RENDER, bgClassFor, decoClassFor, effectClassFor } from '../cosmic/cosmetics';
+import { COSMETIC_RENDER, bgClassFor, decoClassFor, effectClassFor, plateClassFor } from '../cosmic/cosmetics';
 import { rarityOf, rarityVars, cardGlowClass, RARITY_ORDER } from '../cosmic/rarity';
 import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
@@ -49,7 +49,15 @@ function Swatch({ item, size = 40 }) {
         <span className="np-content">Aa</span>
       </span>
     );
-  if (item.type === 'name_glow') return <span className={meta.glowClass} style={{ fontSize: 18 }}>Aa</span>;
+  if (item.type === 'name_glow')
+    return (
+      <span
+        className="inline-grid place-items-center rounded-md"
+        style={ { width: size, height: size, background: 'radial-gradient(circle at 40% 35%, rgba(255,255,255,.10), rgba(3,5,12,.9))' } }
+      >
+        <span className={meta.glowClass} style={ { fontSize: Math.round(size * 0.42) } }>Aa</span>
+      </span>
+    );
   if (item.type === 'background' && meta.swatch)
     return <span className="inline-block rounded-md" style={{ width: size, height: size, background: meta.swatch }} />;
   return <ItemIcon item={item} size={size} color={rarityOf(item.rarity).color} />;
@@ -73,7 +81,7 @@ function Picker({ title, items, activeKey, onPick, onClear, clearLabel }) {
               onClick={() => onPick(it.key)}
               title={`${it.name} · ${rarityOf(it.rarity).label}`}
               style={rarityVars(it.rarity)}
-              className={`relative grid h-14 w-14 place-items-center rounded-xl border transition
+              className={`cv-auto relative grid h-14 w-14 place-items-center rounded-xl border transition
                 ${active ? 'ring-2 ring-white/70 border-white/30' : 'border-white/10 hover:border-white/25'}`}
             >
               <span className="absolute inset-0 rounded-xl" style={{ background: 'rgba(18,20,33,.7)' }} />
@@ -158,7 +166,7 @@ export default function HoloBay() {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="cosmic-page relative min-h-screen">
       <div className="pointer-events-none fixed inset-0 -z-10" style={{
         background:
           'radial-gradient(55% 45% at 20% 10%, rgba(56,189,248,.13), transparent 60%),' +

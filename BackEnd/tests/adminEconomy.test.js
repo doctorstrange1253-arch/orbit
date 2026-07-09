@@ -17,7 +17,6 @@ const adminReq = (body) => ({
     body,
     adminUser: { _id: new mongoose.Types.ObjectId(), email: "admin@test" },
     headers: {},
-    app: { get: () => null },
 });
 
 // photonLedger.record is fire-and-forget; poll briefly for the async write.

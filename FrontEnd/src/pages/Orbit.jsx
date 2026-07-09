@@ -15,7 +15,6 @@ import PhotonIcon from '../cosmic/PhotonIcon';
 import MissionsPanel from '../cosmic/MissionsPanel';
 import ConstellationsPanel from '../cosmic/ConstellationsPanel';
 import LeaguePanel from '../cosmic/LeaguePanel';
-import ShopPanel from '../cosmic/ShopPanel';
 import SignalLegend from '../cosmic/SignalLegend';
 import CosmicLoader from '../cosmic/CosmicLoader';
 import ErrorState from '../components/common/ErrorState';
@@ -88,7 +87,6 @@ export default function Orbit() {
   const freezeCost = freeze.costPhotons ?? freeze.costStardust;
   // Part 8 — staged-rollout flags (default true when the API omits them).
   const tier2 = data.flags?.tier2 !== false;
-  const tier3 = data.flags?.tier3 !== false;
   const copy = STATE_COPY[streak.state] || STATE_COPY.idle;
   // Part 3 — graduated streaks show pride, not pressure (hide the countdown).
   const showCountdown = streak.state !== 'active' && streak.pressure !== 'none';
@@ -109,7 +107,12 @@ export default function Orbit() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 space-y-5">
+    <div className="cosmic-page max-w-4xl mx-auto px-4 py-6 space-y-5">
+      {/* Fixed nebula field so the dark-on-dark UI stays legible in light theme too */}
+      <div
+        className="pointer-events-none fixed inset-0 -z-10"
+        style={{ background: 'radial-gradient(55% 45% at 20% 10%, rgba(56,189,248,.13), transparent 60%),radial-gradient(55% 55% at 82% 18%, rgba(139,92,246,.16), transparent 62%),#07080f' }} 
+      />
       <Helmet><title>Orbit · Your Streak</title></Helmet>
 
       <div className="flex items-center gap-2">
@@ -206,12 +209,6 @@ export default function Orbit() {
         {/* Constellations — co-op Binary Star streaks */}
         <ConstellationsPanel />
       </>}
-
-      {/* Tier 3 (cosmetics) — hidden when not in the user's cohort (Part 8) */}
-      {tier3 && (
-        /* Photons Cosmetics Shop — the spend side of the economy */
-        <ShopPanel />
-      )}
 
       {/* Milestone ladder */}
       <section className="rounded-2xl border border-white/10 bg-slate-900/30 p-4">

@@ -50,3 +50,13 @@ export function useOrbitPrefs() {
     onSuccess: (data) => qc.setQueryData(ORBIT_KEY, (prev) => (prev ? { ...prev, prefs: data.prefs } : prev)),
   });
 }
+
+/** The viewer's recent Photon flows (earn/spend) for the Mission Log page. */
+export function useLedger({ limit = 60 } = {}) {
+  return useQuery({
+    queryKey: ['orbit', 'ledger', limit],
+    queryFn: () => api.get(`/orbit/ledger?limit=${limit}`).then((r) => r.data),
+    staleTime: 30 * 1000,
+    retry: 1,
+  });
+}

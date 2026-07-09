@@ -2,7 +2,7 @@ const express = require("express");
 const router  = express.Router();
 const auth    = require("../middleware/auth");
 
-const { getMyOrbit, claimMission, buyFreeze, setPrefs } = require("../controllers/orbitController");
+const { getMyOrbit, claimMission, buyFreeze, setPrefs, getLedger } = require("../controllers/orbitController");
 const constellation = require("../controllers/constellationController");
 const { getMyLeague } = require("../controllers/leagueController");
 const shop = require("../controllers/shopController");
@@ -19,6 +19,9 @@ router.post("/freeze/buy", auth, buyFreeze);
 
 // Update engagement preferences (e.g. decay-reminder opt-out — protected).
 router.post("/prefs", auth, setPrefs);
+
+// The viewer's recent Photon flows — earn/spend history for the Mission Log.
+router.get("/ledger", auth, getLedger);
 
 // ── Constellations (co-op Binary Star streaks, Tier 2) ─────────────────────
 router.get("/constellations", auth, constellation.getMine);

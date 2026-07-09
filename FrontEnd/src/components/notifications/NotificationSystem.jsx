@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, UserPlus, UserCheck, Zap, PhoneOff, Star, Handshake, Sparkles } from 'lucide-react';
+import { X, UserPlus, UserCheck, Zap, PhoneOff, Star, Handshake } from 'lucide-react';
+import PhotonIcon from '../../cosmic/PhotonIcon';
 import { useSound } from '../../utils/soundManager';
 
 /**
@@ -44,9 +45,9 @@ const NotificationSystem = ({ notifications, onDismiss, onAction }) => {
     perfect_match: 'success',
     connection_request: 'info',
     connection_accepted: 'success',
-    photon_grant: 'success',
     user_offline: 'danger',
     call_ended: 'danger',
+    photon_grant: 'success',
   };
   const statusVar = (type) => `var(--${TYPE_STATUS[type] || 'info'})`;
 
@@ -66,7 +67,7 @@ const NotificationSystem = ({ notifications, onDismiss, onAction }) => {
       case 'call_ended':
         return <Star size={24} color={color} />;
       case 'photon_grant':
-        return <Sparkles size={24} color={color} />;
+        return <PhotonIcon size={24} animated={false} />;
       default:
         return <Zap size={24} color={color} />;
     }

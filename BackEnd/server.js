@@ -41,7 +41,6 @@ app.set("trust proxy", 1); // Trust first proxy (needed for express-rate-limit o
 const server = http.createServer(app);
 
 const allowedOrigins = [
-  "https://orbit-wine-zeta.vercel.app",
   "https://react-skill-swap-fully-fledged.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",
@@ -55,10 +54,12 @@ const allowedOrigins = [
     : []),
 ];
 
-// Allow ONLY this project's own Vercel deployments (prod + branch previews).
-// The user's vercel project is named "orbit", so their auto-generated URLs
-// look like https://orbit-xyz.vercel.app.
-const VERCEL_ORIGIN = /^https:\/\/orbit[a-z0-9-]*\.vercel\.app$/i;
+// Allow ONLY this project's own Vercel deployments (prod + branch previews like
+// react-skill-swap-fully-fledged-git-xyz.vercel.app). The previous
+// `origin.endsWith(".vercel.app")` allowed ANY third-party Vercel app to call
+// the API (A11). Capacitor APK origins remain in `allowedOrigins`, so the mobile
+// app is unaffected.
+const VERCEL_ORIGIN = /^https:\/\/react-skill-swap-fully-fledged[a-z0-9-]*\.vercel\.app$/i;
 
 const corsOptions = {
   origin: function (origin, callback) {

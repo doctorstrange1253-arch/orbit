@@ -1,36 +1,73 @@
 /**
- * MissionsPanel — the week's 3 rotating Orbit missions with progress bars and
- * claim buttons. Reads the shared ['orbit','me'] query and claims via the Orbit
- * API; a claimed mission pays Photons (handled server-side).
+ * MissionsPanel — the week's rotating Orbit missions with progress bars, an
+ * expandable detail row (goal + reward breakdown), and claim buttons. Reads the
+ * shared ['orbit','me'] query and claims via the Orbit API; a claimed mission
+ * pays Photons (server-side) and grants Orbit XP toward your weekly league.
+ * The "Full log" link opens the Photon history page.
  */
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Target, Check, Sparkles } from 'lucide-react';
+import { Target, Check, Zap, ChevronDown, ScrollText } from 'lucide-react';
+import PhotonIcon from './PhotonIcon';
 import { useClaimMission } from './useOrbit';
 import { useUIStore } from '../store/uiStore';
 
+const BAR_INITIAL = { width: 0 };
+const BAR_TRANSITION = { duration: 0.6, ease: 'easeOut' };
+
 function MissionCard({ m, onClaim, claiming }) {
+  const [open, setOpen] = useState(false);
   const pct = Math.min(100, Math.round((m.progress / m.target) * 100));
   const claimable = m.complete && !m.claimed;
+  const reward = m.photons ?? m.stardust;
   return (
     <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3.5 flex flex-col gap-2.5">
-      <div className="flex items-start justify-between gap-2">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="flex items-start justify-between gap-2 text-left"
+      >
         <div>
-          <div className="text-sm font-semibold text-white">{m.label}</div>
+          <div className="text-sm font-semibold text-white flex items-center gap-1">
+            {m.label}
+            <ChevronDown size={13} className={`text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+          </div>
           <div className="text-xs text-slate-400">{m.description}</div>
         </div>
-        <span className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold text-violet-300">
-          <Sparkles size={13} /> {m.photons ?? m.stardust}
+        {/* Photon reward — currency mark, never a star */}
+        <span className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold text-violet-200">
+          <PhotonIcon size={13} animated={false} /> {reward}
         </span>
-      </div>
+      </button>
 
       <div className="h-2 rounded-full bg-white/10 overflow-hidden">
         <motion.div
           className="h-full rounded-full bg-gradient-to-r from-amber-400 to-violet-400"
-          initial={{ width: 0 }}
+          initial={BAR_INITIAL}
           animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.5 }}
+          transition={BAR_TRANSITION}
         />
       </div>
+
+      {open && (
+        <div className="rounded-lg bg-black/20 ring-1 ring-white/10 p-2.5 text-[11px] text-slate-300 space-y-1.5">
+          <div className="flex items-center justify-between">
+            <span className="text-slate-400">Goal</span>
+            <span className="tabular-nums text-slate-200">{Math.min(m.progress, m.target)} / {m.target}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-slate-400">Photon reward</span>
+            <span className="inline-flex items-center gap-1 text-violet-200 font-semibold"><PhotonIcon size={11} animated={false} /> {reward}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-slate-400">Orbit XP</span>
+            <span className="inline-flex items-center gap-1 text-amber-300 font-semibold"><Zap size={11} /> toward your league</span>
+          </div>
+          <p className="text-slate-500 pt-0.5">Progress updates automatically as you swap, review, and message. Claim once complete to bank the Photons.</p>
+        </div>
+      )}
 
       <div className="flex items-center justify-between">
         <span className="text-xs tabular-nums text-slate-400">{Math.min(m.progress, m.target)}/{m.target}</span>
@@ -61,18 +98,24 @@ export default function MissionsPanel({ missions = [] }) {
 
   const onClaim = (key) => {
     claim.mutate(key, {
-      onSuccess: (data) => addToast(`+${data.awardedPhotons ?? data.awarded} Photons claimed! ✨`, 'success'),
+      onSuccess: (data) => addToast(`+${data.awardedPhotons ?? data.awarded} Photons claimed!`, 'success'),
       onError: (e) => addToast(e.response?.data?.message || 'Could not claim mission', 'error'),
     });
   };
 
   return (
     <section className="rounded-2xl border border-white/10 bg-slate-900/30 p-4">
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-2">
         <Target size={18} className="text-amber-300" />
         <h2 className="text-base font-bold text-white">Weekly Missions</h2>
-        <span className="ml-auto text-xs text-slate-400">resets Monday · UTC</span>
+        <Link
+          to="/orbit/history"
+          className="ml-auto inline-flex items-center gap-1 text-xs font-semibold text-violet-300 hover:text-violet-200"
+        >
+          <ScrollText size={13} /> Full log
+        </Link>
       </div>
+      <p className="text-[11px] text-slate-500 mb-3">Resets Monday · UTC · tap a mission for details. Complete them to earn Photons + Orbit XP.</p>
       {missions.length === 0 ? (
         <p className="text-sm text-slate-400">New missions are being charted…</p>
       ) : (

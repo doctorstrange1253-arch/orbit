@@ -16,7 +16,7 @@ export const isNativeApp = () => Capacitor.isNativePlatform();
 
 const API_BASE =
   import.meta.env.VITE_API_URL?.replace('/api', '') ||
-  (import.meta.env.PROD ? 'https://orbit-p563.onrender.com' : 'http://localhost:8000');
+  (import.meta.env.PROD ? 'https://skillswap-backend-mb4k.onrender.com' : 'http://localhost:8000');
 
 /** Open a provider's OAuth flow in the system browser (native only). */
 export async function startNativeOAuth(provider) {

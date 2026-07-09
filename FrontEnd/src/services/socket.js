@@ -9,7 +9,7 @@ import { useAuthStore } from '../store/authStore';
 const SOCKET_URL =
   import.meta.env.VITE_SOCKET_URL ||
   import.meta.env.VITE_API_URL?.replace('/api', '') ||
-  (import.meta.env.PROD ? 'https://orbit-p563.onrender.com' : 'http://localhost:8000');
+  (import.meta.env.PROD ? 'https://skillswap-backend-mb4k.onrender.com' : 'http://localhost:8000');
 
 let socket = null;
 

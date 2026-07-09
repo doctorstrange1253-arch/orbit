@@ -1422,3 +1422,37 @@
 [data-anim-off] .pe::after,
 [data-anim-off] .np::before,
 [data-anim-off] .np-multiversal { animation: none !important; }
+
+/* ═══════════ Theme + performance helpers (Photon UI polish) ═══════════ */
+
+/* Cosmic pages (Orbit / Store / Holo-Bay / Photon Log) are a dark "space"
+   surface in BOTH light and dark mode. Force light text tokens locally so any
+   theme-reactive text stays legible on the dark field — this fixes the
+   "black text" that vanished after switching to a light theme. */
+.cosmic-page {
+  --text-primary: #f8fafc;
+  --text-secondary: rgba(248, 250, 252, 0.72);
+  --text-muted: rgba(248, 250, 252, 0.5);
+  color: var(--text-primary);
+}
+
+/* Name-glow legibility: gradient-clipped glows paint transparent letters, which
+   can disappear on a pale tile. A soft dark drop-shadow keeps the glyph edges
+   readable on ANY background without changing the glow colour. */
+.cg-shimmer,
+.cg-holo,
+.cg-comet,
+.cg-ribbon,
+.cg-chrome,
+.cg-multiversal,
+.cg-void {
+  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
+}
+
+/* Scroll performance: skip layout/paint/animation for off-screen cosmetic
+   cards. Big win on the Store / Holo-Bay grids where many items animate at
+   once, which is what made those pages feel laggy while scrolling. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 132px;
+}

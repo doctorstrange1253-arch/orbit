@@ -342,7 +342,7 @@ export default function Whiteboard({ socket, pc, roomId, user, otherUser, onClos
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function placeImageFile(file) {
+  const placeImageFile = (file) => {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => shrinkImage(reader.result, (src, w, h) => {

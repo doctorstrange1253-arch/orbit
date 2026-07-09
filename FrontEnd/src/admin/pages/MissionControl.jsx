@@ -8,6 +8,7 @@
  */
 import { useEffect, useState, useCallback } from 'react';
 import adminApi from '../adminApi';
+import PhotonIcon from '../../cosmic/PhotonIcon';
 import {
   Rocket, ToggleLeft, FlaskConical, ClipboardCheck, Radar, User, Bell, Activity, ShieldCheck, Gauge,
 } from 'lucide-react';
@@ -161,7 +162,7 @@ function Inspector() {
         <div style={{ fontSize: 13, display: 'grid', gap: 4 }}>
           <div><b>{data.user.name}</b> · {data.user.email}</div>
           <div>Streak <b>{data.orbit.streak.current}</b> (longest {data.orbit.streak.longest}) · phase <b>{data.orbit.streak.phase}</b> {data.orbit.streak.badge && <span style={pill(true)}>{data.orbit.streak.badge}</span>}</div>
-          <div>Photons <b>{data.orbit.photons ?? data.orbit.stardust}</b> · League <b>{data.league.division.name}</b> ({data.league.weekXp} XP) · CosmicScore {data.cosmic.score ?? '—'}</div>
+          <div><PhotonIcon size={12} animated={false} /> Photons <b>{data.orbit.photons ?? data.orbit.stardust}</b> · League <b>{data.league.division.name}</b> ({data.league.weekXp} XP) · CosmicScore {data.cosmic.score ?? '—'}</div>
           <div>Binary Stars: {data.constellations.length ? data.constellations.map((c) => `${c.partner} (${c.streak}d)`).join(', ') : '—'}</div>
           <div>Mastery: {data.mastery.length ? data.mastery.map((m) => m.badge).join(', ') : '—'}</div>
         </div>

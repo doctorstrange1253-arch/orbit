@@ -10,10 +10,9 @@ import NotificationBell from '../notifications/NotificationBell';
 import { unregisterPush } from '../../utils/pushNotify';
 import OrbitStreakBadge from '../../cosmic/OrbitStreakBadge';
 import PhotonsChip from '../../cosmic/PhotonsChip';
-import { decoClassFor } from '../../cosmic/cosmetics';
 import {
   LogOut, Layers, Compass, Users, Map,
-  ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX
+  ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX, ShoppingBag
 } from 'lucide-react';
 import soundManager from '../../utils/soundManager';
 
@@ -27,6 +26,7 @@ const NAV = [
   { name: 'Trust',        path: '/trust',        Icon: ShieldCheck},
   { name: 'Leaderboard',  path: '/leaderboard',  Icon: Trophy     },
   { name: 'Orbit',        path: '/orbit',        Icon: Rocket     },
+  { name: 'Store',        path: '/shop',         Icon: ShoppingBag},
 ];
 
 const Navbar = () => {
@@ -232,7 +232,7 @@ const Navbar = () => {
               <NavLink to="/profile" title="Profile"
                 className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all text-text-secondary hover:text-text-primary bg-surface border border-border-subtle"
               >
-                <Avatar name={user?.name} url={user?.avatar} size="xs" userId={user?._id} deco={user?.equipped?.avatar_deco ? decoClassFor(user.equipped.avatar_deco) : ''} />
+                <Avatar name={user?.name} url={user?.avatar} size="xs" userId={user?._id} />
                 <span className="hidden md:block max-w-[80px] truncate">{user?.name?.split(' ')[0]}</span>
               </NavLink>
               {/* Notification Bell (durable notification center) */}

@@ -52,15 +52,15 @@ const Avatar = ({ name, url, size = 'md', className = '', userId = null, deco = 
 
   return (
     <div
-      className={`relative rounded-full flex items-center justify-center font-bold flex-shrink-0 ${box} ${text} ${className}`}
+      className={`relative rounded-full overflow-hidden flex items-center justify-center font-bold flex-shrink-0 ${box} ${text} ${className}`}
       style={url ? {} : { background: gradientFor(colorKey), color: '#fff' }}
     >
-      {url ? (
-        <img src={url} alt={name || 'avatar'} className="w-full h-full object-cover rounded-full" loading="lazy" />
-      ) : (
-        <span style={{ lineHeight: 1 }} className="rounded-full w-full h-full flex items-center justify-center">{initials}</span>
-      )}
       {deco ? <span className={deco} aria-hidden="true" /> : null}
+      {url ? (
+        <img src={url} alt={name || 'avatar'} className="w-full h-full object-cover" loading="lazy" />
+      ) : (
+        <span style={{ lineHeight: 1 }}>{initials}</span>
+      )}
     </div>
   );
 };

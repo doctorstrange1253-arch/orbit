@@ -8,7 +8,8 @@
  * side; every mutation is audited. Photons never touch rank — enforced server-side.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Coins, Search, Plus, Minus, RotateCcw } from 'lucide-react';
+import { Search, Plus, Minus, RotateCcw } from 'lucide-react';
+import PhotonIcon from '../../cosmic/PhotonIcon';
 import adminApi from '../adminApi';
 import useToast from '../components/Toast';
 import ConfirmModal from '../components/ConfirmModal';
@@ -99,7 +100,7 @@ function Ledger({ toast }) {
             <div>
               <div style={{ fontWeight: 600 }}>{data.user.name}</div>
               <div className="ssctl-muted" style={{ fontSize: 12 }}>{data.user.email}</div>
-              <div style={{ marginTop: 6, fontSize: 20, fontWeight: 700 }}><Coins size={16} color="var(--ss-accent)" /> {Number(data.user.balance).toLocaleString()} Photons</div>
+              <div style={{ marginTop: 6, fontSize: 20, fontWeight: 700 }}><PhotonIcon size={16} animated={false} /> {Number(data.user.balance).toLocaleString()} Photons</div>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <input className="ssctl-input" style={{ width: 120 }} type="number" min="1" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)} />

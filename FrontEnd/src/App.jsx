@@ -51,6 +51,7 @@ const TierAtlas      = lazy(() => import('./pages/TierAtlas'));
 const Orbit          = lazy(() => import('./pages/Orbit'));
 const Shop           = lazy(() => import('./pages/Shop'));
 const HoloBay        = lazy(() => import('./pages/HoloBay'));
+const MissionLog     = lazy(() => import('./pages/MissionLog'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -496,6 +497,7 @@ function AppInner() {
         <Route path="/trust"       element={<ProtectedRoute><TrustScore /></ProtectedRoute>} />
         <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
         <Route path="/orbit"       element={<ProtectedRoute><Orbit /></ProtectedRoute>} />
+        <Route path="/orbit/history" element={<ProtectedRoute><MissionLog /></ProtectedRoute>} />
         <Route path="/shop"        element={<ProtectedRoute><Shop /></ProtectedRoute>} />
         <Route path="/holobay"     element={<ProtectedRoute><HoloBay /></ProtectedRoute>} />
         <Route path="/observatory" element={<ProtectedRoute><Observatory /></ProtectedRoute>} />
