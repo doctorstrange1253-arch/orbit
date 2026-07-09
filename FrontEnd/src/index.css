@@ -1,0 +1,1036 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--bg-app);
+  --color-surface: var(--bg-surface);
+  --color-surface-hover: var(--bg-surface-hover);
+  --color-surface-glass: var(--bg-surface-glass);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-glow: var(--border-glow);
+  
+  --color-accent: var(--accent-1);
+  --color-accent-dark: var(--accent-1-dark);
+  --color-accent-light: var(--accent-1-light);
+  --color-secondary: var(--accent-2);
+  --color-secondary-dark: var(--accent-2-dark);
+  --color-purple: var(--accent-3);
+  --color-purple-light: var(--accent-3-light);
+  --color-danger: #ff4b4b;
+  --color-amber: #ffb800;
+  --color-green: #00e5a0;
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-on-accent: var(--text-on-accent);
+
+  --font-sans: "Open Sans", sans-serif;
+  --font-display: "Poppins", sans-serif;
+
+  --radius-card: 20px;
+  --radius-pill: 999px;
+
+  --shadow-glow-accent: 0 0 30px var(--border-glow);
+  --shadow-glow-secondary: 0 0 30px var(--border-glow);
+  --shadow-card: 0 8px 32px var(--shadow-color);
+
+  --animate-slide-up: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fadeIn 0.5s ease both;
+  --animate-fade-in-up: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-shimmer: shimmer 2s linear infinite;
+}
+
+/* ─── BASE ─── */
+@layer base {
+  :root, html[data-mode="dark"] {
+    --bg-app: #060810;
+    --bg-surface: rgba(255, 255, 255, 0.04);
+    --bg-surface-hover: rgba(255, 255, 255, 0.09);
+    --bg-surface-glass: rgba(10, 12, 30, 0.55);
+    --border-subtle: rgba(255, 255, 255, 0.09);
+    --border-glow: rgba(0, 198, 255, 0.35);
+    
+    --accent-1: #00c6ff;
+    --accent-1-dark: #0072ff;
+    --accent-1-light: #33d4ff;
+    --accent-2: #ff0076;
+    --accent-2-dark: #cc005e;
+    --accent-3: #7c3aed;
+    --accent-3-light: #a78bfa;
+
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --text-muted: rgba(255, 255, 255, 0.4);
+    --text-on-accent: #ffffff;
+    
+    --shadow-color: rgba(0, 0, 0, 0.45);
+
+    /* Dark-mode skeleton tokens */
+    --skeleton-base: rgba(255, 255, 255, 0.04);
+    --skeleton-mid: rgba(255, 255, 255, 0.09);
+    --skeleton-highlight: rgba(255, 255, 255, 0.14);
+
+    /* Chat bubble colors for dark mode */
+    --bubble-outgoing: linear-gradient(135deg, #0072ff, #00c6ff);
+    --bubble-incoming: rgba(255, 255, 255, 0.08);
+
+    /* Send button accent */
+    --send-button-bg: linear-gradient(135deg, #00c6ff, #0072ff);
+    --send-button-shadow: 0 2px 12px rgba(0, 198, 255, 0.3);
+
+    /* Toggle track colors */
+    --toggle-off-bg: rgba(255, 255, 255, 0.08);
+    --toggle-off-border: rgba(255, 255, 255, 0.12);
+    --toggle-on-bg: var(--accent-1);
+
+    /* Toast notification tokens for dark mode */
+    --toast-bg: rgba(6, 8, 16, 0.9);
+    --toast-text: #ffffff;
+    --toast-border: rgba(255, 255, 255, 0.1);
+    --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+    /* Elevated OPAQUE panel surface — popovers, dropdowns, cards over the app
+       bg (v7 §2). Previously referenced as var(--surface) but never defined,
+       so those surfaces rendered transparent. #15102b matches the existing
+       scoreInfo fallback so that popover is unchanged. */
+    --surface: #15102b;
+    --color-border: var(--border-subtle);
+
+    /* Status tokens (v7 §2) — semantic + theme-reactive, with guaranteed-
+       contrast foregrounds. Bright fills on dark → dark `-on` text. */
+    --success: #00e5a0;  --success-on: #04211a;
+    --warning: #ffb800;  --warning-on: #2a1f00;
+    --danger:  #ff4b4b;  --danger-on:  #2a0a0a;
+    --info:    #00c6ff;  --info-on:    #04121c;
+  }
+
+  html[data-mode="light"] {
+    --bg-surface: rgba(255, 255, 255, 0.9);
+    --bg-surface-hover: rgba(255, 255, 255, 1);
+    --bg-surface-glass: rgba(255, 255, 255, 0.7);
+    --border-subtle: rgba(0, 0, 0, 0.12);
+    --border-glow: rgba(0, 0, 0, 0.08);
+
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --text-on-accent: #ffffff;
+
+    --shadow-color: rgba(0, 0, 0, 0.08);
+
+    /* Light-mode skeleton tokens */
+    --skeleton-base: rgba(0, 0, 0, 0.06);
+    --skeleton-mid: rgba(0, 0, 0, 0.10);
+    --skeleton-highlight: rgba(0, 0, 0, 0.14);
+
+    /* Chat bubble colors for light mode */
+    --bubble-outgoing: linear-gradient(135deg, #0072ff, #00c6ff);
+    --bubble-incoming: linear-gradient(135deg, #059669, #10b981);
+
+    /* Send button accent */
+    --send-button-bg: linear-gradient(135deg, var(--accent-1), var(--accent-1-dark));
+    --send-button-shadow: 0 2px 12px rgba(var(--accent-1-rgb, 37,99,235), 0.3);
+
+    /* Toggle track colors */
+    --toggle-off-bg: rgba(0, 0, 0, 0.12);
+    --toggle-off-border: rgba(0, 0, 0, 0.18);
+    --toggle-on-bg: var(--accent-1);
+
+    /* Toast notification tokens for light mode */
+    --toast-bg: rgba(255, 255, 255, 0.98);
+    --toast-text: #0f172a;
+    --toast-border: rgba(0, 0, 0, 0.12);
+    --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+    /* Darker heading text variants (same hue, lower lightness) */
+    --heading-teal: #047857;     /* Deep emerald-green for "Your Matches" */
+    --heading-cyan: #0369a1;     /* Deep sky blue companion */
+    --heading-pink: #be185d;     /* Deep rose for "Browse Skills" */
+    --heading-purple: #7e22ce;   /* Deep purple companion */
+    
+    /* Darker skill/label text variants */
+    --skill-cyan-text: #0369a1;
+    --skill-pink-text: #be185d;
+    --skill-green-text: #047857;
+    --skill-amber-text: #c2410c;
+
+    /* Elevated OPAQUE panel surface + border for light mode (v7 §2) */
+    --surface: #ffffff;
+    --color-border: var(--border-subtle);
+
+    /* Status tokens (v7 §2) — darker fills for contrast on light bg, white text. */
+    --success: #059669;  --success-on: #ffffff;
+    --warning: #b45309;  --warning-on: #ffffff;
+    --danger:  #dc2626;  --danger-on:  #ffffff;
+    --info:    #0284c7;  --info-on:    #ffffff;
+  }
+
+  /* Morning Sky (Default Pastel - acts as fallback if a dark theme name is active in light mode) */
+  html[data-mode="light"]:not([data-theme="spring-garden"]):not([data-theme="golden-hour"]):not([data-theme="lavender-dream"]):not([data-theme="ocean-breeze"]) {
+    --bg-app: #e6f2ff;
+    --accent-1: #2563eb;
+    --accent-1-dark: #1d4ed8;
+    --accent-1-light: #60a5fa;
+    --accent-2: #7c3aed;
+    --accent-2-dark: #6d28d9;
+    --accent-3: #0ea5e9;
+    --accent-3-light: #38bdf8;
+  }
+
+  /* Spring Garden */
+  html[data-mode="light"][data-theme="spring-garden"] {
+    --bg-app: #e6fcf0;
+    --accent-1: #059669;
+    --accent-1-dark: #047857;
+    --accent-1-light: #34d399;
+    --accent-2: #10b981;
+    --accent-2-dark: #059669;
+    --accent-3: #d946ef;
+    --accent-3-light: #e879f9;
+  }
+
+  /* Golden Hour */
+  html[data-mode="light"][data-theme="golden-hour"] {
+    --bg-app: #fff4d6;
+    --accent-1: #ea580c;
+    --accent-1-dark: #c2410c;
+    --accent-1-light: #f97316;
+    --accent-2: #eab308;
+    --accent-2-dark: #ca8a04;
+    --accent-3: #ef4444;
+    --accent-3-light: #f87171;
+  }
+
+  /* Lavender Dream */
+  html[data-mode="light"][data-theme="lavender-dream"] {
+    --bg-app: #f3e8ff;
+    --accent-1: #9333ea;
+    --accent-1-dark: #7e22ce;
+    --accent-1-light: #a855f7;
+    --accent-2: #8b5cf6;
+    --accent-2-dark: #7c3aed;
+    --accent-3: #ec4899;
+    --accent-3-light: #f472b6;
+  }
+
+  /* Ocean Breeze */
+  html[data-mode="light"][data-theme="ocean-breeze"] {
+    --bg-app: #e0f2fe;
+    --accent-1: #0284c7;
+    --accent-1-dark: #0369a1;
+    --accent-1-light: #38bdf8;
+    --accent-2: #0ea5e9;
+    --accent-2-dark: #0284c7;
+    --accent-3: #0d9488;
+    --accent-3-light: #14b8a6;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply bg-background text-text-primary font-sans overflow-x-hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: rgba(var(--accent-1-rgb, 0, 198, 255), 0.3);
+    color: var(--text-primary);
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-app); }
+  ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent-1); }
+}
+
+/* ─── KEYFRAMES ─── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(0, 198, 255, 0.2); box-shadow: 0 0 12px rgba(0, 198, 255, 0.1); }
+  50%       { border-color: rgba(0, 198, 255, 0.55); box-shadow: 0 0 24px rgba(0, 198, 255, 0.25); }
+}
+
+@keyframes textGlow {
+  0%, 100% { text-shadow: 0 0 20px rgba(0, 198, 255, 0.4); }
+  50%       { text-shadow: 0 0 40px rgba(0, 198, 255, 0.7), 0 0 80px rgba(0, 198, 255, 0.3); }
+}
+
+@keyframes nodeFloat {
+  0%, 100% { transform: translateY(0px) translateZ(0); }
+  50%       { transform: translateY(-12px) translateZ(0); }
+}
+
+/* Optimized ripple - using transform and will-change */
+@keyframes ripple {
+  0%   { transform: scale(0.6) translateZ(0); opacity: 1; }
+  100% { transform: scale(3) translateZ(0); opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33%      { transform: translate3d(30px, -30px, 0) scale(1.1); }
+  66%      { transform: translate3d(-20px, 20px, 0) scale(0.9); }
+}
+
+/* Flowing "Gradient" background style — drifts the multi-stop sweep across an
+   oversized (300%) background so the theme colors visibly move. Duration is set
+   inline from the animation-speed setting. */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* ─── GLASS CARD ─── */
+.glass-card {
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.glass-card-glow {
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  border: 1px solid rgba(0, 198, 255, 0.18);
+  border-radius: var(--radius-card);
+  box-shadow: 0 0 0 1px rgba(0,198,255,0.06), var(--shadow-card);
+  animation: borderGlow 4s ease-in-out infinite;
+}
+
+/* ─── FROSTED GLASS NAV TAB ─── */
+.nav-tab-glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-tab-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.nav-tab-glass:hover {
+  background: rgba(0, 198, 255, 0.08);
+  border-color: rgba(0, 198, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 198, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.nav-tab-glass.active {
+  background: rgba(0, 198, 255, 0.12);
+  border-color: rgba(0, 198, 255, 0.4);
+  box-shadow: 0 0 20px rgba(0, 198, 255, 0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+  color: #00c6ff;
+}
+
+.nav-tab-glass.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%; right: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00c6ff, transparent);
+  border-radius: 2px;
+  animation: expandWidth 0.3s ease forwards;
+}
+
+@keyframes expandWidth {
+  to { left: 10%; right: 10%; }
+}
+
+/* ─── GRADIENT TEXT ─── */
+.gradient-text {
+  background: linear-gradient(135deg, #00c6ff 0%, #a855f7 40%, #ff0076 80%, #ffb800 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── GRADIENT BUTTONS ─── */
+.btn-gradient {
+  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 50%, #7c3aed 100%);
+  background-size: 200% auto;
+  border: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+  border-radius: inherit;
+}
+
+.btn-gradient:hover {
+  background-position: right center;
+  box-shadow: 0 0 25px rgba(0, 198, 255, 0.4), 0 4px 15px rgba(0, 114, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-gradient-secondary {
+  background: linear-gradient(135deg, #ff0076 0%, #7c3aed 100%);
+  background-size: 200% auto;
+  border: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient-secondary:hover {
+  background-position: right center;
+  box-shadow: 0 0 25px rgba(255, 0, 118, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ─── SKILL CARD ─── */
+.skill-card {
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,198,255,0.4), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.skill-card:hover {
+  border-color: rgba(0, 198, 255, 0.3);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0,198,255,0.08);
+  transform: translateY(-4px);
+}
+
+.skill-card:hover::before { opacity: 1; }
+
+/* ─── SKILL PILL EXCHANGE ─── */
+.pill-offer {
+  background: linear-gradient(135deg, rgba(0, 198, 255, 0.15), rgba(0, 198, 255, 0.05));
+  border: 1px solid rgba(0, 198, 255, 0.3);
+  color: #00c6ff;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pill-want {
+  background: linear-gradient(135deg, rgba(255, 0, 118, 0.15), rgba(255, 0, 118, 0.05));
+  border: 1px solid rgba(255, 0, 118, 0.3);
+  color: #ff0076;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ─── CONNECTION LINE (SVG-based visual connection between nodes) ─── */
+.connection-node {
+  position: relative;
+}
+
+.connection-node::after {
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  background: #00c6ff;
+  border-radius: 50%;
+  top: 50%; left: -20px;
+  transform: translateY(-50%);
+  box-shadow: 0 0 8px rgba(0, 198, 255, 0.6);
+}
+
+/* ─── HERO FLOATING PILL (OPTIMIZED FOR 60FPS) ─── */
+.hero-pill {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+  font-weight: 500;
+  animation: nodeFloat var(--duration, 4s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  white-space: nowrap;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ─── STAT BADGE ─── */
+.stat-badge {
+  background: rgba(0, 198, 255, 0.08);
+  border: 1px solid rgba(0, 198, 255, 0.2);
+  border-radius: 12px;
+  padding: 12px 20px;
+  transition: all 0.3s ease;
+}
+
+.stat-badge:hover {
+  background: rgba(0, 198, 255, 0.14);
+  border-color: rgba(0, 198, 255, 0.4);
+  box-shadow: 0 0 20px rgba(0, 198, 255, 0.15);
+}
+
+/* ─── TRUST BAR ─── */
+.trust-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.trust-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #00c6ff, #7c3aed);
+  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 8px rgba(0, 198, 255, 0.5);
+}
+
+/* ─── INPUT ─── */
+.input-glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.input-glass:focus {
+  background: rgba(0, 198, 255, 0.05);
+  border-color: rgba(0, 198, 255, 0.5);
+  /* Visible keyboard focus ring — do NOT use outline: none */
+  outline: 2px solid rgba(0, 198, 255, 0.4);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
+}
+
+/* ─── AUTH CARD ─── */
+.auth-card {
+  background: rgba(6, 8, 16, 0.7);
+  backdrop-filter: blur(30px) saturate(1.6);
+  -webkit-backdrop-filter: blur(30px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+/* ─── LOADING SKELETON ─── */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% auto;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 8px;
+}
+
+/* ─── RIPPLE EFFECT (GPU-ACCELERATED) ─── */
+.ripple-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 198, 255, 0.55);
+  animation: ripple 4.5s ease-out infinite;
+  will-change: transform, opacity;
+  /* NO translate here — centering is done via negative margins in JSX */
+  backface-visibility: hidden;
+}
+
+/* ─── LIGHT MODE OVERRIDES ─── */
+html.light body {
+  background: #f0f4ff;
+  color: #1a1a2e;
+}
+
+/* Light-mode heading gradients (darker shades) */
+html[data-mode="light"] .heading-teal-gradient {
+  background-image: linear-gradient(135deg, var(--heading-teal), var(--heading-cyan)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  display: inline-block;
+}
+
+html[data-mode="light"] .heading-pink-gradient {
+  background-image: linear-gradient(135deg, var(--heading-pink), var(--heading-purple)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  display: inline-block;
+}
+
+html[data-mode="light"] .icon-teal {
+  color: var(--heading-teal) !important;
+  -webkit-text-fill-color: var(--heading-teal) !important;
+}
+
+html[data-mode="light"] .icon-pink {
+  color: var(--heading-pink) !important;
+  -webkit-text-fill-color: var(--heading-pink) !important;
+}
+
+/* Light-mode skill text colors (darker for readability) */
+html[data-mode="light"] .pill-offer {
+  color: var(--skill-cyan-text) !important;
+  border-color: var(--skill-cyan-text) !important;
+}
+
+html[data-mode="light"] .pill-want {
+  color: var(--skill-pink-text) !important;
+  border-color: var(--skill-pink-text) !important;
+}
+
+/* Comprehensive text color overrides for Light Mode.
+   NOTE (v7 §2): the theme store sets html[data-mode="light"], never a `.light`
+   class, so these were previously DEAD. Re-scoped to the real attribute so the
+   faint white-on-light text becomes legible. btn-gradient sets its own
+   color:white in CSS (not the .text-white utility), so buttons are unaffected. */
+html[data-mode="light"] .text-white { color: #1a1a2e; }
+html[data-mode="light"] .text-white\/10 { color: rgba(26, 26, 46, 0.1); }
+html[data-mode="light"] .text-white\/15 { color: rgba(26, 26, 46, 0.15); }
+html[data-mode="light"] .text-white\/20 { color: rgba(26, 26, 46, 0.2); }
+html[data-mode="light"] .text-white\/25 { color: rgba(26, 26, 46, 0.25); }
+html[data-mode="light"] .text-white\/30 { color: rgba(26, 26, 46, 0.3); }
+html[data-mode="light"] .text-white\/35 { color: rgba(26, 26, 46, 0.35); }
+html[data-mode="light"] .text-white\/40 { color: rgba(26, 26, 46, 0.4); }
+html[data-mode="light"] .text-white\/45 { color: rgba(26, 26, 46, 0.45); }
+html[data-mode="light"] .text-white\/50 { color: rgba(26, 26, 46, 0.5); }
+html[data-mode="light"] .text-white\/55 { color: rgba(26, 26, 46, 0.55); }
+html[data-mode="light"] .text-white\/60 { color: rgba(26, 26, 46, 0.6); }
+html[data-mode="light"] .text-white\/70 { color: rgba(26, 26, 46, 0.7); }
+html[data-mode="light"] .text-white\/80 { color: rgba(26, 26, 46, 0.8); }
+html[data-mode="light"] .text-white\/90 { color: rgba(26, 26, 46, 0.9); }
+
+/* Override bg-white utilities that are used as faint backgrounds */
+html[data-mode="light"] .bg-white\/05 { background: rgba(0, 114, 255, 0.05); }
+html[data-mode="light"] .bg-white\/10 { background: rgba(0, 114, 255, 0.1); }
+html[data-mode="light"] .border-white\/10 { border-color: rgba(0, 114, 255, 0.1); }
+html[data-mode="light"] ::-webkit-scrollbar-track { background: #e8edf5; }
+html[data-mode="light"] ::-webkit-scrollbar-thumb { background: rgba(0,114,255,0.2); }
+html[data-mode="light"] ::-webkit-scrollbar-thumb:hover { background: rgba(0,114,255,0.4); }
+
+html[data-mode="light"] ::selection {
+  background: rgba(0, 114, 255, 0.25);
+  color: #1a1a2e;
+}
+
+html.light .glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid rgba(0, 114, 255, 0.12);
+  box-shadow: 0 4px 24px rgba(0, 80, 200, 0.08);
+}
+
+/* ─── NAVBAR STYLES ─── */
+.nav-glass {
+  background: rgba(5,6,14,0.65);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+.nav-glass-scrolled {
+  background: rgba(5,6,14,0.92);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.45);
+}
+
+.mobile-nav-glass {
+  background: rgba(5,6,16,0.96);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+html[data-mode="light"] .nav-glass {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--border-subtle);
+}
+
+html[data-mode="light"] .nav-glass-scrolled {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 8px 40px var(--shadow-color);
+}
+
+html[data-mode="light"] .mobile-nav-glass {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 20px 60px var(--shadow-color);
+}
+
+html[data-mode="light"] .glass-card-glow {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 0 0 1px var(--border-subtle), 0 8px 32px var(--shadow-color);
+}
+
+html[data-mode="light"] .nav-tab-glass {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--border-subtle);
+}
+
+html[data-mode="light"] .nav-tab-glass:hover {
+  background: rgba(var(--accent-1-rgb, 37,99,235), 0.08);
+  border-color: var(--accent-1);
+  box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+html[data-mode="light"] .nav-tab-glass.active {
+  background: rgba(var(--accent-1-rgb, 37,99,235), 0.1);
+  border-color: var(--accent-1);
+  box-shadow: 0 0 20px var(--shadow-color);
+  color: var(--accent-1);
+}
+
+html[data-mode="light"] .skill-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 2px 16px var(--shadow-color);
+}
+
+html[data-mode="light"] .skill-card:hover {
+  border-color: var(--accent-1);
+  box-shadow: 0 8px 40px var(--shadow-color), 0 0 0 1px var(--border-subtle);
+}
+
+html[data-mode="light"] .hero-pill {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+html[data-mode="light"] .hero-pill:hover {
+  background: #ffffff;
+  border-color: var(--accent-1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  color: var(--accent-1-dark);
+}
+
+html[data-mode="light"] .status-pill {
+  background: rgba(var(--accent-1-rgb, 37,99,235), 0.1);
+  border: 1px solid var(--accent-1);
+  color: var(--text-primary);
+  box-shadow: 0 4px 12px rgba(var(--accent-1-rgb, 37,99,235), 0.15);
+}
+
+html[data-mode="light"] .input-glass {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+html[data-mode="light"] .input-glass:focus {
+  background: rgba(255, 255, 255, 1);
+  border-color: var(--accent-1);
+  outline: 2px solid rgba(var(--accent-1-rgb, 37,99,235), 0.3);
+  box-shadow: 0 0 0 3px rgba(var(--accent-1-rgb, 37,99,235), 0.08);
+}
+
+html[data-mode="light"] .auth-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(30px) saturate(1.8);
+  -webkit-backdrop-filter: blur(30px) saturate(1.8);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 25px 80px var(--shadow-color), 0 0 0 1px rgba(255,255,255,0.8);
+}
+
+html[data-mode="light"] .skeleton {
+  background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-surface-hover) 50%, var(--bg-surface) 75%);
+  background-size: 200% auto;
+}
+
+html[data-mode="light"] .ripple-ring {
+  border-color: var(--accent-1);
+}
+
+html[data-mode="light"] .pill-offer {
+  background: linear-gradient(135deg, rgba(var(--accent-1-rgb,37,99,235),0.12), rgba(var(--accent-1-rgb,37,99,235),0.04));
+  border-color: var(--accent-1);
+  color: var(--accent-1-dark);
+}
+
+html[data-mode="light"] .pill-want {
+  background: linear-gradient(135deg, rgba(var(--accent-2-rgb,124,58,237),0.12), rgba(var(--accent-2-rgb,124,58,237),0.04));
+  border-color: var(--accent-2);
+  color: var(--accent-2-dark);
+}
+
+html[data-mode="light"] .stat-badge {
+  background: rgba(var(--accent-1-rgb,37,99,235), 0.07);
+  border-color: var(--border-subtle);
+}
+
+html[data-mode="light"] .trust-bar {
+  background: rgba(var(--accent-1-rgb,37,99,235), 0.1);
+}
+
+html[data-mode="light"] .custom-scrollbar {
+  scrollbar-color: var(--border-subtle) transparent;
+}
+
+html[data-mode="light"] .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+}
+
+html[data-mode="light"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-1);
+}
+
+@media (max-width: 640px) {
+  html[data-mode="light"] .glass-card,
+  html[data-mode="light"] .skill-card {
+    background: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* ─── VIDEO MIRROR (for selfie view) ─── */
+.mirror {
+  transform: scaleX(-1);
+}
+
+/* ─── CUSTOM SCROLLBAR ─── */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-subtle) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-1);
+}
+
+/* ─── MOBILE RESPONSIVE ENHANCEMENTS ─── */
+@media (max-width: 640px) {
+  /* Adjust card padding on mobile */
+  .skill-card {
+    padding: 1rem;
+  }
+
+  /* Make glass cards more opaque on mobile for better readability */
+  .glass-card, .skill-card {
+    background: rgba(10, 12, 30, 0.7);
+  }
+
+  /* Smaller font sizes for mobile */
+  .hero-pill {
+    font-size: 11px;
+    padding: 6px 14px;
+  }
+
+  /* Touch-friendly button sizes */
+  .btn-gradient, .btn-gradient-secondary {
+    min-height: 44px;
+    padding: 0.75rem 1.5rem;
+  }
+
+  /* Better input sizing on mobile */
+  .input-glass {
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 44px;
+  }
+
+  /* Auth card takes full width on mobile */
+  .auth-card {
+    max-width: 100%;
+    margin: 1rem;
+  }
+
+  /* Reduce blur effects on mobile for better performance */
+  .glass-card, .auth-card, .input-glass {
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  }
+}
+
+@media (max-width: 768px) {
+  /* Reduce animation complexity on tablets/mobile */
+  .ripple-ring {
+    animation-duration: 6s;
+  }
+
+  /* Hero scroll smoothness (esp. the APK WebView): nine large rings each scale
+     to 3× and are promoted to persistent GPU layers (will-change), so the phone
+     has to composite nine huge translucent layers WHILE scrolling the hero —
+     that's the jank. Keep only the first three; visually it's still a clean
+     ripple, but scrolling the hero stays smooth. */
+  .ripple-ring:nth-child(n+4) {
+    display: none;
+  }
+
+  .hero-pill {
+    animation-duration: 6s;
+  }
+
+  /* Trim the floating skill pills on small screens too (fewer animated layers
+     over the scroll area). */
+  .hero-pill:nth-of-type(n+5) {
+    display: none;
+  }
+
+  /* Smaller glow effects on mobile */
+  .btn-gradient:hover, .btn-gradient-secondary:hover {
+    box-shadow: 0 0 15px rgba(0, 198, 255, 0.3);
+  }
+}
+
+/* ─── SAFE AREA INSETS (for notched devices) ─── */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* ─── FIX OVERFLOW ISSUES ON MOBILE ─── */
+body, html {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+* {
+  max-width: 100%;
+}
+
+/* ─── NOTIFICATION DROPDOWN ───
+   The bell panel is position:absolute inside the tiny ~32px bell wrapper, so the
+   global `* { max-width: 100% }` overflow guard above clamps it to the wrapper's
+   width — collapsing it into a thin vertical sliver (desktop AND the APK WebView).
+   Pin an explicit width here (this rule loads after Tailwind, so it wins) and turn
+   it into a full-width anchored sheet on phones. */
+.notif-panel {
+  width: 340px;
+  max-width: calc(100vw - 24px);
+}
+@media (max-width: 639px) {
+  .notif-panel {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+    top: calc(56px + env(safe-area-inset-top, 0px));
+    margin-top: 0;
+  }
+}
+
+/* ─── TOUCH-FRIENDLY INTERACTIONS ─── */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .skill-card:hover {
+    transform: none;
+  }
+
+  /* Make click targets larger */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ─── UTILITIES ─── */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+@keyframes typing-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+.animate-typing-bounce {
+  animation: typing-bounce 1.4s infinite ease-in-out both;
+}@layer utilities { .text-gradient-fix { -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; } }

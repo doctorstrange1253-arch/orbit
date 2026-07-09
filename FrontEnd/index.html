@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
+    <!-- viewport-fit=cover lets the standalone PWA paint under the iOS notch/safe-areas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Orbit — Peer-to-peer skill exchange platform. Teach what you know, learn what you don't." />
+    <title>Orbit — Exchange Skills, Rise Together</title>
+
+    <!-- PWA / installable-app meta (iPhone Add-to-Home-Screen + Android) -->
+    <meta name="theme-color" content="#0b0a20" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Orbit" />
+
+    <!-- Open Graph (social sharing fallback) -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:site_name"   content="Orbit" />
+    <meta property="og:title"       content="Orbit — Exchange Skills, Rise Together" />
+    <meta property="og:description" content="Peer-to-peer skill exchange platform. Teach what you know, learn what you don't." />
+    <meta property="og:url"         content="https://react-skill-swap-fully-fledged.vercel.app/" />
+    <meta property="og:image"       content="https://react-skill-swap-fully-fledged.vercel.app/og-image.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="Orbit — Exchange Skills, Rise Together" />
+    <meta name="twitter:description" content="Peer-to-peer skill exchange platform." />
+    <meta name="twitter:image"       content="https://react-skill-swap-fully-fledged.vercel.app/og-image.png" />
+
+    <!-- Canonical fallback (per-route canonical is set by react-helmet-async) -->
+    <link rel="canonical" href="https://react-skill-swap-fully-fledged.vercel.app/" />
+
+    <!-- DNS Prefetch & Preconnect for Performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Preload critical fonts with font-display: swap -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLDD4Z1xlFQ.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="https://fonts.gstatic.com/s/opensans/v40/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVI.woff2" as="font" type="font/woff2" crossorigin />
+    
+    <!-- Poppins: Modern, friendly headings | Open Sans: Clean, readable body text -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet" />
+    
+    <!-- Anti-FOUC script to set mode and theme before React renders -->
+    <script>
+      try {
+        const themeState = JSON.parse(localStorage.getItem('skillswap-theme-mode'));
+        const isDark = themeState?.state?.isDark ?? true; // default to dark
+        document.documentElement.setAttribute('data-mode', isDark ? 'dark' : 'light');
+        document.documentElement.style.backgroundColor = isDark ? '#060810' : '#f5f7fc';
+        document.documentElement.style.color = isDark ? '#ffffff' : '#0f172a';
+        
+        const appearanceState = JSON.parse(localStorage.getItem('skillswap-appearance'));
+        const theme = appearanceState?.state?.theme || 'cyan-purple';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-mode', 'dark');
+        document.documentElement.setAttribute('data-theme', 'cyan-purple');
+        document.documentElement.style.backgroundColor = '#060810';
+        document.documentElement.style.color = '#ffffff';
+      }
+    </script>
+  </head>
+  <body>
+    <!--
+      First-paint placeholder (B-03). React's createRoot().render() replaces this
+      on mount, so it only shows during the brief pre-hydration window — keeping
+      the initial paint on-brand instead of a blank screen. It is NOT the error
+      boundary; that only renders on genuine runtime errors.
+    -->
+    <div id="root">
+      <div id="app-splash" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-family:'Poppins',system-ui,sans-serif;">
+        <div style="font-size:28px;font-weight:800;letter-spacing:.5px;background:linear-gradient(135deg,#00c6ff,#7c3aed);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Orbit</div>
+        <div style="font-size:13px;opacity:.7;">Exchange skills, rise together.</div>
+      </div>
+    </div>
+
+    <!--
+      No-JS / non-JS-crawler fallback (B-03). Real, indexable content that matches
+      the static <title>/meta above, so a plain fetch never sees a blank page or a
+      crash screen. Progressive enhancement: the interactive app loads when JS runs.
+    -->
+    <noscript>
+      <div style="max-width:640px;margin:0 auto;padding:48px 20px;font-family:system-ui,-apple-system,'Open Sans',sans-serif;line-height:1.6;">
+        <h1 style="font-size:28px;margin:0 0 12px;">Orbit — Exchange Skills, Rise Together</h1>
+        <p style="opacity:.85;margin:0 0 16px;">
+          Orbit is a peer-to-peer skill-exchange platform. Teach what you know,
+          learn what you don't, connect with people near you, and climb the cosmos
+          together. Enable JavaScript to use the full interactive app.
+        </p>
+        <p>
+          <a href="/register">Create an account</a> ·
+          <a href="/login">Sign in</a> ·
+          <a href="/browse">Browse skills</a>
+        </p>
+      </div>
+    </noscript>
+
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

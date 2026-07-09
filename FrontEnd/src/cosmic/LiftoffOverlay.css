@@ -1,0 +1,297 @@
+/* ─────────────────────────────────────────────────────────────
+   Rank-moment overlay + card (v7 §6). Scoped to .liftoff-* / .rmc-*
+   so they cannot touch any existing styles or the dark theme.
+   Theme-agnostic: the moment is always deep space, so it reads
+   identically in light and dark.
+───────────────────────────────────────────────────────────── */
+
+.liftoff-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  /* Layered nebula depth: a soft warm core, two faint colour clouds, deep base */
+  background:
+    radial-gradient(60% 50% at 30% 28%, rgba(99,102,241,0.18), transparent 70%),
+    radial-gradient(55% 45% at 72% 70%, rgba(168,85,247,0.16), transparent 70%),
+    radial-gradient(circle at 50% 42%, rgba(26,11,46,0.92), rgba(8,3,20,0.97) 72%);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  overflow: hidden;
+  cursor: pointer;
+}
+/* ── Per-category rank-UP backdrops (v7 §6) ───────────────────────
+   Each tier gets its own nebula palette so the moment feels bespoke —
+   two coloured light-clouds over a deep, tier-tinted base. Quasar is the
+   richest (three clouds + a gold core). Theme-agnostic (always deep space). */
+.liftoff-overlay.liftoff-cat-moon {
+  /* Pearl moonlight — soft silver + a faint warm cream, deliberately low-saturation
+     so it reads clearly apart from the vivid azure Star backdrop. */
+  background:
+    radial-gradient(58% 48% at 30% 26%, rgba(224,228,240,0.20), transparent 70%),
+    radial-gradient(52% 44% at 72% 72%, rgba(206,180,150,0.12), transparent 70%),
+    radial-gradient(circle at 50% 42%, rgba(22,22,34,0.94), rgba(8,8,14,0.97) 72%);
+}
+.liftoff-overlay.liftoff-cat-planet {
+  background:
+    radial-gradient(60% 50% at 28% 26%, rgba(216,164,127,0.20), transparent 70%),
+    radial-gradient(55% 48% at 74% 72%, rgba(56,170,158,0.16), transparent 70%),
+    radial-gradient(circle at 50% 42%, rgba(12,22,26,0.94), rgba(5,9,12,0.97) 72%);
+}
+.liftoff-overlay.liftoff-cat-star {
+  /* Vivid stellar azure — brighter and bluer than Moon, with an icy-white core. */
+  background:
+    radial-gradient(40% 36% at 50% 40%, rgba(214,236,255,0.22), transparent 64%),
+    radial-gradient(64% 54% at 28% 24%, rgba(96,176,255,0.30), transparent 70%),
+    radial-gradient(58% 48% at 74% 74%, rgba(56,116,225,0.22), transparent 70%),
+    radial-gradient(circle at 50% 42%, rgba(8,16,44,0.95), rgba(3,6,22,0.98) 72%);
+}
+.liftoff-overlay.liftoff-cat-pulsar {
+  background:
+    radial-gradient(62% 52% at 30% 26%, rgba(76,201,240,0.24), transparent 70%),
+    radial-gradient(55% 46% at 73% 72%, rgba(40,150,205,0.18), transparent 70%),
+    radial-gradient(circle at 50% 42%, rgba(6,20,30,0.94), rgba(3,8,15,0.97) 72%);
+}
+.liftoff-overlay.liftoff-cat-supernova {
+  background:
+    radial-gradient(64% 54% at 30% 26%, rgba(255,107,53,0.24), transparent 70%),
+    radial-gradient(56% 48% at 72% 72%, rgba(236,72,153,0.18), transparent 70%),
+    radial-gradient(circle at 50% 42%, rgba(28,10,18,0.94), rgba(12,4,8,0.97) 72%);
+}
+.liftoff-overlay.liftoff-cat-galaxy {
+  background:
+    radial-gradient(62% 52% at 30% 26%, rgba(255,143,207,0.22), transparent 70%),
+    radial-gradient(58% 50% at 72% 72%, rgba(139,92,246,0.20), transparent 70%),
+    radial-gradient(circle at 50% 42%, rgba(24,12,40,0.94), rgba(10,5,20,0.97) 72%);
+}
+.liftoff-overlay.liftoff-cat-quasar {
+  background:
+    radial-gradient(45% 40% at 50% 38%, rgba(255,214,140,0.16), transparent 66%),
+    radial-gradient(64% 54% at 28% 24%, rgba(142,197,255,0.24), transparent 70%),
+    radial-gradient(60% 52% at 74% 74%, rgba(168,85,247,0.22), transparent 70%),
+    radial-gradient(circle at 50% 42%, rgba(16,10,38,0.95), rgba(5,3,16,0.98) 74%);
+}
+/* Descent tiers (asteroid/meteor/stardust) keep a quiet, dim base — the calm
+   .liftoff-down rule below refines them further when it's actually a rank-down. */
+.liftoff-overlay.liftoff-cat-meteor {
+  background:
+    radial-gradient(58% 48% at 30% 28%, rgba(224,138,60,0.16), transparent 72%),
+    radial-gradient(circle at 50% 42%, rgba(22,14,10,0.95), rgba(9,5,4,0.97) 72%);
+}
+.liftoff-overlay.liftoff-cat-asteroid {
+  background:
+    radial-gradient(58% 48% at 30% 28%, rgba(150,140,128,0.15), transparent 72%),
+    radial-gradient(circle at 50% 42%, rgba(16,15,13,0.95), rgba(7,6,5,0.97) 72%);
+}
+.liftoff-overlay.liftoff-cat-stardust {
+  background:
+    radial-gradient(58% 48% at 30% 28%, rgba(159,179,200,0.16), transparent 72%),
+    radial-gradient(circle at 50% 42%, rgba(14,16,24,0.95), rgba(5,6,12,0.97) 72%);
+}
+
+/* v4 §5 — rank-DOWN: a calm, cool, dignified aurora backdrop (never harsh/red).
+   Placed AFTER the category rules so it wins whenever the moment is a descent. */
+.liftoff-overlay.liftoff-down {
+  background:
+    radial-gradient(62% 50% at 32% 30%, rgba(96,150,200,0.16), transparent 72%),
+    radial-gradient(54% 46% at 70% 72%, rgba(120,160,205,0.12), transparent 72%),
+    radial-gradient(circle at 50% 42%, rgba(20,28,44,0.95), rgba(6,10,20,0.97) 72%);
+}
+
+.liftoff-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.liftoff-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 2;
+}
+.liftoff-close:hover { color: #fff; background: rgba(255,255,255,0.12); }
+
+.liftoff-stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  cursor: default;
+}
+
+/* ── The reusable card (RankMomentCard) ─────────────────────────── */
+.rmc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 560px;
+  padding: 16px;
+}
+
+.rmc-badge-wrap { margin-bottom: 22px; }
+
+/* Big animated halo behind the revealed badge (category-tinted) */
+.rmc-badge-halo {
+  display: grid;
+  place-items: center;
+  padding: 40px;
+  border-radius: 50%;
+  animation: liftoff-halo-pulse calc(2.4s / var(--anim-speed, 1)) ease-in-out infinite;
+}
+.rmc-badge { transform: scale(2.8); }   /* show the 57px badge BIG, front & centre */
+
+.cb-halo-moon      { box-shadow: 0 0 70px 24px rgba(180,172,158,0.30); }
+.cb-halo-asteroid  { box-shadow: 0 0 64px 20px rgba(150,140,128,0.26); }
+.cb-halo-meteor    { box-shadow: 0 0 70px 24px rgba(224,138,60,0.30); }
+.cb-halo-stardust  { box-shadow: 0 0 70px 24px rgba(159,179,200,0.28); }
+.cb-halo-planet    { box-shadow: 0 0 90px 30px rgba(216,164,127,0.35); }
+.cb-halo-star      { box-shadow: 0 0 120px 40px rgba(169,214,255,0.45); }
+.cb-halo-pulsar    { box-shadow: 0 0 120px 40px rgba(76,201,240,0.5); }
+.cb-halo-supernova { box-shadow: 0 0 140px 46px rgba(255,107,53,0.5); }
+.cb-halo-galaxy    { box-shadow: 0 0 140px 46px rgba(255,143,207,0.45); }
+.cb-halo-quasar    { box-shadow: 0 0 170px 56px rgba(142,197,255,0.6); }
+
+@keyframes liftoff-halo-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50%      { transform: scale(1.06); opacity: 1; }
+}
+
+.rmc-eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  color: rgba(207,230,255,0.82);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* The tier name is now the dominant headline element */
+.rmc-tier-name {
+  font-size: clamp(28px, 5.2vw, 46px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-shadow: 0 2px 30px rgba(120,160,255,0.55);
+  margin: 0 0 12px;
+}
+
+/* Short supporting line — secondary to the tier name */
+.rmc-support {
+  font-size: clamp(15px, 2.3vw, 18px);
+  line-height: 1.45;
+  color: rgba(226,232,245,0.78);
+  max-width: 30ch;
+  margin: 0 auto 18px;   /* auto side-margins so the narrow box stays centred under the tier name */
+}
+
+.rmc-score {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: rgba(232,226,245,0.62);
+  margin-bottom: 24px;
+}
+
+.rmc-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.rmc-primary, .rmc-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+}
+/* Primary = Continue (single primary action, §6) */
+.rmc-primary {
+  color: #0D0221;
+  background: linear-gradient(135deg, #cfe6ff, #8ec5ff);
+  border: none;
+  box-shadow: 0 6px 24px rgba(142,197,255,0.45);
+}
+.rmc-primary:hover { transform: translateY(-2px); }
+/* Secondary = Share */
+.rmc-secondary {
+  color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.16);
+}
+.rmc-secondary:hover { background: rgba(255,255,255,0.12); }
+.rmc-secondary:disabled { opacity: 0.6; cursor: default; transform: none; }
+
+/* ── Rank-DOWN: softer, cooler accents (never alarming) ── */
+.rmc-down .rmc-eyebrow { color: rgba(160,190,220,0.85); }
+.rmc-down .rmc-tier-name { text-shadow: 0 2px 22px rgba(120,150,190,0.42); }
+
+/* ── QUASAR: the most spectacular variant ── */
+.rmc-quasar {
+  position: relative;
+}
+/* A grand rotating aurora behind the whole card, reserved for the Quasar */
+.rmc-quasar::before {
+  content: '';
+  position: absolute;
+  inset: -120px -80px;
+  z-index: -1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg,
+    rgba(142,197,255,0.0), rgba(142,197,255,0.22), rgba(199,125,255,0.20),
+    rgba(255,143,207,0.18), rgba(142,197,255,0.0));
+  filter: blur(30px);
+  animation: rmc-quasar-spin calc(14s / var(--anim-speed, 1)) linear infinite;
+  pointer-events: none;
+}
+.rmc-quasar .rmc-tier-name {
+  background: linear-gradient(120deg, #ffffff, #bfe0ff 40%, #e6c8ff 70%, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 36px rgba(142,197,255,0.6);
+}
+.rmc-quasar .rmc-eyebrow { color: rgba(214,200,255,0.9); }
+
+@keyframes rmc-quasar-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Reduced motion: kill the halo pulse + quasar spin (crossfade mode already skips canvas) */
+@media (prefers-reduced-motion: reduce) {
+  .rmc-badge-halo { animation: none; }
+  .rmc-quasar::before { animation: none; }
+}
+[data-anim-off="true"] .rmc-badge-halo,
+[data-anim-off="true"] .rmc-quasar::before { animation: none; }
+
+/* Mobile-safe sizing (v5 §4) */
+@media (max-width: 480px) {
+  .rmc { max-width: 92vw; padding: 12px; }
+  .rmc-badge { transform: scale(2.3); }
+  .rmc-badge-halo { padding: 30px; }
+  .rmc-badge-wrap { margin-bottom: 16px; }
+  .rmc-actions { width: 100%; }
+  .rmc-primary, .rmc-secondary { flex: 1; justify-content: center; }
+}

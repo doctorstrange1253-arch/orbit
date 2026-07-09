@@ -1,0 +1,493 @@
+/**
+ * leaderboardService.js — geographic scoping + on-read CosmicScore ranking.
+ *
+ * Tier/division come from the ABSOLUTE CosmicScore (everyone can climb);
+ * leaderboard RANK is RELATIVE within the resolved geographic pool (local and
+ * winnable) — spec §6.7, §11.
+ *
+ * On-read compute: until the recompute worker (Phase 9/10) is the source of
+ * truth, scores are computed live from ratings/connections for the (capped,
+ * cached) pool so the board is populated immediately. Results are cached per
+ * (scope, centroid bucket, season) for a few minutes to respect the M0
+ * connection cap (spec §11.3).
+ */
+
+const User       = require("../models/user");
+const Rating     = require("../models/rating");
+const Connection = require("../models/Connection");
+const Skill      = require("../models/skill");
+const { computeCosmicScore } = require("./cosmicScore");
+const { assignTier, nameGlowFor } = require("./cosmicTier");
+const { detectReviewRings } = require("./seasonService");
+
+// ── Adaptive radius config (spec §11.2) ────────────────────────────────────
+const MIN_POOL = 15;
+const RADIUS_STEPS_KM = [10, 25, 50, 100];
+const NEIGHBORHOOD_KM = 10;
+const REGION_APPROX_KM = 250;   // used when admin region field is absent
+const CACHE_TTL_MS = 3 * 60 * 1000;
+const MAX_POOL = 200;           // hard cap so on-read compute stays cheap
+
+// Tiny in-process cache (single Render instance). Keyed by scope+bucket+season.
+const _cache = new Map();
+function cacheGet(key) {
+    const hit = _cache.get(key);
+    if (hit && Date.now() - hit.t < CACHE_TTL_MS) return hit.v;
+    if (hit) _cache.delete(key);
+    return null;
+}
+function cacheSet(key, v) { _cache.set(key, { t: Date.now(), v }); }
+
+// Haversine (km) — mirrors the proven approach already used in geoController.
+function haversineKm(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function userLatLng(u) {
+    // Prefer legacy coordinates {lat,lng}; fall back to GeoJSON geo.point [lng,lat].
+    if (u.coordinates && u.coordinates.lat != null && u.coordinates.lng != null) {
+        return { lat: u.coordinates.lat, lng: u.coordinates.lng };
+    }
+    const c = u.geo && u.geo.point && u.geo.point.coordinates;
+    if (Array.isArray(c) && c.length === 2) return { lat: c[1], lng: c[0] };
+    return null;
+}
+
+/**
+ * Mentors within `maxKm` of (lat,lng). Uses the indexed 2dsphere $geoNear when
+ * geo.point data exists; falls back to an in-JS haversine scan over legacy
+ * coordinates so the board works even before the geo backfill has run.
+ */
+async function mentorsWithin(lat, lng, maxKm, excludeId) {
+    // Primary: indexed geo query (scales on M0; only returns backfilled docs).
+    try {
+        const near = await User.aggregate([
+            {
+                $geoNear: {
+                    near: { type: "Point", coordinates: [lng, lat] },
+                    distanceField: "distanceMeters",
+                    maxDistance: maxKm * 1000,
+                    spherical: true,
+                    query: { _id: { $ne: excludeId } },
+                },
+            },
+            { $limit: MAX_POOL },
+        ]);
+        if (near.length >= MIN_POOL) {
+            return near.map((u) => ({ ...u, distanceKm: u.distanceMeters / 1000 }));
+        }
+    } catch (_) {
+        // 2dsphere may be unavailable on a fresh DB — fall through to haversine.
+    }
+
+    // Fallback: scan users with any coordinates, filter by haversine.
+    const candidates = await User.find({
+        _id: { $ne: excludeId },
+        $or: [{ "coordinates.lat": { $ne: null } }, { "geo.point.coordinates.0": { $exists: true } }],
+    })
+        .select("name avatar city region country coordinates geo cosmic orbit.cosmetics trustScore averageRating sentimentScore")
+        .limit(2000)
+        .lean();
+
+    return candidates
+        .map((u) => {
+            const ll = userLatLng(u);
+            if (!ll) return null;
+            return { ...u, distanceKm: haversineKm(lat, lng, ll.lat, ll.lng) };
+        })
+        .filter((u) => u && u.distanceKm <= maxKm)
+        .sort((a, b) => a.distanceKm - b.distanceKm)
+        .slice(0, MAX_POOL);
+}
+
+// ── Unified candidate set (§8.5) ────────────────────────────────────────────
+// The board + Observatory candidate set must equal the set Browse uses, then
+// be scope-filtered and ranked. Browse = users who offer a skill and aren't
+// banned (no location filter). We mirror that EXACTLY, then scope-filter in JS.
+// Visibility is NEVER gated by review count or score (warm-started on read).
+const MENTOR_CAP = 1000;
+const norm = (s) => String(s || "").trim().toLowerCase();
+
+async function mentorCandidates(excludeId) {
+    const ids = await Skill.distinct("userId");          // distinct mentors (offer a skill)
+    const now = new Date();
+    return User.find({
+        _id: { $in: ids, $ne: excludeId },
+        $or: [{ bannedUntil: null }, { bannedUntil: { $lte: now } }],
+    })
+        .select("name avatar location city region country coordinates geo cosmic orbit.cosmetics trustScore averageRating sentimentScore")
+        .limit(MENTOR_CAP)
+        .lean();
+}
+
+// A mentor is "placeable" if they have ANY locatable signal.
+function hasLocation(u) {
+    return !!(norm(u.city) || userLatLng(u) || norm(u.location));
+}
+
+/**
+ * Filter the unified candidate set into ONE scope, in-JS (no extra DB).
+ * @returns {{ pool:Array, label:string, appliedRadiusKm:number|null, widened:boolean, unplacedCount:number }}
+ *
+ * Missing-location mentors stay visible at Region/Country; for City they are
+ * reported via `unplacedCount` rather than silently dropped (§8.5, preferred).
+ */
+function scopeFilter(candidates, { scope, me, lat, lng }) {
+    const myCity = norm(me.city), myRegion = norm(me.region), myCountry = norm(me.country), myLoc = norm(me.location);
+
+    if (scope === "country") {
+        // Inclusive at the broadest scope: same country, or unknown country.
+        const pool = candidates.filter((u) => !norm(u.country) || !myCountry || norm(u.country) === myCountry);
+        return { pool, label: me.country || "your country", appliedRadiusKm: null, widened: false, unplacedCount: 0 };
+    }
+
+    if (scope === "region") {
+        const pool = candidates.filter((u) => {
+            const r = norm(u.region), c = norm(u.country);
+            if (myRegion && r === myRegion) return true;
+            if (!r && c && c === myCountry) return true;   // unknown region but same country
+            return false;
+        });
+        return { pool, label: me.region || "your region", appliedRadiusKm: null, widened: false, unplacedCount: 0 };
+    }
+
+    if (scope === "neighborhood") {
+        const havePos = lat != null && !Number.isNaN(lat) && lng != null;
+        const pool = havePos ? candidates.filter((u) => {
+            const ll = userLatLng(u);
+            return ll && haversineKm(lat, lng, ll.lat, ll.lng) <= NEIGHBORHOOD_KM;
+        }) : [];
+        const unplacedCount = candidates.filter((u) => !hasLocation(u)).length;
+        return { pool, label: `within ${NEIGHBORHOOD_KM} km`, appliedRadiusKm: NEIGHBORHOOD_KM, widened: false, unplacedCount };
+    }
+
+    // CITY: (a) city-string match  ∪  (b) coords within an auto-widening radius
+    //       ∪  (c) normalized location-text match.
+    const byId = new Map();
+    const add = (u) => byId.set(String(u._id), u);
+    if (myCity) candidates.filter((u) => norm(u.city) === myCity).forEach(add);
+    if (myLoc)  candidates.filter((u) => norm(u.location) === myLoc).forEach(add);
+
+    let appliedRadiusKm = null, widened = false;
+    if (lat != null && !Number.isNaN(lat) && lng != null) {
+        for (const r of [25, 50, 100]) {
+            appliedRadiusKm = r;
+            candidates.forEach((u) => {
+                const ll = userLatLng(u);
+                if (ll && haversineKm(lat, lng, ll.lat, ll.lng) <= r) add(u);
+            });
+            if (byId.size >= MIN_POOL) break;
+        }
+        widened = appliedRadiusKm > 25;   // had to grow beyond the first ring
+    }
+
+    const pool = [...byId.values()];
+    const label = me.city || (appliedRadiusKm ? `within ${appliedRadiusKm} km` : "your city");
+    const unplacedCount = candidates.filter((u) => !hasLocation(u)).length;
+    return { pool, label, appliedRadiusKm, widened, unplacedCount };
+}
+
+// Per-scope mentor counts from the SAME candidate array (in-JS, no extra DB),
+// so the UI can show real counts + one-tap scope switching (§8.5).
+//
+// The candidate set EXCLUDES the viewer (mentorCandidates uses $ne), but the
+// ranked board always appends the viewer to whatever scope is shown
+// (rankPool.push(me) in resolveLeaderboard), so the standing card reads
+// "#N of M" with the viewer counted. We add the viewer here too (+1) so the
+// scope-tab counts match that total exactly — otherwise the tab said "· 11"
+// while the card said "12 of 12", which read as a bug.
+function scopeCounts(candidates, me, lat, lng) {
+    return {
+        city:    scopeFilter(candidates, { scope: "city", me, lat, lng }).pool.length + 1,
+        region:  scopeFilter(candidates, { scope: "region", me, lat, lng }).pool.length + 1,
+        country: scopeFilter(candidates, { scope: "country", me, lat, lng }).pool.length + 1,
+    };
+}
+
+/**
+ * Resolve the mentor pool + an honest label for the requested scope (§11.2).
+ * @returns {{ pool:Array, label:string, usedFallback:boolean }}
+ */
+async function resolvePool({ lat, lng, scope, me }) {
+    const cityName = (me && me.city) || "your area";
+
+    if (scope === "neighborhood") {
+        const pool = await mentorsWithin(lat, lng, NEIGHBORHOOD_KM, me._id);
+        return { pool, label: `within ${NEIGHBORHOOD_KM} km of ${cityName}`, usedFallback: false };
+    }
+
+    if (scope === "region") {
+        if (me && me.region) {
+            const pool = await User.find({ _id: { $ne: me._id }, region: me.region })
+                .select("name avatar city region country cosmic orbit.cosmetics trustScore averageRating sentimentScore")
+                .limit(MAX_POOL).lean();
+            if (pool.length >= 1) return { pool, label: me.region, usedFallback: false };
+        }
+        const pool = await mentorsWithin(lat, lng, REGION_APPROX_KM, me._id);
+        return { pool, label: `within ${REGION_APPROX_KM} km`, usedFallback: true };
+    }
+
+    if (scope === "country") {
+        if (me && me.country) {
+            const pool = await User.find({ _id: { $ne: me._id }, country: me.country })
+                .select("name avatar city region country cosmic orbit.cosmetics trustScore averageRating sentimentScore")
+                .limit(MAX_POOL).lean();
+            return { pool, label: me.country, usedFallback: false };
+        }
+        const pool = await mentorsWithin(lat, lng, 100000, me._id); // effectively unbounded
+        return { pool, label: "your country", usedFallback: true };
+    }
+
+    // Default: CITY — adaptive radius (spec §11.2).
+    for (const r of RADIUS_STEPS_KM) {
+        const pool = await mentorsWithin(lat, lng, r, me._id);
+        if (pool.length >= MIN_POOL) {
+            return { pool, label: `within ${r} km of ${cityName}`, usedFallback: r !== RADIUS_STEPS_KM[0] };
+        }
+    }
+    // Still sparse → widen to region, then country.
+    if (me && me.region) {
+        const pool = await User.find({ _id: { $ne: me._id }, region: me.region })
+            .select("name avatar city region country cosmic orbit.cosmetics trustScore averageRating sentimentScore")
+            .limit(MAX_POOL).lean();
+        if (pool.length >= MIN_POOL) return { pool, label: me.region, usedFallback: true };
+    }
+    // Last resort: widest distance pool we found (100 km).
+    const pool = await mentorsWithin(lat, lng, RADIUS_STEPS_KM[RADIUS_STEPS_KM.length - 1], me._id);
+    return { pool, label: `within ${RADIUS_STEPS_KM[RADIUS_STEPS_KM.length - 1]} km of ${cityName}`, usedFallback: true };
+}
+
+/**
+ * On-read scoring for a pool of mentors. Batch-loads ratings + completed
+ * connections once, then computes each mentor's CosmicScore + tier.
+ * @returns {Map<string, { score, tier, weightedReviews, reviewsCount }>}
+ */
+async function scorePool(mentorIds) {
+    if (mentorIds.length === 0) return new Map();
+    const now = Date.now();
+
+    // Ratings received by anyone in the pool.
+    const ratings = await Rating.find({ toUser: { $in: mentorIds } })
+        .select("toUser fromUser score sentiment.score tiedToCompletedSwap createdAt")
+        .lean();
+
+    // Anti-gaming: detect reciprocal/cyclic review rings among the reviewers in
+    // play and discount those edges (spec §15.2). Cheap edge scan over the pool's
+    // ratings + their reviewers' outgoing ratings.
+    let ringEdges = new Set();
+    try {
+        const reviewerIds = [...new Set(ratings.map((r) => String(r.fromUser)))];
+        const related = await Rating.find({ fromUser: { $in: reviewerIds } })
+            .select("fromUser toUser").lean();
+        const edges = related.map((r) => ({ from: String(r.fromUser), to: String(r.toUser) }));
+        ringEdges = detectReviewRings(edges);
+    } catch (_) { /* ring detection is best-effort; never block scoring */ }
+
+    // Group ratings per mentor; track per-reviewer counts for the reviewer cap.
+    const byMentor = new Map();
+    for (const id of mentorIds) byMentor.set(String(id), { rows: [], reviewerCounts: new Map() });
+    for (const r of ratings) {
+        const key = String(r.toUser);
+        const bucket = byMentor.get(key);
+        if (!bucket) continue;
+        const rk = String(r.fromUser);
+        bucket.reviewerCounts.set(rk, (bucket.reviewerCounts.get(rk) || 0) + 1);
+        bucket.rows.push(r);
+    }
+
+    // Completed swaps per mentor (counts either endpoint of a completed swap).
+    const completed = await Connection.find({
+        status: "completed",
+        $or: [{ requester: { $in: mentorIds } }, { receiver: { $in: mentorIds } }],
+    }).select("requester receiver").lean();
+    const swapCount = new Map();
+    for (const c of completed) {
+        for (const side of [c.requester, c.receiver]) {
+            const k = String(side);
+            if (byMentor.has(k)) swapCount.set(k, (swapCount.get(k) || 0) + 1);
+        }
+    }
+
+    // Real activity days per mentor — revives the 8% activity component, which
+    // was previously hardcoded to 0 here. Batch-loaded once for the whole pool.
+    const activeUsers = await User.find({ _id: { $in: mentorIds } })
+        .select("cosmic.activeDaysThisSeason").lean();
+    const activeDays = new Map();
+    for (const u of activeUsers) {
+        activeDays.set(String(u._id), (u.cosmic && u.cosmic.activeDaysThisSeason) || 0);
+    }
+
+    const out = new Map();
+    for (const [key, bucket] of byMentor) {
+        const reviews = bucket.rows.map((r) => {
+            // Discount ring edges: a flagged reciprocal/cyclic review doesn't count
+            // (modeled as not-tied-to-a-completed-swap → zero weight in the engine).
+            const ringed = ringEdges.has(`${String(r.fromUser)}->${key}`);
+            return {
+                rating: r.score,
+                sentiment: r.sentiment && r.sentiment.score != null ? r.sentiment.score : null,
+                ageDays: (now - new Date(r.createdAt).getTime()) / 86400000,
+                reviewsFromThisReviewer: bucket.reviewerCounts.get(String(r.fromUser)) || 1,
+                tiedToCompletedSwap: !ringed && !!r.tiedToCompletedSwap,
+            };
+        });
+
+        const result = computeCosmicScore({
+            reviews,
+            completedSwaps: swapCount.get(key) || 0,
+            activeDaysThisSeason: activeDays.get(key) || 0,
+            sentimentEnabled: process.env.COSMIC_SENTIMENT_ENABLED !== "false",
+        });
+        const tier = assignTier(result.score, { weightedReviews: result.weightedReviews, seasonsPlayed: 0 });
+
+        out.set(key, {
+            score: result.score,
+            tier,
+            weightedReviews: result.weightedReviews,
+            reviewsCount: bucket.rows.length,
+        });
+    }
+    return out;
+}
+
+// Tie-break (v3 §2): score → weighted reviews → completed swaps → name →
+// userId. The trailing userId makes ranks fully DETERMINISTIC and distinct
+// even when many users are tied at the warm-start 50 (no flicker).
+function rankEntries(entries) {
+    return entries
+        .sort((a, b) =>
+            b.score - a.score ||
+            b.weightedReviews - a.weightedReviews ||
+            b.reviewsCount - a.reviewsCount ||
+            String(a.name).localeCompare(String(b.name)) ||
+            String(a.userId).localeCompare(String(b.userId))
+        )
+        .map((e, i) => ({ ...e, rank: i + 1 }));
+}
+
+/**
+ * Build the leaderboard payload for the API (spec §13).
+ * @param {object} args { me (User doc), lat, lng, scope, season }
+ */
+async function buildLeaderboard({ me, lat, lng, scope = "city", season = "" }) {
+    const bucket = `${Math.round(lat * 50)}_${Math.round(lng * 50)}`; // ~2km centroid bucket
+    const cacheKey = `${scope}:${bucket}:${season}:${String(me._id)}`;
+    const cached = cacheGet(cacheKey);
+    if (cached) return cached;
+
+    // §8.5 — single source of truth: the SAME mentors Browse uses, scope-filtered
+    // in-JS, then ranked. Mentors without coordinates are no longer dropped from
+    // City (they surface via unplacedCount + stay visible at Region/Country).
+    const candidates = await mentorCandidates(me._id);
+    const { pool, label, appliedRadiusKm, widened, unplacedCount } =
+        scopeFilter(candidates, { scope, me, lat, lng });
+    const counts = scopeCounts(candidates, me, lat, lng);
+    const usedFallback = widened;
+
+    // v3 §2 — the VIEWER must be ranked among everyone (scopeFilter may exclude
+    // them, e.g. unplaced). Append the viewer if missing so they always get a
+    // numeric rank — never "Not yet ranked here".
+    const rankPool = pool.slice();
+    if (!rankPool.some((u) => String(u._id) === String(me._id))) {
+        rankPool.push(me);
+    }
+
+    const mentorIds = rankPool.map((u) => u._id);
+    const scores = await scorePool(mentorIds);
+
+    // Persist freshly-computed scores so the OTHER surfaces that read the stored
+    // cosmic.score (Browse / dashboard mini-badge via standingFromUser) stop
+    // showing a stale 50. Only the SCORE is written here — tier PROMOTIONS stay
+    // gated through the moment-aware path (cosmicController.getMentorCosmic) so
+    // liftoff animations are never skipped. Changed-only + best-effort; the
+    // 3-min leaderboard cache throttles how often this runs.
+    try {
+        const ops = [];
+        for (const u of rankPool) {
+            const s = scores.get(String(u._id));
+            if (!s) continue;
+            const fresh = Math.round(s.score * 10) / 10;
+            const stored = (u.cosmic && typeof u.cosmic.score === "number")
+                ? Math.round(u.cosmic.score * 10) / 10 : null;
+            if (fresh !== stored) {
+                ops.push({ updateOne: {
+                    filter: { _id: u._id },
+                    update: { $set: { "cosmic.score": fresh } },
+                } });
+            }
+        }
+        if (ops.length) await User.bulkWrite(ops, { ordered: false });
+    } catch (_) { /* persistence is best-effort; never break the read */ }
+
+    const entries = rankEntries(rankPool.map((u) => {
+        const s = scores.get(String(u._id)) || { score: 50, tier: assignTier(50, {}), weightedReviews: 0, reviewsCount: 0 };
+        return {
+            userId: String(u._id),
+            name: (u.name && String(u.name).trim()) ? u.name : "Anonymous",
+            avatar: u.avatar || "",
+            city: u.city || "",
+            score: Math.round(s.score * 10) / 10,
+            tierId: s.tier.tierId,
+            title: (u.cosmic && u.cosmic.currentTitle) || "",
+            flair: (u.cosmic && u.cosmic.flair) || [],
+            badge: s.tier.tierId,
+            nameGlowTier: nameGlowFor(s.tier.tierId),     // v2 §8 (earned tier glow)
+            nameGlow: (u.orbit && u.orbit.cosmetics && u.orbit.cosmetics.nameGlow) || null, // purchased shop glow (visible to all)
+            weightedReviews: s.weightedReviews,
+            reviewsCount: s.reviewsCount,
+        };
+    }));
+
+    const TOP_N = 50;
+
+    // "you" block — the viewer is now always in `entries`, so they always have a
+    // real numeric rank (v3 §2: never "Not yet ranked here").
+    const meScore = scores.get(String(me._id)) || { score: 50, tier: assignTier(50, {}) };
+    const youRankIdx = entries.findIndex((e) => e.userId === String(me._id));
+    const youEntry = youRankIdx >= 0 ? entries[youRankIdx] : null;
+    const you = {
+        rank: youEntry ? youEntry.rank : entries.length, // always numeric
+        of: entries.length,                              // "#N of M"
+        userId: String(me._id),
+        name: (me.name && String(me.name).trim()) ? me.name : "Anonymous",
+        avatar: me.avatar || "",
+        tierId: meScore.tier.tierId,
+        score: Math.round(meScore.score * 10) / 10,
+        nameGlowTier: nameGlowFor(meScore.tier.tierId),
+        nameGlow: (me.orbit && me.orbit.cosmetics && me.orbit.cosmetics.nameGlow) || null,
+        progress: meScore.tier.progress,              // { mode, pct, label }
+        progressToNext: meScore.tier.progressToNext,
+        inTop50: youRankIdx >= 0 && youRankIdx < TOP_N,
+    };
+
+    const payload = {
+        scope,
+        label,
+        seasonId: season || null,
+        you,
+        total: entries.length,
+        totalInScope: entries.length,
+        entries: entries.slice(0, TOP_N).map(({ weightedReviews, reviewsCount, ...rest }) => rest),
+        usedFallback,
+        // §8.5 coverage metadata so the UI can explain who is shown and why.
+        scopeCounts: counts,
+        appliedRadiusKm,
+        widened,
+        unplacedCount,
+    };
+    cacheSet(cacheKey, payload);
+    return payload;
+}
+
+module.exports = {
+    buildLeaderboard,
+    // exported for tests / reuse
+    resolvePool, scorePool, rankEntries, mentorsWithin, haversineKm,
+    mentorCandidates, scopeFilter, scopeCounts, norm,
+    MIN_POOL, RADIUS_STEPS_KM,
+};

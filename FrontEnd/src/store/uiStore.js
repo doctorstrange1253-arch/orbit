@@ -1,0 +1,24 @@
+import { create } from 'zustand';
+
+export const useUIStore = create((set) => ({
+  isVideoCallActive: false,
+  setVideoCallActive: (isActive) => set({ isVideoCallActive: isActive }),
+  toasts: [],
+  addToast: (message, type = 'info', duration = 3000) => {
+    const id = Date.now();
+    set((state) => ({
+      toasts: [...state.toasts, { id, message, type }]
+    }));
+
+    if (duration > 0) {
+      setTimeout(() => {
+        set((state) => ({
+          toasts: state.toasts.filter((t) => t.id !== id)
+        }));
+      }, duration);
+    }
+  },
+  removeToast: (id) => set((state) => ({
+    toasts: state.toasts.filter((t) => t.id !== id)
+  }))
+}));

@@ -1,0 +1,376 @@
+import { useState, useEffect, useRef } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { useAuthStore } from '../../store/authStore';
+import Avatar from '../common/Avatar';
+import api from '../../services/api';
+import ChatDrawer from '../chat/ChatDrawer';
+import NotificationBell from '../notifications/NotificationBell';
+import { unregisterPush } from '../../utils/pushNotify';
+import OrbitStreakBadge from '../../cosmic/OrbitStreakBadge';
+import PhotonsChip from '../../cosmic/PhotonsChip';
+import {
+  LogOut, Layers, Compass, Users, Map,
+  ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX
+} from 'lucide-react';
+import soundManager from '../../utils/soundManager';
+
+const NAV = [
+  { name: 'Skills',       path: '/dashboard',   Icon: Layers     },
+  { name: 'Browse',       path: '/browse',       Icon: Compass    },
+  { name: 'Matches',      path: '/matches',      Icon: Handshake  },
+  { name: 'Connections',  path: '/connections',  Icon: Users      },
+  { name: 'Nearby',       path: '/nearby',       Icon: Map        },
+  { name: 'Calls',        path: '/video',        Icon: Phone      },
+  { name: 'Trust',        path: '/trust',        Icon: ShieldCheck},
+  { name: 'Leaderboard',  path: '/leaderboard',  Icon: Trophy     },
+  { name: 'Orbit',        path: '/orbit',        Icon: Rocket     },
+];
+
+const Navbar = () => {
+  const { user, logout } = useAuthStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  // Lazy init from the current scroll position (handles a restored scroll on
+  // mount) so the effect never needs a synchronous setState.
+  const [scrolled, setScrolled] = useState(
+    () => typeof window !== 'undefined' && window.scrollY > 64
+  );
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatInitialUser, setChatInitialUser] = useState(null);
+  // Ambient-music toggle, surfaced here so it's reachable from anywhere (not
+  // buried in Settings). Mirrors the global soundManager preference.
+  const [musicOn, setMusicOn] = useState(soundManager.isMusicEnabled());
+  const toggleMusic = () => setMusicOn(soundManager.toggleMusic());
+  const drawerRef = useRef(null);
+  const hamburgerRef = useRef(null);
+
+  // Fetch counts for badges
+  const { data: pending } = useQuery({
+    queryKey: ['connections', 'pending'],
+    queryFn: () => api.get('/connections/pending').then(res => res.data),
+    refetchInterval: 30000,
+  });
+
+  const { data: matchesData } = useQuery({
+    queryKey: ['matches'],
+    queryFn: () => api.get('/skills/matches').then(res => res.data),
+    refetchInterval: 60000,
+  });
+
+  const { data: unreadData } = useQuery({
+    queryKey: ['unread-count'],
+    queryFn: () => api.get('/messages/unread-count').then(res => res.data),
+    refetchInterval: 20000,
+  });
+
+  const incomingCount = pending?.incomingCount || 0;
+  const matchesCount = Array.isArray(matchesData) ? matchesData.length : 0;
+  const unreadCount = unreadData?.count || 0;
+
+  const navWithBadges = NAV.map(item => {
+    if (item.path === '/connections') return { ...item, badge: incomingCount };
+    if (item.path === '/matches') return { ...item, badge: matchesCount };
+    return item;
+  });
+
+  // Scroll detection — hysteresis dead-band (on >64px, off <24px) batched in a
+  // single rAF so tiny scroll jitter near one threshold can't flip the glass
+  // class every frame (v6 §2 nav flicker fix).
+  useEffect(() => {
+    let ticking = false;
+    const evaluate = () => {
+      ticking = false;
+      const y = window.scrollY;
+      setScrolled((prev) => (prev ? y > 24 : y > 64));
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(evaluate);
+    };
+    // Re-check once after mount in case the scroll position changed between the
+    // lazy state init and the listener attaching (rAF → no sync setState).
+    requestAnimationFrame(evaluate);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Close on Escape key
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileOpen(false);
+        hamburgerRef.current?.focus(); // return focus to trigger
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [mobileOpen]);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onPointerDown = (e) => {
+      if (
+        drawerRef.current && !drawerRef.current.contains(e.target) &&
+        hamburgerRef.current && !hamburgerRef.current.contains(e.target)
+      ) {
+        setMobileOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [mobileOpen]);
+
+  // Close drawer when route changes
+  useEffect(() => { setMobileOpen(false); }, [location.pathname]);
+
+  // Listen for 'open-chat' custom event dispatched by ConnectionCard
+  useEffect(() => {
+    const handler = (e) => {
+      setChatInitialUser(e.detail);
+      setChatOpen(true);
+    };
+    window.addEventListener('open-chat', handler);
+    return () => window.removeEventListener('open-chat', handler);
+  }, []);
+
+  // Deep link from a tapped message push (FCM): /dashboard?chat=<senderId>.
+  // Open the drawer to that conversation, then strip the param so a refresh /
+  // back-nav doesn't reopen it. The drawer only needs `_id` to load messages.
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const chatId = params.get('chat');
+    if (!chatId) return;
+    setChatInitialUser({ _id: chatId });
+    setChatOpen(true);
+    params.delete('chat');
+    navigate({ pathname: location.pathname, search: params.toString() }, { replace: true });
+  }, [location.search, location.pathname, navigate]);
+
+  const handleLogout = async () => {
+    // Drop this device's FCM token first (needs the still-valid auth token),
+    // then clear the session. No-op / instant on web.
+    await unregisterPush();
+    logout();
+    navigate('/login');
+  };
+
+  return (
+    <>
+      <header
+        className="sticky top-0 z-40 w-full"
+        style={{
+          // Add the device safe-area inset to the top padding so the nav never
+          // hides under a notch / status bar (iOS PWA + Android APK). It's 0 on
+          // normal mobile web and on Android once the status bar no longer
+          // overlays the WebView, so there's no double-spacing.
+          paddingTop: `calc(${scrolled ? '5px' : '10px'} + env(safe-area-inset-top, 0px))`,
+          paddingBottom: scrolled ? '5px' : '10px',
+        }}
+      >
+        <div className="max-w-[1400px] mx-auto px-3 sm:px-5">
+          <div
+            className={`flex items-center justify-between px-3 rounded-2xl transition-all duration-300 ${scrolled ? 'nav-glass-scrolled' : 'nav-glass'}`}
+            style={{ height: 52 }}
+          >
+            {/* ── Brand ── */}
+            <NavLink to="/" className="flex items-center gap-2 flex-shrink-0 mr-2">
+              <img src="/favicon.svg" alt="Orbit" width="28" height="28" className="w-7 h-7 rounded-lg flex-shrink-0"
+                style={{ boxShadow: '0 0 14px var(--border-glow)' }} />
+              <span className="text-base font-display font-bold hidden sm:block"
+                style={{ background: 'linear-gradient(135deg, var(--accent-1), var(--accent-3), var(--accent-2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                Orbit
+              </span>
+            </NavLink>
+
+            {/* ── Desktop nav pills ── */}
+            <nav className="hidden xl:flex items-center gap-0.5 flex-1 justify-center" aria-label="Main navigation">
+              {navWithBadges.map(({ name, path, Icon, badge }) => {
+                const active = location.pathname === path || (path !== '/dashboard' && location.pathname.startsWith(path));
+                return (
+                  <NavLink key={path} to={path}
+                    className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 select-none ${
+                      active
+                        ? 'text-accent bg-accent/10 border border-accent/30'
+                        : 'text-text-secondary hover:text-text-primary hover:bg-surface border border-transparent'
+                    }`}
+                    style={{ letterSpacing: '0.02em' }}
+                  >
+                    <Icon size={13} strokeWidth={active ? 2.5 : 2} />
+                    {name}
+                    {badge > 0 && (
+                      <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full"
+                        style={{ background: 'linear-gradient(135deg, var(--accent-2), var(--accent-3))', color: '#fff', boxShadow: '0 2px 8px var(--border-glow)' }}
+                        aria-label={`${badge} notification${badge !== 1 ? 's' : ''}`}
+                      >
+                        {badge > 99 ? '99+' : badge}
+                      </span>
+                    )}
+                    {active && (
+                      <motion.span layoutId="pill-dot"
+                        className="absolute -top-px -right-px w-1.5 h-1.5 rounded-full"
+                        style={{ background: 'var(--accent-1)', boxShadow: '0 0 6px var(--accent-1)' }}
+                      />
+                    )}
+                  </NavLink>
+                );
+              })}
+            </nav>
+
+            {/* ── Right side ── */}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {/* Orbit streak — glanceable loss-aversion cue (pulses when decaying) */}
+              <OrbitStreakBadge variant="nav" className="hidden lg:inline-flex" />
+              {/* Photons currency chip — live balance, tap → shop */}
+              <PhotonsChip variant="nav" className="hidden sm:inline-flex" />
+              <NavLink to="/profile" title="Profile"
+                className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all text-text-secondary hover:text-text-primary bg-surface border border-border-subtle"
+              >
+                <Avatar name={user?.name} url={user?.avatar} size="xs" userId={user?._id} />
+                <span className="hidden md:block max-w-[80px] truncate">{user?.name?.split(' ')[0]}</span>
+              </NavLink>
+              {/* Notification Bell (durable notification center) */}
+              <NotificationBell />
+              {/* Chat Button */}
+              <button
+                onClick={() => setChatOpen(true)}
+                aria-label="Messages"
+                title="Messages"
+                className="relative hidden sm:flex items-center justify-center w-8 h-8 rounded-xl text-text-muted hover:text-accent transition-all bg-surface border border-border-subtle"
+              >
+                <MessageCircle size={15} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full"
+                    style={{ background: 'linear-gradient(135deg,#00c6ff,#0072ff)', color: '#fff', boxShadow: '0 2px 8px rgba(0,198,255,0.5)' }}
+                  >
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
+              {/* Ambient music toggle — reachable from anywhere */}
+              <button
+                onClick={toggleMusic}
+                aria-label={musicOn ? 'Mute ambient music' : 'Play ambient music'}
+                aria-pressed={musicOn}
+                title={musicOn ? 'Ambient music: on' : 'Ambient music: off'}
+                className={`hidden lg:flex items-center justify-center w-8 h-8 rounded-xl transition-all bg-surface border border-border-subtle ${musicOn ? 'text-accent' : 'text-text-muted hover:text-text-primary'}`}
+              >
+                {musicOn ? <Music size={15} /> : <VolumeX size={15} />}
+              </button>
+              <NavLink to="/settings"
+                aria-label="Settings"
+                title="Settings"
+                className="hidden lg:flex items-center justify-center w-8 h-8 rounded-xl text-text-muted hover:text-text-primary transition-all bg-surface border border-border-subtle"
+              >
+                <SettingsIcon size={15} />
+              </NavLink>
+              <button
+                onClick={handleLogout}
+                aria-label="Logout"
+                title="Logout"
+                className="flex items-center justify-center w-8 h-8 rounded-xl text-text-muted hover:text-danger transition-all bg-surface border border-border-subtle"
+              >
+                <LogOut size={15} />
+              </button>
+
+              {/* Hamburger */}
+              <button
+                ref={hamburgerRef}
+                onClick={() => setMobileOpen(v => !v)}
+                aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={mobileOpen}
+                aria-controls="mobile-nav-drawer"
+                className="xl:hidden flex items-center justify-center w-8 h-8 rounded-xl text-text-secondary hover:text-text-primary transition-all bg-surface border border-border-subtle"
+              >
+                {mobileOpen ? <X size={16} /> : <Menu size={16} />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* ── Mobile drawer ── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            ref={drawerRef}
+            id="mobile-nav-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation menu"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18 }}
+            className="fixed top-[72px] left-3 right-3 z-40 rounded-2xl overflow-hidden xl:hidden mobile-nav-glass"
+          >
+            <div className="p-3 grid grid-cols-2 gap-1.5">
+              {navWithBadges.map(({ name, path, Icon, badge }) => (
+                <NavLink key={path} to={path} onClick={() => setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    `relative flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive ? 'text-accent bg-accent/10 border border-accent/30' : 'text-text-secondary hover:text-text-primary bg-surface border border-border-subtle'}`
+                  }
+                >
+                  <Icon size={15} /> {name}
+                  {badge > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full"
+                      style={{ background: 'linear-gradient(135deg,#ff0076,#7c3aed)', color: '#fff' }}
+                      aria-label={`${badge} notification${badge !== 1 ? 's' : ''}`}
+                    >
+                      {badge > 99 ? '99+' : badge}
+                    </span>
+                  )}
+                </NavLink>
+              ))}
+              <NavLink to="/profile" onClick={() => setMobileOpen(false)}
+                className={({ isActive }) => `flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive ? 'text-accent bg-accent/10 border border-accent/30' : 'text-text-secondary hover:text-text-primary bg-surface border border-border-subtle'}`}
+              >
+                <UserCircle size={15} /> Profile
+              </NavLink>
+              <NavLink to="/settings" onClick={() => setMobileOpen(false)}
+                className={({ isActive }) => `flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive ? 'text-accent bg-accent/10 border border-accent/30' : 'text-text-secondary hover:text-text-primary bg-surface border border-border-subtle'}`}
+              >
+                <SettingsIcon size={15} /> Settings
+              </NavLink>
+              <button onClick={handleLogout}
+                className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-medium text-danger/70 hover:text-danger transition-all"
+                style={{ background: 'rgba(255,75,75,0.06)', border: '1px solid rgba(255,75,75,0.15)' }}
+              >
+                <LogOut size={15} /> Logout
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Floating Chat Button */}
+      {user && (
+        <button
+          onClick={() => setChatOpen(true)}
+          aria-label="Messages"
+          className="fixed sm:hidden bottom-6 right-6 z-[60] w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform active:scale-95"
+          style={{ background: 'var(--send-button-bg)', color: '#fff', boxShadow: 'var(--send-button-shadow)' }}
+        >
+          <MessageCircle size={24} />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 flex items-center justify-center text-[12px] font-bold rounded-full bg-surface border border-border-subtle"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </button>
+      )}
+
+      {/* Chat Drawer */}
+      <ChatDrawer isOpen={chatOpen} onClose={() => { setChatOpen(false); setChatInitialUser(null); }} initialUser={chatInitialUser} />
+    </>
+  );
+};
+
+export default Navbar;
