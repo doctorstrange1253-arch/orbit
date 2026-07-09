@@ -41,6 +41,7 @@ app.set("trust proxy", 1); // Trust first proxy (needed for express-rate-limit o
 const server = http.createServer(app);
 
 const allowedOrigins = [
+  "https://orbit-wine-zeta.vercel.app",
   "https://react-skill-swap-fully-fledged.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",
