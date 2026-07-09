@@ -1,5 +1,5 @@
 const {
-    CATALOG, getItem, applyPurchase, applyEquip,
+    CATALOG, getItem, applyPurchase, applyEquip, TYPES,
 } = require("../services/cosmeticsCatalog");
 
 const state = (over = {}) => ({ stardust: 1000, cosmetics: { owned: [], nameGlow: null, background: null }, ...over });
@@ -73,7 +73,7 @@ describe("cosmeticsCatalog — catalog integrity", () => {
         const keys = CATALOG.map((c) => c.key);
         expect(new Set(keys).size).toBe(keys.length);
         expect(CATALOG.every((c) => c.cost > 0)).toBe(true);
-        expect(CATALOG.every((c) => ["name_glow", "background"].includes(c.type))).toBe(true);
+        expect(CATALOG.every((c) => TYPES.includes(c.type))).toBe(true);
     });
     it("getItem returns null for unknown keys", () => {
         expect(getItem("ghost")).toBeNull();
