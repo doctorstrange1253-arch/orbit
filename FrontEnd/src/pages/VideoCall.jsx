@@ -113,7 +113,7 @@ const DirectVideoCall = ({ roomId, onEnd, otherUser, isCaller, autoBoard }) => {
 
         // 2. Connect to signaling server. Send the JWT so the server can derive
         // socket.userId (used to gate whiteboard writes to real participants).
-        const socketUrl = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://skillswap-backend-mb4k.onrender.com' : 'http://localhost:8000');
+        const socketUrl = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://orbit-p563.onrender.com' : 'http://localhost:8000');
         socketRef.current = io(socketUrl, token ? { auth: { token } } : undefined);
 
         // 3. Setup WebRTC
@@ -592,7 +592,7 @@ const VideoCall = () => {
 
   /* Track online users via socket */
   useEffect(() => {
-    const socketUrl = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://skillswap-backend-mb4k.onrender.com' : 'http://localhost:8000');
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://orbit-p563.onrender.com' : 'http://localhost:8000');
     const socket = io(socketUrl);
 
     socket.emit('register', user?._id);

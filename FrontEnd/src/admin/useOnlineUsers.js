@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 const API = import.meta.env.VITE_API_URL ||
-  (import.meta.env.PROD ? 'https://skillswap-backend-mb4k.onrender.com/api' : '/api');
+  (import.meta.env.PROD ? 'https://orbit-p563.onrender.com/api' : '/api');
 const SOCKET_URL = API.replace(/\/api\/?$/, '');
 
 export default function useOnlineUsers() {

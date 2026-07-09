@@ -10,7 +10,7 @@ import axios from 'axios';
 
 // Same API origin as the user app, namespaced under the hidden admin base.
 const USER_API = import.meta.env.VITE_API_URL ||
-  (import.meta.env.PROD ? 'https://skillswap-backend-mb4k.onrender.com/api' : '/api');
+  (import.meta.env.PROD ? 'https://orbit-p563.onrender.com/api' : '/api');
 const ADMIN_BASE = `${USER_API}/__ssctl`;
 
 const adminApi = axios.create({
