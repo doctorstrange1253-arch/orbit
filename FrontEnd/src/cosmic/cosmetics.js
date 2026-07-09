@@ -129,6 +129,57 @@ export const COSMETIC_RENDER = {
   bg_dark_flow: { bgClass: 'cbg cbg-dark_flow', swatch: 'linear-gradient(60deg,#4c1d95,#04020c)' },
   bg_annihilation: { bgClass: 'cbg cbg-annihilation', swatch: 'radial-gradient(circle,#fecaca,#ef4444,#0a0203)' },
   bg_omniverse: { bgClass: 'cbg cbg-omniverse', swatch: 'conic-gradient(from 0deg,#f472b6,#38bdf8,#34d399,#fbbf24,#f472b6)' },
+
+  // ── Avatar Decorations (animated frames; render as a .cd overlay on the disc)
+  deco_ring_pulse:    { decoClass: 'cd cd-ring_pulse',    swatch: 'radial-gradient(circle,#38bdf8,transparent 70%)' },
+  deco_orbit_arc:     { decoClass: 'cd cd-orbit_arc',     swatch: 'conic-gradient(from 0deg,#7dd3fc,transparent 55%)' },
+  deco_spectrum_ring: { decoClass: 'cd cd-spectrum_ring', swatch: 'conic-gradient(from 0deg,#38bdf8,#a78bfa,#ec4899)' },
+  deco_double_ring:   { decoClass: 'cd cd-double_ring',   swatch: 'conic-gradient(from 0deg,#34d399,#22d3ee)' },
+  deco_sparkle:       { decoClass: 'cd cd-sparkle',       swatch: 'radial-gradient(circle,#e0f2fe,transparent 70%)' },
+  deco_flame:         { decoClass: 'cd cd-flame',         swatch: 'conic-gradient(from 0deg,#fde68a,#f97316)' },
+  deco_electric:      { decoClass: 'cd cd-electric',      swatch: 'conic-gradient(from 0deg,#bae6fd,#38bdf8)' },
+  deco_frost:         { decoClass: 'cd cd-frost',         swatch: 'radial-gradient(circle,#e0f2fe,#93c5fd)' },
+  deco_corona:        { decoClass: 'cd cd-corona',        swatch: 'conic-gradient(from 0deg,#fde047,#f97316)' },
+  deco_blackhole:     { decoClass: 'cd cd-blackhole',     swatch: 'radial-gradient(circle,#0b0d17 55%,#fb923c)' },
+  deco_lensing:       { decoClass: 'cd cd-lensing',       swatch: 'conic-gradient(from 0deg,#ede9fe,#7c3aed)' },
+  deco_singularity:   { decoClass: 'cd cd-singularity',   swatch: 'conic-gradient(from 0deg,#f9a8d4,#ec4899)' },
+  deco_darkmatter:    { decoClass: 'cd cd-darkmatter',    swatch: 'radial-gradient(circle,#a78bfa,#4c1d95)' },
+  deco_antimatter:    { decoClass: 'cd cd-antimatter',    swatch: 'conic-gradient(from 0deg,#fecaca,#ef4444)' },
+  deco_multiversal:   { decoClass: 'cd cd-multiversal',   swatch: 'conic-gradient(from 0deg,#f472b6,#38bdf8,#34d399,#fbbf24)' },
+
+  // ── Profile Effects (animated overlay layer on the profile card) ──
+  fx_stardust:    { effectClass: 'pe pe-stardust',    swatch: 'radial-gradient(circle,#e0e7ff,#1e1b4b)' },
+  fx_bubbles:     { effectClass: 'pe pe-bubbles',     swatch: 'radial-gradient(circle,#bae6fd,#0c4a6e)' },
+  fx_fireflies:   { effectClass: 'pe pe-fireflies',   swatch: 'radial-gradient(circle,#fde68a,#78350f)' },
+  fx_snow:        { effectClass: 'pe pe-snow',        swatch: 'radial-gradient(circle,#f8fafc,#64748b)' },
+  fx_embers:      { effectClass: 'pe pe-embers',      swatch: 'radial-gradient(circle,#fdba74,#7c2d12)' },
+  fx_sparkle:     { effectClass: 'pe pe-sparkle',     swatch: 'radial-gradient(circle,#fef9c3,#a16207)' },
+  fx_aurora:      { effectClass: 'pe pe-aurora',      swatch: 'linear-gradient(120deg,#34d399,#38bdf8,#a78bfa)' },
+  fx_starfall:    { effectClass: 'pe pe-starfall',    swatch: 'linear-gradient(120deg,#e0e7ff,#818cf8)' },
+  fx_petals:      { effectClass: 'pe pe-petals',      swatch: 'radial-gradient(circle,#fbcfe8,#9d174d)' },
+  fx_voidmotes:   { effectClass: 'pe pe-voidmotes',   swatch: 'radial-gradient(circle,#94a3b8,#020617)' },
+  fx_lensflare:   { effectClass: 'pe pe-lensflare',   swatch: 'radial-gradient(circle,#fef08a,#1e293b)' },
+  fx_orbits:      { effectClass: 'pe pe-orbits',      swatch: 'conic-gradient(from 0deg,#67e8f9,#22d3ee)' },
+  fx_darkrain:    { effectClass: 'pe pe-darkrain',    swatch: 'linear-gradient(180deg,#a5b4fc,#1e1b4b)' },
+  fx_ions:        { effectClass: 'pe pe-ions',        swatch: 'radial-gradient(circle,#fecaca,#7f1d1d)' },
+  fx_multiverse:  { effectClass: 'pe pe-multiverse',  swatch: 'conic-gradient(from 0deg,#f472b6,#38bdf8,#34d399,#fbbf24)' },
+
+  // ── Nameplates (animated plate behind the display name) ──
+  np_slate:       { plateClass: 'np np-slate',        swatch: 'linear-gradient(90deg,#334155,#475569)' },
+  np_frost:       { plateClass: 'np np-frost',        swatch: 'linear-gradient(90deg,#0ea5e9,#67e8f9)' },
+  np_solar:       { plateClass: 'np np-solar',        swatch: 'linear-gradient(90deg,#f59e0b,#f97316)' },
+  np_nebula:      { plateClass: 'np np-nebula',       swatch: 'linear-gradient(90deg,#7c3aed,#db2777)' },
+  np_astral:      { plateClass: 'np np-astral',       swatch: 'linear-gradient(90deg,#6366f1,#22d3ee)' },
+  np_ember:       { plateClass: 'np np-ember',        swatch: 'linear-gradient(90deg,#dc2626,#f59e0b)' },
+  np_ion:         { plateClass: 'np np-ion',          swatch: 'linear-gradient(90deg,#0891b2,#a5f3fc)' },
+  np_crystal:     { plateClass: 'np np-crystal',      swatch: 'linear-gradient(90deg,#38bdf8,#e0f2fe)' },
+  np_corona:      { plateClass: 'np np-corona',       swatch: 'linear-gradient(90deg,#f97316,#fde68a)' },
+  np_void:        { plateClass: 'np np-void',         swatch: 'linear-gradient(90deg,#0f172a,#334155)' },
+  np_lensing:     { plateClass: 'np np-lensing',      swatch: 'linear-gradient(90deg,#1e293b,#93c5fd)' },
+  np_singular:    { plateClass: 'np np-singular',     swatch: 'linear-gradient(90deg,#ec4899,#f9a8d4)' },
+  np_darkmatter:  { plateClass: 'np np-darkmatter',   swatch: 'linear-gradient(90deg,#4c1d95,#a78bfa)' },
+  np_antimatter:  { plateClass: 'np np-antimatter',   swatch: 'linear-gradient(90deg,#7f1d1d,#fca5a5)' },
+  np_multiversal: { plateClass: 'np np-multiversal',  swatch: 'conic-gradient(from 0deg,#f472b6,#38bdf8,#34d399,#fbbf24)' },
 };
 
 /** CSS class for an equipped name-glow key (or '' if none). */
@@ -141,8 +192,30 @@ export function bgClassFor(key) {
   return (key && COSMETIC_RENDER[key] && COSMETIC_RENDER[key].bgClass) || '';
 }
 
-/** Read equipped cosmetics off a user's orbit sub-doc → { glowClass, bgClass }. */
+/** CSS class for an equipped avatar-decoration key (or '' if none). */
+export function decoClassFor(key) {
+  return (key && COSMETIC_RENDER[key] && COSMETIC_RENDER[key].decoClass) || '';
+}
+
+/** CSS class for an equipped profile-effect key (or '' if none). */
+export function effectClassFor(key) {
+  return (key && COSMETIC_RENDER[key] && COSMETIC_RENDER[key].effectClass) || '';
+}
+
+/** CSS class for an equipped nameplate key (or '' if none). */
+export function plateClassFor(key) {
+  return (key && COSMETIC_RENDER[key] && COSMETIC_RENDER[key].plateClass) || '';
+}
+
+/** Read equipped cosmetics off a user's orbit sub-doc → { glowClass, bgClass, decoClass, effectClass, plateClass, plateKey }. */
 export function equippedFromUser(user) {
   const c = (user && user.orbit && user.orbit.cosmetics) || {};
-  return { glowClass: glowClassFor(c.nameGlow), bgClass: bgClassFor(c.background) };
+  return {
+    glowClass: glowClassFor(c.nameGlow),
+    bgClass: bgClassFor(c.background),
+    decoClass: decoClassFor(c.avatarDeco),
+    effectClass: effectClassFor(c.profileEffect),
+    plateClass: plateClassFor(c.nameplate),
+    plateKey: c.nameplate || null,
+  };
 }

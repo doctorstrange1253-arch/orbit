@@ -31,6 +31,7 @@ import Register from './pages/Register';
 import OAuthCallback from './pages/OAuthCallback';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Walkthrough from './components/common/Walkthrough';
 
 // Lazy loaded protected pages (code-split bundles)
 const MySkills     = lazy(() => import('./pages/MySkills'));
@@ -119,6 +120,23 @@ const RICH_FLASH_TYPES = new Set([
   'connection_request',
   'connection_accepted',
 ]);
+
+// Maps a route to its first-visit walkthrough key.
+const ROUTE_TOURS = {
+  '/leaderboard': 'leaderboard',
+  '/shop': 'shop',
+  '/holobay': 'holobay',
+  '/orbit': 'orbit',
+};
+
+// Renders the first-visit walkthrough for the current route (if any). The
+// Walkthrough self-gates on tourStore, so it is safe to mount unconditionally.
+function RouteTours() {
+  const { pathname } = useLocation();
+  const key = ROUTE_TOURS[pathname];
+  if (!key) return null;
+  return <Walkthrough tourKey={key} />;
+}
 
 // Inner component so useNavigate is inside Router context
 function AppInner() {
@@ -451,6 +469,8 @@ function AppInner() {
           callDuration={ratingModal.callDuration}
         />
       )}
+
+      <RouteTours />
 
       <Routes>
         {/* Public — redirect logged-in users away */}

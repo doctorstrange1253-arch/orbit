@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useMotionValue, animate, useReducedMotion } from 'framer-motion';
 import PhotonIcon from './PhotonIcon';
 import { useOrbit } from './useOrbit';
+import { useUIStore } from '../store/uiStore';
 
 const SPARKS = [
   { x: -14, y: -12 }, { x: 12, y: -14 }, { x: 16, y: 6 }, { x: -12, y: 8 }, { x: 0, y: -18 },
@@ -26,6 +27,7 @@ const SPARKS = [
 export default function PhotonsChip({ variant = 'nav', className = '' }) {
   const { data } = useOrbit();
   const navigate = useNavigate();
+  const addToast = useUIStore((s) => s.addToast);
   const reduce = useReducedMotion();
   const amount = data ? (data.photons ?? data.stardust ?? 0) : 0;
 
@@ -57,7 +59,11 @@ export default function PhotonsChip({ variant = 'nav', className = '' }) {
 
   const iconSize = variant === 'nav' ? 15 : 20;
   const openShop = () => navigate('/shop');      // Nebula Store (spend Photons)
-  const openMissions = () => navigate('/orbit'); // Your Orbit — missions (earn Photons)
+  const openMissions = () => {
+    // "+" means EARN — explain how first, then route to the missions hub.
+    addToast('✦ Earn Photons by completing missions — taking you there…', 'info', 2200);
+    setTimeout(() => navigate('/orbit'), 600);
+  };
   const zero = amount <= 0;
 
   return (

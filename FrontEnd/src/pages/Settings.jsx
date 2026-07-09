@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Palette, Zap, Eye, RotateCcw, Check, Volume2, VolumeX, Moon, Sun, Bell, BellOff } from 'lucide-react';
+import { Palette, Zap, Eye, RotateCcw, Check, Volume2, VolumeX, Moon, Sun, Bell, BellOff, HelpCircle, PlayCircle } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import useAppearanceStore, { THEMES, BACKGROUND_STYLES, ANIMATION_SPEEDS } from '../store/appearanceStore';
 import { useThemeStore } from '../store/themeStore';
@@ -8,6 +8,14 @@ import { useSound } from '../utils/soundManager';
 import { useState, useEffect } from 'react';
 import Switch from '../components/common/Switch';
 import { getNotificationPermission, requestNotificationPermission } from '../utils/notifyPermission';
+import { useNavigate } from 'react-router-dom';
+import { useTourStore } from '../store/tourStore';
+import { TOUR_LIST } from '../components/common/tours';
+
+// Help center: the route each replayable walkthrough opens on + card motion.
+const TOUR_ROUTE = { orbit: '/orbit', shop: '/shop', holobay: '/holobay', leaderboard: '/leaderboard' };
+const HELP_INIT = { opacity: 0, y: 20 };
+const HELP_SHOW = { opacity: 1, y: 0 };
 
 const Settings = () => {
   const {
@@ -21,6 +29,12 @@ const Settings = () => {
   } = useAppearanceStore();
 
   const { isDark, toggleTheme, setTheme: setDarkMode } = useThemeStore();
+  const navigate = useNavigate();
+  const replayTour = useTourStore((s) => s.replay);
+  const handleReplay = (key) => {
+    replayTour(key);
+    navigate(TOUR_ROUTE[key]);
+  };
   const { addToast } = useUIStore();
   const { toggle, isEnabled, playClick, playSuccess, toggleMusic, isMusicEnabled } = useSound();
   const [soundsEnabled, setSoundsEnabled] = useState(isEnabled());
@@ -342,6 +356,32 @@ const Settings = () => {
         icon={musicEnabled ? <Volume2 size={18} className="text-accent" /> : <VolumeX size={18} className="text-text-muted" />}
         delay={0.35}
       />
+
+      {/* Help & Walkthroughs — replay any guided tour (not in the nav bar) */}
+      <motion.div
+        initial={HELP_INIT}
+        animate={HELP_SHOW}
+        className="p-6 rounded-2xl space-y-4 bg-surface border border-border-subtle"
+      >
+        <h2 className="font-display font-bold text-text-primary text-base flex items-center gap-2">
+          <HelpCircle size={15} className="text-accent" /> Help & Walkthroughs
+        </h2>
+        <p className="text-xs text-text-muted -mt-2">
+          Replay the guided tour for any section. Handy when you are just getting started or want a refresher.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {TOUR_LIST.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => handleReplay(t.key)}
+              className="group flex items-center justify-between gap-2 p-4 rounded-xl text-left transition-all bg-surface border border-border-subtle hover:border-accent"
+            >
+              <span className="text-sm font-bold text-text-primary">{t.label}</span>
+              <PlayCircle size={18} className="text-text-muted group-hover:text-accent transition-colors" />
+            </button>
+          ))}
+        </div>
+      </motion.div>
 
       {/* Reset Button */}
       <motion.button

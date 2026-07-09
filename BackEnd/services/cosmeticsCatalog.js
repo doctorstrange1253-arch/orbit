@@ -134,14 +134,67 @@ const DEFAULT_CATALOG = Object.freeze([
     { key: "bg_dark_flow", type: "background", name: "Dark Flow", cost: 3400, hint: "Faint filaments stream one way", rarity: "DARK_MATTER", category: "themes" },
     { key: "bg_annihilation", type: "background", name: "Annihilation Wave", cost: 4000, hint: "A bright wavefront expands and resets", rarity: "ANTIMATTER", category: "themes" },
     { key: "bg_omniverse", type: "background", name: "Omniverse", cost: 5000, hint: "Layered rainbow rotation and drift", rarity: "MULTIVERSAL", category: "themes" },
+
+    // ── Avatar Decorations (animated frames around your avatar) ─────────────
+    // A NEW cosmetic CLASS (not a recolor): each rides on top of the avatar disc
+    // and is visible to everyone, everywhere the avatar renders.
+    { key: "deco_ring_pulse",    type: "avatar_deco", name: "Pulse Ring",       cost: 150,  hint: "A soft ring pulses around your avatar",         rarity: "LUNAR",         category: "avatar" },
+    { key: "deco_orbit_arc",     type: "avatar_deco", name: "Orbit Arc",        cost: 300,  hint: "A glowing arc orbits your avatar",              rarity: "STELLAR",       category: "avatar" },
+    { key: "deco_spectrum_ring", type: "avatar_deco", name: "Spectrum Ring",    cost: 450,  hint: "A rotating spectrum ring",                      rarity: "SOLAR",         category: "avatar" },
+    { key: "deco_double_ring",   type: "avatar_deco", name: "Twin Orbit",       cost: 600,  hint: "Two counter-rotating arcs",                     rarity: "NEBULAR",       category: "avatar" },
+    { key: "deco_sparkle",       type: "avatar_deco", name: "Sparkle Frame",    cost: 750,  hint: "Twinkling sparkles trace the rim",             rarity: "ASTRAL",        category: "avatar" },
+    { key: "deco_flame",         type: "avatar_deco", name: "Flame Crown",      cost: 900,  hint: "A warm flame halo flickers",                   rarity: "CELESTIAL",     category: "avatar" },
+    { key: "deco_electric",      type: "avatar_deco", name: "Ion Ring",         cost: 1100, hint: "Electric arcs crackle around the rim",         rarity: "GALACTIC",      category: "avatar" },
+    { key: "deco_frost",         type: "avatar_deco", name: "Frost Halo",       cost: 1300, hint: "A crystalline frost ring shimmers",            rarity: "COSMIC",        category: "avatar" },
+    { key: "deco_corona",        type: "avatar_deco", name: "Solar Corona",     cost: 1600, hint: "A blazing corona flares around you",           rarity: "HYPERNOVA",     category: "avatar" },
+    { key: "deco_blackhole",     type: "avatar_deco", name: "Accretion Ring",   cost: 2000, hint: "A dark rim with a warping light halo",         rarity: "BLACK_HOLE",    category: "avatar" },
+    { key: "deco_lensing",       type: "avatar_deco", name: "Lensing Halo",     cost: 2400, hint: "A gravitational-lens halo bends light",        rarity: "EVENT_HORIZON", category: "avatar" },
+    { key: "deco_singularity",   type: "avatar_deco", name: "Singularity",      cost: 2800, hint: "An intense infinite-density pulse ring",       rarity: "SINGULARITY",   category: "avatar" },
+    { key: "deco_darkmatter",    type: "avatar_deco", name: "Dark Halo",        cost: 3400, hint: "Invisible-mass particles shimmer around you",  rarity: "DARK_MATTER",   category: "avatar" },
+    { key: "deco_antimatter",    type: "avatar_deco", name: "Antimatter Ring",  cost: 4000, hint: "Annihilation-grade reactive flares",           rarity: "ANTIMATTER",    category: "avatar" },
+    { key: "deco_multiversal",   type: "avatar_deco", name: "Multiversal Ring", cost: 5000, hint: "A beyond-universe iridescent ring",            rarity: "MULTIVERSAL",   category: "avatar" },
+
+    // ── Profile Effects (animated overlay that plays on the profile card) ──────
+    { key: "fx_stardust",    type: "profile_effect", name: "Stardust Drift",   cost: 150,  hint: "Faint stardust motes drift across your card",  rarity: "LUNAR",         category: "effect" },
+    { key: "fx_bubbles",     type: "profile_effect", name: "Rising Bubbles",   cost: 300,  hint: "Gentle bubbles float upward",                  rarity: "STELLAR",       category: "effect" },
+    { key: "fx_fireflies",   type: "profile_effect", name: "Fireflies",        cost: 450,  hint: "Blinking fireflies wander your card",          rarity: "SOLAR",         category: "effect" },
+    { key: "fx_snow",        type: "profile_effect", name: "Snowfall",         cost: 600,  hint: "Soft snow drifts down",                        rarity: "NEBULAR",       category: "effect" },
+    { key: "fx_embers",      type: "profile_effect", name: "Rising Embers",    cost: 750,  hint: "Warm embers rise and fade",                    rarity: "ASTRAL",        category: "effect" },
+    { key: "fx_sparkle",     type: "profile_effect", name: "Twinkle",          cost: 900,  hint: "Sparkles twinkle across the card",            rarity: "CELESTIAL",     category: "effect" },
+    { key: "fx_aurora",      type: "profile_effect", name: "Aurora Veil",      cost: 1100, hint: "An aurora sweeps behind your details",         rarity: "GALACTIC",      category: "effect" },
+    { key: "fx_starfall",    type: "profile_effect", name: "Starfall",         cost: 1300, hint: "Shooting stars streak past",                   rarity: "COSMIC",        category: "effect" },
+    { key: "fx_petals",      type: "profile_effect", name: "Petal Drift",      cost: 1600, hint: "Luminous petals float across",                 rarity: "HYPERNOVA",     category: "effect" },
+    { key: "fx_voidmotes",   type: "profile_effect", name: "Void Motes",       cost: 2000, hint: "Dark motes swirl inward",                      rarity: "BLACK_HOLE",    category: "effect" },
+    { key: "fx_lensflare",   type: "profile_effect", name: "Lens Flares",      cost: 2400, hint: "Bright lens flares drift past",                rarity: "EVENT_HORIZON", category: "effect" },
+    { key: "fx_orbits",      type: "profile_effect", name: "Orbiting Motes",   cost: 2800, hint: "Particles orbit a hidden center",              rarity: "SINGULARITY",   category: "effect" },
+    { key: "fx_darkrain",    type: "profile_effect", name: "Dark Rain",        cost: 3400, hint: "Streaks of dark-matter rain fall",             rarity: "DARK_MATTER",   category: "effect" },
+    { key: "fx_ions",        type: "profile_effect", name: "Ion Sparks",       cost: 4000, hint: "Reactive ion sparks flicker",                  rarity: "ANTIMATTER",    category: "effect" },
+    { key: "fx_multiverse",  type: "profile_effect", name: "Multiverse Drift", cost: 5000, hint: "Iridescent cross-reality motes drift",         rarity: "MULTIVERSAL",   category: "effect" },
+
+    // ── Nameplates (animated plate behind your display name) ──────────────────
+    { key: "np_slate",       type: "nameplate", name: "Slate Plate",       cost: 150,  hint: "A clean slate plate behind your name",         rarity: "LUNAR",         category: "plate" },
+    { key: "np_frost",       type: "nameplate", name: "Frost Plate",       cost: 300,  hint: "A cool frosted plate shimmers",                rarity: "STELLAR",       category: "plate" },
+    { key: "np_solar",       type: "nameplate", name: "Solar Plate",       cost: 450,  hint: "A warm solar-gradient plate",                  rarity: "SOLAR",         category: "plate" },
+    { key: "np_nebula",      type: "nameplate", name: "Nebula Plate",      cost: 600,  hint: "A drifting nebula plate",                      rarity: "NEBULAR",       category: "plate" },
+    { key: "np_astral",      type: "nameplate", name: "Astral Plate",      cost: 750,  hint: "An astral sheen sweeps the plate",             rarity: "ASTRAL",        category: "plate" },
+    { key: "np_ember",       type: "nameplate", name: "Ember Plate",       cost: 900,  hint: "A glowing ember plate pulses",                 rarity: "CELESTIAL",     category: "plate" },
+    { key: "np_ion",         type: "nameplate", name: "Ion Plate",         cost: 1100, hint: "An electric ion-edged plate",                  rarity: "GALACTIC",      category: "plate" },
+    { key: "np_crystal",     type: "nameplate", name: "Crystal Plate",     cost: 1300, hint: "A crystalline frosted plate",                  rarity: "COSMIC",        category: "plate" },
+    { key: "np_corona",      type: "nameplate", name: "Corona Plate",      cost: 1600, hint: "A blazing corona-edged plate",                 rarity: "HYPERNOVA",     category: "plate" },
+    { key: "np_void",        type: "nameplate", name: "Void Plate",        cost: 2000, hint: "A dark plate with a warping edge",             rarity: "BLACK_HOLE",    category: "plate" },
+    { key: "np_lensing",     type: "nameplate", name: "Lensing Plate",     cost: 2400, hint: "A light-bending lensing plate",                rarity: "EVENT_HORIZON", category: "plate" },
+    { key: "np_singular",    type: "nameplate", name: "Singularity Plate", cost: 2800, hint: "An intense pulsing plate",                     rarity: "SINGULARITY",   category: "plate" },
+    { key: "np_darkmatter",  type: "nameplate", name: "Dark Matter Plate", cost: 3400, hint: "A shimmering dark-matter plate",               rarity: "DARK_MATTER",   category: "plate" },
+    { key: "np_antimatter",  type: "nameplate", name: "Antimatter Plate",  cost: 4000, hint: "An annihilation-grade reactive plate",         rarity: "ANTIMATTER",    category: "plate" },
+    { key: "np_multiversal", type: "nameplate", name: "Multiversal Plate", cost: 5000, hint: "A beyond-universe iridescent plate",           rarity: "MULTIVERSAL",   category: "plate" },
 ]);
 
 // Back-compat: CATALOG remains the DEFAULT array (used by tests + as the seed).
 const CATALOG = DEFAULT_CATALOG;
 
-const TYPES = Object.freeze(["name_glow", "background"]);
+const TYPES = Object.freeze(["name_glow", "background", "avatar_deco", "profile_effect", "nameplate"]);
 // Which equipped-slot each type maps to on user.orbit.cosmetics.
-const SLOT = Object.freeze({ name_glow: "nameGlow", background: "background" });
+const SLOT = Object.freeze({ name_glow: "nameGlow", background: "background", avatar_deco: "avatarDeco", profile_effect: "profileEffect", nameplate: "nameplate" });
 
 // ── Live catalog cache (defaults seed; StoreItem overlay via refresh) ─────────
 // Defaults have no status → treated as "live". The cache holds ALL items (any
@@ -200,6 +253,9 @@ function normalizeCosmetics(c = {}) {
         owned: Array.isArray(c && c.owned) ? [...c.owned] : [],
         nameGlow: (c && c.nameGlow) || null,
         background: (c && c.background) || null,
+        avatarDeco: (c && c.avatarDeco) || null,
+        profileEffect: (c && c.profileEffect) || null,
+        nameplate: (c && c.nameplate) || null,
     };
 }
 

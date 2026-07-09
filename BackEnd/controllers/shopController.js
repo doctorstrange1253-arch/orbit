@@ -17,11 +17,11 @@ function shapeShop(orbit) {
         photons: stardust,
         stardust,
         owned: cosmetics.owned,
-        equipped: { name_glow: cosmetics.nameGlow, background: cosmetics.background },
+        equipped: { name_glow: cosmetics.nameGlow, background: cosmetics.background, avatar_deco: cosmetics.avatarDeco, profile_effect: cosmetics.profileEffect, nameplate: cosmetics.nameplate },
         catalog: shop.getLiveCatalog().map((c) => ({
             ...c,
             owned: cosmetics.owned.includes(c.key),
-            equipped: cosmetics.nameGlow === c.key || cosmetics.background === c.key,
+            equipped: cosmetics.nameGlow === c.key || cosmetics.background === c.key || cosmetics.avatarDeco === c.key || cosmetics.profileEffect === c.key || cosmetics.nameplate === c.key,
             affordable: stardust >= c.cost,
         })),
     };
@@ -116,6 +116,9 @@ exports.equip = async (req, res) => {
             { $set: {
                 "orbit.cosmetics.nameGlow": result.cosmetics.nameGlow,
                 "orbit.cosmetics.background": result.cosmetics.background,
+                "orbit.cosmetics.avatarDeco": result.cosmetics.avatarDeco,
+                "orbit.cosmetics.profileEffect": result.cosmetics.profileEffect,
+                "orbit.cosmetics.nameplate": result.cosmetics.nameplate,
             } }
         );
 

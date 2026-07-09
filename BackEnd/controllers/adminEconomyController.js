@@ -16,6 +16,7 @@ const PhotonLedger = require("../models/PhotonLedger");
 const photonLedger = require("../services/photonLedger");
 const economyConfig = require("../services/economyConfig");
 const configStore = require("../services/configStore");
+const { createNotification } = require("../services/notify");
 const { audit } = require("../utils/adminAudit");
 
 // GET /economy/summary — circulating supply, faucets vs sinks, inflation flag.
@@ -90,6 +91,22 @@ exports.adjust = async (req, res) => {
             targetType: "user", targetId: userId, reason: String(reason).trim(),
             before: { stardust: before }, after: { stardust: after },
         });
+
+        // Congratulate the recipient when Photons are actually granted (never on a
+        // deduction). This persists to the notification center + native tray and,
+        // because "photon_grant" is not a RICH_FLASH type, the web app auto-shows
+        // an in-app flash. Best-effort: a notify failure must never fail the grant.
+        if (applied > 0) {
+            const io = req.app.get("io");
+            const trimmedReason = String(reason).trim();
+            createNotification(io, userId, {
+                type: "photon_grant",
+                title: "Congratulations! You received Photons \uD83C\uDF89",
+                body: `An admin has granted you ${applied} Photon${applied === 1 ? "" : "s"}${trimmedReason ? ` \u2014 ${trimmedReason}` : ""}. Spend them in the Nebula Store!`,
+                data: { amount: applied, link: "/orbit" },
+            }).catch((e) => console.error("[admin economy.adjust notify]", e.message));
+        }
+
         return res.json({ ok: true, userId, before, after, applied });
     } catch (err) {
         console.error("[admin economy.adjust]", err.message);

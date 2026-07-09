@@ -309,6 +309,9 @@ const userSchema = new mongoose.Schema({
             owned:      { type: [String], default: [] },
             nameGlow:   { type: String, default: null },   // equipped name-glow key
             background: { type: String, default: null },   // equipped profile background key
+            avatarDeco: { type: String, default: null },   // equipped avatar-decoration key
+            profileEffect: { type: String, default: null }, // equipped profile-effect key
+            nameplate:  { type: String, default: null },   // equipped nameplate key
         },
     }
 

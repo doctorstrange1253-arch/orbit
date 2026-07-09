@@ -36,7 +36,7 @@ const gradientFor = (identifier) => {
   return GRADIENTS[Math.abs(hash) % GRADIENTS.length];
 };
 
-const Avatar = ({ name, url, size = 'md', className = '', userId = null }) => {
+const Avatar = ({ name, url, size = 'md', className = '', userId = null, deco = '' }) => {
   const { box, text } = SIZES[size] || SIZES.md;
 
   const initials = (name || 'U')
@@ -55,6 +55,7 @@ const Avatar = ({ name, url, size = 'md', className = '', userId = null }) => {
       className={`relative rounded-full overflow-hidden flex items-center justify-center font-bold flex-shrink-0 ${box} ${text} ${className}`}
       style={url ? {} : { background: gradientFor(colorKey), color: '#fff' }}
     >
+      {deco ? <span className={deco} aria-hidden="true" /> : null}
       {url ? (
         <img src={url} alt={name || 'avatar'} className="w-full h-full object-cover" loading="lazy" />
       ) : (

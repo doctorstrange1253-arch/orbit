@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Bell, Handshake, Users, CheckCheck, Inbox } from 'lucide-react';
+import { Bell, Handshake, Users, CheckCheck, Inbox, Sparkles } from 'lucide-react';
 import api from '../../services/api';
 import { useUIStore } from '../../store/uiStore';
 
@@ -10,6 +10,7 @@ const ICON_BY_TYPE = {
   perfect_match:       Handshake,
   connection_request:  Users,
   connection_accepted: Users,
+  photon_grant:        Sparkles,
 };
 
 // Compact relative time ("3m", "2h", "5d") without pulling in a date lib.

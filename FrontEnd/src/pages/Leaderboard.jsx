@@ -18,6 +18,7 @@ import { useLeaderboard } from '../cosmic/useCosmic';
 import CosmicBadge from '../cosmic/CosmicBadge';
 import CosmicLoader from '../cosmic/CosmicLoader';
 import GlowName from '../cosmic/GlowName';
+import { decoClassFor } from '../cosmic/cosmetics';
 import { getTier, TIER_FLOORS, TIER_ORDER } from '../cosmic/tiers';
 import { InfoDot } from '../cosmic/scoreInfo';
 import Avatar from '../components/common/Avatar';
@@ -251,7 +252,7 @@ export default function Leaderboard() {
                     <span className="font-semibold text-text-secondary">CosmicScore</span> {you.score}
                   </div>
                 </div>
-                <Avatar name={you.name} url={you.avatar} size="sm" userId={you.userId} />
+                <Avatar name={you.name} url={you.avatar} size="sm" userId={you.userId} deco={decoClassFor(you.avatarDeco)} />
               </div>
 
               {/* tier-progress meter — endpoints labeled; fill width AND label share one source */}
@@ -320,7 +321,7 @@ export default function Leaderboard() {
                       border: isMe ? '1px solid var(--accent-1)' : '1px solid var(--border-subtle)',
                     }}>
                     <RankBadge rank={e.rank} />
-                    <Avatar name={e.name} url={e.avatar} size="sm" userId={e.userId} />
+                    <Avatar name={e.name} url={e.avatar} size="sm" userId={e.userId} deco={decoClassFor(e.avatarDeco)} />
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-text-primary truncate flex items-center gap-1.5">
                         <GlowName nameGlowTier={e.nameGlowTier} cosmeticGlowKey={e.nameGlow}>{e.name}</GlowName>{isMe && <span className="text-[9px] text-accent font-semibold opacity-70">you</span>}
@@ -356,7 +357,7 @@ export default function Leaderboard() {
               <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--accent-1)' }}>#{data.you.rank}</span>
               <span className="text-[9px] text-text-muted">of {data.you.of}</span>
             </div>
-            <Avatar name={data.you.name} url={data.you.avatar} size="sm" userId={data.you.userId} />
+            <Avatar name={data.you.name} url={data.you.avatar} size="sm" userId={data.you.userId} deco={decoClassFor(data.you.avatarDeco)} />
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold text-text-primary truncate flex items-center gap-1.5">
                 <GlowName nameGlowTier={data.you.nameGlowTier} cosmeticGlowKey={data.you.nameGlow}>{data.you.name}</GlowName>

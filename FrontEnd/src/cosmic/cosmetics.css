@@ -444,6 +444,10 @@
 
 /* Neon Outline — a hollow neon-tube outline */
 .cg-stroke { color: transparent; -webkit-text-stroke: 1px #f0abfc; text-shadow: 0 0 8px rgba(217,70,239,.7); animation: cg-stroke 2.6s ease-in-out infinite; }
+/* Safety: if text-stroke is unsupported, transparent text would vanish — keep a solid colour. */
+@supports not ((-webkit-text-stroke: 1px #000) or (text-stroke: 1px #000)) {
+  .cg-stroke { color: #f0abfc; }
+}
 @keyframes cg-stroke {
   0%, 100% { -webkit-text-stroke-color: #f0abfc; text-shadow: 0 0 6px rgba(217,70,239,.6); }
   50%      { -webkit-text-stroke-color: #fce7f3; text-shadow: 0 0 14px rgba(217,70,239,.95), 0 0 26px rgba(139,92,246,.6); }
@@ -1053,7 +1057,7 @@
 @keyframes cbg-omniverse-pan { 0%, 100% { background-position: 0 0; } 50% { background-position: 100% 100%; } }
 @keyframes cbg-omniverse-stars { to { transform: translate(60px, 60px); } }
 
-/* ═══════════════─ REDUCED MOTION (accessibility) ─══════════════ */
+/* ═══════════════─ REDUCED MOTION (accessibility) ─════════���═════ */
 /* Disable all motion but keep each cosmetic's static colour/glow identity. */
 @media (prefers-reduced-motion: reduce) {
   .cg,
@@ -1095,3 +1099,326 @@
   .cbg-pulsar_wave::before,
   .cbg-meteor_rain::before { opacity: .5; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AVATAR DECORATIONS (.cd) — Phase 3 premium cosmetic CLASS. An animated frame
+   that rides ON TOP of the avatar disc (rendered as an absolutely-positioned
+   overlay inside a rounded, overflow-hidden avatar box), so every ring stays
+   inside the circle and shows identically for every viewer. Built ONLY from
+   reliable primitives (border-arc rings, box-shadow halos, conic spins) — no
+   background-clip / mask / text-fill — so a decoration can never render as an
+   invisible block. Reduced-motion / [data-anim-off] gated at the very end.
+   ══════════════════════════════════════════════════════════════════════════ */
+.cd { position: absolute; inset: 0; border-radius: 9999px; pointer-events: none; z-index: 3; }
+.cd::before, .cd::after { content: ''; position: absolute; border-radius: 9999px; }
+
+@keyframes cd-spin     { to { transform: rotate(360deg); } }
+@keyframes cd-spin-rev { to { transform: rotate(-360deg); } }
+@keyframes cd-pulse    { 0%, 100% { opacity: .55; transform: scale(1); } 50% { opacity: 1; transform: scale(1.06); } }
+@keyframes cd-hue      { to { filter: hue-rotate(360deg); } }
+@keyframes cd-flicker  { 0%, 100% { opacity: .75; } 45% { opacity: 1; } 55% { opacity: .5; } }
+
+/* LUNAR · Pulse Ring */
+.cd-ring_pulse { box-shadow: inset 0 0 0 2px rgba(56,189,248,.9), inset 0 0 10px rgba(56,189,248,.5); animation: cd-pulse 2.6s ease-in-out infinite; }
+
+/* STELLAR · Orbit Arc */
+.cd-orbit_arc { box-shadow: inset 0 0 0 1px rgba(148,163,184,.35); }
+.cd-orbit_arc::before { inset: 1px; border: 2px solid transparent; border-top-color: #7dd3fc; filter: drop-shadow(0 0 4px #38bdf8); animation: cd-spin 3.2s linear infinite; }
+
+/* SOLAR · Spectrum Ring */
+.cd-spectrum_ring { box-shadow: inset 0 0 8px rgba(167,139,250,.35); }
+.cd-spectrum_ring::before { inset: 1px; border: 2px solid transparent; border-top-color: #38bdf8; border-right-color: #a78bfa; border-bottom-color: #ec4899; animation: cd-spin 4s linear infinite; }
+
+/* NEBULAR · Twin Orbit */
+.cd-double_ring::before { inset: 1px; border: 2px solid transparent; border-top-color: #34d399; border-left-color: #34d399; animation: cd-spin 3s linear infinite; }
+.cd-double_ring::after  { inset: 4px; border: 2px solid transparent; border-bottom-color: #22d3ee; border-right-color: #22d3ee; animation: cd-spin-rev 2.4s linear infinite; }
+
+/* ASTRAL · Sparkle Frame */
+.cd-sparkle { box-shadow: inset 0 0 0 1px rgba(226,232,240,.25); }
+.cd-sparkle::before { inset: 0; border: 2px dotted rgba(255,255,255,.9); filter: drop-shadow(0 0 3px #e0f2fe); animation: cd-spin 6s linear infinite; }
+.cd-sparkle::after  { inset: 3px; border: 1px dotted rgba(186,230,253,.7); animation: cd-spin-rev 8s linear infinite; }
+
+/* CELESTIAL · Flame Crown */
+.cd-flame { box-shadow: inset 0 0 0 2px rgba(251,146,60,.9), inset 0 0 14px rgba(249,115,22,.6); animation: cd-flicker 1.6s ease-in-out infinite; }
+.cd-flame::before { inset: 1px; border: 2px solid transparent; border-top-color: #fde68a; filter: drop-shadow(0 0 5px #f97316); animation: cd-spin 2.6s linear infinite; }
+
+/* GALACTIC · Ion Ring */
+.cd-electric { box-shadow: inset 0 0 0 1px rgba(56,189,248,.6); }
+.cd-electric::before { inset: 0; border: 2px dashed #bae6fd; filter: drop-shadow(0 0 4px #38bdf8); animation: cd-spin 1.8s linear infinite; }
+.cd-electric::after  { inset: 0; box-shadow: inset 0 0 12px rgba(56,189,248,.7); animation: cd-flicker .5s steps(2) infinite; }
+
+/* COSMIC · Frost Halo */
+.cd-frost { box-shadow: inset 0 0 0 2px rgba(224,242,254,.9), inset 0 0 12px rgba(147,197,253,.5); }
+.cd-frost::before { inset: 1px; border: 2px dotted #e0f2fe; animation: cd-spin 9s linear infinite; }
+
+/* HYPERNOVA · Solar Corona */
+.cd-corona { box-shadow: inset 0 0 0 2px rgba(253,224,71,.9), inset 0 0 16px rgba(249,115,22,.7); animation: cd-pulse 2.2s ease-in-out infinite; }
+.cd-corona::before { inset: 1px; border: 3px solid transparent; border-top-color: #fde047; border-right-color: #f97316; filter: drop-shadow(0 0 6px #f59e0b); animation: cd-spin 3.4s linear infinite; }
+
+/* BLACK_HOLE · Accretion Ring — dark rim + a warping light halo (slate rim, never invisible) */
+.cd-blackhole { box-shadow: inset 0 0 0 3px rgba(11,13,23,.95), inset 0 0 0 4px rgba(148,163,184,.55); }
+.cd-blackhole::before { inset: 1px; border: 2px solid transparent; border-top-color: #cbd5e1; border-right-color: #fb923c; filter: drop-shadow(0 0 6px rgba(251,146,60,.7)); animation: cd-spin 2.8s linear infinite; }
+
+/* EVENT_HORIZON · Lensing Halo */
+.cd-lensing { box-shadow: inset 0 0 0 2px rgba(124,58,237,.7), inset 0 0 18px rgba(167,139,250,.6); }
+.cd-lensing::before { inset: 2px; border: 2px solid transparent; border-top-color: #ede9fe; border-bottom-color: #7c3aed; filter: drop-shadow(0 0 6px #a78bfa); animation: cd-spin 5s linear infinite; }
+
+/* SINGULARITY · Singularity */
+.cd-singularity { box-shadow: inset 0 0 0 2px rgba(236,72,153,.9), inset 0 0 18px rgba(236,72,153,.6); animation: cd-pulse 1.6s ease-in-out infinite; }
+.cd-singularity::before { inset: 1px; border: 2px solid transparent; border-top-color: #f9a8d4; border-right-color: #ec4899; animation: cd-spin 2s linear infinite; }
+.cd-singularity::after  { inset: 4px; border: 1px solid transparent; border-bottom-color: #f9a8d4; animation: cd-spin-rev 1.4s linear infinite; }
+
+/* DARK_MATTER · Dark Halo */
+.cd-darkmatter { box-shadow: inset 0 0 0 2px rgba(76,29,149,.9), inset 0 0 16px rgba(167,139,250,.5); }
+.cd-darkmatter::before { inset: 0; border: 2px dotted #a78bfa; opacity: .8; animation: cd-spin 10s linear infinite, cd-flicker 2.4s ease-in-out infinite; }
+
+/* ANTIMATTER · Antimatter Ring */
+.cd-antimatter { box-shadow: inset 0 0 0 2px rgba(239,68,68,.9), inset 0 0 16px rgba(239,68,68,.6); animation: cd-flicker 1.2s ease-in-out infinite; }
+.cd-antimatter::before { inset: 1px; border: 2px solid transparent; border-top-color: #fecaca; border-right-color: #ef4444; filter: drop-shadow(0 0 6px #ef4444); animation: cd-spin 2.2s linear infinite; }
+.cd-antimatter::after  { inset: 4px; border: 1px solid transparent; border-bottom-color: #fca5a5; animation: cd-spin-rev 1.6s linear infinite; }
+
+/* MULTIVERSAL · Multiversal Ring — iridescent, hue-cycled */
+.cd-multiversal { box-shadow: inset 0 0 10px rgba(167,139,250,.4); }
+.cd-multiversal::before { inset: 0; border: 3px solid transparent; border-top-color: #f472b6; border-right-color: #38bdf8; border-bottom-color: #34d399; border-left-color: #fbbf24; filter: drop-shadow(0 0 6px rgba(167,139,250,.7)); animation: cd-spin 3.6s linear infinite, cd-hue 6s linear infinite; }
+.cd-multiversal::after  { inset: 4px; border: 2px solid transparent; border-top-color: #fbbf24; border-bottom-color: #f472b6; animation: cd-spin-rev 2.8s linear infinite, cd-hue 6s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cd, .cd::before, .cd::after { animation: none !important; }
+}
+[data-anim-off] .cd, [data-anim-off] .cd::before, [data-anim-off] .cd::after { animation: none !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROFILE EFFECTS (.pe) — a subtle animated foreground layer on the profile
+   card. Built ONLY from background-image dot/streak tiles + transform/opacity,
+   so a layer can never render as an opaque invisible block. pointer-events are
+   disabled and every layer is translucent, so text underneath stays readable.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.pe {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 4;
+}
+.pe::before,
+.pe::after {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  background-repeat: repeat;
+  will-change: background-position, opacity, transform;
+}
+
+@keyframes pe-fall    { from { background-position: 0 -70px; } to { background-position: 0 70px; } }
+@keyframes pe-rise    { from { background-position: 0 70px; }  to { background-position: 0 -70px; } }
+@keyframes pe-drift   { from { background-position: -70px 0; } to { background-position: 70px 0; } }
+@keyframes pe-diag    { from { background-position: 0 0; }     to { background-position: 90px 90px; } }
+@keyframes pe-diag2   { from { background-position: 0 0; }     to { background-position: -90px 100px; } }
+@keyframes pe-twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.75; } }
+@keyframes pe-flicker { 0%, 100% { opacity: 0.25; } 20% { opacity: 0.8; } 45% { opacity: 0.3; } 70% { opacity: 0.9; } }
+@keyframes pe-spin    { to { transform: rotate(360deg); } }
+@keyframes pe-sweep   { 0% { transform: translateX(-28%); } 100% { transform: translateX(28%); } }
+@keyframes pe-hue     { to { filter: hue-rotate(360deg); } }
+
+.pe-stardust::before {
+  background-image:
+    radial-gradient(1.6px 1.6px at 20% 30%, rgba(224, 231, 255, 0.9), transparent 60%),
+    radial-gradient(1.2px 1.2px at 70% 60%, rgba(199, 210, 254, 0.8), transparent 60%),
+    radial-gradient(1.6px 1.6px at 45% 82%, rgba(255, 255, 255, 0.7), transparent 60%);
+  background-size: 95px 95px;
+  animation: pe-diag 24s linear infinite, pe-twinkle 6s ease-in-out infinite;
+}
+.pe-bubbles::before {
+  background-image:
+    radial-gradient(4px 4px at 25% 90%, rgba(186, 230, 253, 0.55), transparent 62%),
+    radial-gradient(6px 6px at 60% 70%, rgba(125, 211, 252, 0.45), transparent 62%),
+    radial-gradient(3px 3px at 80% 40%, rgba(224, 242, 254, 0.55), transparent 62%);
+  background-size: 110px 130px;
+  animation: pe-rise 12s linear infinite;
+}
+.pe-fireflies::before {
+  background-image:
+    radial-gradient(2px 2px at 20% 40%, rgba(253, 230, 138, 0.95), transparent 55%),
+    radial-gradient(2.4px 2.4px at 65% 25%, rgba(250, 204, 21, 0.85), transparent 55%),
+    radial-gradient(2px 2px at 80% 75%, rgba(254, 240, 138, 0.9), transparent 55%);
+  background-size: 120px 120px;
+  animation: pe-drift 18s ease-in-out infinite alternate, pe-flicker 3.4s ease-in-out infinite;
+}
+.pe-snow::before {
+  background-image:
+    radial-gradient(2px 2px at 15% 10%, rgba(255, 255, 255, 0.95), transparent 60%),
+    radial-gradient(1.5px 1.5px at 55% 30%, rgba(248, 250, 252, 0.8), transparent 60%),
+    radial-gradient(2.4px 2.4px at 80% 55%, rgba(255, 255, 255, 0.85), transparent 60%),
+    radial-gradient(1.5px 1.5px at 35% 75%, rgba(226, 232, 240, 0.8), transparent 60%);
+  background-size: 90px 120px;
+  animation: pe-fall 11s linear infinite;
+}
+.pe-embers::before {
+  background-image:
+    radial-gradient(2px 2px at 25% 90%, rgba(253, 186, 116, 0.9), transparent 58%),
+    radial-gradient(2.4px 2.4px at 60% 80%, rgba(251, 146, 60, 0.85), transparent 58%),
+    radial-gradient(1.6px 1.6px at 80% 95%, rgba(254, 215, 170, 0.85), transparent 58%);
+  background-size: 100px 140px;
+  animation: pe-rise 9s linear infinite, pe-flicker 2.8s ease-in-out infinite;
+}
+.pe-sparkle::before {
+  background-image:
+    radial-gradient(1.8px 1.8px at 18% 22%, rgba(255, 255, 255, 0.95), transparent 55%),
+    radial-gradient(1.4px 1.4px at 72% 38%, rgba(254, 249, 195, 0.9), transparent 55%),
+    radial-gradient(2px 2px at 48% 68%, rgba(255, 255, 255, 0.9), transparent 55%),
+    radial-gradient(1.4px 1.4px at 88% 80%, rgba(253, 224, 71, 0.85), transparent 55%);
+  background-size: 80px 80px;
+  animation: pe-twinkle 2.6s ease-in-out infinite;
+}
+.pe-aurora::before {
+  inset: -40% -20%;
+  background: linear-gradient(115deg, transparent 20%, rgba(52, 211, 153, 0.22), rgba(56, 189, 248, 0.22), rgba(167, 139, 250, 0.22), transparent 80%);
+  filter: blur(6px);
+  animation: pe-sweep 9s ease-in-out infinite alternate;
+}
+.pe-starfall::before {
+  background-image:
+    linear-gradient(115deg, transparent 46%, rgba(224, 231, 255, 0.85) 50%, transparent 54%),
+    linear-gradient(115deg, transparent 60%, rgba(129, 140, 248, 0.7) 63%, transparent 66%);
+  background-size: 140px 140px;
+  opacity: 0.7;
+  animation: pe-diag2 3.6s linear infinite;
+}
+.pe-petals::before {
+  background-image:
+    radial-gradient(3px 2px at 22% 20%, rgba(251, 207, 232, 0.85), transparent 60%),
+    radial-gradient(2.5px 1.6px at 66% 44%, rgba(244, 114, 182, 0.7), transparent 60%),
+    radial-gradient(3px 2px at 84% 72%, rgba(249, 168, 212, 0.8), transparent 60%);
+  background-size: 115px 130px;
+  animation: pe-diag 16s linear infinite, pe-twinkle 5s ease-in-out infinite;
+}
+.pe-voidmotes::before {
+  background-image:
+    radial-gradient(2px 2px at 30% 30%, rgba(148, 163, 184, 0.8), transparent 55%),
+    radial-gradient(1.6px 1.6px at 70% 55%, rgba(203, 213, 225, 0.6), transparent 55%),
+    radial-gradient(2.4px 2.4px at 50% 78%, rgba(100, 116, 139, 0.7), transparent 55%);
+  background-size: 100px 100px;
+  transform-origin: 50% 50%;
+  animation: pe-spin 40s linear infinite, pe-twinkle 6s ease-in-out infinite;
+}
+.pe-lensflare::before {
+  background-image:
+    radial-gradient(5px 5px at 20% 40%, rgba(254, 240, 138, 0.6), transparent 60%),
+    radial-gradient(3px 3px at 60% 30%, rgba(255, 255, 255, 0.7), transparent 60%),
+    radial-gradient(6px 6px at 82% 66%, rgba(253, 224, 71, 0.5), transparent 60%);
+  background-size: 150px 120px;
+  filter: blur(0.5px);
+  animation: pe-drift 14s linear infinite, pe-twinkle 4.5s ease-in-out infinite;
+}
+.pe-orbits::before {
+  inset: 12%;
+  border-radius: 50%;
+  background:
+    radial-gradient(3px 3px at 50% 0%, rgba(103, 232, 249, 0.95), transparent 60%),
+    radial-gradient(2.4px 2.4px at 100% 50%, rgba(34, 211, 238, 0.85), transparent 60%),
+    radial-gradient(3px 3px at 50% 100%, rgba(165, 243, 252, 0.9), transparent 60%),
+    radial-gradient(2.4px 2.4px at 0% 50%, rgba(34, 211, 238, 0.85), transparent 60%);
+  transform-origin: 50% 50%;
+  animation: pe-spin 12s linear infinite;
+}
+.pe-darkrain::before {
+  background-image:
+    linear-gradient(105deg, transparent 47%, rgba(165, 180, 252, 0.7) 50%, transparent 53%),
+    linear-gradient(105deg, transparent 62%, rgba(129, 140, 248, 0.55) 64%, transparent 67%);
+  background-size: 90px 110px;
+  opacity: 0.6;
+  animation: pe-diag2 2.4s linear infinite;
+}
+.pe-ions::before {
+  background-image:
+    radial-gradient(2.2px 2.2px at 24% 34%, rgba(254, 202, 202, 0.95), transparent 55%),
+    radial-gradient(1.8px 1.8px at 68% 52%, rgba(248, 113, 113, 0.9), transparent 55%),
+    radial-gradient(2.2px 2.2px at 50% 80%, rgba(254, 226, 226, 0.9), transparent 55%);
+  background-size: 85px 85px;
+  animation: pe-drift 10s linear infinite, pe-flicker 1.8s steps(6) infinite;
+}
+.pe-multiverse::before {
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, rgba(244, 114, 182, 0.9), transparent 55%),
+    radial-gradient(2px 2px at 60% 50%, rgba(56, 189, 248, 0.9), transparent 55%),
+    radial-gradient(2px 2px at 40% 75%, rgba(52, 211, 153, 0.9), transparent 55%),
+    radial-gradient(2px 2px at 82% 20%, rgba(251, 191, 36, 0.9), transparent 55%);
+  background-size: 100px 100px;
+  animation: pe-diag 18s linear infinite, pe-hue 8s linear infinite, pe-twinkle 4s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NAMEPLATES (.np) — an animated plate behind the display name. The plate sits
+   BEHIND the text (isolation + z-index), text carries a shadow so it stays
+   legible over any plate. A shared sheen sweep animates every plate; per-tier
+   rules only set colours + a few high-tier glows.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.np-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 2px 14px;
+  border-radius: 9999px;
+  isolation: isolate;
+}
+.np-content {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+.np {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.28);
+}
+.np::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: translateX(-140%);
+  animation: np-sheen 4.8s ease-in-out infinite;
+}
+@keyframes np-sheen { 0% { transform: translateX(-140%); } 55%, 100% { transform: translateX(260%); } }
+@keyframes np-hue   { to { filter: hue-rotate(360deg); } }
+
+.np-slate      { background: linear-gradient(90deg, #334155, #475569); }
+.np-frost      { background: linear-gradient(90deg, #0369a1, #38bdf8); }
+.np-solar      { background: linear-gradient(90deg, #b45309, #f59e0b); }
+.np-nebula     { background: linear-gradient(90deg, #6d28d9, #db2777); }
+.np-astral     { background: linear-gradient(90deg, #4338ca, #0891b2); }
+.np-ember      { background: linear-gradient(90deg, #b91c1c, #ea580c); }
+.np-ion        { background: linear-gradient(90deg, #0e7490, #06b6d4); box-shadow: inset 0 0 16px rgba(0,0,0,.28), 0 0 10px rgba(6,182,212,.4); }
+.np-crystal    { background: linear-gradient(90deg, #0369a1, #7dd3fc); box-shadow: inset 0 0 16px rgba(0,0,0,.25), 0 0 12px rgba(125,211,252,.4); }
+.np-corona     { background: linear-gradient(90deg, #c2410c, #f59e0b); box-shadow: inset 0 0 16px rgba(0,0,0,.28), 0 0 14px rgba(245,158,11,.45); }
+.np-void       { background: linear-gradient(90deg, #0f172a, #334155); box-shadow: inset 0 0 18px rgba(0,0,0,.5), 0 0 10px rgba(148,163,184,.3); }
+.np-lensing    { background: linear-gradient(90deg, #1e293b, #3b82f6); box-shadow: inset 0 0 16px rgba(0,0,0,.35), 0 0 14px rgba(59,130,246,.4); }
+.np-singular   { background: linear-gradient(90deg, #be185d, #ec4899); box-shadow: inset 0 0 16px rgba(0,0,0,.3), 0 0 16px rgba(236,72,153,.5); }
+.np-darkmatter { background: linear-gradient(90deg, #4c1d95, #7c3aed); box-shadow: inset 0 0 16px rgba(0,0,0,.35), 0 0 16px rgba(124,58,237,.5); }
+.np-antimatter { background: linear-gradient(90deg, #7f1d1d, #dc2626); box-shadow: inset 0 0 16px rgba(0,0,0,.32), 0 0 18px rgba(220,38,38,.55); }
+.np-multiversal {
+  background: linear-gradient(90deg, #db2777, #2563eb, #059669, #d97706);
+  background-size: 300% 100%;
+  box-shadow: inset 0 0 16px rgba(0,0,0,.3), 0 0 20px rgba(147,51,234,.55);
+  animation: np-hue 9s linear infinite;
+}
+
+/* Respect motion preferences — freeze every cosmetic animation. */
+@media (prefers-reduced-motion: reduce) {
+  .pe::before, .pe::after, .np::before, .np-multiversal { animation: none !important; }
+}
+[data-anim-off] .pe::before,
+[data-anim-off] .pe::after,
+[data-anim-off] .np::before,
+[data-anim-off] .np-multiversal { animation: none !important; }

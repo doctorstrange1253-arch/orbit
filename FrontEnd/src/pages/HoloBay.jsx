@@ -19,9 +19,10 @@ import { motion } from 'framer-motion';
 import { Check, Lock, ArrowLeft } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
 import GlowName from '../cosmic/GlowName';
+import Nameplate from '../cosmic/Nameplate';
 import ItemIcon from '../cosmic/itemIcons';
 import { useShop, useBuyCosmetic, useEquipCosmetic } from '../cosmic/useShop';
-import { COSMETIC_RENDER, bgClassFor } from '../cosmic/cosmetics';
+import { COSMETIC_RENDER, bgClassFor, decoClassFor, effectClassFor, plateClassFor } from '../cosmic/cosmetics';
 import { rarityOf, rarityVars, cardGlowClass, RARITY_ORDER } from '../cosmic/rarity';
 import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
@@ -29,6 +30,25 @@ import './holobay.css';
 
 function Swatch({ item, size = 40 }) {
   const meta = COSMETIC_RENDER[item.key] || {};
+  if (item.type === 'avatar_deco')
+    return (
+      <span className="relative grid h-full w-full place-items-center overflow-hidden rounded-full">
+        <span className={meta.decoClass} aria-hidden="true" />
+      </span>
+    );
+  if (item.type === 'profile_effect')
+    return (
+      <span className="relative grid h-full w-full place-items-center overflow-hidden rounded-lg bg-slate-900/70">
+        <span className={meta.effectClass} aria-hidden="true" />
+      </span>
+    );
+  if (item.type === 'nameplate')
+    return (
+      <span className="np-wrap text-[10px] font-bold text-white">
+        <span className={meta.plateClass} aria-hidden="true" />
+        <span className="np-content">Aa</span>
+      </span>
+    );
   if (item.type === 'name_glow') return <span className={meta.glowClass} style={{ fontSize: 18 }}>Aa</span>;
   if (item.type === 'background' && meta.swatch)
     return <span className="inline-block rounded-md" style={{ width: size, height: size, background: meta.swatch }} />;
@@ -77,17 +97,32 @@ export default function HoloBay() {
   const catalog = useMemo(() => data?.catalog || [], [data]);
   const glows = useMemo(() => catalog.filter((c) => c.type === 'name_glow'), [catalog]);
   const backgrounds = useMemo(() => catalog.filter((c) => c.type === 'background'), [catalog]);
+  const decos = useMemo(() => catalog.filter((c) => c.type === 'avatar_deco'), [catalog]);
+  const effects = useMemo(() => catalog.filter((c) => c.type === 'profile_effect'), [catalog]);
+  const plates = useMemo(() => catalog.filter((c) => c.type === 'nameplate'), [catalog]);
 
   // Currently PREVIEWED (not equipped) selections — default to what's equipped.
   const equippedGlow = data?.equipped?.name_glow || null;
   const equippedBg = data?.equipped?.background || null;
+  const equippedDeco = data?.equipped?.avatar_deco || null;
+  const equippedEffect = data?.equipped?.profile_effect || null;
+  const equippedPlate = data?.equipped?.nameplate || null;
   const [tryGlow, setTryGlow] = useState(undefined); // undefined → fall back to equipped
   const [tryBg, setTryBg] = useState(undefined);
+  const [tryDeco, setTryDeco] = useState(undefined);
+  const [tryEffect, setTryEffect] = useState(undefined);
+  const [tryPlate, setTryPlate] = useState(undefined);
 
   const glowKey = tryGlow === undefined ? equippedGlow : tryGlow;
   const bgKey = tryBg === undefined ? equippedBg : tryBg;
+  const decoKey = tryDeco === undefined ? equippedDeco : tryDeco;
+  const effectKey = tryEffect === undefined ? equippedEffect : tryEffect;
+  const plateKey = tryPlate === undefined ? equippedPlate : tryPlate;
   const glowItem = glows.find((g) => g.key === glowKey) || null;
   const bgItem = backgrounds.find((b) => b.key === bgKey) || null;
+  const decoItem = decos.find((d) => d.key === decoKey) || null;
+  const effectItem = effects.find((e) => e.key === effectKey) || null;
+  const plateItem = plates.find((p) => p.key === plateKey) || null;
 
   const busy = buy.isPending || equip.isPending;
   const onBuy = (key) => buy.mutate(key, {
@@ -159,13 +194,15 @@ export default function HoloBay() {
                 style={bgItem ? rarityVars(bgItem.rarity) : undefined}
                 className={`holobay-float relative rounded-2xl border border-white/10 p-6 text-center ${bgClassFor(bgKey)} ${bgItem ? cardGlowClass(bgItem.rarity) : ''}`}
               >
+                {effectKey && <span className={effectClassFor(effectKey)} aria-hidden="true" />}
                 {/* avatar disc */}
-                <div className="mx-auto grid h-20 w-20 place-items-center rounded-full ring-2 ring-white/20"
+                <div className="relative mx-auto grid h-20 w-20 place-items-center overflow-hidden rounded-full ring-2 ring-white/20"
                      style={{ background: 'radial-gradient(circle at 40% 35%, rgba(255,255,255,.12), rgba(3,5,12,.6))' }}>
+                  {decoKey && <span className={decoClassFor(decoKey)} aria-hidden="true" />}
                   <PhotonIcon size={34} />
                 </div>
                 <div className="mt-3 text-lg font-black">
-                  <GlowName cosmeticGlowKey={glowKey}>{authName}</GlowName>
+                  <Nameplate plateKey={plateKey}><GlowName cosmeticGlowKey={glowKey}>{authName}</GlowName></Nameplate>
                 </div>
                 <div className="mt-0.5 text-[11px] text-slate-400">This is exactly how others see you</div>
                 <div className="mt-3 flex items-center justify-center gap-2">
@@ -190,9 +227,30 @@ export default function HoloBay() {
                     <span className="ml-auto">{stageActions(bgItem, 'background')}</span>
                   </div>
                 )}
-                {!glowItem && !bgItem && (
+                {decoItem && (
+                  <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/25 px-3 py-2">
+                    <span className="rar-badge" style={rarityVars(decoItem.rarity)}>{rarityOf(decoItem.rarity).label}</span>
+                    <span className="truncate text-sm font-semibold text-white">{decoItem.name}</span>
+                    <span className="ml-auto">{stageActions(decoItem, 'avatar_deco')}</span>
+                  </div>
+                )}
+                {effectItem && (
+                  <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/25 px-3 py-2">
+                    <span className="rar-badge" style={rarityVars(effectItem.rarity)}>{rarityOf(effectItem.rarity).label}</span>
+                    <span className="truncate text-sm font-semibold text-white">{effectItem.name}</span>
+                    <span className="ml-auto">{stageActions(effectItem, 'profile_effect')}</span>
+                  </div>
+                )}
+                {plateItem && (
+                  <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/25 px-3 py-2">
+                    <span className="rar-badge" style={rarityVars(plateItem.rarity)}>{rarityOf(plateItem.rarity).label}</span>
+                    <span className="truncate text-sm font-semibold text-white">{plateItem.name}</span>
+                    <span className="ml-auto">{stageActions(plateItem, 'nameplate')}</span>
+                  </div>
+                )}
+                {!glowItem && !bgItem && !decoItem && !effectItem && !plateItem && (
                   <div className="rounded-xl border border-dashed border-white/10 px-3 py-3 text-center text-xs text-slate-500">
-                    Pick a glow or nebula on the right to preview it here.
+                    Pick a glow, nebula or frame on the right to preview it here.
                   </div>
                 )}
               </div>
@@ -207,6 +265,15 @@ export default function HoloBay() {
             <Picker title="Profile Nebula" items={backgrounds} activeKey={bgKey}
               onPick={(k) => setTryBg(k === bgKey ? null : k)}
               onClear={() => setTryBg(null)} clearLabel="None" />
+            <Picker title="Avatar Frame" items={decos} activeKey={decoKey}
+              onPick={(k) => setTryDeco(k === decoKey ? null : k)}
+              onClear={() => setTryDeco(null)} clearLabel="None" />
+            <Picker title="Profile Effect" items={effects} activeKey={effectKey}
+              onPick={(k) => setTryEffect(k === effectKey ? null : k)}
+              onClear={() => setTryEffect(null)} clearLabel="None" />
+            <Picker title="Nameplate" items={plates} activeKey={plateKey}
+              onPick={(k) => setTryPlate(k === plateKey ? null : k)}
+              onClear={() => setTryPlate(null)} clearLabel="None" />
 
             <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3">
               <div className="mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">Rarity</div>

@@ -7,6 +7,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 import api from '../services/api';
 import Avatar from '../components/common/Avatar';
 import GlowName from '../cosmic/GlowName';
+import Nameplate from '../cosmic/Nameplate';
 import { equippedFromUser } from '../cosmic/cosmetics';
 import { ProfileHeaderSkeleton, SkillGridSkeleton } from '../components/skeletons';
 import ErrorState from '../components/common/ErrorState';
@@ -62,12 +63,13 @@ const PublicProfile = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <Avatar name={user.name} url={user.avatar} size="xxl" userId={user._id} />
+        {equippedFromUser(user).effectClass && <span className={equippedFromUser(user).effectClass} aria-hidden="true" />}
+        <Avatar name={user.name} url={user.avatar} size="xxl" userId={user._id} deco={equippedFromUser(user).decoClass} />
 
         <div className="flex-1 text-center md:text-left space-y-4 w-full">
           <div>
             <h1 className="text-3xl font-display font-bold text-text-primary flex items-center justify-center md:justify-start gap-2">
-              <GlowName user={user} exploring>{user.name}</GlowName>
+              <Nameplate plateKey={equippedFromUser(user).plateKey}><GlowName user={user} exploring>{user.name}</GlowName></Nameplate>
               {user.trustScore >= 80 && (
                 <ShieldCheck className="text-accent" size={20} title="Highly Trusted" />
               )}

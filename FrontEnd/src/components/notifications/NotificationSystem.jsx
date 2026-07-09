@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, UserPlus, UserCheck, Zap, PhoneOff, Star, Handshake } from 'lucide-react';
+import { X, UserPlus, UserCheck, Zap, PhoneOff, Star, Handshake, Sparkles } from 'lucide-react';
 import { useSound } from '../../utils/soundManager';
 
 /**
@@ -44,6 +44,7 @@ const NotificationSystem = ({ notifications, onDismiss, onAction }) => {
     perfect_match: 'success',
     connection_request: 'info',
     connection_accepted: 'success',
+    photon_grant: 'success',
     user_offline: 'danger',
     call_ended: 'danger',
   };
@@ -64,6 +65,8 @@ const NotificationSystem = ({ notifications, onDismiss, onAction }) => {
         return <PhoneOff size={24} color={color} />;
       case 'call_ended':
         return <Star size={24} color={color} />;
+      case 'photon_grant':
+        return <Sparkles size={24} color={color} />;
       default:
         return <Zap size={24} color={color} />;
     }

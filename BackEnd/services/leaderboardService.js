@@ -438,6 +438,7 @@ async function buildLeaderboard({ me, lat, lng, scope = "city", season = "" }) {
             badge: s.tier.tierId,
             nameGlowTier: nameGlowFor(s.tier.tierId),     // v2 §8 (earned tier glow)
             nameGlow: (u.orbit && u.orbit.cosmetics && u.orbit.cosmetics.nameGlow) || null, // purchased shop glow (visible to all)
+            avatarDeco: (u.orbit && u.orbit.cosmetics && u.orbit.cosmetics.avatarDeco) || null, // equipped avatar frame (visible to all)
             weightedReviews: s.weightedReviews,
             reviewsCount: s.reviewsCount,
         };
@@ -460,6 +461,7 @@ async function buildLeaderboard({ me, lat, lng, scope = "city", season = "" }) {
         score: Math.round(meScore.score * 10) / 10,
         nameGlowTier: nameGlowFor(meScore.tier.tierId),
         nameGlow: (me.orbit && me.orbit.cosmetics && me.orbit.cosmetics.nameGlow) || null,
+        avatarDeco: (me.orbit && me.orbit.cosmetics && me.orbit.cosmetics.avatarDeco) || null,
         progress: meScore.tier.progress,              // { mode, pct, label }
         progressToNext: meScore.tier.progressToNext,
         inTop50: youRankIdx >= 0 && youRankIdx < TOP_N,

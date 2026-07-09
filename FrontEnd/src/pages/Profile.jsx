@@ -13,6 +13,7 @@ import Modal from '../components/common/Modal';
 import { ProfileHeaderSkeleton } from '../components/skeletons';
 import CosmicProfileCard from '../cosmic/CosmicProfileCard';
 import { equippedFromUser } from '../cosmic/cosmetics';
+import Nameplate from '../cosmic/Nameplate';
 import { InfoDot, ScoreExplainerBody } from '../cosmic/scoreInfo';
 import { TRUST_TOOLTIP, TRUST_SCORE_INFO } from '../cosmic/scoreCopy';
 import LanguageMultiSelect from '../components/common/LanguageMultiSelect';
@@ -167,7 +168,7 @@ const Profile = () => {
   const trust = profile?.trustScore ?? 0;
   const trustColor = trust >= 70 ? '#00e5a0' : trust >= 40 ? '#ffb800' : '#ff4b4b';
   // Equipped Stardust-shop cosmetics (name glow + nebula background).
-  const { glowClass, bgClass } = equippedFromUser(profile);
+  const { glowClass, bgClass, decoClass, effectClass, plateKey } = equippedFromUser(profile);
 
   return (
     <div className="max-w-2xl mx-auto space-y-7">
@@ -191,10 +192,11 @@ const Profile = () => {
 
       {/* Avatar + meta card — shows the equipped nebula background if any */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-        className={`flex items-center gap-5 p-6 rounded-2xl overflow-hidden ${bgClass}`}
+        className={`relative flex items-center gap-5 p-6 rounded-2xl overflow-hidden ${bgClass}`}
         style={{ background: bgClass ? undefined : 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
+        {effectClass && <span className={effectClass} aria-hidden="true" />}
         <div className="relative">
-          <Avatar name={profile?.name || user?.name} size="xl" userId={profile?._id || user?._id} url={profile?.avatar} />
+          <Avatar name={profile?.name || user?.name} size="xl" userId={profile?._id || user?._id} url={profile?.avatar} deco={decoClass} />
           <button
             onClick={() => setShowAvatarModal(true)}
             className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-accent flex items-center justify-center hover:scale-110 transition-transform"
@@ -204,7 +206,7 @@ const Profile = () => {
           </button>
         </div>
         <div className="min-w-0">
-          <p className={`text-xl font-bold truncate ${glowClass || 'text-text-primary'}`}>{profile?.name || user?.name}</p>
+          <p className={`text-xl font-bold truncate ${glowClass || 'text-text-primary'}`}><Nameplate plateKey={plateKey}>{profile?.name || user?.name}</Nameplate></p>
           <p className={`text-sm truncate ${bgClass ? 'text-white/80' : 'text-text-muted'}`}>{profile?.email || user?.email}</p>
           <div className="flex items-center gap-1.5 mt-2">
             <Shield size={13} style={{ color: trustColor }} />

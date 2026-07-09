@@ -29,6 +29,9 @@ const TABS = [
   { key: 'all',      label: 'All' },
   { key: 'identity', label: 'Name Glows' },
   { key: 'themes',   label: 'Profile Nebulae' },
+  { key: 'avatar',   label: 'Avatar Frames' },
+  { key: 'effect',   label: 'Profile Effects' },
+  { key: 'plate',    label: 'Nameplates' },
 ];
 
 const SORTS = [
@@ -64,8 +67,33 @@ function useCountdown(target) {
   };
 }
 
+const PREVIEW_DISC = { background: 'radial-gradient(circle at 40% 35%, rgba(255,255,255,.10), rgba(3,5,12,.85))' };
+
 function Preview({ item }) {
   const meta = COSMETIC_RENDER[item.key] || {};
+  if (item.type === 'avatar_deco')
+    return (
+      <span
+        className="relative inline-grid h-11 w-11 place-items-center overflow-hidden rounded-full"
+        style={PREVIEW_DISC} 
+      >
+        <span className={meta.decoClass} aria-hidden="true" />
+        <PhotonIcon size={16} animated={false} />
+      </span>
+    );
+  if (item.type === 'profile_effect')
+    return (
+      <span className="relative inline-block h-11 w-11 overflow-hidden rounded-lg" style={PREVIEW_DISC}>
+        <span className={meta.effectClass} aria-hidden="true" />
+      </span>
+    );
+  if (item.type === 'nameplate')
+    return (
+      <span className="np-wrap text-xs font-bold text-white">
+        <span className={meta.plateClass} aria-hidden="true" />
+        <span className="np-content">Aa</span>
+      </span>
+    );
   if (item.type === 'name_glow') return <span className={meta.glowClass} style={{ fontSize: 22 }}>Aa</span>;
   if (item.type === 'background' && meta.swatch)
     return <span className="inline-block w-12 h-12 rounded-lg" style={{ background: meta.swatch }} />;
