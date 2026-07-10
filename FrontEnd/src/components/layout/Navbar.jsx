@@ -68,7 +68,7 @@ const Navbar = () => {
   });
 
   const incomingCount = pending?.incomingCount || 0;
-  const matchesCount = Array.isArray(matchesData) ? matchesData.length : 0;
+  const matchesCount = Array.isArray(matchesData) ? matchesData.length : (matchesData?.matches?.length || 0);
   const unreadCount = unreadData?.count || 0;
 
   const navWithBadges = NAV.map(item => {

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { UserCircle, Shield, Save, Camera, Upload, X, Link as LinkIcon, Globe } from 'lucide-react';
+import { UserCircle, Shield, Save, Camera, Upload, X, Link as LinkIcon, Globe, Flame } from 'lucide-react';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
@@ -219,6 +219,14 @@ const Profile = () => {
               How it works
             </button>
           </div>
+          {profile?.orbit?.streak?.longest > 0 && (
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <Flame size={14} className="text-orange-400" />
+              <span className="text-xs font-semibold text-text-secondary">
+                Longest streak: {profile.orbit.streak.longest} days
+              </span>
+            </div>
+          )}
         </div>
       </motion.div>
 

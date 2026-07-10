@@ -94,7 +94,7 @@ export default function Orbit() {
 
   const onBuyFreeze = () => {
     buyFreeze.mutate(undefined, {
-      onSuccess: () => addToast('Gravity Assist banked 🛡️', 'success'),
+      onSuccess: () => addToast('Gravity Assist banked', 'success'),
       onError: (e) => addToast(e.response?.data?.message || 'Could not buy a freeze', 'error'),
     });
   };
@@ -110,7 +110,7 @@ export default function Orbit() {
     <div className="cosmic-page max-w-4xl mx-auto px-4 py-6 space-y-5">
       {/* Fixed nebula field so the dark-on-dark UI stays legible in light theme too */}
       <div
-        className="pointer-events-none fixed inset-0 -z-10"
+        className="pointer-events-none fixed inset-0 -z-10 cosmic-backdrop"
         style={{ background: 'radial-gradient(55% 45% at 20% 10%, rgba(56,189,248,.13), transparent 60%),radial-gradient(55% 55% at 82% 18%, rgba(139,92,246,.16), transparent 62%),#07080f' }} 
       />
       <Helmet><title>Orbit · Your Streak</title></Helmet>
@@ -186,7 +186,7 @@ export default function Orbit() {
                          enabled:hover:bg-sky-400/10 disabled:opacity-40 disabled:cursor-not-allowed"
               title={freeze.tokens >= freeze.cap ? 'Inventory full' : `Costs ${freezeCost} Photons`}
             >
-              +1 · {freezeCost} ✨
+              <span className="inline-flex items-center gap-1">+1 · {freezeCost} <PhotonIcon size={12} animated={false} /></span>
             </button>
           </div>
           <p className="text-[11px] text-slate-500 mt-2">
@@ -226,7 +226,7 @@ export default function Orbit() {
                   ${reached ? 'bg-amber-400/10 ring-amber-400/40' : 'bg-white/5 ring-white/10'}`}
               >
                 <div className={`text-sm font-bold ${reached ? 'text-amber-300' : 'text-slate-300'}`}>{m.name}</div>
-                <div className="text-[11px] text-slate-400">{m.days}d · {m.stardust}✨</div>
+                <div className="text-[11px] text-slate-400 flex items-center justify-center gap-1">{m.days}d · {m.photons ?? m.stardust} <PhotonIcon size={11} animated={false} /></div>
               </div>
             );
           })}

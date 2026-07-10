@@ -23,6 +23,7 @@ import { useShop, useBuyCosmetic, useEquipCosmetic } from '../cosmic/useShop';
 import { COSMETIC_RENDER } from '../cosmic/cosmetics';
 import { rarityOf, rarityVars, cardGlowClass, RARITY_ORDER, LIVE_TIERS } from '../cosmic/rarity';
 import { useUIStore } from '../store/uiStore';
+import { StoreGridSkeleton } from '../components/skeletons';
 
 // ── store category tabs (match backend `category` + a few reserved for growth)
 const TABS = [
@@ -232,7 +233,7 @@ export default function Shop() {
     <div className="cosmic-page relative min-h-screen">
       {/* ── field: near-black with three radial nebula glows ── */}
       <div
-        className="pointer-events-none fixed inset-0 -z-10"
+        className="pointer-events-none fixed inset-0 -z-10 cosmic-backdrop"
         style={{
           background:
             'radial-gradient(60% 50% at 15% 12%, rgba(56,189,248,.14), transparent 60%),' +
@@ -343,7 +344,7 @@ export default function Shop() {
 
         {/* ── grid: 4 → 3 → 2 → 1 ── */}
         {isLoading ? (
-          <div className="py-20 text-center text-slate-500">Loading the store…</div>
+          <StoreGridSkeleton />
         ) : items.length === 0 ? (
           <div className="py-20 text-center text-slate-500">Nothing here yet — check another tab.</div>
         ) : (

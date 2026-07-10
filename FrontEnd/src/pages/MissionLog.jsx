@@ -1,14 +1,14 @@
 /**
- * MissionLog — the Photon history / mission log. Lists the viewer's recent
- * Photon flows (missions, milestones, mastery, Gravity Assist, Nebula Store,
- * admin grants) with a clear earn/spend summary. Reached from Orbit → Weekly
- * Missions → "Full log". Dark cosmic surface (legible in both themes).
+ * MissionLog - full weekly mission history with per-mission status
+ * (Claimed / Ready to claim / In progress), progress bars, and Photon + XP
+ * rewards, followed by the Photon earn/spend log. Reached from Orbit -> Weekly
+ * Missions -> "Full log". Dark cosmic surface (legible in both themes).
  */
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, TrendingUp, TrendingDown, Target, Award, Shield, ShoppingBag, Gift, Sparkles } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, Target, Award, Shield, ShoppingBag, Gift, Sparkles, Zap, CheckCircle2 } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
-import { useLedger } from '../cosmic/useOrbit';
+import { useOrbit, useLedger } from '../cosmic/useOrbit';
 import CosmicLoader from '../cosmic/CosmicLoader';
 import ErrorState from '../components/common/ErrorState';
 
@@ -30,28 +30,75 @@ function fmtDate(at) {
   }
 }
 
+function missionStatus(m) {
+  if (m.claimed) return { label: 'Claimed', cls: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/30' };
+  if (m.complete) return { label: 'Ready to claim', cls: 'bg-amber-500/15 text-amber-300 ring-amber-400/30' };
+  return { label: 'In progress', cls: 'bg-white/5 text-slate-300 ring-white/10' };
+}
+
 export default function MissionLog() {
-  const { data, isLoading, isError, refetch } = useLedger();
-  if (isLoading) return <CosmicLoader />;
-  if (isError || !data) return <ErrorState onRetry={refetch} message="Couldn't load your Photon log." />;
-  const entries = data.entries || [];
-  const summary = data.summary || {};
+  const orbit = useOrbit({});
+  const ledger = useLedger();
+  if (orbit.isLoading) return <CosmicLoader />;
+  if (orbit.isError || !orbit.data) return <ErrorState onRetry={orbit.refetch} message="Couldn't load your missions." />;
+  const missions = orbit.data.missions || [];
+  const entries = ledger.data?.entries || [];
+  const summary = ledger.data?.summary || { };
 
   return (
     <div className="cosmic-page max-w-2xl mx-auto px-4 py-6 space-y-5">
-      <Helmet><title>Photon Log · Orbit</title></Helmet>
+      <Helmet><title>Mission Log - Orbit</title></Helmet>
       <div
-        className="pointer-events-none fixed inset-0 -z-10"
-        style={{ background: 'radial-gradient(55% 45% at 20% 10%, rgba(56,189,248,.13), transparent 60%),radial-gradient(55% 55% at 82% 18%, rgba(139,92,246,.16), transparent 62%),#07080f' }} 
+        className="pointer-events-none fixed inset-0 -z-10 cosmic-backdrop"
+        style={ { background: 'radial-gradient(55% 45% at 20% 10%, rgba(56,189,248,.13), transparent 60%),radial-gradient(55% 55% at 82% 18%, rgba(139,92,246,.16), transparent 62%),#07080f' } }
       />
 
       <div className="flex items-center gap-2">
         <Link to="/orbit" className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-slate-200">
           <ArrowLeft size={16} /> Orbit
         </Link>
-        <h1 className="ml-1 text-xl font-black text-white">Photon Log</h1>
+        <h1 className="ml-1 text-xl font-black text-white">Mission Log</h1>
       </div>
-      <p className="text-xs text-slate-400 -mt-2">Every Photon you’ve earned and spent — newest first.</p>
+      <p className="text-xs text-slate-400 -mt-2">Every weekly mission with its status and rewards, plus your full Photon history.</p>
+
+      <section className="rounded-2xl border border-white/10 bg-slate-900/30 p-3 sm:p-4 space-y-3">
+        <h2 className="text-sm font-bold text-white">Weekly missions</h2>
+        {missions.length === 0 ? (
+          <p className="text-sm text-slate-400 py-4 text-center">No missions are active right now. Check back after the weekly reset.</p>
+        ) : (
+          <ul className="space-y-2.5">
+            {missions.map((m) => {
+              const reward = m.photons ?? m.stardust;
+              const xp = m.xp ?? 0;
+              const pct = Math.min(100, Math.round(((m.progress || 0) / (m.target || 1)) * 100));
+              const st = missionStatus(m);
+              return (
+                <li key={m.key} className="rounded-xl border border-white/10 bg-slate-900/40 p-3.5 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold text-white">{m.label}</div>
+                      <div className="text-xs text-slate-400">{m.description}</div>
+                    </div>
+                    <span className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${st.cls}`}>
+                      {m.claimed && <CheckCircle2 size={12} />} {st.label}
+                    </span>
+                  </div>
+                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="h-full rounded-full bg-gradient-to-r from-amber-400 to-violet-400" style={ { width: `${pct}%` } } />
+                  </div>
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="tabular-nums text-slate-400">{Math.min(m.progress || 0, m.target || 0)} / {m.target}</span>
+                    <span className="inline-flex items-center gap-2 font-semibold">
+                      <span className="inline-flex items-center gap-1 text-violet-200"><PhotonIcon size={12} animated={false} /> {reward}</span>
+                      <span className="inline-flex items-center gap-1 text-amber-300"><Zap size={12} /> {xp} XP</span>
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
 
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
@@ -73,6 +120,7 @@ export default function MissionLog() {
       </div>
 
       <section className="rounded-2xl border border-white/10 bg-slate-900/30 p-2 sm:p-3">
+        <h2 className="text-sm font-bold text-white px-2 pt-1 pb-2">Photon history</h2>
         {entries.length === 0 ? (
           <p className="text-sm text-slate-400 p-6 text-center">
             No Photon activity yet. Complete a weekly mission to earn your first Photons.
@@ -93,7 +141,7 @@ export default function MissionLog() {
                     <div className="text-[11px] text-slate-500">{fmtDate(e.at)}</div>
                   </div>
                   <span className={`inline-flex items-center gap-1 text-sm font-bold tabular-nums ${earn ? 'text-emerald-300' : 'text-rose-300'}`}>
-                    {earn ? '+' : '−'}{Math.abs(e.delta)} <PhotonIcon size={13} animated={false} />
+                    {earn ? '+' : '-'}{Math.abs(e.delta)} <PhotonIcon size={13} animated={false} />
                   </span>
                 </li>
               );

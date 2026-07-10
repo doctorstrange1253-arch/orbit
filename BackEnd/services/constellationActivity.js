@@ -73,8 +73,8 @@ async function recordPairAction(io, userId, opts = {}) {
                     for (const m of memberIds) {
                         createNotification(io, m, {
                             type: "constellation_milestone",
-                            title: `⭐ ${res.milestone.name}!`,
-                            body: `Your Binary Star hit a ${con.streak.current}-day shared streak — +${res.milestone.stardust} ✨ Photons each.`,
+                            title: `${res.milestone.name}`,
+                            body: `Your Binary Star hit a ${con.streak.current}-day shared streak — awarded ${res.milestone.stardust} Photons each.`,
                             data: { link: "/orbit", constellationId: String(con._id), stardust: res.milestone.stardust, photons: res.milestone.stardust },
                         }).catch(() => {});
                     }
@@ -82,7 +82,7 @@ async function recordPairAction(io, userId, opts = {}) {
                     // Notify the partner that the shared streak moved (the actor sees it live).
                     createNotification(io, otherId, {
                         type: "constellation_streak",
-                        title: "✨ Binary Star advanced",
+                        title: "Binary Star advanced",
                         body: `You both showed up today — shared streak is now ${con.streak.current} days.`,
                         data: { link: "/orbit", constellationId: String(con._id), streak: con.streak.current },
                     }).catch(() => {});
@@ -91,7 +91,7 @@ async function recordPairAction(io, userId, opts = {}) {
                     for (const m of memberIds) {
                         createNotification(io, m, {
                             type: "constellation_freeze_used",
-                            title: "🛡️ Shared Gravity Assist",
+                            title: "Shared Gravity Assist",
                             body: `A missed day was bridged — your Binary Star's ${con.streak.current}-day streak is intact.`,
                             data: { link: "/orbit", constellationId: String(con._id) },
                         }).catch(() => {});
@@ -102,7 +102,7 @@ async function recordPairAction(io, userId, opts = {}) {
                 // Never framed to make them feel they're letting their partner down.
                 createNotification(io, otherId, {
                     type: "constellation_your_turn",
-                    title: "✨ It's your turn to shine",
+                    title: "It's your turn to shine",
                     body: `Your partner showed up today — whenever you're ready, one action keeps your ${con.streak.current}-day Binary Star glowing.`,
                     data: { link: "/orbit", constellationId: String(con._id), streak: con.streak.current },
                 }).catch(() => {});

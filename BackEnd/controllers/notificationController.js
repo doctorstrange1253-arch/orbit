@@ -61,3 +61,26 @@ exports.markAllRead = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
+
+// ================= DELETE ONE (auto-remove on click/seen) =================
+exports.deleteNotification = async (req, res) => {
+    try {
+        const n = await Notification.findOneAndDelete({ _id: req.params.id, userId: req.user.id }).lean();
+        if (!n) return res.status(404).json({ message: "Notification not found" });
+        res.status(200).json({ message: "Deleted", id: req.params.id });
+    } catch (err) {
+        console.error("deleteNotification:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// ================= CLEAR ALL =================
+exports.clearAll = async (req, res) => {
+    try {
+        await Notification.deleteMany({ userId: req.user.id });
+        res.status(200).json({ message: "Cleared" });
+    } catch (err) {
+        console.error("clearAll:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};

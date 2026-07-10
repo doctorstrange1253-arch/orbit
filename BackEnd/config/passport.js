@@ -2,6 +2,8 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
 const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
+const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const User = require('../models/user');
 require('dotenv').config();
 
@@ -27,7 +29,11 @@ async function findOrCreateUser(profile, provider) {
             user = new User({
                 name: profile.displayName || profile.username || 'OAuth User',
                 email: email,
-                password: Math.random().toString(36).slice(-8), // random dummy password
+                // Unusable placeholder credential: a bcrypt hash of 32 random
+                // bytes. Never guessable, and (unlike the previous 8-char
+                // plaintext) safe even if the field ever leaks. OAuth users must
+                // use the social buttons or the password-reset flow.
+                password: await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 10),
                 isEmailVerified: true,
             });
             await user.save();

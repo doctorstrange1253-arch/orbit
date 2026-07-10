@@ -1456,3 +1456,70 @@
   content-visibility: auto;
   contain-intrinsic-size: auto 132px;
 }
+
+/* ── GLOW CLIP FALLBACK (N3) ───────────────────────────────────────────
+   Text-clipped gradient glows set -webkit-text-fill-color: transparent, so
+   the name renders INVISIBLE if the gradient layer fails to paint (seen in
+   some Android WebView / APK builds). Safeguards:
+   1) On engines without background-clip:text, fall back to solid colored
+      text (currentColor) and drop the gradient.
+   2) On supporting engines, cast a faint silhouette so the glyph keeps a
+      visible edge while the gradient repaints. */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .cg-shimmer, .cg-holo, .cg-comet, .cg-ribbon, .cg-chrome, .cg-multiversal,
+  .cg-void, .cg-cascade, .cg-lava, .cg-kaleido,
+  .cg-scan, .cg-marquee, .cg-oil, .cg-nebula, .cg-cosmos {
+    -webkit-text-fill-color: currentColor;
+    background: none !important;
+  }
+}
+.cg-cascade, .cg-lava, .cg-scan, .cg-marquee, .cg-oil, .cg-nebula, .cg-cosmos {
+  filter: drop-shadow(0 0 2px rgba(255,255,255,.28));
+}
+
+/* ══ LIGHT-MODE VARIANT for cosmic surfaces (Store / Orbit / Holo-Bay / Mission Log) ══
+   The cosmic pages were authored dark-only (raw text-white / bg-slate-900 utilities
+   + a hardcoded #07080f backdrop), so they ignored html[data-mode="light"]. This
+   block gives them a genuine light variant WITHOUT touching dark mode: every rule is
+   gated on [data-mode="light"], and the backdrop swap uses !important to beat the
+   inline dark gradient only in light mode. */
+[data-mode="light"] .cosmic-page {
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  color: var(--text-primary);
+}
+[data-mode="light"] .cosmic-backdrop {
+  background:
+    radial-gradient(55% 45% at 20% 10%, rgba(37,99,235,.08), transparent 60%),
+    radial-gradient(55% 55% at 82% 18%, rgba(124,58,237,.08), transparent 62%),
+    #eef3fb !important;
+}
+/* neutral text remap (accent colours like violet/emerald/amber are left intact) */
+[data-mode="light"] .cosmic-page [class*="text-white"],
+[data-mode="light"] .cosmic-page [class*="text-slate-100"],
+[data-mode="light"] .cosmic-page [class*="text-slate-200"] { color: #0f172a !important; }
+[data-mode="light"] .cosmic-page [class*="text-slate-300"] { color: #334155 !important; }
+[data-mode="light"] .cosmic-page [class*="text-slate-400"] { color: #475569 !important; }
+[data-mode="light"] .cosmic-page [class*="text-slate-500"] { color: #64748b !important; }
+/* neutral surfaces → light cards */
+[data-mode="light"] .cosmic-page [class*="bg-slate-900/"],
+[data-mode="light"] .cosmic-page [class*="bg-slate-950/"],
+[data-mode="light"] .cosmic-page [class*="bg-black/"] { background-color: rgba(255,255,255,.78) !important; }
+[data-mode="light"] .cosmic-page [class*="bg-white/5"],
+[data-mode="light"] .cosmic-page [class*="bg-white/10"] { background-color: rgba(15,23,42,.05) !important; }
+/* neutral borders */
+[data-mode="light"] .cosmic-page [class*="border-white/"] { border-color: rgba(15,23,42,.12) !important; }
+
+/* ══ Currency + streak chips: keep them visible in light mode (L1) ══ */
+[data-mode="light"] .photons-chip > button {
+  background: #ffffff !important;
+  color: #6d28d9 !important;
+  box-shadow: 0 0 0 1px rgba(124,58,237,.30), 0 1px 6px rgba(124,58,237,.15) !important;
+}
+[data-mode="light"] .photons-chip > button .tabular-nums { color: #6d28d9 !important; }
+[data-mode="light"] .orbit-streak-badge {
+  background: #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(15,23,42,.10) !important;
+}
+[data-mode="light"] .orbit-streak-badge .tabular-nums { color: #0f172a !important; }

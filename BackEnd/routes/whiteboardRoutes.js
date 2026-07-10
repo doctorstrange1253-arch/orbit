@@ -52,4 +52,20 @@ router.put("/:roomName", auth, async (req, res) => {
     }
 });
 
+// DELETE /api/whiteboard/:roomName — tear down the saved board when a call ends.
+// Membership-gated, same as load/save.
+router.delete("/:roomName", auth, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { roomName } = req.params;
+        const { ok } = await verifyRoomMember(userId, roomName);
+        if (!ok) return res.status(403).json({ message: "Not a participant of this room" });
+        await Whiteboard.deleteOne({ roomName });
+        res.json({ message: "cleared" });
+    } catch (err) {
+        console.error("Whiteboard delete error:", err.message);
+        res.status(500).json({ message: "Failed to clear whiteboard" });
+    }
+});
+
 module.exports = router;

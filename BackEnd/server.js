@@ -370,6 +370,11 @@ io.on("connection", (socket) => {
         if (roomId && socket.wbRooms) socket.wbRooms.delete(roomId);
         if (roomId) socket.to(roomId).emit("whiteboard-peer-left", { userId });
     });
+
+    // Mirror the whiteboard open/close so the peer's board pops open/closed too.
+    socket.on("whiteboard-toggle", ({ roomId, open }) => {
+        if (roomId) socket.to(roomId).emit("whiteboard-toggle", { open });
+    });
     
     socket.on("call-user", async ({ roomId, targetUserId, callerName, callerId }) => {
         // Forward callerId so the callee can role-guard (never ring the caller's

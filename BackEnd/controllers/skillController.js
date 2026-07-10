@@ -378,6 +378,101 @@ exports.getMatches = async (req, res) => {
 
         res.status(200).json({ matches });
 
+        // ── Retroactive perfect-match sweep (fire-and-forget) ───────────────
+        // Announce any reciprocal match that was never announced (e.g. both users
+        // added their skills before ever meeting, so addSkill never fired for this
+        // pair). Runs AFTER the response so it never adds latency, and is fully
+        // best-effort. De-duped per user+skill pair via MatchNotification, exactly
+        // like addSkill — so each pair is announced at most once ever, and repeat
+        // Matches-page loads do a single cheap lookup then stop.
+        ;(async () => {
+          try {
+            const candidates = matches.filter((m) => m.userId && m.userId._id);
+            if (candidates.length === 0) return;
+            const keyFor = (m) =>
+              MatchNotification.keyFor(req.user.id, m.userId._id, m.skillOffered, m.skillWanted);
+            const keys = [...new Set(candidates.map(keyFor))];
+            const already = new Set(
+              (await MatchNotification.find({ pairKey: { $in: keys } }).select("pairKey").lean())
+                .map((d) => d.pairKey)
+            );
+            const fresh = candidates.filter((m) => !already.has(keyFor(m)));
+            if (fresh.length === 0) return;
+
+            const io2 = req.app.get("io");
+            const me = await User.findById(req.user.id).select("name avatar");
+            const myName = (me && me.name) || "Someone";
+            const line = (name, learn, teach) =>
+              `You can learn ${learn} from ${name} and teach them ${teach}.`;
+
+            for (const m of fresh) {
+              const otherId = m.userId._id;
+              const alreadyConnected = await Connection.exists({
+                $or: [
+                  { requester: req.user.id, receiver: otherId },
+                  { requester: otherId, receiver: req.user.id },
+                ],
+              });
+              if (alreadyConnected) continue;
+
+              // Unique-insert de-dupe gate (same as addSkill): a duplicate key means
+              // this pair was already announced by either side — skip silently.
+              try {
+                await MatchNotification.create({ pairKey: keyFor(m) });
+              } catch (dupErr) {
+                if (dupErr && dupErr.code === 11000) continue;
+                throw dupErr;
+              }
+
+              const otherName = m.userId.name || "Someone";
+
+              // Notify the VIEWER: they learn what the other offers, teach what the other wants.
+              await createNotification(io2, req.user.id, {
+                type: "perfect_match",
+                title: "Perfect Match Found!",
+                body: line(otherName, m.skillOffered, m.skillWanted),
+                data: {
+                  otherUserId: String(otherId),
+                  youTeach: m.skillWanted,
+                  youLearn: m.skillOffered,
+                  link: `/profile/${otherId}`,
+                },
+                legacy: {
+                  event: "perfect-match",
+                  payload: {
+                    otherUser: { _id: otherId, name: otherName, avatar: m.userId.avatar },
+                    youTeach: m.skillWanted,
+                    youLearn: m.skillOffered,
+                  },
+                },
+              });
+
+              // Notify the OTHER user, framed from THEIR point of view.
+              await createNotification(io2, otherId, {
+                type: "perfect_match",
+                title: "Perfect Match Found!",
+                body: line(myName, m.skillWanted, m.skillOffered),
+                data: {
+                  otherUserId: String(req.user.id),
+                  youTeach: m.skillOffered,
+                  youLearn: m.skillWanted,
+                  link: `/profile/${req.user.id}`,
+                },
+                legacy: {
+                  event: "perfect-match",
+                  payload: {
+                    otherUser: { _id: req.user.id, name: myName, avatar: me && me.avatar },
+                    youTeach: m.skillOffered,
+                    youLearn: m.skillWanted,
+                  },
+                },
+              });
+            }
+          } catch (sweepErr) {
+            console.error("retroactive perfect-match sweep error:", sweepErr);
+          }
+        })();
+
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Server error" });

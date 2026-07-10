@@ -198,4 +198,14 @@ export const useNotificationStore = create((set, get) => ({
       get().openRatingModal(otherUser, callDuration);
     }, 500);
   },
+
+  // Missed call — callee didn't answer (timeout / ignore). Formal, no emoji.
+  notifyMissedCall: (callerName) => {
+    get().addNotification({
+      type: 'missed_call',
+      title: 'Missed Call',
+      message: `You missed a call from ${callerName || 'someone'}.`,
+      duration: 6000,
+    });
+  },
 }));

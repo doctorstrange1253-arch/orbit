@@ -1,22 +1,71 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import SkillCard from '../components/skills/SkillCard';
 import { SkillGridSkeleton } from '../components/skeletons';
 import ErrorState from '../components/common/ErrorState';
 import { useUIStore } from '../store/uiStore';
 import { useAuthStore } from '../store/authStore';
+import { useNotificationStore } from '../store/notificationStore';
+import { connectSocket } from '../services/socket';
 import { Handshake, Sparkles } from 'lucide-react';
 
 const Matches = () => {
   const { addToast } = useUIStore();
-  const myId = useAuthStore((s) => s.user?._id);
+  const { user } = useAuthStore();
+  const myId = user?._id;
+  const navigate = useNavigate();
+  const { notifyUserOffline } = useNotificationStore();
+  const [onlineUsers, setOnlineUsers] = useState(new Set());
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['skills', 'matches'],
     queryFn: () => api.get('/skills/matches').then(r => r.data),
   });
+
+  // Accepted/completed connections so a match that's already a connection shows
+  // Message + Call instead of a dead Request/disabled Call (M-02).
+  const { data: myConnections = [] } = useQuery({
+    queryKey: ['connections', 'all'],
+    queryFn: () => api.get('/connections/all').then(r => r.data),
+  });
+
+  const connectionByUser = useMemo(() => {
+    const map = new Map();
+    (Array.isArray(myConnections) ? myConnections : []).forEach((c) => {
+      if (c.status && c.status !== 'accepted' && c.status !== 'completed') return;
+      const reqId = c.requester?._id || c.requester;
+      const recId = c.receiver?._id || c.receiver;
+      const otherId = String(reqId) === String(myId) ? recId : reqId;
+      if (otherId) map.set(String(otherId), c._id);
+    });
+    return map;
+  }, [myConnections, myId]);
+
+  useEffect(() => {
+    if (!myId) return;
+    const socket = connectSocket(myId);
+    socket.emit('get-online-users');
+    const onUsers = (ids) => setOnlineUsers(new Set(ids));
+    const onOnline = (id) => setOnlineUsers((prev) => new Set([...prev, id]));
+    const onOffline = (id) =>
+      setOnlineUsers((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    socket.on('users-online', onUsers);
+    socket.on('user-online', onOnline);
+    socket.on('user-offline-status', onOffline);
+    return () => {
+      socket.off('users-online', onUsers);
+      socket.off('user-online', onOnline);
+      socket.off('user-offline-status', onOffline);
+    };
+  }, [myId]);
 
   const connectMutation = useMutation({
     mutationFn: ({ receiverId, skillId }) => api.post('/connections/request', { receiverId, skillId }),
@@ -24,8 +73,20 @@ const Matches = () => {
     onError: (e) => addToast(e.response?.data?.message || 'Failed to send request', 'error'),
   });
 
-  // B-01 defence-in-depth (esp. APK, where a stale/failover backend or an
-  // unhydrated user could otherwise leak self): never show your own listings.
+  const handleCall = (other, connectionId) => {
+    if (!connectionId) return;
+    if (!onlineUsers.has(String(other?._id))) {
+      notifyUserOffline(other?.name || 'User');
+      return;
+    }
+    navigate(`/call/${connectionId}`, { state: { otherUser: other, isCaller: true } });
+  };
+
+  const handleMessage = (other) => {
+    window.dispatchEvent(new CustomEvent('open-chat', { detail: other }));
+  };
+
+  // B-01 defence-in-depth: never show your own listings.
   const matches = (data?.matches || []).filter((s) => {
     const ownerId = s.userId?._id || s.userId;
     return !myId || String(ownerId) !== String(myId);
@@ -74,10 +135,23 @@ const Matches = () => {
         </motion.div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {matches.map(s => (
-            <SkillCard key={s._id} skill={s} variant="match"
-              onConnect={(skillId, receiverId) => connectMutation.mutate({ skillId, receiverId })} />
-          ))}
+          {matches.map((s) => {
+            const ownerId = String(s.userId?._id || s.userId);
+            const connectionId = s.connectionId || connectionByUser.get(ownerId);
+            const isConnected = Boolean(s.isConnected ?? connectionId);
+            const other = typeof s.userId === 'object' ? s.userId : { _id: ownerId };
+            return (
+              <SkillCard
+                key={s._id}
+                skill={s}
+                variant="match"
+                isConnected={isConnected}
+                onConnect={(skillId, receiverId) => connectMutation.mutate({ skillId, receiverId })}
+                onMessage={() => handleMessage(other)}
+                onCall={() => handleCall(other, connectionId)}
+              />
+            );
+          })}
         </div>
       )}
     </div>

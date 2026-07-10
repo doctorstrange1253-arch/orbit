@@ -21,6 +21,7 @@ function MissionCard({ m, onClaim, claiming }) {
   const pct = Math.min(100, Math.round((m.progress / m.target) * 100));
   const claimable = m.complete && !m.claimed;
   const reward = m.photons ?? m.stardust;
+  const xp = m.xp ?? 0;
   return (
     <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3.5 flex flex-col gap-2.5">
       <button
@@ -37,8 +38,13 @@ function MissionCard({ m, onClaim, claiming }) {
           <div className="text-xs text-slate-400">{m.description}</div>
         </div>
         {/* Photon reward — currency mark, never a star */}
-        <span className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold text-violet-200">
-          <PhotonIcon size={13} animated={false} /> {reward}
+        <span className="shrink-0 inline-flex items-center gap-2 text-xs font-semibold">
+          <span className="inline-flex items-center gap-1 text-violet-200">
+            <PhotonIcon size={13} animated={false} /> {reward}
+          </span>
+          <span className="inline-flex items-center gap-1 text-amber-300">
+            <Zap size={12} /> {xp} XP
+          </span>
         </span>
       </button>
 
@@ -63,7 +69,7 @@ function MissionCard({ m, onClaim, claiming }) {
           </div>
           <div className="flex items-center justify-between">
             <span className="text-slate-400">Orbit XP</span>
-            <span className="inline-flex items-center gap-1 text-amber-300 font-semibold"><Zap size={11} /> toward your league</span>
+            <span className="inline-flex items-center gap-1 text-amber-300 font-semibold"><Zap size={11} /> +{xp} XP</span>
           </div>
           <p className="text-slate-500 pt-0.5">Progress updates automatically as you swap, review, and message. Claim once complete to bank the Photons.</p>
         </div>

@@ -23,9 +23,16 @@ function shapeOrbit(orbit, now = new Date()) {
         formationMax: cfg.PHASES.formationMax,
         consistencyMax: cfg.PHASES.consistencyMax,
     });
+    // S-01: a streak that has truly lapsed (idle beyond any Gravity Assist rescue)
+    // reads as 0, so a broken streak visibly resets instead of showing a stale count.
+    const missedDays = decay.state === "idle" ? Math.max(0, (decay.daysSince || 0) - 1) : 0;
+    const streakSurvives =
+        decay.state !== "idle" ||
+        (orbit.streak.current > 0 && orbit.freeze.tokens >= missedDays);
+    const displayCurrent = streakSurvives ? orbit.streak.current : 0;
     return {
         streak: {
-            current: orbit.streak.current,
+            current: displayCurrent,
             longest: orbit.streak.longest,
             lastActionDay: orbit.streak.lastActionDay,
             state: decay.state,                    // active | decaying | idle
@@ -57,6 +64,7 @@ function shapeOrbit(orbit, now = new Date()) {
             progress: m.progress,
             photons: m.stardust,
             stardust: m.stardust,
+            xp: cfg.XP.missionClaim,
             claimed: m.claimed,
             complete: m.progress >= m.target,
         })),

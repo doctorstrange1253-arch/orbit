@@ -71,9 +71,12 @@ exports.login = async (req, res) => {
 
         const user = await User.findOne({ email });
 
+        // Anti-enumeration: identical response whether the email is unknown or
+        // the password is wrong (mirrors the forgotPassword neutral response),
+        // so an attacker can't probe which emails have accounts.
         if (!user) {
-            return res.status(404).json({
-                message: "User not found"
+            return res.status(400).json({
+                message: "Invalid credentials"
             });
         }
 
@@ -190,9 +193,12 @@ exports.forgotPassword = async (req, res) => {
         // neutral anti-enumeration response below is preserved). This is what
         // reveals a misconfigured mailer in production, where the always-success
         // screen otherwise hides real send failures.
-        const emailConfigured = !!(process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS);
+        // The mailer sends via Brevo's HTTPS API (see utils/sendEmail.js), so the
+        // relevant config is BREVO_API_KEY + a verified sender — NOT the legacy
+        // EMAIL_HOST/EMAIL_USER/EMAIL_PASS SMTP vars this check used to test.
+        const emailConfigured = !!(process.env.BREVO_API_KEY && (process.env.BREVO_SENDER_EMAIL || process.env.EMAIL_USER));
         if (!emailConfigured) {
-            console.error('[forgot-password] EMAIL_* env vars are not fully configured — reset mail cannot be delivered. Set EMAIL_HOST / EMAIL_PORT / EMAIL_USER / EMAIL_PASS on the host and redeploy.');
+            console.error('[forgot-password] Brevo mailer is not configured — reset mail cannot be delivered. Set BREVO_API_KEY and BREVO_SENDER_EMAIL (a Brevo-verified sender) on the host and redeploy.');
         }
         // In non-prod, log the reset link so the flow can be verified without a live inbox.
         if (process.env.NODE_ENV !== 'production') {

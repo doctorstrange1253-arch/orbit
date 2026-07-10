@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createPortal } from 'react-dom';
 import { Phone, PhoneOff, X } from 'lucide-react';
 import useAppearanceStore from '../../store/appearanceStore';
 
@@ -65,7 +66,7 @@ const IncomingCallOverlay = ({ call, onAccept, onDecline, onIgnore }) => {
     };
   }, [call]);
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {call && (
         <motion.div
@@ -248,7 +249,8 @@ const IncomingCallOverlay = ({ call, onAccept, onDecline, onIgnore }) => {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 

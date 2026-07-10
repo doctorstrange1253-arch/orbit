@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Send, Share2, Check } from 'lucide-react';
+import { Star, Send, Share2, Check, X } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../services/api';
 import { useUIStore } from '../../store/uiStore';
@@ -103,8 +103,15 @@ const RatingModal = ({ isOpen, onClose, otherUser, callDuration }) => {
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="bg-dark-lighter border border-border-subtle rounded-3xl p-6 max-w-lg w-full"
+          className="relative bg-dark-lighter border border-border-subtle rounded-3xl p-6 max-w-lg w-full"
         >
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full text-text-muted hover:text-text-primary hover:bg-white/10 transition-colors"
+          >
+            <X size={20} />
+          </button>
           <h2 className="text-xl font-display font-bold text-text-primary text-center mb-4">
             Your session card 🌌
           </h2>
@@ -133,8 +140,15 @@ const RatingModal = ({ isOpen, onClose, otherUser, callDuration }) => {
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-dark-lighter border border-border-subtle rounded-3xl p-8 max-w-lg w-full"
+        className="relative bg-dark-lighter border border-border-subtle rounded-3xl p-8 max-w-lg w-full"
       >
+        <button
+          onClick={handleSkip}
+          aria-label="Close"
+          className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full text-text-muted hover:text-text-primary hover:bg-white/10 transition-colors"
+        >
+          <X size={20} />
+        </button>
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center mb-4">

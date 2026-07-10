@@ -185,6 +185,7 @@ function AppInner() {
     notifyUserOffline,
     notifyCallEnded,
     notifyPerfectMatch,
+    notifyMissedCall,
   } = useNotificationStore();
 
   // Durable-notification flash dedupe. Flashes can arrive two ways: the live
@@ -291,9 +292,12 @@ function AppInner() {
   // Auto-dismiss after 30 s
   useEffect(() => {
     if (!incomingCall) return;
-    const timer = setTimeout(() => setIncomingCall(null), 30000);
+    const timer = setTimeout(() => {
+      notifyMissedCall(incomingCall.callerName);
+      setIncomingCall(null);
+    }, 30000);
     return () => clearTimeout(timer);
-  }, [incomingCall]);
+  }, [incomingCall, notifyMissedCall]);
 
   // Socket.IO connection and event listeners
   useEffect(() => {
@@ -420,8 +424,9 @@ function AppInner() {
   }, []);
 
   const handleIgnoreCall = useCallback(() => {
+    if (incomingCall) notifyMissedCall(incomingCall.callerName);
     setIncomingCall(null);
-  }, []);
+  }, [incomingCall, notifyMissedCall]);
 
   return (
     <>

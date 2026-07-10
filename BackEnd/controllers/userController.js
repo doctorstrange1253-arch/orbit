@@ -32,7 +32,11 @@ exports.getStats = async (req, res) => {
 // ================= GET PROFILE =================
 exports.getProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select("-password");
+        // Exclude secrets even from the owner: the admin credential sub-doc
+        // (bcrypt hash, encrypted TOTP secret, backup codes) and the password-
+        // reset token must never travel to any client.
+        const user = await User.findById(req.user.id)
+            .select("-password -admin -resetPasswordToken -resetPasswordExpires");
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -49,7 +53,13 @@ exports.getProfile = async (req, res) => {
 // ================= GET PUBLIC PROFILE =================
 exports.getPublicProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select("-password -email -loginCount -lastLogin -reportCount -warningCount -banCount -bannedUntil -isFlagged -flagReason");
+        // ALLOWLIST projection. The old denylist ("-password -email …") still
+        // exposed sensitive fields it didn't know about — resetPasswordToken,
+        // resetPasswordExpires, the admin credential sub-document, fcmTokens,
+        // lastLoginEmailAt. An explicit allowlist can never leak a new field.
+        const user = await User.findById(req.params.id).select(
+            "name bio avatar socialLinks location languages trustScore totalRatings averageRating lastSeen createdAt cosmic orbit.cosmetics orbit.streak.current orbit.streak.longest city region country"
+        );
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -83,7 +93,7 @@ exports.updateProfile = async (req, res) => {
             req.user.id,
             { name, bio, location, languages, socialLinks },
             { new: true, runValidators: true }
-        ).select("-password");
+        ).select("-password -admin -resetPasswordToken -resetPasswordExpires");
 
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
@@ -115,7 +125,7 @@ exports.uploadAvatar = async (req, res) => {
             req.user.id,
             { avatar: avatarUrl },
             { new: true, returnDocument: 'after' }
-        ).select("-password");
+        ).select("-password -admin -resetPasswordToken -resetPasswordExpires");
 
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
@@ -154,7 +164,7 @@ exports.updateAvatarUrl = async (req, res) => {
             req.user.id,
             { avatar: avatar || "" },
             { new: true }
-        ).select("-password");
+        ).select("-password -admin -resetPasswordToken -resetPasswordExpires");
 
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });

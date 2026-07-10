@@ -5,3 +5,4 @@ export { VideoCallHistorySkeleton } from './VideoCallHistorySkeleton';
 export { ChatListSkeleton, ChatMessagesSkeleton } from './ChatSkeleton';
 export { ConnectionListSkeleton } from './ConnectionListSkeleton';
 export { ProfileHeaderSkeleton } from './ProfileHeaderSkeleton';
+export { StoreCardSkeleton, StoreGridSkeleton } from './StoreGridSkeleton';

@@ -207,15 +207,15 @@ async function recordOrbitAction(io, userId, metric, opts = {}) {
         if (res.milestone) {
             createNotification(io, userId, {
                 type: "orbit_milestone",
-                title: `🚀 ${res.milestone.name} reached!`,
-                body: `${res.streak.current}-day orbit — recognized with +${res.milestone.stardust} ✨ Photons.`,
+                title: `${res.milestone.name} reached`,
+                body: `${res.streak.current}-day orbit — awarded ${res.milestone.stardust} Photons.`,
                 data: { link: "/orbit", streak: res.streak.current, stardust: res.milestone.stardust, photons: res.milestone.stardust },
             }).catch(() => {});
         }
         if (res.streakSaved) {
             createNotification(io, userId, {
                 type: "orbit_freeze_used",
-                title: "🛡️ Gravity Assist engaged",
+                title: "Gravity Assist engaged",
                 body: `A missed day was bridged — your ${res.streak.current}-day orbit is intact. ${orbit.freeze.tokens} left.`,
                 data: { link: "/orbit", freezeTokens: orbit.freeze.tokens },
             }).catch(() => {});
@@ -223,8 +223,8 @@ async function recordOrbitAction(io, userId, metric, opts = {}) {
         for (const c of completed) {
             createNotification(io, userId, {
                 type: "orbit_mission_complete",
-                title: "🎯 Mission complete",
-                body: `“${c.label}” is done — claim +${c.stardust} ✨ Photons.`,
+                title: "Mission complete",
+                body: `“${c.label}” is complete — claim ${c.stardust} Photons.`,
                 data: { link: "/orbit", missionKey: c.key, stardust: c.stardust, photons: c.stardust },
             }).catch(() => {});
         }

@@ -72,7 +72,7 @@
 
     /* Chat bubble colors for dark mode */
     --bubble-outgoing: linear-gradient(135deg, #0072ff, #00c6ff);
-    --bubble-incoming: rgba(255, 255, 255, 0.08);
+    --bubble-incoming: rgba(255, 255, 255, 0.16);
 
     /* Send button accent */
     --send-button-bg: linear-gradient(135deg, #00c6ff, #0072ff);

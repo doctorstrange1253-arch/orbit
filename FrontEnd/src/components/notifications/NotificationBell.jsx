@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Bell, Handshake, Users, CheckCheck, Inbox } from 'lucide-react';
+import { Bell, Handshake, Users, Trash2, Inbox } from 'lucide-react';
 import PhotonIcon from '../../cosmic/PhotonIcon';
 import api from '../../services/api';
 import { useUIStore } from '../../store/uiStore';
@@ -51,16 +51,16 @@ const NotificationBell = () => {
     enabled: open,
   });
 
-  const markRead = useMutation({
-    mutationFn: (id) => api.patch(`/notifications/${id}/read`),
+  const deleteOne = useMutation({
+    mutationFn: (id) => api.delete(`/notifications/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications', 'unread'] });
       queryClient.invalidateQueries({ queryKey: ['notifications', 'list'] });
     },
   });
 
-  const markAllRead = useMutation({
-    mutationFn: () => api.patch('/notifications/read-all'),
+  const clearAll = useMutation({
+    mutationFn: () => api.delete('/notifications/clear-all'),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications', 'unread'] });
       queryClient.invalidateQueries({ queryKey: ['notifications', 'list'] });
@@ -85,7 +85,7 @@ const NotificationBell = () => {
   const items = list?.items || [];
 
   const onItemClick = (n) => {
-    if (!n.read) markRead.mutate(n._id);
+    deleteOne.mutate(n._id);
     setOpen(false);
     const link = n.data?.link;
     if (link) navigate(link);
@@ -136,10 +136,10 @@ const NotificationBell = () => {
               <span className="text-sm font-semibold text-text-primary">Notifications</span>
               {count > 0 && (
                 <button
-                  onClick={() => markAllRead.mutate()}
+                  onClick={() => clearAll.mutate()}
                   className="flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors"
                 >
-                  <CheckCheck size={13} /> Mark all read
+                  <Trash2 size={13} /> Clear all
                 </button>
               )}
             </div>

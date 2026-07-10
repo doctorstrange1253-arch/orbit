@@ -24,25 +24,20 @@ L.Icon.Default.mergeOptions({
 /* Custom marker icons */
 const makeIcon = (color, initials) => L.divIcon({
   className: '',
-  html: `<div style="
-    width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    font-family:Outfit,sans-serif;font-size:12px;font-weight:700;color:#fff;
-    background:${color};border:2.5px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,0.4);">
-    ${initials}
+  html: `<div style="position:relative;width:40px;height:52px;">
+    <div style="position:absolute;top:0;left:0;width:40px;height:40px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2.5px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.45);"></div>
+    <div style="position:absolute;top:5px;left:5px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Outfit,sans-serif;font-size:11px;font-weight:700;color:#fff;background:${color};">${initials}</div>
   </div>`,
-  iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20],
+  iconSize: [40, 52], iconAnchor: [20, 52], popupAnchor: [0, -50],
 });
 
 const youIcon = L.divIcon({
   className: '',
-  html: `<div style="
-    width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,#00c6ff,#7c3aed);border:3px solid #fff;
-    box-shadow:0 0 16px rgba(0,198,255,0.6),0 2px 10px rgba(0,0,0,0.4);
-    font-family:Outfit,sans-serif;font-size:11px;font-weight:800;color:#fff;">
-    YOU
+  html: `<div style="position:relative;width:44px;height:58px;">
+    <div style="position:absolute;top:0;left:0;width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(135deg,#00c6ff,#7c3aed);border:3px solid #fff;box-shadow:0 0 16px rgba(0,198,255,0.6),0 3px 10px rgba(0,0,0,0.4);"></div>
+    <div style="position:absolute;top:6px;left:6px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Outfit,sans-serif;font-size:10px;font-weight:800;color:#fff;background:linear-gradient(135deg,#00c6ff,#7c3aed);">YOU</div>
   </div>`,
-  iconSize: [38, 38], iconAnchor: [19, 19], popupAnchor: [0, -22],
+  iconSize: [44, 58], iconAnchor: [22, 58], popupAnchor: [0, -56],
 });
 
 const FlyTo = ({ center, zoom }) => {

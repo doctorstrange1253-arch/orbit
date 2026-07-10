@@ -43,8 +43,8 @@ async function creditTeaching(io, skillId) {
             const view = masteryFor(newCount, skill.skillOffered);
             createNotification(io, skill.userId, {
                 type: "skill_mastery",
-                title: `🎓 ${view.badge}!`,
-                body: `${newCount} session${newCount === 1 ? "" : "s"} taught in ${skill.skillOffered} — recognized with +${crossed.stardust} ✨ Photons.`,
+                title: `${view.badge}`,
+                body: `${newCount} session${newCount === 1 ? "" : "s"} taught in ${skill.skillOffered} — awarded ${crossed.stardust} Photons.`,
                 data: { link: "/dashboard", skillId: String(skill._id), rank: crossed.title, stardust: crossed.stardust },
             }).catch(() => {});
         }

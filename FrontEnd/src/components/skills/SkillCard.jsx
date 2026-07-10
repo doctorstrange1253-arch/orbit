@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { motion } from 'framer-motion';
-import { Trash2, Video, UserPlus, Send, Globe, Star } from 'lucide-react';
+import { Trash2, Video, UserPlus, Send, Globe, Star, MessageCircle } from 'lucide-react';
 import api from '../../services/api';
 import Avatar from '../common/Avatar';
 import CosmicBadge from '../../cosmic/CosmicBadge';
@@ -19,7 +19,7 @@ const LEVEL_STYLES = {
   advanced:     { bg: 'rgba(0,198,255,0.1)',  border: 'rgba(0,198,255,0.3)',  color: '#00c6ff' },
 };
 
-const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings }) => {
+const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, isConnected, onMessage, onCall }) => {
   const { user } = useAuthStore();
   const { addToast } = useUIStore();
   const queryClient = useQueryClient();
@@ -58,6 +58,16 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings })
     e.stopPropagation();
     onConnect?.(skill._id, owner?._id);
   }, [onConnect, skill._id, owner?._id]);
+
+  const handleMessageClick = useCallback((e) => {
+    e.stopPropagation();
+    onMessage?.();
+  }, [onMessage]);
+
+  const handleCallClick = useCallback((e) => {
+    e.stopPropagation();
+    onCall?.();
+  }, [onCall]);
 
   return (
     <motion.div
@@ -190,19 +200,26 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings })
 
       {variant === 'match' && !isOwner && (
         <div className="flex gap-2">
+          {isConnected ? (
+            <button
+              onClick={handleMessageClick}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all text-accent border border-accent/30 bg-accent/5 hover:bg-accent/10"
+            >
+              <MessageCircle size={14} /> Message
+            </button>
+          ) : (
+            <button
+              onClick={handleConnect}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all text-accent border border-accent/30 bg-accent/5 hover:bg-accent/10"
+            >
+              <Send size={14} /> Request
+            </button>
+          )}
           <button
-            onClick={handleConnect}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all text-accent hover:bg-accent/10"
-            style={{ border: '1px solid rgba(0,198,255,0.3)', background: 'rgba(0,198,255,0.06)' }}
-          >
-            <Send size={14} /> Request
-          </button>
-          <button
-            onClick={(e) => e.stopPropagation()}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium opacity-40 cursor-not-allowed"
-            style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-surface-hover)' }}
-            disabled
-            title="Connect first to call"
+            onClick={handleCallClick}
+            disabled={!isConnected}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all border ${isConnected ? 'btn-gradient border-transparent' : 'opacity-40 cursor-not-allowed border-border-subtle bg-surface-hover'}`}
+            title={isConnected ? 'Start a video call' : 'Connect first to call'}
           >
             <Video size={14} /> Call
           </button>

@@ -34,7 +34,7 @@ export default function OrbitStreakBadge({ variant = 'chip', className = '' }) {
           : decaying ? `Your orbit is decaying — act today to keep your ${current}-day streak`
           : 'Start your Orbit streak'
       }
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ${s.ring} bg-slate-900/50 backdrop-blur ${s.text} ${className}`}
+      className={`orbit-streak-badge inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ${s.ring} bg-slate-900/50 backdrop-blur ${s.text} ${className}`}
       style={{ boxShadow: s.glow }}
       aria-label={`Orbit streak ${label} days, ${state}`}
     >

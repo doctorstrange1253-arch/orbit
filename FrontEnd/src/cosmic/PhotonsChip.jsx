@@ -67,7 +67,7 @@ export default function PhotonsChip({ variant = 'nav', className = '' }) {
   const zero = amount <= 0;
 
   return (
-    <div className={`relative inline-flex ${className}`}>
+    <div className={`photons-chip relative inline-flex ${className}`}>
       <motion.button
         type="button"
         onClick={openShop}

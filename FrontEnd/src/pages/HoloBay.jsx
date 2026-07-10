@@ -27,18 +27,19 @@ import { rarityOf, rarityVars, cardGlowClass, RARITY_ORDER } from '../cosmic/rar
 import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
 import './holobay.css';
+import { SkelBox } from '../components/ui/SkeletonPrimitives';
 
 function Swatch({ item, size = 40 }) {
   const meta = COSMETIC_RENDER[item.key] || {};
   if (item.type === 'avatar_deco')
     return (
-      <span className="relative grid h-full w-full place-items-center overflow-hidden rounded-full">
+      <span className="relative grid place-items-center overflow-hidden rounded-full" style={ { width: size, height: size } }>
         <span className={meta.decoClass} aria-hidden="true" />
       </span>
     );
   if (item.type === 'profile_effect')
     return (
-      <span className="relative grid h-full w-full place-items-center overflow-hidden rounded-lg bg-slate-900/70">
+      <span className="relative grid place-items-center overflow-hidden rounded-lg bg-slate-900/70" style={ { width: size, height: size } }>
         <span className={meta.effectClass} aria-hidden="true" />
       </span>
     );
@@ -162,12 +163,25 @@ export default function HoloBay() {
   };
 
   if (!data) {
-    return <div className="py-24 text-center text-slate-500">Warming up the Holo-Bay…</div>;
+    return (
+      <div className="cosmic-page relative min-h-screen">
+        <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
+          <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <SkelBox h={420} r={24} />
+            <div className="flex flex-col gap-3">
+              <SkelBox h={120} r={20} />
+              <SkelBox h={120} r={20} />
+              <SkelBox h={120} r={20} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="cosmic-page relative min-h-screen">
-      <div className="pointer-events-none fixed inset-0 -z-10" style={{
+      <div className="pointer-events-none fixed inset-0 -z-10 cosmic-backdrop" style={{
         background:
           'radial-gradient(55% 45% at 20% 10%, rgba(56,189,248,.13), transparent 60%),' +
           'radial-gradient(55% 55% at 82% 18%, rgba(139,92,246,.16), transparent 62%),' +

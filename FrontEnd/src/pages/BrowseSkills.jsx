@@ -28,7 +28,7 @@ const SORT_OPTIONS = [
 const BrowseSkills = () => {
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounce(search, 300);
-  const [sortBy, setSortBy] = useState('newest');
+  const [sortBy, setSortBy] = useState('rating');
   const [isSortOpen, setIsSortOpen] = useState(false);
   const sortRef = useRef(null);
   const [viewRatingsUser, setViewRatingsUser] = useState(null);
@@ -86,7 +86,7 @@ const BrowseSkills = () => {
     } else if (sortBy === 'rating') {
       list.sort((a, b) => (b.userId?.trustScore || 0) - (a.userId?.trustScore || 0));
     } else if (sortBy === 'name') {
-      list.sort((a, b) => (a.skillOffered || '').localeCompare(b.skillOffered || ''));
+      list.sort((a, b) => (a.userId?.name || '').toLowerCase().localeCompare((b.userId?.name || '').toLowerCase()));
     }
     
     return list;

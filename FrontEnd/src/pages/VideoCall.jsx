@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -58,11 +58,23 @@ const DirectVideoCall = ({ roomId, onEnd, otherUser, isCaller, autoBoard }) => {
   const [isConnecting, setIsConnecting] = useState(true);
   const [showWhiteboard, setShowWhiteboard] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
+  const [ending, setEnding] = useState(false);
 
   const isMobile = useIsMobile();
   // Reset-layout affordance for the draggable PiP tiles (Phase C).
   const resetLayout = useCallLayoutStore((s) => s.resetLayout);
   const layoutCustomized = useCallLayoutStore((s) => !!(s.self || s.remote));
+
+  // Callback ref: attach the remote stream the moment the PiP <video> mounts.
+  // DraggableVideoTile renders a 0x0 anchor first and only mounts its children
+  // once measured, so a plain effect can miss the node (remote user invisible on
+  // mobile). Assigning here guarantees the stream is bound as soon as it exists.
+  const attachRemotePip = useCallback((node) => {
+    remotePipRef.current = node;
+    if (node && remoteVideoRef.current) {
+      node.srcObject = remoteVideoRef.current.srcObject;
+    }
+  }, []);
 
   useEffect(() => {
     setVideoCallActive(true);
@@ -233,6 +245,11 @@ const DirectVideoCall = ({ roomId, onEnd, otherUser, isCaller, autoBoard }) => {
           handleCallEnd();
         });
 
+        // Peer opened/closed the shared whiteboard -- mirror it on our side.
+        socketRef.current.on('whiteboard-toggle', ({ open }) => {
+          setShowWhiteboard(!!open);
+        });
+
         setIsConnecting(false);
 
       } catch (err) {
@@ -286,6 +303,12 @@ const DirectVideoCall = ({ roomId, onEnd, otherUser, isCaller, autoBoard }) => {
       socketRef.current.emit('leave-video-room', { roomId });
     }
 
+    // V3/Q3 -- fully tear down the shared whiteboard: close it on the peer and
+    // delete the persisted snapshot so it can't rehydrate into a future call.
+    if (socketRef.current) socketRef.current.emit('whiteboard-toggle', { roomId, open: false });
+    api.delete(`/whiteboard/${roomId}`).catch(() => {});
+    setShowWhiteboard(false);
+
     // Calculate call duration
     let callDuration = 0;
     if (callStartTimeRef.current) {
@@ -302,7 +325,10 @@ const DirectVideoCall = ({ roomId, onEnd, otherUser, isCaller, autoBoard }) => {
       });
     }
 
-    onEnd(callDuration, otherUser);
+    // CALL3/CALL4 -- show a brief hang-up confirmation before unmounting so the
+    // end of the call is visible instead of the screen cutting out abruptly.
+    setEnding(true);
+    setTimeout(() => onEnd(callDuration, otherUser), 1400);
   };
 
   const toggleAudio = () => {
@@ -363,6 +389,13 @@ const DirectVideoCall = ({ roomId, onEnd, otherUser, isCaller, autoBoard }) => {
     }
   }, [showWhiteboard, isConnected]);
 
+  // V1 -- broadcast whiteboard open/close so the peer's board opens/closes too.
+  const toggleWhiteboard = (open) => {
+    const next = typeof open === 'boolean' ? open : !showWhiteboard;
+    setShowWhiteboard(next);
+    if (socketRef.current) socketRef.current.emit('whiteboard-toggle', { roomId, open: next });
+  };
+
   // Control-bar sizing — compact on phone-portrait so 5 controls + the safe-area
   // inset fit one row without clipping; roomier on desktop.
   const btn = isMobile
@@ -402,7 +435,7 @@ const DirectVideoCall = ({ roomId, onEnd, otherUser, isCaller, autoBoard }) => {
                 roomId={roomId}
                 user={user}
                 otherUser={otherUser}
-                onClose={() => setShowWhiteboard(false)}
+                onClose={() => toggleWhiteboard(false)}
               />
             </div>
           </Suspense>
@@ -412,7 +445,7 @@ const DirectVideoCall = ({ roomId, onEnd, otherUser, isCaller, autoBoard }) => {
             (video pointerEvents:none so the tile's drag handlers get the gesture) */}
         {showWhiteboard && (
           <DraggableVideoTile tileId="remote" defaultCorner="tl" defaultSize={{ w: 150, h: 110 }} label="Their video">
-            <video ref={remotePipRef} autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }} />
+            <video ref={attachRemotePip} autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }} />
           </DraggableVideoTile>
         )}
 
@@ -486,20 +519,19 @@ const DirectVideoCall = ({ roomId, onEnd, otherUser, isCaller, autoBoard }) => {
         </button>
 
         {/* Screen share (desktop web only — Android WebView has no getDisplayMedia) */}
-        {canScreenShare() && (
-          <button
-            onClick={toggleScreenShare}
-            title={isSharing ? 'Stop sharing screen' : 'Share screen'}
-            aria-label={isSharing ? 'Stop sharing screen' : 'Share screen'}
-            style={{ ...ctrlBtn, background: isSharing ? 'linear-gradient(135deg,#00c6ff,#7c3aed)' : 'rgba(255,255,255,0.12)' }}
-          >
-            <MonitorUp size={btn.icon} color="#fff" />
-          </button>
-        )}
+        <button
+          onClick={canScreenShare() ? toggleScreenShare : undefined}
+          disabled={!canScreenShare()}
+          title={canScreenShare() ? (isSharing ? 'Stop sharing screen' : 'Share screen') : 'Screen sharing is available on desktop only'}
+          aria-label={canScreenShare() ? (isSharing ? 'Stop sharing screen' : 'Share screen') : 'Screen sharing is available on desktop only'}
+            style={{ ...ctrlBtn, opacity: canScreenShare() ? 1 : 0.4, cursor: canScreenShare() ? 'pointer' : 'not-allowed', background: isSharing ? 'linear-gradient(135deg,#00c6ff,#7c3aed)' : 'rgba(255,255,255,0.12)' }}
+        >
+          <MonitorUp size={btn.icon} color="#fff" />
+        </button>
 
         {/* Whiteboard */}
         <button
-          onClick={() => setShowWhiteboard((s) => !s)}
+          onClick={() => toggleWhiteboard()}
           title={showWhiteboard ? 'Close whiteboard' : 'Open whiteboard'}
           aria-label={showWhiteboard ? 'Close whiteboard' : 'Open whiteboard'}
           style={{ ...ctrlBtn, background: showWhiteboard ? 'linear-gradient(135deg,#00c6ff,#7c3aed)' : 'rgba(255,255,255,0.12)' }}
@@ -507,6 +539,27 @@ const DirectVideoCall = ({ roomId, onEnd, otherUser, isCaller, autoBoard }) => {
           <PenTool size={btn.icon} color="#fff" />
         </button>
       </div>
+
+      {ending && (
+        <motion.div
+          initial={ { opacity: 0 } }
+          animate={ { opacity: 1 } }
+          style={ { position: 'absolute', inset: 0, zIndex: 60, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, background: 'rgba(6,8,16,0.92)', backdropFilter: 'blur(10px)' } }
+        >
+          <motion.div
+            initial={ { scale: 0.5, opacity: 0 } }
+            animate={ { scale: 1, opacity: 1 } }
+            transition={ { type: 'spring', stiffness: 260, damping: 18 } }
+            style={ { width: 88, height: 88, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #ff0076, #ff4b4b)', boxShadow: '0 10px 40px rgba(255,0,118,0.5)' } }
+          >
+            <PhoneOff size={40} color="#fff" />
+          </motion.div>
+          <p style={ { color: '#fff', fontSize: 20, fontWeight: 700, margin: 0 } }>Call ended</p>
+          <p style={ { color: 'rgba(255,255,255,0.55)', fontSize: 13, margin: 0 } }>
+            {otherUser?.name ? `Your session with ${otherUser.name} has ended` : 'Your session has ended'}
+          </p>
+        </motion.div>
+      )}
     </div>
   );
 };

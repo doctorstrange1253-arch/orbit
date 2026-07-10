@@ -166,7 +166,7 @@ const ConversationList = ({ onSelect, selectedId, onlineUsers, onConversationDel
                   </span>
                 </div>
                 <p className={`text-xs truncate ${convo.unreadCount > 0 ? 'text-text-secondary font-medium' : 'text-text-muted'}`}>
-                  {convo.lastMessage?.deletedForEveryone ? '🚫 Message deleted' : (convo.lastMessage?.content || 'No messages yet')}
+                  {convo.lastMessage?.deletedForEveryone ? 'Message deleted' : (convo.lastMessage?.content || 'No messages yet')}
                 </p>
               </div>
             </button>
@@ -659,6 +659,10 @@ const ChatWindow = ({ otherUser, onBack, onlineUsers, isExpanded }) => {
           
           const showDate = i === 0 || (isValidDate(currDate) && isValidDate(prevDate) && !isSameDay(prevDate, currDate));
           
+          // C1 -- a message deleted for everyone is removed from the thread
+          // entirely (no lingering "This message was deleted" tombstone).
+          if (msg.deletedForEveryone) return null;
+
           return (
             <div key={msg._id || i}>
               {showDate && <DateSeparator date={msg.createdAt} />}
