@@ -12,9 +12,10 @@ import Spinner from '../components/common/Spinner';
 import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
 import useLiftoffStore from '../cosmic/liftoffStore';
-import { oauthClickHandler } from '../services/nativeAuth';
+import { oauthClickHandler, OAUTH_BASE } from '../services/nativeAuth';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000';
+// OAuth links go straight to the backend (see OAUTH_BASE) — not the Worker.
+const API_BASE = OAUTH_BASE;
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),

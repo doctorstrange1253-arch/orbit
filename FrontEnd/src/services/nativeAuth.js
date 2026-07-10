@@ -14,14 +14,22 @@ import { useAuthStore } from '../store/authStore';
 
 export const isNativeApp = () => Capacitor.isNativePlatform();
 
-const API_BASE =
+// OAuth must hit the backend DIRECTLY, never the Cloudflare Worker (VITE_API_URL).
+// The Worker load-balances REST but can't be relied on to proxy the /api/auth/*
+// 302 redirect chain (backend -> provider -> backend/callback), and passport
+// pins redirect_uri to the backend's own BACKEND_URL anyway. So prefer an
+// explicit VITE_OAUTH_URL (the direct Render origin); fall back to the REST base
+// with /api stripped, then localhost for dev.
+export const OAUTH_BASE = (
+  import.meta.env.VITE_OAUTH_URL ||
   import.meta.env.VITE_API_URL?.replace('/api', '') ||
-  (import.meta.env.PROD ? 'https://skillswap-backend-mb4k.onrender.com' : 'http://localhost:8000');
+  'http://localhost:8000'
+).replace(/\/$/, '');
 
 /** Open a provider's OAuth flow in the system browser (native only). */
 export async function startNativeOAuth(provider) {
   const { Browser } = await import('@capacitor/browser');
-  await Browser.open({ url: `${API_BASE}/api/auth/${provider}?client=app` });
+  await Browser.open({ url: `${OAUTH_BASE}/api/auth/${provider}?client=app` });
 }
 
 /**
