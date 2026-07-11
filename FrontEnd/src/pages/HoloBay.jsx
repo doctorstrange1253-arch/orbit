@@ -16,8 +16,9 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Check, Lock, ArrowLeft } from 'lucide-react';
+import { Check, Lock, ArrowLeft, Shuffle, RotateCcw } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
+import PhotonAmount from '../cosmic/PhotonAmount';
 import GlowName from '../cosmic/GlowName';
 import Nameplate from '../cosmic/Nameplate';
 import ItemIcon from '../cosmic/itemIcons';
@@ -144,6 +145,31 @@ export default function HoloBay() {
   const effectItem = effects.find((e) => e.key === effectKey) || null;
   const plateItem = plates.find((p) => p.key === plateKey) || null;
 
+  // Quantum Shuffle — dress the hologram in one random item per slot. Pure
+  // preview state; nothing is bought or equipped.
+  const rand = (list) => (list.length ? list[Math.floor(Math.random() * list.length)].key : null);
+  const shuffleLook = () => {
+    setTryGlow(rand(glows));
+    setTryBg(rand(backgrounds));
+    setTryDeco(rand(decos));
+    setTryEffect(rand(effects));
+    setTryPlate(rand(plates));
+  };
+  // Back to reality — undefined falls through to whatever is actually equipped.
+  const resetLook = () => {
+    setTryGlow(undefined);
+    setTryBg(undefined);
+    setTryDeco(undefined);
+    setTryEffect(undefined);
+    setTryPlate(undefined);
+  };
+
+  // Price the previewed look: total of previewed items you DON'T own yet.
+  const previewItems = [glowItem, bgItem, decoItem, effectItem, plateItem].filter(Boolean);
+  const unownedPreview = previewItems.filter((it) => !it.owned);
+  const lookTotal = unownedPreview.reduce((sum, it) => sum + (it.cost || 0), 0);
+  const balance = data?.photons ?? data?.stardust ?? 0;
+
   const busy = buy.isPending || equip.isPending;
   const onBuy = (key) => buy.mutate(key, {
     onSuccess: (d) => addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent ✨`, 'success'),
@@ -208,10 +234,31 @@ export default function HoloBay() {
           </h1>
           <div className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1.5 ring-1 ring-violet-400/40">
             <PhotonIcon size={15} />
-            <span className="text-sm font-black tabular-nums text-violet-100">{(data.photons ?? data.stardust ?? 0).toLocaleString()}</span>
+            <PhotonAmount value={data.photons ?? data.stardust ?? 0} className="text-sm font-black text-violet-100" />
           </div>
         </div>
         <p className="mt-1.5 text-sm text-slate-400">Try any look on a live hologram of your profile. Nothing is spent until you Buy or Equip.</p>
+
+        {/* stage controls — play with a random look, or snap back to reality */}
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <button onClick={shuffleLook}
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-black text-slate-900"
+            style={{ background: 'linear-gradient(90deg,#38bdf8,#8b5cf6,#ec4899)' }}>
+            <Shuffle size={13} /> Quantum Shuffle
+          </button>
+          <button onClick={resetLook}
+            className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1.5 text-xs font-bold text-slate-300 ring-1 ring-white/10 hover:bg-white/10">
+            <RotateCcw size={13} /> Reset to equipped
+          </button>
+          {lookTotal > 0 && (
+            <span className={`ml-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ring-1
+              ${lookTotal <= balance ? 'text-emerald-300 ring-emerald-400/40 bg-emerald-500/10' : 'text-rose-300 ring-rose-400/40 bg-rose-500/10'}`}>
+              <PhotonIcon size={13} animated={false} />
+              Look total: {lookTotal.toLocaleString()}
+              {lookTotal <= balance ? ' — you can afford it' : ` — ${(lookTotal - balance).toLocaleString()} short`}
+            </span>
+          )}
+        </div>
 
         <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
           {/* ── HOLOGRAM STAGE ── */}
@@ -315,7 +362,7 @@ export default function HoloBay() {
             <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3">
               <div className="mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">Rarity</div>
               <div className="flex flex-wrap gap-1.5">
-                {RARITY_ORDER.slice(0, 12).map((r) => (
+                {RARITY_ORDER.map((r) => (
                   <span key={r.key} className="rar-badge" style={{ ...rarityVars(r.key), fontSize: 9, padding: '1px 6px' }}>{r.label}</span>
                 ))}
               </div>

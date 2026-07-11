@@ -31,11 +31,39 @@
   88%, 100% { transform: translateX(130%) skewX(-16deg); opacity: 0; }
 }
 
+/* Ring energy flow — a dashed stroke drifting along the ellipse so the orbit
+   reads as circulating photons, not a static band. The dash period (48) divides
+   the ellipse circumference closely enough that the loop shows no seam. */
+.photon-icon__ring {
+  stroke-dasharray: 34 14;
+  animation: photon-ring-flow 5.5s linear infinite;
+}
+
+@keyframes photon-ring-flow {
+  to { stroke-dashoffset: -96; }
+}
+
+/* Quantum satellite twinkle — brightens as the halo pulse peaks (74%), so the
+   whole mark "catches the light" as one event. */
+.photon-icon__sat {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: photon-sat-twinkle 5.5s ease-in-out infinite;
+}
+
+@keyframes photon-sat-twinkle {
+  0%, 58%, 100% { opacity: 0.85; transform: scale(1); }
+  74%           { opacity: 1;    transform: scale(1.35); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .photon-icon--anim { animation: none; }
   .photon-icon__sweep { display: none; }
+  .photon-icon__ring, .photon-icon__sat { animation: none; }
 }
 
 /* App-wide "Animation Speed = 0 / off" switch used elsewhere in the app. */
 [data-anim-off="true"] .photon-icon--anim { animation: none; }
 [data-anim-off="true"] .photon-icon__sweep { display: none; }
+[data-anim-off="true"] .photon-icon__ring,
+[data-anim-off="true"] .photon-icon__sat { animation: none; }

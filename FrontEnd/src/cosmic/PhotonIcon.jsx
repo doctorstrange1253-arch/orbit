@@ -46,9 +46,14 @@ export default function PhotonIcon({ size = 20, animated = true, className = '',
         </clipPath>
       </defs>
 
-      {/* Orbital ring (behind the core) */}
+      {/* Orbital ring (behind the core) — when animated, energy circulates
+          along the stroke (dash flow) so the ring reads as a live particle path */}
       <g transform="rotate(-24 50 50)">
-        <ellipse cx="50" cy="50" rx="44" ry="15" fill="none" stroke={`url(#${ring})`} strokeWidth="4" opacity="0.9" />
+        <ellipse
+          className={animated ? 'photon-icon__ring' : undefined}
+          cx="50" cy="50" rx="44" ry="15" fill="none"
+          stroke={`url(#${ring})`} strokeWidth="4" opacity="0.9"
+        />
       </g>
 
       {/* Glowing photon core */}
@@ -56,8 +61,12 @@ export default function PhotonIcon({ size = 20, animated = true, className = '',
       {/* Static inner highlight so it always reads as a rounded, lit orb */}
       <ellipse cx="42" cy="40" rx="8" ry="5" fill="#ffffff" opacity="0.45" />
 
-      {/* Bright quantum satellite riding the ring (in front) */}
-      <circle cx="88" cy="32" r="5" fill="#f5d0fe" stroke="#ffffff" strokeWidth="1.5" />
+      {/* Bright quantum satellite riding the ring (in front) — twinkles in sync
+          with the halo pulse when animated */}
+      <circle
+        className={animated ? 'photon-icon__sat' : undefined}
+        cx="88" cy="32" r="5" fill="#f5d0fe" stroke="#ffffff" strokeWidth="1.5"
+      />
 
       {/* Periodic diagonal gloss sweep (clipped to the core) — the "reflection" */}
       {animated && (

@@ -32,9 +32,10 @@ export const RARITY = Object.freeze({
   MULTIVERSAL:   { order: 15, label: 'Multiversal',   color: '#a855f7', glow: 40, card: true,  iridescent: true, blurb: 'Beyond a single universe — the ultimate tier.' },
 });
 
-// Tiers that ship LIVE at launch (representative low→high subset). The other 10
-// stay defined above for later use.
-export const LIVE_TIERS = Object.freeze(['LUNAR', 'STELLAR', 'COSMIC', 'HYPERNOVA', 'SINGULARITY']);
+// Tiers currently purchasable in the store. The catalog now sells every tier of
+// the ladder, so all 15 are live (was a 5-tier launch subset — the legend used
+// to dim tiers as "coming soon" while items of those tiers were on sale).
+export const LIVE_TIERS = Object.freeze(Object.keys(RARITY));
 
 const FALLBACK = RARITY.LUNAR;
 

@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Check, Lock, Sparkles as SparkIcon, FlaskConical } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
+import PhotonAmount from '../cosmic/PhotonAmount';
 import ItemIcon from '../cosmic/itemIcons';
 import { useShop, useBuyCosmetic, useEquipCosmetic } from '../cosmic/useShop';
 import { COSMETIC_RENDER } from '../cosmic/cosmetics';
@@ -200,6 +201,7 @@ export default function Shop() {
 
   const [tab, setTab] = useState('all');
   const [sort, setSort] = useState('featured');
+  const [ownedOnly, setOwnedOnly] = useState(false);
   const reset = useMemo(() => nextReset(), []);
   const cd = useCountdown(reset);
 
@@ -215,15 +217,18 @@ export default function Shop() {
   const catalog = useMemo(() => data?.catalog || [], [data]);
   const busy = buy.isPending || equip.isPending;
 
+  const ownedCount = useMemo(() => catalog.filter((c) => c.owned).length, [catalog]);
+
   const items = useMemo(() => {
     let list = catalog.filter((c) => tab === 'all' || (c.category || c.type) === tab);
+    if (ownedOnly) list = list.filter((c) => c.owned);
     const rank = (c) => rarityOf(c.rarity).order;
     if (sort === 'rarity') list = [...list].sort((a, b) => rank(a) - rank(b));
     else if (sort === 'price_lo') list = [...list].sort((a, b) => a.cost - b.cost);
     else if (sort === 'price_hi') list = [...list].sort((a, b) => b.cost - a.cost);
     else list = [...list].sort((a, b) => rank(b) - rank(a)); // featured = rarest first
     return list;
-  }, [catalog, tab, sort]);
+  }, [catalog, tab, sort, ownedOnly]);
 
   // Featured = the single rarest item the viewer doesn't own yet (or rarest overall).
   const featured = useMemo(() => {
@@ -270,15 +275,18 @@ export default function Shop() {
             <div className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1.5 ring-1 ring-violet-400/40 backdrop-blur"
                  style={{ boxShadow: '0 0 16px rgba(139,92,246,.25)' }}>
               <PhotonIcon size={16} />
-              <span className="text-sm font-black tabular-nums text-violet-100">
-                {(data?.photons ?? data?.stardust ?? 0).toLocaleString()}
-              </span>
+              <PhotonAmount value={data?.photons ?? data?.stardust ?? 0} className="text-sm font-black text-violet-100" />
               <span className="text-[11px] font-semibold text-slate-400">Photons</span>
             </div>
           </div>
         </div>
         <p className="mt-1.5 text-sm text-slate-400">
           Spend your Photons on glows, nebulae and effects. Equipped looks are visible to everyone across Orbit.
+          {catalog.length > 0 && (
+            <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-white/5 px-2 py-0.5 text-[11px] font-bold text-slate-300 ring-1 ring-white/10 align-middle">
+              Collection {ownedCount}/{catalog.length}
+            </span>
+          )}
         </p>
 
         {/* ── featured rail with live countdown ── */}
@@ -337,10 +345,17 @@ export default function Shop() {
               </button>
             ))}
           </div>
+          <button
+            onClick={() => setOwnedOnly((v) => !v)}
+            className={`ml-auto rounded-full px-3.5 py-1.5 text-xs font-bold transition ${ownedOnly ? 'bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/40' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+            title="Show only items you own"
+          >
+            <Check size={11} className="mr-1 inline" /> Owned
+          </button>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="ml-auto rounded-full border border-white/10 bg-slate-900/60 px-3 py-1.5 text-xs font-semibold text-slate-200 outline-none"
+            className="rounded-full border border-white/10 bg-slate-900/60 px-3 py-1.5 text-xs font-semibold text-slate-200 outline-none"
           >
             {SORTS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
           </select>
@@ -350,7 +365,9 @@ export default function Shop() {
         {isLoading ? (
           <StoreGridSkeleton />
         ) : items.length === 0 ? (
-          <div className="py-20 text-center text-slate-500">Nothing here yet — check another tab.</div>
+          <div className="py-20 text-center text-slate-500">
+            {ownedOnly ? 'You don’t own anything in this tab yet — complete missions to earn Photons.' : 'Nothing here yet — check another tab.'}
+          </div>
         ) : (
           <div className="mt-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {items.map((it) => (
@@ -378,7 +395,7 @@ export default function Shop() {
             })}
           </div>
           <p className="mt-3 text-[11px] text-slate-500">
-            Glow intensity rises with rarity. Five tiers are live today; the rest unlock as the store grows.
+            Glow intensity rises with rarity — all 15 tiers are live, from humble Lunar to the ultimate Multiversal.
           </p>
         </div>
       </div>

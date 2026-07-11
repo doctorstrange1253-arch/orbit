@@ -47,6 +47,16 @@ const MISSION_TEMPLATES = Object.freeze([
     { key: "daily_pull",    metric: "streak_day", target: 6, stardust: 220, label: "Gravity Well",     description: "Stay in orbit 6 days this week" },
     { key: "one_swap",      metric: "swap",       target: 1, stardust: 70,  label: "First Contact",    description: "Complete 1 skill swap this week" },
     { key: "chatterbox",    metric: "message",    target: 15,stardust: 150, label: "Deep Space Comms", description: "Send 15 messages to partners" },
+    // Batch 2 — widens the pool so weekly sets repeat far less often. Same four
+    // metrics the action hook already emits; rewards stay proportional to effort.
+    { key: "warm_hello",          metric: "message",    target: 3,  stardust: 40,  label: "First Signal",        description: "Send 3 messages to swap partners" },
+    { key: "comms_relay",         metric: "message",    target: 25, stardust: 240, label: "Relay Network",       description: "Send 25 messages to partners" },
+    { key: "binary_stars",        metric: "rating",     target: 2,  stardust: 110, label: "Binary Stars",        description: "Review 2 different partners" },
+    { key: "supernova_surge",     metric: "swap",       target: 3,  stardust: 200, label: "Supernova Surge",     description: "Complete 3 skill swaps this week" },
+    { key: "constellation_forge", metric: "swap",       target: 4,  stardust: 300, label: "Constellation Forge", description: "Complete 4 skill swaps this week" },
+    { key: "escape_velocity",     metric: "streak_day", target: 2,  stardust: 60,  label: "Escape Velocity",     description: "Stay in orbit 2 days this week" },
+    { key: "stable_orbit",        metric: "streak_day", target: 5,  stardust: 180, label: "Stable Orbit",        description: "Stay in orbit 5 days this week" },
+    { key: "full_revolution",     metric: "streak_day", target: 7,  stardust: 320, label: "Full Revolution",     description: "Stay in orbit all 7 days this week" },
 ]);
 
 // ── Pure date helpers (UTC, string-in) ──────────────────────────────────────
@@ -184,10 +194,30 @@ function seededOrder(weekId, length) {
     return idx;
 }
 
-/** Pick MISSIONS_PER_WEEK templates deterministically for a week. */
+/**
+ * Pick MISSIONS_PER_WEEK templates deterministically for a week.
+ * Prefers metric VARIETY: the first pass takes at most one mission per metric
+ * (in seeded order) so a week never stacks three of the same behavior; any
+ * remaining slots fill from the seeded order. Still a pure function of weekId.
+ */
 function pickMissions(weekId, templates = MISSION_TEMPLATES, n = MISSIONS_PER_WEEK) {
     const order = seededOrder(weekId, templates.length);
-    return order.slice(0, Math.min(n, templates.length)).map((i) => templates[i]);
+    const want = Math.min(n, templates.length);
+    const picked = [];
+    const usedMetrics = new Set();
+    for (const i of order) {
+        if (picked.length >= want) break;
+        const t = templates[i];
+        if (usedMetrics.has(t.metric)) continue;
+        usedMetrics.add(t.metric);
+        picked.push(t);
+    }
+    for (const i of order) {
+        if (picked.length >= want) break;
+        const t = templates[i];
+        if (!picked.includes(t)) picked.push(t);
+    }
+    return picked;
 }
 
 /**
