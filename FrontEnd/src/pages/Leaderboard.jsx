@@ -81,6 +81,66 @@ function heroMeter(you) {
     aria: `${Math.round(pct * 100)} percent — ${points} points to ${nextName}` };
 }
 
+/**
+ * Podium — the top-3 stage. Rendered only when the board actually starts at
+ * rank 1 (top of the scope); pedestal order is the classic 2 · 1 · 3. Pure
+ * theme tokens so it reads in light and dark; medal tint carries the rank.
+ */
+function Podium({ entries, meId, onOpen }) {
+  const [first, second, third] = entries;
+  const steps = [
+    { e: second, rank: 2, h: 64 },
+    { e: first,  rank: 1, h: 84 },
+    { e: third,  rank: 3, h: 52 },
+  ];
+  return (
+    <div className="grid grid-cols-3 items-end gap-2 mb-4" role="list" aria-label="Top three mentors">
+      {steps.map(({ e, rank, h }) => {
+        if (!e) return <div key={rank} />;
+        const isMe = e.userId === meId;
+        const tint = MEDAL_TINT[rank];
+        return (
+          <motion.button
+            key={e.userId}
+            role="listitem"
+            onClick={() => onOpen(e.userId)}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: rank === 1 ? 0 : 0.12, type: 'spring', stiffness: 220, damping: 22 }}
+            className="flex flex-col items-center gap-1.5 text-center"
+          >
+            <div className="relative">
+              <span className="absolute -top-2 left-1/2 -translate-x-1/2 z-10">
+                <Medal size={rank === 1 ? 20 : 16} style={{ color: tint }} strokeWidth={2.2} />
+              </span>
+              <div className="rounded-full p-0.5" style={{ boxShadow: `0 0 ${rank === 1 ? 18 : 10}px ${tint}66`, border: `2px solid ${tint}` }}>
+                <Avatar name={e.name} url={e.avatar} size={rank === 1 ? 'md' : 'sm'} userId={e.userId} deco={decoClassFor(e.avatarDeco)} />
+              </div>
+            </div>
+            <div className="max-w-full px-1">
+              <div className="truncate text-xs font-bold text-text-primary">
+                <GlowName nameGlowTier={e.nameGlowTier} cosmeticGlowKey={e.nameGlow}>{e.name}</GlowName>
+              </div>
+              <div className="text-[10px] text-text-muted truncate">{getTier(e.tierId).displayName}</div>
+            </div>
+            <div
+              className="w-full rounded-t-xl flex items-start justify-center pt-1.5"
+              style={{
+                height: h,
+                background: `linear-gradient(180deg, ${tint}${isMe ? '44' : '2e'}, transparent)`,
+                border: '1px solid var(--border-subtle)',
+                borderBottom: 'none',
+              }}
+            >
+              <span className="text-sm font-black tabular-nums" style={{ color: tint }}>#{rank}</span>
+            </div>
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
 function RankBadge({ rank }) {
   if (rank <= 3) {
     return (
@@ -304,9 +364,14 @@ export default function Leaderboard() {
           />
         )}
 
+        {/* Top-3 podium — only when this page of the board starts at rank 1 */}
+        {!isLoading && !isError && data?.entries?.length >= 3 && data.entries[0].rank === 1 && (
+          <Podium entries={data.entries.slice(0, 3)} meId={user?._id} onOpen={(id) => navigate(`/profile/${id}`)} />
+        )}
+
         {!isLoading && !isError && data?.entries?.length > 0 && (
           <ul className="space-y-1.5">
-            {data.entries.map((e) => {
+            {(data.entries.length >= 3 && data.entries[0].rank === 1 ? data.entries.slice(3) : data.entries).map((e) => {
               const isMe = e.userId === user?._id;
               return (
                 <li key={e.userId}>

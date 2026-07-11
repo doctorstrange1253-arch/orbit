@@ -5,16 +5,35 @@
  * pays Photons (server-side) and grants Orbit XP toward your weekly league.
  * The "Full log" link opens the Photon history page.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Target, Check, Zap, ChevronDown, ScrollText } from 'lucide-react';
+import { Target, Check, Zap, ChevronDown, ScrollText, Timer } from 'lucide-react';
 import PhotonIcon from './PhotonIcon';
 import { useClaimMission } from './useOrbit';
 import { useUIStore } from '../store/uiStore';
 
 const BAR_INITIAL = { width: 0 };
 const BAR_TRANSITION = { duration: 0.6, ease: 'easeOut' };
+
+// Time left until the next Monday 00:00 UTC — the missions' actual roll moment
+// (weekId is an ISO week, server-side). Ticks once a minute; seconds add noise.
+function useWeeklyReset() {
+  const calc = () => {
+    const now = new Date();
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const add = ((8 - d.getUTCDay()) % 7) || 7;
+    d.setUTCDate(d.getUTCDate() + add);
+    return d - now;
+  };
+  const [left, setLeft] = useState(calc);
+  useEffect(() => {
+    const id = setInterval(() => setLeft(calc()), 60000);
+    return () => clearInterval(id);
+  }, []);
+  const s = Math.max(0, Math.floor(left / 1000));
+  return { d: Math.floor(s / 86400), h: Math.floor((s % 86400) / 3600), m: Math.floor((s % 3600) / 60) };
+}
 
 function MissionCard({ m, onClaim, claiming }) {
   const [open, setOpen] = useState(false);
@@ -101,6 +120,8 @@ function MissionCard({ m, onClaim, claiming }) {
 export default function MissionsPanel({ missions = [] }) {
   const claim = useClaimMission();
   const { addToast } = useUIStore();
+  const reset = useWeeklyReset();
+  const readyCount = missions.filter((m) => m.complete && !m.claimed).length;
 
   const onClaim = (key) => {
     claim.mutate(key, {
@@ -114,6 +135,11 @@ export default function MissionsPanel({ missions = [] }) {
       <div className="flex items-center gap-2 mb-2">
         <Target size={18} className="text-amber-300" />
         <h2 className="text-base font-bold text-white">Weekly Missions</h2>
+        {readyCount > 0 && (
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-emerald-300 ring-1 ring-emerald-400/40">
+            <Check size={10} /> {readyCount} ready to claim
+          </span>
+        )}
         <Link
           to="/orbit/history"
           className="ml-auto inline-flex items-center gap-1 text-xs font-semibold text-violet-300 hover:text-violet-200"
@@ -121,7 +147,12 @@ export default function MissionsPanel({ missions = [] }) {
           <ScrollText size={13} /> Full log
         </Link>
       </div>
-      <p className="text-[11px] text-slate-500 mb-3">Resets Monday · UTC · tap a mission for details. Complete them to earn Photons + Orbit XP.</p>
+      <p className="text-[11px] text-slate-500 mb-3">
+        <span className="inline-flex items-center gap-1 text-slate-400">
+          <Timer size={11} /> New missions in {reset.d > 0 ? `${reset.d}d ` : ''}{reset.h}h {reset.m}m
+        </span>
+        {' '}· tap a mission for details. Complete them to earn Photons + Orbit XP.
+      </p>
       {missions.length === 0 ? (
         <p className="text-sm text-slate-400">New missions are being charted…</p>
       ) : (

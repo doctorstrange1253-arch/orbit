@@ -60,7 +60,7 @@ exports.buy = async (req, res) => {
             key
         );
         if (!result.ok) {
-            const msg = result.reason === "insufficient" ? "Not enough Stardust"
+            const msg = result.reason === "insufficient" ? "Not enough Photons"
                 : result.reason === "already_owned" ? "You already own this"
                 : "Item not found";
             return res.status(400).json({ message: msg, reason: result.reason });
