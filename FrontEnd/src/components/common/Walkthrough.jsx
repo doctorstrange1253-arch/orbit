@@ -82,7 +82,8 @@ export default function Walkthrough({ tourKey }) {
         <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" onClick={finish} />
         <motion.div
           key={i}
-          className="relative w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/95 p-6 shadow-2xl"
+          className="relative w-full max-w-md rounded-2xl border border-border-subtle p-6 shadow-2xl"
+          style={{ background: 'var(--surface)' }}
           initial={cardInit}
           animate={SHOW_CARD}
           transition={CARD_TRANS}
@@ -90,33 +91,33 @@ export default function Walkthrough({ tourKey }) {
           <button
             onClick={finish}
             aria-label="Skip walkthrough"
-            className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full text-slate-400 hover:bg-white/10 hover:text-white"
+            className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full text-text-muted hover:bg-surface-hover hover:text-text-primary"
           >
             <X size={16} />
           </button>
 
           <div className="mb-3 text-3xl leading-none" aria-hidden="true">{step.icon}</div>
-          <h2 className="text-lg font-bold text-white">{step.title}</h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-300">{step.body}</p>
+          <h2 className="text-lg font-bold text-text-primary">{step.title}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-text-secondary">{step.body}</p>
 
           <div className="mt-5 flex items-center justify-center gap-1.5">
             {steps.map((s, n) => (
               <span
                 key={n}
-                className={`h-1.5 rounded-full transition-all ${n === i ? 'w-5 bg-violet-400' : 'w-1.5 bg-white/20'}`}
+                className={`h-1.5 rounded-full transition-all ${n === i ? 'w-5 bg-violet-400' : 'w-1.5 bg-text-muted/40'}`}
               />
             ))}
           </div>
 
           <div className="mt-5 flex items-center justify-between">
-            <button onClick={finish} className="text-xs font-semibold text-slate-400 hover:text-slate-200">
+            <button onClick={finish} className="text-xs font-semibold text-text-muted hover:text-text-secondary">
               Skip
             </button>
             <div className="flex items-center gap-2">
               {i > 0 && (
                 <button
                   onClick={back}
-                  className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-white hover:bg-white/20"
+                  className="inline-flex items-center gap-1 rounded-full border border-border-subtle bg-surface px-3 py-1.5 text-xs font-bold text-text-primary hover:bg-surface-hover"
                 >
                   <ArrowLeft size={13} /> Back
                 </button>
@@ -131,7 +132,7 @@ export default function Walkthrough({ tourKey }) {
             </div>
           </div>
 
-          <div className="mt-3 text-center text-[10px] uppercase tracking-widest text-slate-500">
+          <div className="mt-3 text-center text-[10px] uppercase tracking-widest text-text-muted">
             {tour.title} · {i + 1}/{steps.length}
           </div>
         </motion.div>

@@ -75,10 +75,10 @@ const ConfirmDialog = ({
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="relative w-full max-w-sm rounded-2xl overflow-hidden z-10"
             style={{
-              background: 'rgba(8,10,22,0.95)',
+              background: 'var(--toast-bg, rgba(8,10,22,0.95))',
               backdropFilter: 'blur(28px)',
-              border: '1px solid rgba(255,75,75,0.2)',
-              boxShadow: '0 25px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,75,75,0.06)',
+              border: '1px solid rgba(255,75,75,0.25)',
+              boxShadow: 'var(--toast-shadow, 0 25px 80px rgba(0,0,0,0.7)), 0 0 0 1px rgba(255,75,75,0.06)',
             }}
           >
             {/* Top glow line */}
@@ -90,7 +90,7 @@ const ConfirmDialog = ({
             {/* Header */}
             <div
               className="flex items-center justify-between px-6 py-4"
-              style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+              style={{ borderBottom: '1px solid var(--border-subtle, rgba(255,255,255,0.07))' }}
             >
               <div className="flex items-center gap-3">
                 <div
@@ -108,7 +108,7 @@ const ConfirmDialog = ({
               </div>
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-white/08 transition-all"
+                className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-hover transition-all"
                 aria-label="Close dialog"
               >
                 <X size={16} />
@@ -129,8 +129,8 @@ const ConfirmDialog = ({
                   onClick={onClose}
                   className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all text-text-secondary hover:text-text-primary"
                   style={{
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    background: 'var(--bg-surface, rgba(255,255,255,0.05))',
+                    border: '1px solid var(--border-subtle, rgba(255,255,255,0.1))',
                   }}
                 >
                   Cancel

@@ -1508,8 +1508,15 @@
 [data-mode="light"] .cosmic-page [class*="bg-black/"] { background-color: rgba(255,255,255,.78) !important; }
 [data-mode="light"] .cosmic-page [class*="bg-white/5"],
 [data-mode="light"] .cosmic-page [class*="bg-white/10"] { background-color: rgba(15,23,42,.05) !important; }
+/* stronger fills (active tab pills on the Store, etc.) keep their emphasis */
+[data-mode="light"] .cosmic-page [class*="bg-white/15"],
+[data-mode="light"] .cosmic-page [class*="bg-white/20"] { background-color: rgba(15,23,42,.10) !important; }
 /* neutral borders */
 [data-mode="light"] .cosmic-page [class*="border-white/"] { border-color: rgba(15,23,42,.12) !important; }
+/* white rings (Tailwind ring-* = box-shadow via --tw-ring-color) turn to ink so
+   selection states — Holo-Bay's active item, the Store's active tab — stay
+   visible on the light field. */
+[data-mode="light"] .cosmic-page [class*="ring-white/"] { --tw-ring-color: rgba(15,23,42,.30); }
 
 /* ══ Currency + streak chips: keep them visible in light mode (L1) ══ */
 [data-mode="light"] .photons-chip > button {

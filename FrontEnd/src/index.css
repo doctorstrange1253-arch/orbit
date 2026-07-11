@@ -664,10 +664,16 @@ html[data-mode="light"] .text-white\/70 { color: rgba(26, 26, 46, 0.7); }
 html[data-mode="light"] .text-white\/80 { color: rgba(26, 26, 46, 0.8); }
 html[data-mode="light"] .text-white\/90 { color: rgba(26, 26, 46, 0.9); }
 
-/* Override bg-white utilities that are used as faint backgrounds */
-html[data-mode="light"] .bg-white\/05 { background: rgba(0, 114, 255, 0.05); }
+/* Override bg-white utilities that are used as faint backgrounds.
+   NOTE: Tailwind emits `bg-white/5`, not `bg-white/05` — the old \/05 selector
+   never matched anything. */
+html[data-mode="light"] .bg-white\/5 { background: rgba(0, 114, 255, 0.05); }
 html[data-mode="light"] .bg-white\/10 { background: rgba(0, 114, 255, 0.1); }
+html[data-mode="light"] .bg-white\/15 { background: rgba(0, 114, 255, 0.13); }
+html[data-mode="light"] .bg-white\/20 { background: rgba(0, 114, 255, 0.16); }
 html[data-mode="light"] .border-white\/10 { border-color: rgba(0, 114, 255, 0.1); }
+html[data-mode="light"] .border-white\/25 { border-color: rgba(15, 23, 42, 0.2); }
+html[data-mode="light"] .border-white\/30 { border-color: rgba(15, 23, 42, 0.25); }
 html[data-mode="light"] ::-webkit-scrollbar-track { background: #e8edf5; }
 html[data-mode="light"] ::-webkit-scrollbar-thumb { background: rgba(0,114,255,0.2); }
 html[data-mode="light"] ::-webkit-scrollbar-thumb:hover { background: rgba(0,114,255,0.4); }
@@ -677,7 +683,10 @@ html[data-mode="light"] ::selection {
   color: #1a1a2e;
 }
 
-html.light .glass-card {
+/* Re-scoped from the dead `html.light` (the theme store sets data-mode, never
+   a class). Specificity also beats the ≤640px dark glass override below, so
+   mobile light mode gets a light card instead of dark-on-dark. */
+html[data-mode="light"] .glass-card {
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
