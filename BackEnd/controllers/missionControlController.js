@@ -96,6 +96,21 @@ exports.teardown = async (req, res) => {
     }
 };
 
+// ── C4 · Notification Linter ─────────────────────────────────────────────────
+// GET /mission-control/notifications/lint — runs the notification-copy preflight
+// check and reports whether the copy is clean. Consumed by the admin Mission
+// Control page. (Restored: the orbit-main sync dropped this export while leaving
+// the route + the frontend caller in place, which crashed router setup.)
+exports.notificationLint = async (req, res) => {
+    const requestId = reqId();
+    try {
+        const [result] = preflight.run("notification_copy_clean");
+        return ok(res, { clean: result.status === "pass", ...result.evidence, status: result.status }, requestId);
+    } catch (err) {
+        return fail(res, "lint_failed", err.message, requestId, 500);
+    }
+};
+
 // ── C6 · Gravimeter (Photons economy) ────────────────────────────────────────
 // GET /mission-control/economy/photons?from=&to=
 exports.economy = async (req, res) => {
