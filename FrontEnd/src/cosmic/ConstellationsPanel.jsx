@@ -114,7 +114,7 @@ export default function ConstellationsPanel() {
         <span className="hidden sm:inline text-xs text-slate-500">shared streaks with partners</span>
         <button
           onClick={() => setPickerOpen((v) => !v)}
-          className="ml-auto inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold bg-violet-500/15 text-violet-200 ring-1 ring-violet-400/30 hover:bg-violet-500/25"
+          className="orbit-pairup ml-auto inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold bg-violet-500/15 text-violet-200 ring-1 ring-violet-400/30 hover:bg-violet-500/25"
         >
           <UserPlus size={13} /> Pair up
         </button>

@@ -181,3 +181,17 @@ exports.updateAvatarUrl = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
+
+
+// POST /god/unlock-all — God Mode: owner unlocks every cosmetic for themselves.
+exports.godUnlockAll = async (req, res) => {
+    try {
+        const uid = req.user._id || req.user.id;
+        const keys = require("../services/cosmeticsCatalog").getAllCatalog().map((c) => c.key);
+        await User.updateOne({ _id: uid }, { $set: { "orbit.cosmetics.owned": keys } });
+        return res.json({ ok: true, owned: keys.length });
+    } catch (err) {
+        console.error("[godUnlockAll]", err.message);
+        return res.status(500).json({ message: "Unlock failed." });
+    }
+};

@@ -38,16 +38,16 @@ function Supply() {
         <Kpi label="Circulating Photons" value={Number(data.circulating).toLocaleString()} />
         <Kpi label="Holders" value={Number(data.holders).toLocaleString()} />
         <Kpi label="Avg balance" value={Number(data.avgBalance).toLocaleString()} />
-        <Kpi label="Net supply (ledger)" value={Number(l.net ?? 0).toLocaleString()} />
+        <Kpi label="Net supply (ledger)" value={Number(l.netSupply ?? 0).toLocaleString()} />
       </div>
       <div className="ssctl-card">
         <div className="ssctl-section-title" style={{ marginBottom: 8 }}>Faucets vs Sinks</div>
         <table className="ssctl-table">
           <thead><tr><th>Direction</th><th>Photons</th></tr></thead>
           <tbody>
-            <tr><td className="ssctl-muted">Earned (faucets)</td><td>{Number(l.sources ?? 0).toLocaleString()}</td></tr>
-            <tr><td className="ssctl-muted">Spent (sinks)</td><td>{Number(l.sinks ?? 0).toLocaleString()}</td></tr>
-            <tr><td className="ssctl-muted">Inflation flag</td><td>{l.inflation ? 'YES — faucets outpacing sinks' : 'no'}</td></tr>
+            <tr><td className="ssctl-muted">Earned (faucets)</td><td>{Number(l.totalEarned ?? 0).toLocaleString()}</td></tr>
+            <tr><td className="ssctl-muted">Spent (sinks)</td><td>{Number(l.totalSpent ?? 0).toLocaleString()}</td></tr>
+            <tr><td className="ssctl-muted">Inflation flag</td><td>{l.inflationAlert ? 'YES — faucets outpacing sinks' : 'no'}</td></tr>
           </tbody>
         </table>
       </div>

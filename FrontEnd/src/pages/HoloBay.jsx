@@ -29,6 +29,11 @@ import { useUIStore } from '../store/uiStore';
 import './holobay.css';
 import { SkelBox } from '../components/ui/SkeletonPrimitives';
 
+// Background swatch style. When a .cbg scene class is present we let the CSS
+// class paint the animated nebula (do NOT set inline background or it would
+// override the class); otherwise fall back to the static swatch gradient.
+const bgSwatchStyle = (size, bg) => bg ? ({ width: size, height: size, background: bg }) : ({ width: size, height: size });
+
 function Swatch({ item, size = 40 }) {
   const meta = COSMETIC_RENDER[item.key] || {};
   if (item.type === 'avatar_deco')
@@ -59,8 +64,14 @@ function Swatch({ item, size = 40 }) {
         <span className={meta.glowClass} style={ { fontSize: Math.round(size * 0.42) } }>Aa</span>
       </span>
     );
-  if (item.type === 'background' && meta.swatch)
-    return <span className="inline-block rounded-md" style={{ width: size, height: size, background: meta.swatch }} />;
+  if (item.type === 'background' && (meta.bgClass || meta.swatch))
+    return (
+      <span
+        className={(meta.bgClass ? meta.bgClass + ' ' : '') + 'inline-block overflow-hidden rounded-md'}
+        aria-hidden="true"
+        style={bgSwatchStyle(size, meta.bgClass ? null : meta.swatch)}
+      />
+    );
   return <ItemIcon item={item} size={size} color={rarityOf(item.rarity).color} />;
 }
 
@@ -217,6 +228,9 @@ export default function HoloBay() {
                 className={`holobay-float relative rounded-2xl border border-white/10 p-6 text-center ${bgClassFor(bgKey)} ${bgItem ? cardGlowClass(bgItem.rarity) : ''}`}
               >
                 {effectKey && <span className={effectClassFor(effectKey)} aria-hidden="true" />}
+                {/* readability scrim: keep name + avatar legible on any background */}
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-slate-950/45" aria-hidden="true" />
+                <div className="relative z-10">
                 {/* avatar disc */}
                 <div className="relative mx-auto grid h-20 w-20 place-items-center overflow-hidden rounded-full ring-2 ring-white/20"
                      style={{ background: 'radial-gradient(circle at 40% 35%, rgba(255,255,255,.12), rgba(3,5,12,.6))' }}>
@@ -230,6 +244,7 @@ export default function HoloBay() {
                 <div className="mt-3 flex items-center justify-center gap-2">
                   <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-slate-200">Mentor</span>
                   <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-slate-200">Orbit</span>
+                </div>
                 </div>
               </motion.div>
 

@@ -70,6 +70,10 @@ function useCountdown(target) {
 
 const PREVIEW_DISC = { background: 'radial-gradient(circle at 40% 35%, rgba(255,255,255,.10), rgba(3,5,12,.85))' };
 
+// Background preview style: let the .cbg scene class paint the nebula; only
+// fall back to a static gradient when no scene class exists.
+const bgSwatchStyle = (bg) => bg ? ({ background: bg }) : ({});
+
 function Preview({ item }) {
   const meta = COSMETIC_RENDER[item.key] || {};
   if (item.type === 'avatar_deco')
@@ -101,8 +105,8 @@ function Preview({ item }) {
         <span className={meta.glowClass} style={ { fontSize: 20 } }>Aa</span>
       </span>
     );
-  if (item.type === 'background' && meta.swatch)
-    return <span className="inline-block w-12 h-12 rounded-lg" style={{ background: meta.swatch }} />;
+  if (item.type === 'background' && (meta.bgClass || meta.swatch))
+    return <span className={(meta.bgClass ? meta.bgClass + ' ' : '') + 'inline-block w-12 h-12 overflow-hidden rounded-lg'} aria-hidden="true" style={bgSwatchStyle(meta.bgClass ? null : meta.swatch)} />;
   return <ItemIcon item={item} size={44} color={rarityOf(item.rarity).color} />;
 }
 
@@ -125,7 +129,7 @@ function StoreCard({ item, onBuy, onEquip, busy }) {
       className={`group cv-auto relative flex flex-col gap-3 rounded-2xl border border-white/10 p-4 backdrop-blur-md ${glow}`}
     >
       {/* card body glass */}
-      <div className="absolute inset-0 rounded-2xl -z-10" style={{ background: 'rgba(18,20,33,.75)' }} />
+      <div className="shop-card-glass absolute inset-0 rounded-2xl -z-10" style={{ background: 'rgba(18,20,33,.75)' }} />
 
       <div className="flex items-start justify-between gap-2">
         <RarityBadge rkey={item.rarity} />
@@ -141,7 +145,7 @@ function StoreCard({ item, onBuy, onEquip, busy }) {
 
       <div className="flex items-center gap-3">
         <div
-          className="grid h-16 w-16 shrink-0 place-items-center rounded-xl"
+          className="grid h-16 w-16 shrink-0 overflow-hidden place-items-center rounded-xl"
           style={{ background: 'radial-gradient(circle at 40% 35%, rgba(255,255,255,.06), rgba(3,5,12,.7))', boxShadow: `inset 0 0 0 1px ${r.color}33` }}
         >
           <Preview item={item} />
@@ -295,7 +299,7 @@ export default function Shop() {
                 <div className="mt-1 truncate text-lg font-black text-white">{featured.name}</div>
                 <div className="truncate text-xs text-slate-300">{featured.hint}</div>
               </div>
-              <div className="flex flex-col items-end gap-2">
+              <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:flex-col sm:items-end">
                 <div className="flex items-center gap-1 tabular-nums">
                   {[['d', cd.d], ['h', cd.h], ['m', cd.m], ['s', cd.s]].map(([u, v]) => (
                     <span key={u} className="rounded-md bg-black/40 px-2 py-1 text-center">

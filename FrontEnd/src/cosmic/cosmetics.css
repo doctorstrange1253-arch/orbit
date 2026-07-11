@@ -1523,3 +1523,53 @@
   box-shadow: 0 0 0 1px rgba(15,23,42,.10) !important;
 }
 [data-mode="light"] .orbit-streak-badge .tabular-nums { color: #0f172a !important; }
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 4 — light-mode contrast fixes (L2)
+   Every rule is gated on [data-mode="light"]; dark mode is untouched.
+   ═══════════════════════════════════════════════════════════ */
+
+/* 1 · Nav streak chip — bg is forced white above, so darken the pale
+   per-state text (amber/rose/slate) + the flame (currentColor). */
+[data-mode="light"] .orbit-streak-badge.text-amber-300 { color: #b45309 !important; }
+[data-mode="light"] .orbit-streak-badge.text-rose-300  { color: #be123c !important; }
+[data-mode="light"] .orbit-streak-badge.text-slate-300 { color: #475569 !important; }
+[data-mode="light"] .orbit-streak-badge [class*="text-rose-300"] { color: #be123c !important; }
+
+/* 2 · Dashboard Orbit widget lives on a LIGHT page (MySkills, not a
+   cosmic-page) — give it a light card + readable neutrals. The state
+   accent itself is handled theme-aware in JSX. */
+[data-mode="light"] .orbit-dash-widget {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, .10) !important;
+  box-shadow: 0 1px 6px rgba(15, 23, 42, .06) !important;
+}
+[data-mode="light"] .orbit-dash-widget [class*="text-white"]     { color: #0f172a !important; }
+[data-mode="light"] .orbit-dash-widget [class*="text-slate-400"] { color: #475569 !important; }
+[data-mode="light"] .orbit-dash-widget [class*="text-slate-500"] { color: #64748b !important; }
+
+/* 3 · Constellations "Pair up" — pale violet accent on the light hub. */
+[data-mode="light"] .orbit-pairup {
+  background: rgba(124, 58, 237, .12) !important;
+  color: #6d28d9 !important;
+  box-shadow: inset 0 0 0 1px rgba(124, 58, 237, .35) !important;
+}
+[data-mode="light"] .orbit-pairup:hover { background: rgba(124, 58, 237, .20) !important; }
+
+/* 4 · Rarity label pill — dark-designed pill on the now-light store.
+   Blend the tier colour toward ink so BOTH extremes read: very-dark
+   tiers (Dark Matter #4c1d95) and very-light tiers (Stellar #7dd3fc). */
+[data-mode="light"] .rar-badge {
+  color: color-mix(in srgb, var(--rar, #334155) 72%, #0f172a) !important;
+  background: color-mix(in srgb, var(--rar, #cbd5e1) 14%, #ffffff) !important;
+  border-color: color-mix(in srgb, var(--rar, #94a3b8) 45%, transparent) !important;
+  box-shadow: 0 0 calc(var(--rar-glow, 8px) * .4) color-mix(in srgb, var(--rar, #94a3b8) 30%, transparent) !important;
+}
+[data-mode="light"] .rar-badge::before {
+  background: color-mix(in srgb, var(--rar, #334155) 72%, #0f172a) !important;
+  box-shadow: 0 0 4px color-mix(in srgb, var(--rar, #94a3b8) 50%, transparent) !important;
+}
+
+/* 5 · Store card glass — inline dark glass stays dark on the light store
+   page; !important beats the inline (non-important) value. */
+[data-mode="light"] .shop-card-glass { background: rgba(255, 255, 255, .82) !important; }

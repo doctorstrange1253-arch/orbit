@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import {
   LayoutDashboard, Users, Sparkles, Clapperboard, ShieldAlert, Database, ScrollText,
-  SlidersHorizontal, LogOut, Lock, Radar, Coins, Store as StoreIcon, TrendingUp, Video,
+  SlidersHorizontal, LogOut, Lock, Radar, Coins, Crown, Store as StoreIcon, TrendingUp, Video,
 } from 'lucide-react';
 import adminApi from './adminApi';
 import Overview from './pages/Overview';
@@ -22,10 +22,12 @@ import Audit from './pages/Audit';
 import Moderation from './pages/Moderation';
 import System from './pages/System';
 import MissionControl from './pages/MissionControl';
+import MasterControl from './pages/MasterControl';
 
 const SECTIONS = [
   { id: 'overview', label: 'Overview', Icon: LayoutDashboard, Comp: Overview },
   { id: 'missioncontrol', label: 'Mission Control', Icon: Radar, Comp: MissionControl },
+  { id: 'godmode', label: 'God Mode', Icon: Crown, Comp: MasterControl },
   { id: 'economy', label: 'Economy', Icon: Coins, Comp: Economy },
   { id: 'store', label: 'Store', Icon: StoreIcon, Comp: StorePage },
   { id: 'progression', label: 'Progression', Icon: TrendingUp, Comp: Progression },

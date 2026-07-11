@@ -63,6 +63,8 @@ router.patch("/users/:id", adminApiLimiter, requireAdmin, users.updateUser);
 router.post("/users/:id/role", adminApiLimiter, requireAdmin, users.setRole);
 router.post("/users/:id/status", adminApiLimiter, requireAdmin, users.setStatus);
 router.post("/users/:id/reset-password", adminApiLimiter, requireAdmin, users.triggerPasswordReset);
+router.post("/users/:id/impersonate", adminApiLimiter, requireAdmin, requireRole("superadmin"), users.impersonate);
+router.post("/users/:id/unlock-cosmetics", adminApiLimiter, requireAdmin, requireRole("superadmin"), users.grantAllCosmetics);
 
 // Economy & Photons (module A) — reads open to any admin; mutations require the
 // "economy" portal role (superadmin always passes).

@@ -170,3 +170,35 @@ exports.triggerPasswordReset = async (req, res) => {
         return res.status(500).json({ message: "Reset failed." });
     }
 };
+
+
+// POST /users/:id/impersonate — God Mode: mint a real user JWT to act as them.
+exports.impersonate = async (req, res) => {
+    try {
+        const jwt = require("jsonwebtoken");
+        if (!process.env.JWT_SECRET) return res.status(500).json({ message: "JWT secret not configured." });
+        const target = await User.findById(req.params.id);
+        if (!target) return res.status(404).json({ message: "User not found." });
+        const token = jwt.sign({ id: String(target._id) }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        await audit(req, { actorId: req.adminUser._id, actorEmail: req.adminUser.email, action: "user.impersonate", targetType: "user", targetId: String(target._id), reason: req.body.reason || "" });
+        return res.json({ ok: true, token, user: { _id: target._id, name: target.name, email: target.email, role: target.role } });
+    } catch (err) {
+        console.error("[admin impersonate]", err.message);
+        return res.status(500).json({ message: "Impersonation failed." });
+    }
+};
+
+// POST /users/:id/unlock-cosmetics — God Mode: grant every cosmetic to a user.
+exports.grantAllCosmetics = async (req, res) => {
+    try {
+        const target = await User.findById(req.params.id);
+        if (!target) return res.status(404).json({ message: "User not found." });
+        const keys = require("../services/cosmeticsCatalog").getAllCatalog().map((c) => c.key);
+        await User.updateOne({ _id: target._id }, { $set: { "orbit.cosmetics.owned": keys } });
+        await audit(req, { actorId: req.adminUser._id, actorEmail: req.adminUser.email, action: "user.unlock_cosmetics", targetType: "user", targetId: String(target._id), reason: req.body.reason || "" });
+        return res.json({ ok: true, owned: keys.length });
+    } catch (err) {
+        console.error("[admin grantAllCosmetics]", err.message);
+        return res.status(500).json({ message: "Unlock failed." });
+    }
+};

@@ -23,6 +23,7 @@ import { initPushNotifications } from './utils/pushNotify';
 import { Toaster } from 'react-hot-toast';
 import BadgeDefsSprite from './cosmic/BadgeDefsSprite';
 import LiftoffWatcher from './cosmic/LiftoffWatcher';
+import GodMode from './components/dev/GodMode';
 
 // Eagerly loaded (first paint)
 import Landing from './pages/Landing';
@@ -434,6 +435,7 @@ function AppInner() {
       <BackgroundEffects />
       {/* Shared SVG <defs> for cosmic badges — mounted once (ID-collision fix) */}
       <BadgeDefsSprite />
+      <GodMode />
       {/* Rank-up "Liftoff" — overlay code-split, fetched only when it fires;
           watcher fires it on a genuine tier increase for the logged-in user */}
       <Suspense fallback={null}><LiftoffOverlay /></Suspense>
