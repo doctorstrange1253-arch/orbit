@@ -14,9 +14,9 @@
  * (holobay.css); the cosmetic glows are already gated in cosmetics.css.
  */
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Check, Lock, ArrowLeft, Shuffle, RotateCcw } from 'lucide-react';
+import { Check, Lock, ArrowLeft, Shuffle, RotateCcw, Share2 } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
 import PhotonAmount from '../cosmic/PhotonAmount';
 import CelebrationBurst from '../cosmic/CelebrationBurst';
@@ -136,6 +136,28 @@ export default function HoloBay() {
   const [tryEffect, setTryEffect] = useState(undefined);
   const [tryPlate, setTryPlate] = useState(undefined);
 
+  // Shared-look deep link (?glow=…&bg=…&deco=…&fx=…&np=…): once the catalog is
+  // in, seed the preview from the URL — invalid/unknown keys are ignored, and
+  // it only applies once so the user keeps control afterwards. Render-time
+  // state adjustment (the React-docs pattern): setState during render with a
+  // state guard makes React re-render before committing, no effect needed.
+  const [params] = useSearchParams();
+  const [seededFromUrl, setSeededFromUrl] = useState(false);
+  if (!seededFromUrl && catalog.length) {
+    setSeededFromUrl(true);
+    const pick = (name, list) => {
+      const k = params.get(name);
+      return k && list.some((i) => i.key === k) ? k : undefined;
+    };
+    const g = pick('glow', glows), b = pick('bg', backgrounds), d = pick('deco', decos);
+    const e = pick('fx', effects), p = pick('np', plates);
+    if (g) setTryGlow(g);
+    if (b) setTryBg(b);
+    if (d) setTryDeco(d);
+    if (e) setTryEffect(e);
+    if (p) setTryPlate(p);
+  }
+
   const glowKey = tryGlow === undefined ? equippedGlow : tryGlow;
   const bgKey = tryBg === undefined ? equippedBg : tryBg;
   const decoKey = tryDeco === undefined ? equippedDeco : tryDeco;
@@ -157,6 +179,22 @@ export default function HoloBay() {
     setTryEffect(rand(effects));
     setTryPlate(rand(plates));
   };
+  // Share the current look as a deep link anyone can open in their Holo-Bay.
+  const shareLook = async () => {
+    const url = new URL('/holobay', window.location.origin);
+    if (glowKey) url.searchParams.set('glow', glowKey);
+    if (bgKey) url.searchParams.set('bg', bgKey);
+    if (decoKey) url.searchParams.set('deco', decoKey);
+    if (effectKey) url.searchParams.set('fx', effectKey);
+    if (plateKey) url.searchParams.set('np', plateKey);
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      addToast('Look link copied — send it to anyone ✨', 'success');
+    } catch {
+      addToast('Could not copy the link', 'error');
+    }
+  };
+
   // Back to reality — undefined falls through to whatever is actually equipped.
   const resetLook = () => {
     setTryGlow(undefined);
@@ -258,6 +296,13 @@ export default function HoloBay() {
             className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1.5 text-xs font-bold text-slate-300 ring-1 ring-white/10 hover:bg-white/10">
             <RotateCcw size={13} /> Reset to equipped
           </button>
+          {(glowKey || bgKey || decoKey || effectKey || plateKey) && (
+            <button onClick={shareLook}
+              title="Copy a link that opens this exact look in anyone's Holo-Bay"
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1.5 text-xs font-bold text-slate-300 ring-1 ring-white/10 hover:bg-white/10">
+              <Share2 size={13} /> Share look
+            </button>
+          )}
           {lookTotal > 0 && (
             <span className={`ml-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ring-1
               ${lookTotal <= balance ? 'text-emerald-300 ring-emerald-400/40 bg-emerald-500/10' : 'text-rose-300 ring-rose-400/40 bg-rose-500/10'}`}>
