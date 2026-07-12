@@ -135,6 +135,15 @@ function StoreCard({ item, onBuy, onEquip, busy }) {
 
       <div className="flex items-start justify-between gap-2">
         <RarityBadge rkey={item.rarity} />
+        {/* Seasonal / limited-window items (admin sets availableTo) get urgency */}
+        {item.availableTo && !item.owned && (
+          <span
+            className="inline-flex items-center text-[10px] font-black uppercase tracking-wide text-amber-300"
+            title={`Available until ${new Date(item.availableTo).toLocaleDateString()}`}
+          >
+            Limited
+          </span>
+        )}
         {item.equipped && (
           <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-emerald-300">
             <Check size={11} /> Equipped

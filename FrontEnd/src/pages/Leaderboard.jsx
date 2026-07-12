@@ -33,6 +33,9 @@ const SCOPES = [
 ];
 
 const MEDAL_TINT = { 1: '#FFD08A', 2: '#D6DCE6', 3: '#E0A878' };
+// Medal color blended toward --text-primary: near-identical pale metals in dark
+// mode, deep readable metals in light (silver #D6DCE6 alone vanished on white).
+const medalColor = (rank) => `color-mix(in srgb, ${MEDAL_TINT[rank]} 60%, var(--text-primary))`;
 
 const LADDER_IDS = TIER_ORDER.filter((id) => id !== 'quasar');
 const DESCENT_CATS = new Set(['stardust', 'meteor', 'asteroid']);
@@ -98,7 +101,8 @@ function Podium({ entries, meId, onOpen }) {
       {steps.map(({ e, rank, h }) => {
         if (!e) return <div key={rank} />;
         const isMe = e.userId === meId;
-        const tint = MEDAL_TINT[rank];
+        const tint = MEDAL_TINT[rank];      // aura/glow only — always paired with a bg
+        const solid = medalColor(rank);     // strokes + text — contrast in BOTH modes
         return (
           <motion.button
             key={e.userId}
@@ -111,9 +115,9 @@ function Podium({ entries, meId, onOpen }) {
           >
             <div className="relative">
               <span className="absolute -top-2 left-1/2 -translate-x-1/2 z-10">
-                <Medal size={rank === 1 ? 20 : 16} style={{ color: tint }} strokeWidth={2.2} />
+                <Medal size={rank === 1 ? 20 : 16} style={{ color: solid }} strokeWidth={2.2} />
               </span>
-              <div className="rounded-full p-0.5" style={{ boxShadow: `0 0 ${rank === 1 ? 18 : 10}px ${tint}66`, border: `2px solid ${tint}` }}>
+              <div className="rounded-full p-0.5" style={{ boxShadow: `0 0 ${rank === 1 ? 18 : 10}px ${tint}66`, border: `2px solid ${solid}` }}>
                 <Avatar name={e.name} url={e.avatar} size={rank === 1 ? 'md' : 'sm'} userId={e.userId} deco={decoClassFor(e.avatarDeco)} />
               </div>
             </div>
@@ -132,7 +136,7 @@ function Podium({ entries, meId, onOpen }) {
                 borderBottom: 'none',
               }}
             >
-              <span className="text-sm font-black tabular-nums" style={{ color: tint }}>#{rank}</span>
+              <span className="text-sm font-black tabular-nums" style={{ color: solid }}>#{rank}</span>
             </div>
           </motion.button>
         );
@@ -145,7 +149,7 @@ function RankBadge({ rank }) {
   if (rank <= 3) {
     return (
       <span className="inline-flex items-center justify-center w-7" title={`Rank ${rank}`}>
-        <Medal size={18} style={{ color: MEDAL_TINT[rank] }} strokeWidth={2.2} />
+        <Medal size={18} style={{ color: medalColor(rank) }} strokeWidth={2.2} />
       </span>
     );
   }

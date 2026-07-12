@@ -42,8 +42,13 @@ export default function CelebrationBurst({ rarity, itemName, onDone }) {
   if (reduce || animOff) return null;
 
   const big = r.card; // top tiers (HYPERNOVA+) get the full treatment
+  // Blend toward --text-primary: white in dark mode (keeps the luminous look),
+  // ink in light mode (sparks + stamp stay visible on the pale field).
   const sparkColor = (hue) =>
-    hue === 0 ? r.color : hue === 1 ? '#ffffff' : (r.iridescent ? '#ec4899' : r.color);
+    hue === 0 ? r.color
+    : hue === 1 ? 'var(--text-primary)'
+    : (r.iridescent ? '#ec4899' : r.color);
+  const stampColor = `color-mix(in srgb, ${r.iridescent ? '#a855f7' : r.color} 65%, var(--text-primary))`;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[9998] grid place-items-center" aria-hidden="true">
@@ -87,14 +92,14 @@ export default function CelebrationBurst({ rarity, itemName, onDone }) {
           className="font-black uppercase tracking-[0.22em]"
           style={{
             fontSize: big ? 22 : 15,
-            color: r.iridescent ? '#e9d5ff' : r.color,
-            textShadow: `0 0 ${r.glow}px ${r.color}, 0 1px 2px rgba(0,0,0,.5)`,
+            color: stampColor,
+            textShadow: `0 0 ${r.glow}px ${r.color}, 0 1px 2px rgba(0,0,0,.35)`,
           }}
         >
           {r.label}
         </span>
         {itemName && (
-          <span className="text-xs font-bold text-white" style={{ textShadow: '0 1px 3px rgba(0,0,0,.7)' }}>
+          <span className="text-xs font-bold" style={{ color: 'var(--text-primary)', textShadow: '0 1px 3px rgba(0,0,0,.35)' }}>
             {itemName} unlocked
           </span>
         )}
