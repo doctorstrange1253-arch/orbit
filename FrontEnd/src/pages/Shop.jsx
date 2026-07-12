@@ -19,6 +19,7 @@ import { motion } from 'framer-motion';
 import { Check, Lock, Sparkles as SparkIcon, FlaskConical } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
 import PhotonAmount from '../cosmic/PhotonAmount';
+import CelebrationBurst from '../cosmic/CelebrationBurst';
 import ItemIcon from '../cosmic/itemIcons';
 import { useShop, useBuyCosmetic, useEquipCosmetic } from '../cosmic/useShop';
 import { COSMETIC_RENDER } from '../cosmic/cosmetics';
@@ -202,11 +203,16 @@ export default function Shop() {
   const [tab, setTab] = useState('all');
   const [sort, setSort] = useState('featured');
   const [ownedOnly, setOwnedOnly] = useState(false);
+  const [celebrate, setCelebrate] = useState(null); // { rarity, name } after a buy
   const reset = useMemo(() => nextReset(), []);
   const cd = useCountdown(reset);
 
   const onBuy = (key) => buy.mutate(key, {
-    onSuccess: (d) => addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent ✨`, 'success'),
+    onSuccess: (d) => {
+      addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent ✨`, 'success');
+      const item = (data?.catalog || []).find((c) => c.key === key);
+      if (item) setCelebrate({ rarity: item.rarity, name: item.name });
+    },
     onError: (e) => addToast(e.response?.data?.message || 'Purchase failed', 'error'),
   });
   const onEquip = (type, key) => equip.mutate({ type, key }, {
@@ -240,6 +246,9 @@ export default function Shop() {
 
   return (
     <div className="cosmic-page relative min-h-screen">
+      {celebrate && (
+        <CelebrationBurst rarity={celebrate.rarity} itemName={celebrate.name} onDone={() => setCelebrate(null)} />
+      )}
       {/* ── field: near-black with three radial nebula glows ── */}
       <div
         className="pointer-events-none fixed inset-0 -z-10 cosmic-backdrop"

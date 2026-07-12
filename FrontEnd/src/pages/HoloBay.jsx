@@ -19,6 +19,7 @@ import { motion } from 'framer-motion';
 import { Check, Lock, ArrowLeft, Shuffle, RotateCcw } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
 import PhotonAmount from '../cosmic/PhotonAmount';
+import CelebrationBurst from '../cosmic/CelebrationBurst';
 import GlowName from '../cosmic/GlowName';
 import Nameplate from '../cosmic/Nameplate';
 import ItemIcon from '../cosmic/itemIcons';
@@ -128,6 +129,7 @@ export default function HoloBay() {
   const equippedDeco = data?.equipped?.avatar_deco || null;
   const equippedEffect = data?.equipped?.profile_effect || null;
   const equippedPlate = data?.equipped?.nameplate || null;
+  const [celebrate, setCelebrate] = useState(null); // { rarity, name } after a buy
   const [tryGlow, setTryGlow] = useState(undefined); // undefined → fall back to equipped
   const [tryBg, setTryBg] = useState(undefined);
   const [tryDeco, setTryDeco] = useState(undefined);
@@ -172,7 +174,11 @@ export default function HoloBay() {
 
   const busy = buy.isPending || equip.isPending;
   const onBuy = (key) => buy.mutate(key, {
-    onSuccess: (d) => addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent ✨`, 'success'),
+    onSuccess: (d) => {
+      addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent ✨`, 'success');
+      const item = catalog.find((c) => c.key === key);
+      if (item) setCelebrate({ rarity: item.rarity, name: item.name });
+    },
     onError: (e) => addToast(e.response?.data?.message || 'Purchase failed', 'error'),
   });
   const onEquip = (type, key) => equip.mutate({ type, key }, {
@@ -218,6 +224,9 @@ export default function HoloBay() {
 
   return (
     <div className="cosmic-page relative min-h-screen">
+      {celebrate && (
+        <CelebrationBurst rarity={celebrate.rarity} itemName={celebrate.name} onDone={() => setCelebrate(null)} />
+      )}
       <div className="pointer-events-none fixed inset-0 -z-10 cosmic-backdrop" style={{
         background:
           'radial-gradient(55% 45% at 20% 10%, rgba(56,189,248,.13), transparent 60%),' +

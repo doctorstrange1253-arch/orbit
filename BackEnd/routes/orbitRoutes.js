@@ -2,7 +2,7 @@ const express = require("express");
 const router  = express.Router();
 const auth    = require("../middleware/auth");
 
-const { getMyOrbit, claimMission, buyFreeze, setPrefs, getLedger } = require("../controllers/orbitController");
+const { getMyOrbit, claimMission, rerollMission, buyFreeze, setPrefs, getLedger } = require("../controllers/orbitController");
 const constellation = require("../controllers/constellationController");
 const { getMyLeague } = require("../controllers/leagueController");
 const shop = require("../controllers/shopController");
@@ -13,6 +13,10 @@ router.get("/me", auth, getMyOrbit);
 
 // Claim a completed weekly mission's Stardust reward (protected).
 router.post("/missions/:key/claim", auth, claimMission);
+
+// Spend Photons to swap one unclaimed, incomplete mission for a fresh one
+// (once per week — protected).
+router.post("/missions/:key/reroll", auth, rerollMission);
 
 // Spend Stardust to bank one extra Gravity Assist freeze (protected).
 router.post("/freeze/buy", auth, buyFreeze);

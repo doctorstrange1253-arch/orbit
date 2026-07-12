@@ -8,9 +8,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Target, Check, Zap, ChevronDown, ScrollText, Timer } from 'lucide-react';
+import { Target, Check, Zap, ChevronDown, ScrollText, Timer, RefreshCw } from 'lucide-react';
 import PhotonIcon from './PhotonIcon';
-import { useClaimMission } from './useOrbit';
+import { useOrbit, useClaimMission, useRerollMission } from './useOrbit';
 import { useUIStore } from '../store/uiStore';
 
 const BAR_INITIAL = { width: 0 };
@@ -35,7 +35,7 @@ function useWeeklyReset() {
   return { d: Math.floor(s / 86400), h: Math.floor((s % 86400) / 3600), m: Math.floor((s % 3600) / 60) };
 }
 
-function MissionCard({ m, onClaim, claiming }) {
+function MissionCard({ m, onClaim, claiming, onReroll, rerollCost, canReroll }) {
   const [open, setOpen] = useState(false);
   const pct = Math.min(100, Math.round((m.progress / m.target) * 100));
   const claimable = m.complete && !m.claimed;
@@ -95,7 +95,22 @@ function MissionCard({ m, onClaim, claiming }) {
       )}
 
       <div className="flex items-center justify-between">
-        <span className="text-xs tabular-nums text-slate-400">{Math.min(m.progress, m.target)}/{m.target}</span>
+        <span className="inline-flex items-center gap-1.5 text-xs tabular-nums text-slate-400">
+          {Math.min(m.progress, m.target)}/{m.target}
+          {/* Swap-a-mission: only for missions you haven't started finishing —
+              complete ones should be claimed, not discarded. */}
+          {canReroll && !m.complete && !m.claimed && (
+            <button
+              onClick={() => onReroll(m.key)}
+              disabled={claiming}
+              title={`Swap for a different mission — ${rerollCost} Photons (1 per week)`}
+              aria-label={`Swap ${m.label} for a different mission (${rerollCost} Photons)`}
+              className="grid h-5 w-5 place-items-center rounded-full text-slate-500 transition hover:bg-white/10 hover:text-violet-300"
+            >
+              <RefreshCw size={11} />
+            </button>
+          )}
+        </span>
         {m.claimed ? (
           <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400">
             <Check size={14} /> Claimed
@@ -119,9 +134,19 @@ function MissionCard({ m, onClaim, claiming }) {
 
 export default function MissionsPanel({ missions = [] }) {
   const claim = useClaimMission();
+  const reroll = useRerollMission();
+  const { data: orbitData } = useOrbit(); // cache hit — same ['orbit','me'] query
   const { addToast } = useUIStore();
   const reset = useWeeklyReset();
   const readyCount = missions.filter((m) => m.complete && !m.claimed).length;
+  const rerollInfo = orbitData?.missionReroll;
+
+  const onReroll = (key) => {
+    reroll.mutate(key, {
+      onSuccess: (data) => addToast(`Mission swapped ✨ −${data.spent} Photons`, 'info'),
+      onError: (e) => addToast(e.response?.data?.message || 'Could not swap mission', 'error'),
+    });
+  };
 
   const onClaim = (key) => {
     claim.mutate(key, {
@@ -158,7 +183,13 @@ export default function MissionsPanel({ missions = [] }) {
       ) : (
         <div className="grid gap-3 sm:grid-cols-3">
           {missions.map((m) => (
-            <MissionCard key={m.key} m={m} onClaim={onClaim} claiming={claim.isPending} />
+            <MissionCard
+              key={m.key} m={m} onClaim={onClaim}
+              claiming={claim.isPending || reroll.isPending}
+              onReroll={onReroll}
+              rerollCost={rerollInfo?.cost ?? 50}
+              canReroll={!!rerollInfo?.available}
+            />
           ))}
         </div>
       )}

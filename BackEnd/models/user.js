@@ -257,6 +257,7 @@ const userSchema = new mongoose.Schema({
         // the ISO week changes — no cron needed, mirrors the season self-heal).
         missions: {
             weekId: { type: String, default: "" },            // "YYYY-Www"
+            rerollsUsed: { type: Number, default: 0 },        // mission swaps spent this week
             items:  {
                 type: [{
                     key:         String,

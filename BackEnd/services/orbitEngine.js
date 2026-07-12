@@ -258,6 +258,45 @@ function applyMissionProgress(missions, metric, amount = 1) {
     return { missions: { ...missions, items }, completedNow };
 }
 
+// Mission reroll (swap-a-mission) tunables.
+const MISSION_REROLL_COST = 50; // Photons to swap one mission you don't like
+const REROLLS_PER_WEEK    = 1;  // one swap per ISO week
+
+/**
+ * rerollMission — replace ONE mission (unclaimed AND not yet complete) with a
+ * template that isn't already in this week's set. The replacement comes from a
+ * seeded order keyed on `${weekId}:reroll`, so every replica picks the same
+ * alternative. Progress starts at 0; `rerollsUsed` enforces the weekly limit
+ * (it lives on the missions object, so the Monday roll naturally resets it).
+ *
+ * @returns {{ missions, ok:boolean, replaced?:string, swappedFor?:object, reason?:string }}
+ */
+function rerollMission(missions, key, weekId, templates = MISSION_TEMPLATES) {
+    if (!missions || !Array.isArray(missions.items)) return { missions, ok: false, reason: "no_missions" };
+    if ((missions.rerollsUsed || 0) >= REROLLS_PER_WEEK) return { missions, ok: false, reason: "no_rerolls_left" };
+
+    const idx = missions.items.findIndex((it) => it.key === key);
+    if (idx === -1) return { missions, ok: false, reason: "not_found" };
+    const target = missions.items[idx];
+    if (target.claimed) return { missions, ok: false, reason: "already_claimed" };
+    if (target.progress >= target.target) return { missions, ok: false, reason: "already_complete" };
+
+    const inSet = new Set(missions.items.map((it) => it.key));
+    const order = seededOrder(`${weekId}:reroll`, templates.length);
+    const pick = order.map((i) => templates[i]).find((t) => !inSet.has(t.key));
+    if (!pick) return { missions, ok: false, reason: "no_alternatives" };
+
+    const items = missions.items.slice();
+    items[idx] = {
+        key: pick.key, metric: pick.metric, target: pick.target, stardust: pick.stardust,
+        label: pick.label, description: pick.description, progress: 0, claimed: false,
+    };
+    return {
+        missions: { ...missions, items, rerollsUsed: (missions.rerollsUsed || 0) + 1 },
+        ok: true, replaced: key, swappedFor: pick,
+    };
+}
+
 /**
  * claimMission — mark a completed mission claimed and return its Stardust.
  * @returns {{ missions, ok:boolean, stardust:number, reason?:string }}
@@ -319,6 +358,7 @@ module.exports = {
     // constants
     FREEZE_CAP, WEEKLY_FREEZE_GRANT, FREEZE_STARDUST_COST, MISSIONS_PER_WEEK,
     ACTIVE_DAY_STARDUST, MILESTONES, MISSION_TEMPLATES,
+    MISSION_REROLL_COST, REROLLS_PER_WEEK,
     // date helpers
     toDayNum, dayGap,
     // streak
@@ -326,7 +366,7 @@ module.exports = {
     // freeze
     grantWeeklyFreeze,
     // missions
-    seededOrder, pickMissions, rollMissions, applyMissionProgress, claimMission,
+    seededOrder, pickMissions, rollMissions, applyMissionProgress, claimMission, rerollMission,
     // graduation (Part 3)
     phaseFor, graduationStatus,
     // misc

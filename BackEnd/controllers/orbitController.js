@@ -69,6 +69,14 @@ function shapeOrbit(orbit, now = new Date()) {
             complete: m.progress >= m.target,
         })),
         missionsWeekId: orbit.missions.weekId,
+        // Mission swap (reroll): one per week, costs Photons, only on missions
+        // that aren't complete/claimed yet.
+        missionReroll: {
+            cost: engine.MISSION_REROLL_COST,
+            perWeek: engine.REROLLS_PER_WEEK,
+            used: orbit.missions.rerollsUsed || 0,
+            available: (orbit.missions.rerollsUsed || 0) < engine.REROLLS_PER_WEEK,
+        },
         nextMilestone: next,                       // { days, name, stardust } | null
         milestones: engine.MILESTONES,             // full ladder for the UI
         nextResetUTC: `${today}T24:00:00Z`,        // end of the current UTC day
@@ -146,6 +154,58 @@ exports.claimMission = async (req, res) => {
     }
 };
 
+// POST /api/orbit/missions/:key/reroll — spend Photons to swap ONE mission you
+// don't like for a fresh one (unclaimed + incomplete only; once per week).
+exports.rerollMission = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select("orbit").lean();
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        let { orbit } = rollForward(user.orbit);
+        const COST = engine.MISSION_REROLL_COST;
+        if (orbit.stardust < COST) {
+            return res.status(400).json({ message: "Not enough Photons", reason: "insufficient" });
+        }
+        const result = engine.rerollMission(orbit.missions, req.params.key, orbit.missions.weekId);
+        if (!result.ok) {
+            const msg = result.reason === "no_rerolls_left" ? "You've already swapped a mission this week"
+                : result.reason === "already_complete" ? "This mission is already complete — claim it instead"
+                : result.reason === "already_claimed" ? "This mission is already claimed"
+                : "Mission can't be swapped";
+            return res.status(400).json({ message: msg, reason: result.reason });
+        }
+        orbit.missions = result.missions;
+        orbit.stardust -= COST;
+
+        // Guarded write: only if the balance still covers the cost, the target
+        // mission is still present-and-unclaimed, and the weekly swap is still
+        // unspent at write time — a concurrent duplicate reroll no-ops here.
+        const upd = await User.updateOne(
+            {
+                _id: req.user.id,
+                "orbit.stardust": { $gte: COST },
+                "orbit.missions.items": { $elemMatch: { key: req.params.key, claimed: { $ne: true } } },
+                $or: [
+                    { "orbit.missions.rerollsUsed": { $exists: false } },
+                    { "orbit.missions.rerollsUsed": { $lt: engine.REROLLS_PER_WEEK } },
+                ],
+            },
+            { $set: { orbit } }
+        );
+        if (!upd.matchedCount) {
+            return res.status(409).json({ message: "Swap could not be completed — please retry", reason: "conflict" });
+        }
+        require("../services/photonLedger").record(req.user.id, -COST, "mission_reroll"); // economy sink
+        return res.status(200).json({
+            spent: COST, replaced: result.replaced, swappedFor: result.swappedFor.key,
+            ...shapeOrbit(orbit),
+        });
+    } catch (err) {
+        console.error("rerollMission error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 // POST /api/orbit/freeze/buy — spend Stardust for one extra Gravity Assist.
 exports.buyFreeze = async (req, res) => {
     try {
@@ -163,7 +223,7 @@ exports.buyFreeze = async (req, res) => {
             return res.status(400).json({ message: "Gravity Assist inventory full", reason: "at_cap" });
         }
         if (orbit.stardust < FREEZE_COST) {
-            return res.status(400).json({ message: "Not enough Stardust", reason: "insufficient" });
+            return res.status(400).json({ message: "Not enough Photons", reason: "insufficient" });
         }
         orbit.stardust -= FREEZE_COST;
         orbit.freeze.tokens = Math.min(FREEZE_CAP, orbit.freeze.tokens + 1);

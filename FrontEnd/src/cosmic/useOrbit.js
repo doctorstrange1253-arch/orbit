@@ -30,6 +30,18 @@ export function useClaimMission() {
   });
 }
 
+/** Spend Photons to swap ONE unclaimed, incomplete mission for a fresh one. */
+export function useRerollMission() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (key) => api.post(`/orbit/missions/${key}/reroll`).then((r) => r.data),
+    onSuccess: (data) => {
+      qc.setQueryData(ORBIT_KEY, (prev) => ({ ...prev, ...data }));
+      qc.invalidateQueries({ queryKey: ['orbit', 'shop'] }); // Photons spent → refresh shop affordability
+    },
+  });
+}
+
 /** Spend Photons to bank one extra Gravity Assist freeze. */
 export function useBuyFreeze() {
   const qc = useQueryClient();
