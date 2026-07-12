@@ -257,10 +257,7 @@ export default function Shop() {
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
             <PhotonIcon size={26} />
-            <h1
-              className="text-2xl font-black tracking-tight sm:text-3xl"
-              style={{ background: 'linear-gradient(90deg,#38bdf8,#8b5cf6,#ec4899)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}
-            >
+            <h1 className="brand-gradient-text text-2xl font-black tracking-tight sm:text-3xl">
               Nebula Store
             </h1>
           </div>

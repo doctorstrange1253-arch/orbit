@@ -1513,10 +1513,39 @@
 [data-mode="light"] .cosmic-page [class*="bg-white/20"] { background-color: rgba(15,23,42,.10) !important; }
 /* neutral borders */
 [data-mode="light"] .cosmic-page [class*="border-white/"] { border-color: rgba(15,23,42,.12) !important; }
+/* pale accent TINTS (100–300) — designed for the dark field, near-invisible on
+   the light one. Remap each family to its deep light-mode reading so Photon
+   balances, Equipped/Owned tags and status pills keep their hue AND contrast.
+   Saturated accents (400+) are left untouched. */
+[data-mode="light"] .cosmic-page [class*="text-violet-100"],
+[data-mode="light"] .cosmic-page [class*="text-violet-200"],
+[data-mode="light"] .cosmic-page [class*="text-violet-300"] { color: #6d28d9 !important; }
+[data-mode="light"] .cosmic-page [class*="text-cyan-200"],
+[data-mode="light"] .cosmic-page [class*="text-sky-200"],
+[data-mode="light"] .cosmic-page [class*="text-sky-300"] { color: #0369a1 !important; }
+[data-mode="light"] .cosmic-page [class*="text-emerald-200"],
+[data-mode="light"] .cosmic-page [class*="text-emerald-300"] { color: #047857 !important; }
+[data-mode="light"] .cosmic-page [class*="text-amber-300"] { color: #b45309 !important; }
+[data-mode="light"] .cosmic-page [class*="text-rose-300"] { color: #be123c !important; }
 /* white rings (Tailwind ring-* = box-shadow via --tw-ring-color) turn to ink so
    selection states — Holo-Bay's active item, the Store's active tab — stay
    visible on the light field. */
 [data-mode="light"] .cosmic-page [class*="ring-white/"] { --tw-ring-color: rgba(15,23,42,.30); }
+
+/* ══ Brand gradient headline (Store / Holo-Bay) ══
+   Class-based (was inline) so light mode can deepen the stops — the sky-400
+   start washed out against the pale field. Dark mode is pixel-identical. */
+.brand-gradient-text {
+  background: linear-gradient(90deg, #38bdf8, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-mode="light"] .brand-gradient-text {
+  background: linear-gradient(90deg, #0284c7, #7c3aed, #db2777);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
 
 /* ══ Currency + streak chips: keep them visible in light mode (L1) ══ */
 [data-mode="light"] .photons-chip > button {

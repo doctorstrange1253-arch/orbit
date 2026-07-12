@@ -73,8 +73,10 @@ const NotificationSystem = ({ notifications, onDismiss, onAction }) => {
     }
   };
 
+  // Mobile: pinned inside both edges (left-4 + right-4) so the stack can never
+  // overflow a narrow viewport; ≥sm it hugs the right at max-w-sm.
   return (
-    <div className="fixed top-20 right-4 z-50 space-y-3 max-w-sm w-full pointer-events-none">
+    <div className="fixed top-20 left-4 right-4 sm:left-auto sm:w-full sm:max-w-sm z-50 space-y-3 pointer-events-none">
       <AnimatePresence mode="sync">
         {notifications.map((notification) => (
           <motion.div

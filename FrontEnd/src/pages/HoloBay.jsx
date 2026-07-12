@@ -228,8 +228,7 @@ export default function HoloBay() {
       <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
         <div className="flex items-center gap-3">
           <Link to="/shop" className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-white"><ArrowLeft size={15} /> Store</Link>
-          <h1 className="ml-1 text-2xl font-black tracking-tight sm:text-3xl"
-              style={{ background: 'linear-gradient(90deg,#38bdf8,#8b5cf6,#ec4899)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
+          <h1 className="brand-gradient-text ml-1 text-2xl font-black tracking-tight sm:text-3xl">
             Holo-Bay
           </h1>
           <div className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1.5 ring-1 ring-violet-400/40">
