@@ -255,6 +255,11 @@ const userSchema = new mongoose.Schema({
         stardust: { type: Number, default: 0 },
         // The current week's rotating missions (regenerated lazily on read when
         // the ISO week changes — no cron needed, mirrors the season self-heal).
+        // Photon gifting — per-UTC-day send tally (anti-farming cap).
+        gifting: {
+            day:  { type: String, default: "" },              // "YYYY-MM-DD" UTC
+            sent: { type: Number, default: 0 },               // Photons sent that day
+        },
         missions: {
             weekId: { type: String, default: "" },            // "YYYY-Www"
             rerollsUsed: { type: Number, default: 0 },        // mission swaps spent this week

@@ -5,6 +5,7 @@ import { Check, X, Video, Star, Clock, UserCheck, Trash2, MessageSquare, Message
 import api from '../../services/api';
 import Avatar from '../common/Avatar';
 import GlowName from '../../cosmic/GlowName';
+import GiftPhotonsButton from '../../cosmic/GiftPhotonsButton';
 import { useUIStore } from '../../store/uiStore';
 import { useAuthStore } from '../../store/authStore';
 import { useNotificationStore } from '../../store/notificationStore';
@@ -236,6 +237,7 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
 
         {isEstablished && (
           <>
+            <GiftPhotonsButton toUser={other} />
             <button
               onClick={() => {
                 // Dispatch event so Navbar can open ChatDrawer with this user

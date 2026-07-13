@@ -42,6 +42,18 @@ export function useRerollMission() {
   });
 }
 
+/** Gift Photons to an accepted connection ({ toUserId, amount, note? }). */
+export function useGiftPhotons() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (payload) => api.post('/orbit/photons/gift', payload).then((r) => r.data),
+    onSuccess: (data) => {
+      qc.setQueryData(ORBIT_KEY, (prev) => ({ ...prev, ...data }));
+      qc.invalidateQueries({ queryKey: ['orbit', 'shop'] }); // balance changed
+    },
+  });
+}
+
 /** Spend Photons to bank one extra Gravity Assist freeze. */
 export function useBuyFreeze() {
   const qc = useQueryClient();

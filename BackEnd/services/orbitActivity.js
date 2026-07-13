@@ -51,8 +51,17 @@ function normalizeOrbit(orbit = {}) {
             lastGrantWeek: (o.freeze && o.freeze.lastGrantWeek) || "",
         },
         stardust: o.stardust || 0,
+        // Pass-through: cosmetics is owned by the shop controller, but callers
+        // persist the WHOLE normalized orbit ($set: { orbit }), so dropping it
+        // here would erase a user's purchases on any claim/spend write.
+        ...(o.cosmetics !== undefined ? { cosmetics: o.cosmetics } : {}),
+        gifting: {
+            day: (o.gifting && o.gifting.day) || "",
+            sent: (o.gifting && o.gifting.sent) || 0,
+        },
         missions: {
             weekId: (o.missions && o.missions.weekId) || "",
+            rerollsUsed: (o.missions && o.missions.rerollsUsed) || 0,
             items: (o.missions && Array.isArray(o.missions.items)) ? o.missions.items.map((i) => ({ ...i })) : [],
         },
         league: {

@@ -69,6 +69,13 @@ function shapeOrbit(orbit, now = new Date()) {
             complete: m.progress >= m.target,
         })),
         missionsWeekId: orbit.missions.weekId,
+        // Photon gifting — limits + how much of today's allowance remains.
+        gift: {
+            min: engine.GIFT_MIN,
+            max: engine.GIFT_MAX,
+            dailyCap: engine.GIFT_DAILY_CAP,
+            sentToday: (orbit.gifting && orbit.gifting.day === today) ? (orbit.gifting.sent || 0) : 0,
+        },
         // Mission swap (reroll): one per week, costs Photons, only on missions
         // that aren't complete/claimed yet.
         missionReroll: {
@@ -202,6 +209,104 @@ exports.rerollMission = async (req, res) => {
         });
     } catch (err) {
         console.error("rerollMission error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// POST /api/orbit/photons/gift { toUserId, amount, note? } — send Photons to an
+// ACCEPTED connection. Capped per-day per sender (anti-farming); both sides get
+// a ledger row; the recipient gets a notification.
+exports.giftPhotons = async (req, res) => {
+    try {
+        const mongoose = require("mongoose");
+        const Connection = require("../models/connection");
+        const { createNotification } = require("../services/notify");
+
+        const { toUserId, note } = req.body || {};
+        const amount = Number(req.body && req.body.amount);
+        if (!toUserId || !mongoose.isValidObjectId(toUserId)) {
+            return res.status(400).json({ message: "Invalid recipient" });
+        }
+        if (String(toUserId) === String(req.user.id)) {
+            return res.status(400).json({ message: "You can't gift yourself", reason: "self" });
+        }
+
+        // Gifting rides on real relationships: accepted/completed connections only.
+        const connected = await Connection.exists({
+            status: { $in: ["accepted", "completed"] },
+            $or: [
+                { requester: req.user.id, receiver: toUserId },
+                { requester: toUserId, receiver: req.user.id },
+            ],
+        });
+        if (!connected) {
+            return res.status(403).json({ message: "You can only gift Photons to your connections", reason: "not_connected" });
+        }
+
+        const user = await User.findById(req.user.id).select("orbit name").lean();
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        let { orbit } = rollForward(user.orbit);
+        const today = utcDayStr(new Date());
+        const sentToday = (orbit.gifting && orbit.gifting.day === today) ? (orbit.gifting.sent || 0) : 0;
+
+        const gate = engine.validateGift({ balance: orbit.stardust, sentToday, amount });
+        if (!gate.ok) {
+            const msg = gate.reason === "insufficient" ? "Not enough Photons"
+                : gate.reason === "daily_cap" ? `Daily gift limit is ${engine.GIFT_DAILY_CAP} Photons`
+                : `Gifts are ${engine.GIFT_MIN}–${engine.GIFT_MAX} Photons`;
+            return res.status(400).json({ message: msg, reason: gate.reason });
+        }
+
+        // Guarded sender debit: balance AND the daily tally re-checked at write
+        // time, so concurrent gifts can't overdraw either.
+        const upd = await User.updateOne(
+            {
+                _id: req.user.id,
+                "orbit.stardust": { $gte: amount },
+                $or: [
+                    { "orbit.gifting.day": { $ne: today } },
+                    { "orbit.gifting.sent": { $lte: engine.GIFT_DAILY_CAP - amount } },
+                ],
+            },
+            {
+                $inc: { "orbit.stardust": -amount },
+                $set: { "orbit.gifting": { day: today, sent: sentToday + amount } },
+            }
+        );
+        if (!upd.matchedCount) {
+            return res.status(409).json({ message: "Gift could not be completed — please retry", reason: "conflict" });
+        }
+
+        // Credit the recipient; on the (connection-checked, so near-impossible)
+        // miss, refund the sender so Photons are never destroyed.
+        const credit = await User.updateOne({ _id: toUserId }, { $inc: { "orbit.stardust": amount } });
+        if (!credit.matchedCount) {
+            await User.updateOne(
+                { _id: req.user.id },
+                { $inc: { "orbit.stardust": amount, "orbit.gifting.sent": -amount } }
+            );
+            return res.status(404).json({ message: "Recipient not found — Photons refunded", reason: "no_recipient" });
+        }
+
+        const ledger = require("../services/photonLedger");
+        ledger.record(req.user.id, -amount, "gift_sent");
+        ledger.record(toUserId, amount, "gift_received");
+
+        const io = req.app.get("io");
+        const noteText = typeof note === "string" && note.trim() ? ` — “${note.trim().slice(0, 120)}”` : "";
+        createNotification(io, toUserId, {
+            type: "photon_grant",
+            title: "Photons received ✨",
+            body: `${user.name || "A connection"} sent you ${amount} Photons${noteText}`,
+            data: { from: String(req.user.id), amount },
+        }).catch(() => {});
+
+        orbit.stardust -= amount;
+        orbit.gifting = { day: today, sent: sentToday + amount };
+        return res.status(200).json({ sent: amount, to: String(toUserId), ...shapeOrbit(orbit) });
+    } catch (err) {
+        console.error("giftPhotons error:", err);
         res.status(500).json({ message: "Server error" });
     }
 };

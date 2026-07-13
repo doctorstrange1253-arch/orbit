@@ -262,6 +262,26 @@ function applyMissionProgress(missions, metric, amount = 1) {
 const MISSION_REROLL_COST = 50; // Photons to swap one mission you don't like
 const REROLLS_PER_WEEK    = 1;  // one swap per ISO week
 
+// Photon gifting tunables — generous enough to feel real, capped so gifting
+// can't become a farming pipe between alt accounts.
+const GIFT_MIN       = 10;
+const GIFT_MAX       = 500;  // per gift
+const GIFT_DAILY_CAP = 500;  // total sent per sender per UTC day
+
+/**
+ * validateGift — pure gate for one gift attempt.
+ * @param {{balance:number, sentToday:number, amount:number}} p
+ * @returns {{ ok:boolean, reason?:string }}
+ */
+function validateGift({ balance, sentToday, amount }) {
+    if (!Number.isInteger(amount) || amount < GIFT_MIN || amount > GIFT_MAX) {
+        return { ok: false, reason: "bad_amount" };
+    }
+    if ((balance || 0) < amount) return { ok: false, reason: "insufficient" };
+    if ((sentToday || 0) + amount > GIFT_DAILY_CAP) return { ok: false, reason: "daily_cap" };
+    return { ok: true };
+}
+
 /**
  * rerollMission — replace ONE mission (unclaimed AND not yet complete) with a
  * template that isn't already in this week's set. The replacement comes from a
@@ -359,6 +379,7 @@ module.exports = {
     FREEZE_CAP, WEEKLY_FREEZE_GRANT, FREEZE_STARDUST_COST, MISSIONS_PER_WEEK,
     ACTIVE_DAY_STARDUST, MILESTONES, MISSION_TEMPLATES,
     MISSION_REROLL_COST, REROLLS_PER_WEEK,
+    GIFT_MIN, GIFT_MAX, GIFT_DAILY_CAP, validateGift,
     // date helpers
     toDayNum, dayGap,
     // streak
