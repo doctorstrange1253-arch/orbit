@@ -67,7 +67,7 @@ async function captureStorageSnapshot() {
     });
 
     if (isNearLimit) {
-        console.warn(`[StorageGuard] ⚠️  Database at ${totalMB} MB — approaching 512 MB Atlas Free limit!`);
+        console.warn(`[StorageGuard] Database at ${totalMB} MB — approaching 512 MB Atlas Free limit!`);
     } else {
         console.log(`[StorageGuard] Storage snapshot: ${totalMB} MB used.`);
     }

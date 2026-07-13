@@ -7,7 +7,7 @@
  * and on error it renders nothing so it can never break the profile page.
  */
 import { memo } from 'react';
-import { Sparkles, Flame, MoveUpRight, Sun, Radio, Orbit, BadgeCheck, Star } from 'lucide-react';
+import { Flame, MoveUpRight, Sun, Radio, Orbit, BadgeCheck, Star } from 'lucide-react';
 import CosmicBadge from './CosmicBadge';
 import TierProgress from './TierProgress';
 import { getTier } from './tiers';
@@ -53,7 +53,7 @@ const CosmicProfileCard = memo(function CosmicProfileCard({ userId }) {
     <div className="p-5 rounded-2xl"
       style={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)' }}>
       <div className="flex items-center gap-2 mb-4">
-        <Sparkles size={15} className="text-accent" />
+        <Orbit size={15} className="text-accent" />
         <h2 className="font-display font-bold text-text-primary text-base">Cosmic Standing</h2>
       </div>
 

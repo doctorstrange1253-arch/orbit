@@ -19,6 +19,8 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Flame, Trophy, Gem, RotateCw, Volume2, VolumeX } from 'lucide-react';
+import PhotonIcon from './PhotonIcon';
 import { playSpaceReveal } from './orbitRevealSound';
 import './OrbitTeaserReveal.css';
 
@@ -203,21 +205,21 @@ export default function OrbitTeaserReveal({ onComplete, standalone = false, soun
 
             {/* UI cards (buckets) */}
             <div className="otr-card otr-c-streak">
-              <span className="ico">🔥</span>
+              <span className="ico"><Flame size={24} color="#fb923c" /></span>
               <span>
                 <span className="big">14</span> <span className="lbl">day streak</span>
               </span>
             </div>
             <div className="otr-card otr-c-board">
-              <span className="ico">🏆</span>
+              <span className="ico"><Trophy size={24} color="#fbbf24" /></span>
               <span className="name">Leaderboard</span>
             </div>
             <div className="otr-card otr-c-league">
-              <span className="ico">💎</span>
+              <span className="ico"><Gem size={24} color="#38bdf8" /></span>
               <span className="name">League</span>
             </div>
             <div className="otr-card otr-c-points">
-              <span className="ico">✨</span>
+              <span className="ico"><PhotonIcon size={24} animated={false} /></span>
               <span className="name">Points: 5,200</span>
             </div>
           </div>
@@ -227,10 +229,10 @@ export default function OrbitTeaserReveal({ onComplete, standalone = false, soun
       {standalone && (
         <div className="otr-controls">
           <button className="otr-btn" onClick={replay}>
-            ↻ Replay
+            <RotateCw size={14} /> Replay
           </button>
           <button className={`otr-btn${soundOn ? '' : ' ghost'}`} onClick={toggleSound}>
-            {soundOn ? '🔊 Sound on' : '🔇 Sound off'}
+            {soundOn ? <><Volume2 size={14} /> Sound on</> : <><VolumeX size={14} /> Sound off</>}
           </button>
           <Link className="otr-btn ghost" to="/">
             Back to home

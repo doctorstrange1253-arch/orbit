@@ -15,7 +15,7 @@
  * Pure render: no store access, no side effects — safe to mount anywhere.
  */
 import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, Sparkles } from 'lucide-react';
+import { Share2, ArrowRight } from 'lucide-react';
 import CosmicBadge from './CosmicBadge';
 import { getTier } from './tiers';
 import { momentCopy } from './momentCopy';
@@ -73,7 +73,7 @@ export default function RankMomentCard({
 
             <div className="rmc-actions">
               <button className="rmc-primary" onClick={onContinue}>
-                <Sparkles size={15} /> Continue
+                <ArrowRight size={15} /> Continue
               </button>
               {onShare && (
                 <button className="rmc-secondary" onClick={onShare} disabled={sharing}>

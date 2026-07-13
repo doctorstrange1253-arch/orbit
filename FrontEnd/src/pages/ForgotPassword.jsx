@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { Mail, ArrowLeft, CheckCircle, Sparkles, RotateCw } from 'lucide-react';
+import { Mail, ArrowLeft, CheckCircle, RotateCw } from 'lucide-react';
+import OrbitLogo from '../components/common/OrbitLogo';
 import api from '../services/api';
 import Spinner from '../components/common/Spinner';
 import { useUIStore } from '../store/uiStore';
@@ -58,11 +59,8 @@ const ForgotPassword = () => {
 
           {/* Brand header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
-              style={{ background: 'linear-gradient(135deg, #00c6ff 0%, #7c3aed 50%, #ff0076 100%)', boxShadow: '0 0 30px rgba(0,198,255,0.3)' }}
-            >
-              <Sparkles size={24} className="text-text-primary" />
-            </div>
+            {/* the real Orbit mark (public/orbit-app.svg) - never a generic sparkle */}
+            <OrbitLogo size={56} className="mb-4" />
             <h1 className="text-2xl font-display font-bold mb-1"
               style={{ background: 'linear-gradient(135deg, #00c6ff, #a855f7, #ff0076)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
             >

@@ -143,7 +143,7 @@ export default function MissionsPanel({ missions = [] }) {
 
   const onReroll = (key) => {
     reroll.mutate(key, {
-      onSuccess: (data) => addToast(`Mission swapped ✨ −${data.spent} Photons`, 'info'),
+      onSuccess: (data) => addToast(`Mission swapped — ${data.spent} Photons spent`, 'info'),
       onError: (e) => addToast(e.response?.data?.message || 'Could not swap mission', 'error'),
     });
   };

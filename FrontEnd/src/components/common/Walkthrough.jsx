@@ -96,7 +96,14 @@ export default function Walkthrough({ tourKey }) {
             <X size={16} />
           </button>
 
-          <div className="mb-3 text-3xl leading-none" aria-hidden="true">{step.icon}</div>
+          {/* lucide step icon (tours.js) — matches the app's icon language, no emoji */}
+          <div
+            className="mb-3 grid h-12 w-12 place-items-center rounded-2xl text-accent"
+            style={{ background: 'color-mix(in srgb, var(--accent) 12%, transparent)' }}
+            aria-hidden="true"
+          >
+            {step.Icon && <step.Icon size={24} />}
+          </div>
           <h2 className="text-lg font-bold text-text-primary">{step.title}</h2>
           <p className="mt-2 text-sm leading-relaxed text-text-secondary">{step.body}</p>
 

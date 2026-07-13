@@ -83,7 +83,7 @@ function SeederWarp() {
     <Card title="Seeder + Warp Drive">
       <input style={{ ...input, width: 320, marginBottom: 10 }} placeholder="target userId" value={userId} onChange={(e) => setUserId(e.target.value)} />
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
-        <button style={btn} disabled={!userId || busy} onClick={() => call('seed', () => adminApi.post('/mission-control/seed', { userId, confirm: 'SEED' }))}>🌱 Seed all tiers</button>
+        <button style={btn} disabled={!userId || busy} onClick={() => call('seed', () => adminApi.post('/mission-control/seed', { userId, confirm: 'SEED' }))}>Seed all tiers</button>
         <button style={btn} disabled={!userId || busy} onClick={() => warp('advance')}>+1 day</button>
         <button style={btn} disabled={!userId || busy} onClick={() => warp('miss')}>Simulate miss</button>
         <button style={btn} disabled={!userId || busy} onClick={() => warp('jumpMilestone', 100)}>Jump → 100</button>
@@ -234,7 +234,7 @@ function Gravimeter() {
   if (data.error) return <Card title="Gravimeter — Photons economy"><div style={{ color: '#fb7185' }}>{data.error}</div></Card>;
   return (
     <Card title="Gravimeter — Photons economy" right={<button style={btn} onClick={load}>Refresh</button>}>
-      {data.inflationAlert && <div style={{ ...pill(false), display: 'inline-block', marginBottom: 8 }}>⚠ INFLATION: supply outpacing sinks</div>}
+      {data.inflationAlert && <div style={{ ...pill(false), display: 'inline-block', marginBottom: 8 }}>INFLATION: supply outpacing sinks</div>}
       <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginBottom: 12 }}>
         <div><div style={{ fontSize: 11, opacity: .5 }}>Earned</div><div style={{ fontSize: 20, fontWeight: 800, color: '#34d399' }}>{data.totalEarned}</div></div>
         <div><div style={{ fontSize: 11, opacity: .5 }}>Spent</div><div style={{ fontSize: 20, fontWeight: 800, color: '#fb7185' }}>{data.totalSpent}</div></div>

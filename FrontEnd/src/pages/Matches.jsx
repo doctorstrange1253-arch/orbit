@@ -11,7 +11,7 @@ import { useUIStore } from '../store/uiStore';
 import { useAuthStore } from '../store/authStore';
 import { useNotificationStore } from '../store/notificationStore';
 import { connectSocket } from '../services/socket';
-import { Handshake, Sparkles } from 'lucide-react';
+import { Handshake, Zap } from 'lucide-react';
 
 const Matches = () => {
   const { addToast } = useUIStore();
@@ -114,7 +114,7 @@ const Matches = () => {
       {!isLoading && matches.length > 0 && (
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium"
           style={{ background: 'rgba(0,229,160,0.1)', border: '1px solid rgba(0,229,160,0.25)', color: '#00e5a0' }}>
-          <Sparkles size={13} /> {matches.length} perfect match{matches.length !== 1 ? 'es' : ''} found
+          <Zap size={13} /> {matches.length} perfect match{matches.length !== 1 ? 'es' : ''} found
         </div>
       )}
 

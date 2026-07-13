@@ -73,7 +73,7 @@ export default function ShopPanel() {
   if (!data) return null;
 
   const onBuy = (key) => buy.mutate(key, {
-    onSuccess: (d) => addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent ✨`, 'success'),
+    onSuccess: (d) => addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent`, 'success'),
     onError: (e) => addToast(e.response?.data?.message || 'Purchase failed', 'error'),
   });
   const onEquip = (type, key) => equip.mutate({ type, key }, {

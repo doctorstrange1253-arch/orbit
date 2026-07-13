@@ -112,7 +112,7 @@
 @keyframes otr-cardFloat{ 0%,100%{margin-top:0;} 50%{margin-top:-9px;} }
 @keyframes otr-glint{ 0%{opacity:0; left:-70%;} 30%{opacity:.9;} 100%{opacity:0; left:130%;} }
 
-.otr-card .ico{ font-size:26px; line-height:1; filter:drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
+.otr-card .ico{ display:inline-flex; line-height:1; filter:drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
 .otr-card .big{ font-family:'Poppins',sans-serif; font-weight:800; font-size:26px; }
 .otr-card .lbl{ font-size:13px; color:#aab2d4; font-weight:600; letter-spacing:.2px; }
 .otr-card .name{ font-family:'Poppins',sans-serif; font-weight:700; font-size:19px; }
@@ -128,7 +128,8 @@
   align-items:center; justify-content:center; z-index:5; }
 .otr-btn{ font-family:'Inter',sans-serif; font-weight:600; font-size:14px; color:#fff;
   background:linear-gradient(135deg,var(--c1),var(--c2)); border:none; padding:9px 18px;
-  border-radius:10px; cursor:pointer; text-decoration:none; }
+  border-radius:10px; cursor:pointer; text-decoration:none;
+  display:inline-flex; align-items:center; gap:6px; }
 .otr-btn.ghost{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:#cdd3e6; }
 
 /* Reduced motion: render the final composition, no motion. */

@@ -297,7 +297,7 @@ exports.giftPhotons = async (req, res) => {
         const noteText = typeof note === "string" && note.trim() ? ` — “${note.trim().slice(0, 120)}”` : "";
         createNotification(io, toUserId, {
             type: "photon_grant",
-            title: "Photons received ✨",
+            title: "Photons received",
             body: `${user.name || "A connection"} sent you ${amount} Photons${noteText}`,
             data: { from: String(req.user.id), amount },
         }).catch(() => {});

@@ -239,8 +239,8 @@ const PUSH_TEMPLATES = {
     message:               { title: "New message (test)", body: "This is a test message push.", link: "/dashboard" },
     connection_request:    { title: "Connection request (test)", body: "Someone wants to connect (test).", link: "/connections" },
     incoming_call:         { title: "Incoming call (test)", body: "Test incoming video call.", link: "/video" },
-    constellation_your_turn:{ title: "✨ Your turn to shine (test)", body: "Keep your Binary Star glowing (test).", link: "/orbit" },
-    orbit_decay:           { title: "🌌 Orbit decaying (test)", body: "One action keeps your streak alive (test).", link: "/orbit" },
+    constellation_your_turn:{ title: "Your turn to shine (test)", body: "Keep your Binary Star glowing (test).", link: "/orbit" },
+    orbit_decay:           { title: "Orbit decaying (test)", body: "One action keeps your streak alive (test).", link: "/orbit" },
 };
 
 // GET /mission-control/push/tokens/:userId

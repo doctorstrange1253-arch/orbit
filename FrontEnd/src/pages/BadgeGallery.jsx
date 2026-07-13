@@ -103,7 +103,7 @@ export default function BadgeGallery() {
     <>
       <Helmet><title>Cosmic Badge Gallery · Orbit</title></Helmet>
       <div style={{ padding: '24px', maxWidth: 1400, margin: '0 auto' }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6 }}>🛰️ Cosmic Badge Gallery</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6 }}>Cosmic Badge Gallery</h1>
         <p style={{ fontSize: 13, opacity: 0.7, marginBottom: 24 }}>
           All 25 tiers, full + mini, in both themes. Dev/QA route — verifies the dual-theme rule
           and that the shared &lt;defs&gt; sprite prevents blank badges when many render at once.

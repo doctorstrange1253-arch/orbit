@@ -90,11 +90,11 @@ export default function ConstellationsPanel() {
   }, [connections, me, takenIds]);
 
   const onInvite = (partnerId) => invite.mutate(partnerId, {
-    onSuccess: () => { addToast('Binary Star invite sent ✨', 'success'); setPickerOpen(false); },
+    onSuccess: () => { addToast('Binary Star invite sent', 'success'); setPickerOpen(false); },
     onError: (e) => addToast(e.response?.data?.message || 'Could not send invite', 'error'),
   });
   const onRespond = (id, action) => respond.mutate({ id, action }, {
-    onSuccess: () => addToast(action === 'accept' ? 'Binary Star formed 🌟' : 'Invite declined', action === 'accept' ? 'success' : 'info'),
+    onSuccess: () => addToast(action === 'accept' ? 'Binary Star formed' : 'Invite declined', action === 'accept' ? 'success' : 'info'),
     onError: (e) => addToast(e.response?.data?.message || 'Action failed', 'error'),
   });
   const onDissolve = (id) => dissolve.mutate(id, {

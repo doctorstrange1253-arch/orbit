@@ -193,7 +193,7 @@ export default function HoloBay() {
     if (plateKey) url.searchParams.set('np', plateKey);
     try {
       await navigator.clipboard.writeText(url.toString());
-      addToast('Look link copied — send it to anyone ✨', 'success');
+      addToast('Look link copied — send it to anyone', 'success');
     } catch {
       addToast('Could not copy the link', 'error');
     }
@@ -217,7 +217,7 @@ export default function HoloBay() {
   const busy = buy.isPending || equip.isPending;
   const onBuy = (key) => buy.mutate(key, {
     onSuccess: (d) => {
-      addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent ✨`, 'success');
+      addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent`, 'success');
       const item = catalog.find((c) => c.key === key);
       if (item) setCelebrate({ rarity: item.rarity, name: item.name });
     },

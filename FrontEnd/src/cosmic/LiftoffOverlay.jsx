@@ -145,8 +145,8 @@ export default function LiftoffOverlay() {
         url: window.location.origin,
       });
       // B-06: always give visible feedback — never a silent no-op.
-      if (result === 'downloaded') addToast('Card downloaded & link copied — share it anywhere! ✨', 'success');
-      else if (result === 'shared') addToast('Shared! ✨', 'success');
+      if (result === 'downloaded') addToast('Card downloaded & link copied — share it anywhere!', 'success');
+      else if (result === 'shared') addToast('Shared!', 'success');
       else if (result === 'failed') addToast('Could not prepare the card — please try again.', 'error');
       // 'cancelled' → user dismissed the sheet; no toast.
     } catch {

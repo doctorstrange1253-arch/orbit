@@ -27,7 +27,7 @@ export default function GiftPhotonsButton({ toUser }) {
   const send = (amount) => {
     gift.mutate({ toUserId: toUser._id, amount }, {
       onSuccess: () => {
-        addToast(`Sent ${amount} Photons to ${toUser.name} ✨`, 'success');
+        addToast(`Sent ${amount} Photons to ${toUser.name}`, 'success');
         setOpen(false);
       },
       onError: (e) => addToast(e.response?.data?.message || 'Gift failed', 'error'),

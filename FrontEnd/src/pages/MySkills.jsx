@@ -8,7 +8,7 @@ import SkillForm from '../components/skills/SkillForm';
 import { SkillGridSkeleton } from '../components/skeletons';
 import ErrorState from '../components/common/ErrorState';
 import OrbitDashboardWidget from '../cosmic/OrbitDashboardWidget';
-import { Plus, Layers, Sparkles } from 'lucide-react';
+import { Plus, Layers } from 'lucide-react';
 
 const MySkills = () => {
   const [formOpen, setFormOpen] = useState(false);
@@ -65,7 +65,7 @@ const MySkills = () => {
         >
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
             style={{ background: 'rgba(0,198,255,0.1)', border: '1px solid rgba(0,198,255,0.2)' }}>
-            <Sparkles size={24} className="text-accent" />
+            <Layers size={24} className="text-accent" />
           </div>
           <h3 className="text-lg font-bold text-text-primary mb-2">No skills yet</h3>
           <p className="text-text-muted text-sm mb-6 max-w-xs">Add what you can teach and what you want to learn to start matching.</p>

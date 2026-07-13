@@ -6,7 +6,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react';
+import OrbitLogo from '../components/common/OrbitLogo';
 import api from '../services/api';
 import Spinner from '../components/common/Spinner';
 import { useAuthStore } from '../store/authStore';
@@ -104,11 +105,8 @@ const Login = () => {
         {/* Brand header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, #00c6ff 0%, #7c3aed 50%, #ff0076 100%)', boxShadow: '0 0 30px rgba(0,198,255,0.3)' }}
-            >
-              <Sparkles size={24} className="text-text-primary" />
-            </div>
+            {/* the real Orbit mark (public/orbit-app.svg) - never a generic sparkle */}
+            <OrbitLogo size={56} />
           </div>
           <h1
             className="text-3xl font-display font-bold mb-1"

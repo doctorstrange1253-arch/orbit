@@ -16,7 +16,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Check, Lock, Sparkles as SparkIcon, FlaskConical } from 'lucide-react';
+import { Check, Lock, Flame as SparkIcon, FlaskConical } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
 import PhotonAmount from '../cosmic/PhotonAmount';
 import CelebrationBurst from '../cosmic/CelebrationBurst';
@@ -219,7 +219,7 @@ export default function Shop() {
 
   const onBuy = (key) => buy.mutate(key, {
     onSuccess: (d) => {
-      addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent ✨`, 'success');
+      addToast(`Purchased — ${d.spentPhotons ?? d.spent} Photons spent`, 'success');
       const item = (data?.catalog || []).find((c) => c.key === key);
       if (item) setCelebrate({ rarity: item.rarity, name: item.name });
     },

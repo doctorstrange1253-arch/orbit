@@ -28,7 +28,7 @@ const RatingModal = ({ isOpen, onClose, otherUser, callDuration }) => {
     mutationFn: (data) => api.post('/trust/rate', data),
     onSuccess: () => {
       playSuccess();
-      addToast('Rating submitted — nice session! ✨', 'success');
+      addToast('Rating submitted — nice session!', 'success');
       queryClient.invalidateQueries({ queryKey: ['trustScore'] });
       queryClient.invalidateQueries({ queryKey: ['reviews'] });
       queryClient.invalidateQueries({ queryKey: ['user', otherUser._id] });
@@ -88,7 +88,7 @@ const RatingModal = ({ isOpen, onClose, otherUser, callDuration }) => {
         filename: 'orbit-session.png',
         text: `Just finished a skill swap on Orbit${learned.trim() ? ` — ${learned.trim()}` : ''}!`,
       });
-      addToast(result === 'downloaded' ? 'Session card saved 📸' : 'Shared! ✨', 'success');
+      addToast(result === 'downloaded' ? 'Session card saved' : 'Shared!', 'success');
     } catch {
       addToast('Could not share the card', 'error');
     }
@@ -113,7 +113,7 @@ const RatingModal = ({ isOpen, onClose, otherUser, callDuration }) => {
             <X size={20} />
           </button>
           <h2 className="text-xl font-display font-bold text-text-primary text-center mb-4">
-            Your session card 🌌
+            Your session card
           </h2>
           {cardUrl && (
             <img src={cardUrl} alt="Shareable session card" className="w-full rounded-2xl border border-border-subtle mb-5" />

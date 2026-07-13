@@ -6,7 +6,7 @@
  */
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, TrendingUp, TrendingDown, Target, Award, Shield, ShoppingBag, Gift, Sparkles, Zap, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, Target, Award, Shield, ShoppingBag, Gift, Star, Zap, CheckCircle2 } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
 import { useOrbit, useLedger } from '../cosmic/useOrbit';
 import CosmicLoader from '../cosmic/CosmicLoader';
@@ -15,7 +15,7 @@ import ErrorState from '../components/common/ErrorState';
 const SOURCE_META = {
   mission:     { label: 'Mission claimed',   Icon: Target },
   milestone:   { label: 'Milestone reached', Icon: Award },
-  mastery:     { label: 'Mastery bonus',     Icon: Sparkles },
+  mastery:     { label: 'Mastery bonus',     Icon: Star },
   freeze:      { label: 'Gravity Assist',    Icon: Shield },
   cosmetic:    { label: 'Nebula Store',      Icon: ShoppingBag },
   admin_grant: { label: 'Admin grant',       Icon: Gift },
@@ -128,7 +128,7 @@ export default function MissionLog() {
         ) : (
           <ul className="divide-y divide-white/5">
             {entries.map((e, i) => {
-              const meta = SOURCE_META[e.source] || { label: e.source || 'Activity', Icon: Sparkles };
+              const meta = SOURCE_META[e.source] || { label: e.source || 'Activity', Icon: Zap };
               const Icon = meta.Icon;
               const earn = e.delta > 0;
               return (

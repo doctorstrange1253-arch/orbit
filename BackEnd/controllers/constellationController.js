@@ -95,7 +95,7 @@ exports.invite = async (req, res) => {
         const me = await User.findById(meId).select("name").lean();
         createNotification(req.app.get("io"), partnerId, {
             type: "constellation_invite",
-            title: "✨ Binary Star invite",
+            title: "Binary Star invite",
             body: `${(me && me.name) || "A partner"} wants to form a co-op streak with you.`,
             data: { link: "/orbit", constellationId: String(con._id) },
         }).catch(() => {});
@@ -138,7 +138,7 @@ exports.respond = async (req, res) => {
         const me = await User.findById(meId).select("name").lean();
         createNotification(req.app.get("io"), con.invitedBy, {
             type: "constellation_accepted",
-            title: "🌟 Binary Star formed",
+            title: "Binary Star formed",
             body: `${(me && me.name) || "Your partner"} accepted — your shared streak starts when you both act on the same day.`,
             data: { link: "/orbit", constellationId: String(con._id) },
         }).catch(() => {});
@@ -167,7 +167,7 @@ exports.dissolve = async (req, res) => {
         if (otherId) {
             createNotification(req.app.get("io"), otherId, {
                 type: "constellation_dissolved",
-                title: "🌑 Binary Star dissolved",
+                title: "Binary Star dissolved",
                 body: "A co-op streak you shared was ended.",
                 data: { link: "/orbit", constellationId: String(con._id) },
             }).catch(() => {});

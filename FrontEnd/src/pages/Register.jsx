@@ -6,7 +6,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react';
+import OrbitLogo from '../components/common/OrbitLogo';
 import api from '../services/api';
 import Spinner from '../components/common/Spinner';
 import { useUIStore } from '../store/uiStore';
@@ -100,11 +101,8 @@ const registerSchema = z.object({
         {/* Header */}
         <div className="text-center mb-7">
           <div className="flex justify-center mb-4">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #ff0076 100%)', boxShadow: '0 0 30px rgba(124,58,237,0.35)' }}
-            >
-              <Sparkles size={24} className="text-text-primary" />
-            </div>
+            {/* the real Orbit mark (public/orbit-app.svg) - never a generic sparkle */}
+            <OrbitLogo size={56} />
           </div>
           <h1 className="text-2xl font-display font-bold text-text-primary mb-1">Create Your Account</h1>
           <p className="text-text-muted text-sm">Join thousands exchanging skills worldwide.</p>

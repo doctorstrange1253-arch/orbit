@@ -192,7 +192,7 @@ exports.sendMessage = async (req, res) => {
         const { checkForBannedContent } = require('../utils/bannedKeywords');
         if (!checkForBannedContent(content).isClean) {
             return res.status(400).json({
-                message: '⚠️ Your message contains prohibited words and was not sent. Please keep it respectful.',
+                message: 'Your message contains prohibited words and was not sent. Please keep it respectful.',
                 violationType: 'content_policy',
             });
         }

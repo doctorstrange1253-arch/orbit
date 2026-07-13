@@ -13,7 +13,7 @@ import { useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Telescope, Crown, Star, Sparkles, Quote, Info, TrendingUp } from 'lucide-react';
+import { Telescope, Crown, Star, Quote, Info, TrendingUp } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useObservatory } from '../cosmic/useCosmic';
 import CosmicBadge from '../cosmic/CosmicBadge';
@@ -242,7 +242,7 @@ export default function Observatory() {
                 style={{ background: 'linear-gradient(135deg, rgba(255,107,53,0.08), rgba(255,143,207,0.06))',
                   border: '1px solid rgba(255,107,53,0.2)' }}>
                 <div className="flex items-center gap-2 mb-3 text-xs font-bold" style={{ color: '#FF8C42' }}>
-                  <Sparkles size={14} /> SUPERNOVA OF THE MONTH
+                  <Star size={14} /> SUPERNOVA OF THE MONTH
                   <span className="font-normal text-text-muted">· biggest climber this season</span>
                 </div>
                 <div className="flex items-center gap-4">
@@ -271,7 +271,7 @@ export default function Observatory() {
               <div className="mt-6 p-5 rounded-2xl text-center"
                 style={{ background: 'var(--surface)', border: '1px dashed var(--border-subtle)' }}>
                 <div className="flex items-center justify-center gap-2 mb-1.5 text-xs font-bold text-text-secondary">
-                  <Sparkles size={14} /> SUPERNOVA OF THE MONTH
+                  <Star size={14} /> SUPERNOVA OF THE MONTH
                 </div>
                 <p className="text-xs text-text-muted">
                   The first Supernova of the Month will be crowned as mentors climb this season.
@@ -345,7 +345,7 @@ export default function Observatory() {
           <div className="relative w-full max-w-xs rounded-2xl p-5 z-10"
             style={{ background: 'var(--surface)', border: '1px solid rgba(0,198,255,0.25)', boxShadow: '0 20px 60px rgba(0,0,0,0.6)' }}>
             <div className="flex items-center gap-2 mb-2 text-accent">
-              {coachStep === 0 ? <Crown size={16} /> : coachStep === 1 ? <Sparkles size={16} /> : <Star size={16} />}
+              {coachStep === 0 ? <Crown size={16} /> : coachStep === 1 ? <Telescope size={16} /> : <Star size={16} />}
               <h3 className="font-display font-bold text-text-primary text-base">{COACH_STEPS[coachStep].title}</h3>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed">{COACH_STEPS[coachStep].body}</p>
