@@ -23,7 +23,7 @@ import CelebrationBurst from '../cosmic/CelebrationBurst';
 import ItemIcon from '../cosmic/itemIcons';
 import { useShop, useBuyCosmetic, useEquipCosmetic } from '../cosmic/useShop';
 import { COSMETIC_RENDER } from '../cosmic/cosmetics';
-import { rarityOf, rarityVars, cardGlowClass, RARITY_ORDER, LIVE_TIERS } from '../cosmic/rarity';
+import { rarityOf, rarityVars, rarityInk, cardGlowClass, RARITY_ORDER, LIVE_TIERS } from '../cosmic/rarity';
 import { useUIStore } from '../store/uiStore';
 import { StoreGridSkeleton } from '../components/skeletons';
 
@@ -96,7 +96,8 @@ function Preview({ item }) {
     );
   if (item.type === 'nameplate')
     return (
-      <span className="np-wrap text-xs font-bold text-white">
+      // cosmic-surface: keep the white "Aa" white over the dark plate in light mode
+      <span className="cosmic-surface np-wrap text-xs font-bold text-white">
         <span className={meta.plateClass} aria-hidden="true" />
         <span className="np-content">Aa</span>
       </span>
@@ -108,8 +109,8 @@ function Preview({ item }) {
       </span>
     );
   if (item.type === 'background' && (meta.bgClass || meta.swatch))
-    return <span className={(meta.bgClass ? meta.bgClass + ' ' : '') + 'inline-block w-12 h-12 overflow-hidden rounded-lg'} aria-hidden="true" style={bgSwatchStyle(meta.bgClass ? null : meta.swatch)} />;
-  return <ItemIcon item={item} size={44} color={rarityOf(item.rarity).color} />;
+    return <span className={(meta.bgClass ? meta.bgClass + ' cbg-swatch ' : '') + 'inline-block w-12 h-12 overflow-hidden rounded-lg'} aria-hidden="true" style={bgSwatchStyle(meta.bgClass ? null : meta.swatch)} />;
+  return <ItemIcon item={item} size={44} color={rarityInk(item.rarity)} />;
 }
 
 function RarityBadge({ rkey }) {

@@ -18,21 +18,25 @@
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--rar, #cbd5e1);
-  border: 1px solid color-mix(in srgb, var(--rar, #cbd5e1) 55%, transparent);
+  /* --rar-ink is the contrast-floored tier color (rarity.js): identical to
+     --rar for bright tiers, lifted for dark-valued ones (Black Hole, Dark
+     Matter) so the label + border always read on a dark card. */
+  color: var(--rar-ink, var(--rar, #cbd5e1));
+  border: 1px solid color-mix(in srgb, var(--rar-ink, var(--rar, #cbd5e1)) 55%, transparent);
   background: color-mix(in srgb, var(--rar, #cbd5e1) 12%, rgba(6, 8, 15, 0.6));
   box-shadow: 0 0 var(--rar-glow, 8px) color-mix(in srgb, var(--rar, #cbd5e1) 70%, transparent);
   animation: rar-badge-pulse 3.4s ease-in-out infinite;
 }
 
-/* the little rarity dot next to the label */
+/* the little rarity dot next to the label — keeps the TRUE tier color (a black
+   hole's dot SHOULD be black); the hairline ink ring makes dark dots read. */
 .rar-badge::before {
   content: '';
   width: 5px;
   height: 5px;
   border-radius: 9999px;
   background: var(--rar, #cbd5e1);
-  box-shadow: 0 0 6px var(--rar, #cbd5e1);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--rar-ink, var(--rar, #cbd5e1)) 55%, transparent), 0 0 6px var(--rar, #cbd5e1);
 }
 
 @keyframes rar-badge-pulse {

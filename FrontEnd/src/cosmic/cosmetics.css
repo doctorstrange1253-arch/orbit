@@ -61,10 +61,13 @@
   color: #f0abfc;
   background: linear-gradient(90deg,#f472b6,#c084fc,#60a5fa,#f472b6);
   background-size: 300% 100%;
-  animation: cg-holo-pos 5s linear infinite, cg-holo-hue 6s linear infinite;
+  /* Clip-safety (Issue 4): NEVER animate `filter` on a text-clipped element —
+     on Chromium/Android WebView the compositor can blank the clip mask and the
+     gradient paints as a solid box over invisible glyphs. The multi-hue
+     gradient sweep carries the color motion instead. */
+  animation: cg-holo-pos 5s linear infinite;
 }
 @keyframes cg-holo-pos { to { background-position: 300% 0; } }
-@keyframes cg-holo-hue { to { filter: hue-rotate(360deg); } }
 
 /* 4 · Solar Flare — warm flares burst */
 .cg-solarflare {
@@ -230,10 +233,12 @@
   color: #e9d5ff;
   background: linear-gradient(90deg,#f472b6,#a78bfa,#38bdf8,#34d399,#fbbf24,#f472b6);
   background-size: 400% 100%;
-  animation: cg-multiversal-pos 6s linear infinite, cg-multiversal-hue 8s linear infinite;
+  /* Clip-safety (Issue 4): static aura only — an ANIMATED filter here can
+     blank the text clip on Chromium/WebView (solid-box bug). */
+  filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.45)) drop-shadow(0 0 6px rgba(168,85,247,.5));
+  animation: cg-multiversal-pos 6s linear infinite;
 }
 @keyframes cg-multiversal-pos { to { background-position: 400% 0; } }
-@keyframes cg-multiversal-hue { to { filter: hue-rotate(360deg) drop-shadow(0 0 6px rgba(168,85,247,.6)); } }
 
 /* ─ Name glows · batch 2 (each a distinct animation) ─ */
 /* 20 · Gravity Wave — the name ripples/wobbles */
@@ -340,10 +345,12 @@
   background-size: 400% 100%;
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: cg-kaleido-pos 4s linear infinite, cg-kaleido-hue 6s linear infinite;
+  /* Clip-safety (Issue 4): static aura; animated filter blanks the clip on
+     Chromium/WebView. The 7-stop rainbow sweep IS the kaleidoscope. */
+  filter: drop-shadow(0 0 5px rgba(168,85,247,.45));
+  animation: cg-kaleido-pos 4s linear infinite;
 }
 @keyframes cg-kaleido-pos { to { background-position: 400% 0; } }
-@keyframes cg-kaleido-hue { to { filter: hue-rotate(360deg) drop-shadow(0 0 5px rgba(168,85,247,.5)); } }
 
 /* ─ Name glows · batch 3 (Part C — each a distinct animation) ─ */
 .cg-scan, .cg-marquee, .cg-oil, .cg-nebula, .cg-cosmos {
@@ -438,9 +445,10 @@
 }
 
 /* Oil Slick — iridescent conic sheen */
-.cg-oil { color: #a78bfa; background: conic-gradient(from 0deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 200% 200%; animation: cg-oil 6s linear infinite, cg-oil-hue 8s linear infinite; }
+/* Clip-safety (Issue 4): cg-oil-hue removed — animating filter on a clipped
+   element blanks the clip on Chromium/WebView. The conic sweep carries it. */
+.cg-oil { color: #a78bfa; background: conic-gradient(from 0deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 200% 200%; animation: cg-oil 6s linear infinite; }
 @keyframes cg-oil { 0% { background-position: 0 0; } 50% { background-position: 100% 100%; } 100% { background-position: 0 0; } }
-@keyframes cg-oil-hue { to { filter: hue-rotate(360deg); } }
 
 /* Neon Outline — a hollow neon-tube outline */
 .cg-stroke { color: transparent; -webkit-text-stroke: 1px #f0abfc; text-shadow: 0 0 8px rgba(217,70,239,.7); animation: cg-stroke 2.6s ease-in-out infinite; }
@@ -486,10 +494,12 @@
   100% { transform: translate(0, 0); opacity: 1; }
 }
 
-/* Cosmic Symphony — flagship: flowing spectrum + bloom + scale */
-.cg-cosmos { color: #f472b6; background: linear-gradient(90deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 320% 100%; animation: cg-cosmos-flow 5s linear infinite, cg-cosmos-hue 7s linear infinite, cg-cosmos-scale 4s ease-in-out infinite; }
+/* Cosmic Symphony — flagship: flowing spectrum + bloom + scale.
+   Clip-safety (Issue 4): the hue-rotate animation was removed — animating
+   filter on a text-clipped element blanks the clip on Chromium/WebView. The
+   5-stop spectrum sweep + scale carry the symphony; the bloom is static. */
+.cg-cosmos { color: #f472b6; background: linear-gradient(90deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 320% 100%; filter: drop-shadow(0 0 8px rgba(244,114,182,.5)); animation: cg-cosmos-flow 5s linear infinite, cg-cosmos-scale 4s ease-in-out infinite; }
 @keyframes cg-cosmos-flow { to { background-position: 320% 0; } }
-@keyframes cg-cosmos-hue { to { filter: hue-rotate(360deg) drop-shadow(0 0 8px rgba(244,114,182,.6)); } }
 @keyframes cg-cosmos-scale { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 
 /* ═══════════════─ PROFILE BACKGROUNDS (NEBULAE) ─═══════════════ */
@@ -1156,7 +1166,9 @@
 .cd-corona::before { inset: 1px; border: 3px solid transparent; border-top-color: #fde047; border-right-color: #f97316; filter: drop-shadow(0 0 6px #f59e0b); animation: cd-spin 3.4s linear infinite; }
 
 /* BLACK_HOLE · Accretion Ring — dark rim + a warping light halo (slate rim, never invisible) */
-.cd-blackhole { box-shadow: inset 0 0 0 3px rgba(11,13,23,.95), inset 0 0 0 4px rgba(148,163,184,.55); }
+/* Issue 5 — dark-valued rings get a guaranteed light backing so the frame
+   shape always reads on the dark preview disc (both themes). */
+.cd-blackhole { box-shadow: inset 0 0 0 3px rgba(11,13,23,.95), inset 0 0 0 4.5px rgba(203,213,225,.85), inset 0 0 10px rgba(148,163,184,.30); }
 .cd-blackhole::before { inset: 1px; border: 2px solid transparent; border-top-color: #cbd5e1; border-right-color: #fb923c; filter: drop-shadow(0 0 6px rgba(251,146,60,.7)); animation: cd-spin 2.8s linear infinite; }
 
 /* EVENT_HORIZON · Lensing Halo */
@@ -1169,7 +1181,7 @@
 .cd-singularity::after  { inset: 4px; border: 1px solid transparent; border-bottom-color: #f9a8d4; animation: cd-spin-rev 1.4s linear infinite; }
 
 /* DARK_MATTER · Dark Halo */
-.cd-darkmatter { box-shadow: inset 0 0 0 2px rgba(76,29,149,.9), inset 0 0 16px rgba(167,139,250,.5); }
+.cd-darkmatter { box-shadow: inset 0 0 0 2px rgba(76,29,149,.9), inset 0 0 0 3px rgba(167,139,250,.6), inset 0 0 16px rgba(167,139,250,.5); }
 .cd-darkmatter::before { inset: 0; border: 2px dotted #a78bfa; opacity: .8; animation: cd-spin 10s linear infinite, cd-flicker 2.4s ease-in-out infinite; }
 
 /* ANTIMATTER · Antimatter Ring */
@@ -1495,42 +1507,73 @@
     radial-gradient(55% 55% at 82% 18%, rgba(124,58,237,.08), transparent 62%),
     #eef3fb !important;
 }
-/* neutral text remap (accent colours like violet/emerald/amber are left intact) */
-[data-mode="light"] .cosmic-page [class*="text-white"],
-[data-mode="light"] .cosmic-page [class*="text-slate-100"],
-[data-mode="light"] .cosmic-page [class*="text-slate-200"] { color: #0f172a !important; }
-[data-mode="light"] .cosmic-page [class*="text-slate-300"] { color: #334155 !important; }
-[data-mode="light"] .cosmic-page [class*="text-slate-400"] { color: #475569 !important; }
-[data-mode="light"] .cosmic-page [class*="text-slate-500"] { color: #64748b !important; }
-/* neutral surfaces → light cards */
-[data-mode="light"] .cosmic-page [class*="bg-slate-900/"],
-[data-mode="light"] .cosmic-page [class*="bg-slate-950/"],
-[data-mode="light"] .cosmic-page [class*="bg-black/"] { background-color: rgba(255,255,255,.78) !important; }
-[data-mode="light"] .cosmic-page [class*="bg-white/5"],
-[data-mode="light"] .cosmic-page [class*="bg-white/10"] { background-color: rgba(15,23,42,.05) !important; }
+/* neutral text remap (accent colours like violet/emerald/amber are left intact).
+   Every remap/inversion below is scoped with :not(.cosmic-surface):not(.cosmic-surface *):
+   cosmetic RENDER surfaces (Holo-Bay stage, swatch tiles, nameplate previews)
+   are authored on dark and must stay dark in BOTH themes — this light pass is
+   for page chrome only. */
+[data-mode="light"] .cosmic-page [class*="text-white"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-slate-100"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-slate-200"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #0f172a !important; }
+[data-mode="light"] .cosmic-page [class*="text-slate-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #334155 !important; }
+[data-mode="light"] .cosmic-page [class*="text-slate-400"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #475569 !important; }
+[data-mode="light"] .cosmic-page [class*="text-slate-500"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #64748b !important; }
+/* neutral surfaces → light cards (cosmetic surfaces exempted — see above) */
+[data-mode="light"] .cosmic-page [class*="bg-slate-900/"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="bg-slate-950/"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="bg-black/"]:not(.cosmic-surface):not(.cosmic-surface *) { background-color: rgba(255,255,255,.78) !important; }
+[data-mode="light"] .cosmic-page [class*="bg-white/5"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="bg-white/10"]:not(.cosmic-surface):not(.cosmic-surface *) { background-color: rgba(15,23,42,.05) !important; }
 /* stronger fills (active tab pills on the Store, etc.) keep their emphasis */
-[data-mode="light"] .cosmic-page [class*="bg-white/15"],
-[data-mode="light"] .cosmic-page [class*="bg-white/20"] { background-color: rgba(15,23,42,.10) !important; }
+[data-mode="light"] .cosmic-page [class*="bg-white/15"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="bg-white/20"]:not(.cosmic-surface):not(.cosmic-surface *) { background-color: rgba(15,23,42,.10) !important; }
 /* neutral borders */
-[data-mode="light"] .cosmic-page [class*="border-white/"] { border-color: rgba(15,23,42,.12) !important; }
+[data-mode="light"] .cosmic-page [class*="border-white/"]:not(.cosmic-surface):not(.cosmic-surface *) { border-color: rgba(15,23,42,.12) !important; }
 /* pale accent TINTS (100–300) — designed for the dark field, near-invisible on
    the light one. Remap each family to its deep light-mode reading so Photon
    balances, Equipped/Owned tags and status pills keep their hue AND contrast.
    Saturated accents (400+) are left untouched. */
-[data-mode="light"] .cosmic-page [class*="text-violet-100"],
-[data-mode="light"] .cosmic-page [class*="text-violet-200"],
-[data-mode="light"] .cosmic-page [class*="text-violet-300"] { color: #6d28d9 !important; }
-[data-mode="light"] .cosmic-page [class*="text-cyan-200"],
-[data-mode="light"] .cosmic-page [class*="text-sky-200"],
-[data-mode="light"] .cosmic-page [class*="text-sky-300"] { color: #0369a1 !important; }
-[data-mode="light"] .cosmic-page [class*="text-emerald-200"],
-[data-mode="light"] .cosmic-page [class*="text-emerald-300"] { color: #047857 !important; }
-[data-mode="light"] .cosmic-page [class*="text-amber-300"] { color: #b45309 !important; }
-[data-mode="light"] .cosmic-page [class*="text-rose-300"] { color: #be123c !important; }
+[data-mode="light"] .cosmic-page [class*="text-violet-100"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-violet-200"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-violet-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #6d28d9 !important; }
+[data-mode="light"] .cosmic-page [class*="text-cyan-200"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-sky-200"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-sky-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #0369a1 !important; }
+[data-mode="light"] .cosmic-page [class*="text-emerald-200"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-emerald-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #047857 !important; }
+[data-mode="light"] .cosmic-page [class*="text-amber-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #b45309 !important; }
+[data-mode="light"] .cosmic-page [class*="text-rose-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #be123c !important; }
 /* white rings (Tailwind ring-* = box-shadow via --tw-ring-color) turn to ink so
    selection states — Holo-Bay's active item, the Store's active tab — stay
    visible on the light field. */
-[data-mode="light"] .cosmic-page [class*="ring-white/"] { --tw-ring-color: rgba(15,23,42,.30); }
+[data-mode="light"] .cosmic-page [class*="ring-white/"]:not(.cosmic-surface):not(.cosmic-surface *) { --tw-ring-color: rgba(15,23,42,.30); }
+
+/* ══ Cosmetic render surfaces that need a SOLID dark base in light mode ══
+   The Holo-Bay stage backgrounds are translucent (they composited over the
+   dark page backdrop); in light mode the backdrop is pale, so re-ground the
+   stage on its own dark base. Dark mode is untouched. */
+[data-mode="light"] .holobay-stage {
+  background:
+    linear-gradient(180deg, rgba(56, 189, 248, 0.06), rgba(3, 5, 12, 0.5)),
+    repeating-linear-gradient(0deg, rgba(56, 189, 248, 0.05) 0px, rgba(56, 189, 248, 0.05) 1px, transparent 1px, transparent 4px),
+    #0a0e1b !important;
+}
+
+/* ══ Issue 6 — nebula swatches: the .cbg::after readability scrim protects
+   text on the REAL profile card, but a 40-48px store/picker swatch has no
+   text — the same scrim just made every nebula look muddy. The swatch
+   modifier keeps only a whisper of depth. */
+.cbg-swatch::after {
+  background: linear-gradient(180deg, rgba(4,3,13,.04) 0%, rgba(4,3,13,.16) 100%) !important;
+}
+
+/* ══ Issue 7 — Orbit streak hero: its Tailwind gradient stops (from-slate-900/60
+   to-violet-950/30) are NOT matched by the [class*="bg-slate-900/"] chrome
+   inversion (needs the literal bg- prefix), so the card stayed a dark slab in
+   light mode while its text was lifted to ink. Give it a real light variant. */
+[data-mode="light"] .orbit-hero-card {
+  background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(124,58,237,.10)) !important;
+}
 
 /* ══ Brand gradient headline (Store / Holo-Bay) ══
    Class-based (was inline) so light mode can deepen the stops — the sky-400

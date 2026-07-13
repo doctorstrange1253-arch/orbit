@@ -25,7 +25,7 @@ import Nameplate from '../cosmic/Nameplate';
 import ItemIcon from '../cosmic/itemIcons';
 import { useShop, useBuyCosmetic, useEquipCosmetic } from '../cosmic/useShop';
 import { COSMETIC_RENDER, bgClassFor, decoClassFor, effectClassFor } from '../cosmic/cosmetics';
-import { rarityOf, rarityVars, cardGlowClass, RARITY_ORDER } from '../cosmic/rarity';
+import { rarityOf, rarityVars, rarityInk, cardGlowClass, RARITY_ORDER } from '../cosmic/rarity';
 import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
 import './holobay.css';
@@ -40,19 +40,23 @@ function Swatch({ item, size = 40 }) {
   const meta = COSMETIC_RENDER[item.key] || {};
   if (item.type === 'avatar_deco')
     return (
-      <span className="relative grid place-items-center overflow-hidden rounded-full" style={ { width: size, height: size } }>
+      // dark disc backing (like the glow swatch) so pale AND dark rings read in both themes
+      <span
+        className="relative grid place-items-center overflow-hidden rounded-full"
+        style={ { width: size, height: size, background: 'radial-gradient(circle at 40% 35%, rgba(255,255,255,.10), rgba(3,5,12,.9))' } }
+      >
         <span className={meta.decoClass} aria-hidden="true" />
       </span>
     );
   if (item.type === 'profile_effect')
     return (
-      <span className="relative grid place-items-center overflow-hidden rounded-lg bg-slate-900/70" style={ { width: size, height: size } }>
+      <span className="cosmic-surface relative grid place-items-center overflow-hidden rounded-lg bg-slate-900/70" style={ { width: size, height: size } }>
         <span className={meta.effectClass} aria-hidden="true" />
       </span>
     );
   if (item.type === 'nameplate')
     return (
-      <span className="np-wrap text-[10px] font-bold text-white">
+      <span className="cosmic-surface np-wrap text-[10px] font-bold text-white">
         <span className={meta.plateClass} aria-hidden="true" />
         <span className="np-content">Aa</span>
       </span>
@@ -69,12 +73,12 @@ function Swatch({ item, size = 40 }) {
   if (item.type === 'background' && (meta.bgClass || meta.swatch))
     return (
       <span
-        className={(meta.bgClass ? meta.bgClass + ' ' : '') + 'inline-block overflow-hidden rounded-md'}
+        className={(meta.bgClass ? meta.bgClass + ' cbg-swatch ' : '') + 'inline-block overflow-hidden rounded-md'}
         aria-hidden="true"
         style={bgSwatchStyle(size, meta.bgClass ? null : meta.swatch)}
       />
     );
-  return <ItemIcon item={item} size={size} color={rarityOf(item.rarity).color} />;
+  return <ItemIcon item={item} size={size} color={rarityInk(item.rarity)} />;
 }
 
 // Swatch grid for one cosmetic type. Hoisted (not defined in render) so React
@@ -315,7 +319,9 @@ export default function HoloBay() {
 
         <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
           {/* ── HOLOGRAM STAGE ── */}
-          <div className="holobay-stage relative overflow-hidden rounded-3xl border border-cyan-400/20 p-6 sm:p-8">
+          {/* cosmic-surface: the whole stage is a RENDER surface — it stays dark
+              in light mode so cosmetics preview exactly as others see them */}
+          <div className="holobay-stage cosmic-surface relative overflow-hidden rounded-3xl border border-cyan-400/20 p-6 sm:p-8">
             <div className="holobay-scan" aria-hidden="true" />
             <div className="relative mx-auto max-w-sm">
               {/* mock profile card wearing the previewed background */}

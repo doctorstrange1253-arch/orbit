@@ -121,7 +121,9 @@ export default function Orbit() {
       </div>
 
       {/* Hero: streak ring + state + countdown */}
-      <section className="rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/60 to-violet-950/30 p-5">
+      {/* orbit-hero-card: from-/to- gradient stops aren't matched by the light
+          chrome inversion, so the light variant lives in cosmetics.css */}
+      <section className="orbit-hero-card rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/60 to-violet-950/30 p-5">
         <div className="flex flex-col sm:flex-row items-center gap-5">
           <StreakRing current={streak.current} next={nextMilestone} ringColor={copy.ring} />
           <div className="flex-1 text-center sm:text-left">

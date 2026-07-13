@@ -59,11 +59,36 @@ export function badgeGlow(key) {
   return `0 0 ${r.glow}px ${hexA(c, 0.85)}${r.order >= 12 ? `, 0 0 ${r.glow * 0.6}px ${hexA('#a855f7', 0.5)}` : ''}`;
 }
 
+// Relative luminance of a #rrggbb color (WCAG formula, 0..1).
+function luminance(hex) {
+  const h = String(hex).replace('#', '');
+  const lin = (i) => {
+    const c = parseInt(h.slice(i, i + 2), 16) / 255;
+    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  };
+  return 0.2126 * lin(0) + 0.7152 * lin(2) + 0.0722 * lin(4);
+}
+
+/**
+ * Contrast-floored "ink" for a tier — the color to use wherever the rarity
+ * color paints TEXT or thin strokes. Dark-valued tiers (Black Hole #0b0d17,
+ * Dark Matter #4c1d95) are invisible as text on dark cards, so anything below
+ * the luminance floor is lifted toward a pale slate. Bright tiers return their
+ * exact color, so their rendering is pixel-identical.
+ */
+export function rarityInk(key) {
+  const r = rarityOf(key);
+  return luminance(r.color) < 0.09
+    ? `color-mix(in srgb, ${r.color} 45%, #cbd5e1)`
+    : r.color;
+}
+
 /** Inline CSS vars for a rarity — feed into any element using rarity.css classes
- *  (`.rar-badge`, `.rar-card-glow`, `.rar-iridescent`). */
+ *  (`.rar-badge`, `.rar-card-glow`, `.rar-iridescent`). `--rar-ink` carries the
+ *  contrast-floored text color (see rarityInk). */
 export function rarityVars(key) {
   const r = rarityOf(key);
-  return { '--rar': r.color, '--rar-glow': `${r.glow}px` };
+  return { '--rar': r.color, '--rar-glow': `${r.glow}px`, '--rar-ink': rarityInk(key) };
 }
 
 /** Class name for a card that should carry the tier halo (or '' for low tiers). */
