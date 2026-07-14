@@ -29,11 +29,12 @@ const PENDING_TTL_MIN = 10;        // time allowed to complete TOTP
 const LOCKOUT_THRESHOLD = 5;       // failed attempts before lockout kicks in
 const LOCKOUT_MAX_MIN = 60;        // cap backoff at 1h
 
-// SameSite policy. Default "strict" (combined-origin deploy). Split deployments
-// (frontend and backend on different domains, e.g. Vercel + Render) MUST set
-// ADMIN_COOKIE_SAMESITE=none, which forces Secure. The double-submit CSRF token
-// remains the active CSRF defense regardless of this value.
-const SAMESITE = (process.env.ADMIN_COOKIE_SAMESITE || "strict").toLowerCase();
+// SameSite policy. This deployment is SPLIT (Vercel frontend → Render backend),
+// so cross-site cookies are the norm: default to "none" in production (browsers
+// silently drop SameSite=strict cookies cross-site, which bricks the whole
+// portal). Local dev stays "strict". Override with ADMIN_COOKIE_SAMESITE.
+// The double-submit CSRF token remains the active CSRF defense regardless.
+const SAMESITE = (process.env.ADMIN_COOKIE_SAMESITE || (PROD ? "none" : "strict")).toLowerCase();
 const SECURE = PROD || SAMESITE === "none";
 
 const baseCookie = { httpOnly: true, secure: SECURE, sameSite: SAMESITE, path: "/" };
