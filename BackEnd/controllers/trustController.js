@@ -205,8 +205,9 @@ exports.getMyTrustScore = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        // Get recent ratings for breakdown
-        const ratings = await Rating.find({ toUser: req.user.id })
+        // Get recent ratings for breakdown (admin-hidden reviews stay hidden
+        // from the recipient too — same as the public listing).
+        const ratings = await Rating.find({ toUser: req.user.id, hidden: { $ne: true } })
             .populate("fromUser", "name avatar")
             .sort({ createdAt: -1 })
             .limit(5);

@@ -101,7 +101,7 @@ exports.adjust = async (req, res) => {
             const trimmedReason = String(reason).trim();
             createNotification(io, userId, {
                 type: "photon_grant",
-                title: "Congratulations! You received Photons \uD83C\uDF89",
+                title: "Congratulations! You received Photons",
                 body: `An admin has granted you ${applied} Photon${applied === 1 ? "" : "s"}${trimmedReason ? ` \u2014 ${trimmedReason}` : ""}. Spend them in the Nebula Store!`,
                 data: { amount: applied, link: "/orbit" },
             }).catch((e) => console.error("[admin economy.adjust notify]", e.message));

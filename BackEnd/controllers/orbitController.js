@@ -219,7 +219,7 @@ exports.rerollMission = async (req, res) => {
 exports.giftPhotons = async (req, res) => {
     try {
         const mongoose = require("mongoose");
-        const Connection = require("../models/connection");
+        const Connection = require("../models/Connection");
         const { createNotification } = require("../services/notify");
 
         const { toUserId, note } = req.body || {};

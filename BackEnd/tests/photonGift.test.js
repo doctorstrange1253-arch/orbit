@@ -6,7 +6,7 @@
 const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const User = require("../models/user");
-const Connection = require("../models/connection");
+const Connection = require("../models/Connection");
 const PhotonLedger = require("../models/PhotonLedger");
 const { giftPhotons } = require("../controllers/orbitController");
 const { validateGift, GIFT_MIN, GIFT_MAX, GIFT_DAILY_CAP } = require("../services/orbitEngine");

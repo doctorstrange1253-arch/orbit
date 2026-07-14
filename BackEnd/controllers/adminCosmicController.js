@@ -13,7 +13,7 @@ const Connection = require("../models/Connection");
 const Legend = require("../models/Legend");
 const RankEvent = require("../models/RankEvent");
 const { computeCosmicScore } = require("../services/cosmicScore");
-const { resolveDisplayTier, higherTier } = require("../services/cosmicTier");
+const { resolveDisplayTier, higherTier, BY_ID, TIER_ORDER } = require("../services/cosmicTier");
 const { audit } = require("../utils/adminAudit");
 
 // GET /cosmic/rank-events?direction&userId&page&limit
@@ -138,15 +138,23 @@ exports.overrideTier = async (req, res) => {
         const tierId = req.body.tierId;
         const reason = req.body.reason || "";
         if (!tierId) return res.status(400).json({ message: "tierId required." });
+        // Validate against the real ladder — a typo here would corrupt the user's
+        // tier and break badge/glow rendering everywhere their name appears.
+        if (!BY_ID[tierId] && tierId !== "quasar") {
+            return res.status(400).json({ message: `Unknown tierId "${tierId}". Valid: ${TIER_ORDER.join(", ")}` });
+        }
         if (!reason.trim()) return res.status(400).json({ message: "A reason is required for overrides." });
         const before = await User.findById(req.params.userId).select("cosmic.tierId name").lean();
         if (!before) return res.status(404).json({ message: "Not found" });
         await User.updateOne({ _id: req.params.userId }, { $set: { "cosmic.tierId": tierId, "cosmic.lastTierChangeAt": new Date() } });
-        // Record the override as an admin-triggered rank event for traceability.
+        // Record the override as an admin-triggered rank event for traceability
+        // (direction reflects the actual move, not always "up").
+        const fromTierId = before.cosmic?.tierId || "moon_4";
         await RankEvent.create({
             userId: req.params.userId, scope: "global",
-            fromTierId: before.cosmic?.tierId || "moon_4", toTierId: tierId,
-            direction: "up", trigger: "admin",
+            fromTierId, toTierId: tierId,
+            direction: TIER_ORDER.indexOf(tierId) >= TIER_ORDER.indexOf(fromTierId) ? "up" : "down",
+            trigger: "admin",
         }).catch(() => {});
         await audit(req, { actorId: req.adminUser._id, actorEmail: req.adminUser.email, action: "cosmic.override", targetType: "user", targetId: req.params.userId, reason, before: { tierId: before.cosmic?.tierId }, after: { tierId } });
         return res.json({ ok: true });

@@ -38,7 +38,9 @@ router.use((req, res, next) => {
     const allow = (process.env.ADMIN_IP_ALLOWLIST || "").split(",").map((s) => s.trim()).filter(Boolean);
     if (allow.length === 0) return next();
     const ip = ((req.headers["x-forwarded-for"] || "").split(",")[0].trim()) || req.ip || "";
-    const ok = allow.some((a) => ip === a || ip.endsWith(a));
+    // Exact match, or prefix match only at an octet boundary ("103.87." allows
+    // 103.87.x.x). The old bare endsWith let 11.2.3.4 pass for entry "1.2.3.4".
+    const ok = allow.some((a) => ip === a || (a.endsWith(".") && ip.startsWith(a)));
     if (!ok) return res.status(404).end();
     next();
 });
@@ -60,7 +62,10 @@ router.get("/overview", adminApiLimiter, requireAdmin, admin.getOverview);
 router.get("/users", adminApiLimiter, requireAdmin, users.listUsers);
 router.get("/users/:id", adminApiLimiter, requireAdmin, users.getUser);
 router.patch("/users/:id", adminApiLimiter, requireAdmin, users.updateUser);
-router.post("/users/:id/role", adminApiLimiter, requireAdmin, users.setRole);
+// Role changes are superadmin-only: a freshly-promoted admin has no portalRole,
+// which requireRole treats as superadmin — so any admin who could grant the
+// admin role could effectively mint full-power accounts.
+router.post("/users/:id/role", adminApiLimiter, requireAdmin, requireRole("superadmin"), users.setRole);
 router.post("/users/:id/status", adminApiLimiter, requireAdmin, users.setStatus);
 router.post("/users/:id/reset-password", adminApiLimiter, requireAdmin, users.triggerPasswordReset);
 router.post("/users/:id/impersonate", adminApiLimiter, requireAdmin, requireRole("superadmin"), users.impersonate);
@@ -113,7 +118,9 @@ router.post("/cosmic/score/:userId/override", adminApiLimiter, requireAdmin, cos
 router.get("/records/users/:id/delete-preview", adminApiLimiter, requireAdmin, records.deletePreview);
 router.post("/records/users/:id/soft-delete", adminApiLimiter, requireAdmin, records.softDelete);
 router.post("/records/users/:id/restore", adminApiLimiter, requireAdmin, records.restore);
-router.post("/records/users/:id/hard-delete", adminApiLimiter, requireAdmin, records.hardDelete);
+// Hard delete is the single most destructive endpoint in the portal (GDPR full
+// erasure) — superadmin only, same bar as impersonate/unlock.
+router.post("/records/users/:id/hard-delete", adminApiLimiter, requireAdmin, requireRole("superadmin"), records.hardDelete);
 router.get("/records/:collection", adminApiLimiter, requireAdmin, records.listRecords);
 
 // Audit log viewer (append-only; no delete route exists by design)

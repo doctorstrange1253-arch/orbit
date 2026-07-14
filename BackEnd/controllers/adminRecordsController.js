@@ -19,6 +19,9 @@ const Skill = require("../models/skill");
 const Report = require("../models/Report");
 const RankEvent = require("../models/RankEvent");
 const Legend = require("../models/Legend");
+const PhotonLedger = require("../models/PhotonLedger");
+const Notification = require("../models/Notification");
+const Constellation = require("../models/Constellation");
 const AuditLog = require("../models/AuditLog");
 const { audit } = require("../utils/adminAudit");
 
@@ -76,7 +79,7 @@ exports.listRecords = async (req, res) => {
 
 // Count everything that references a user (cascade preview).
 async function cascadeCounts(userId) {
-    const [ratingsAuthored, ratingsReceived, connections, calls, messages, skills, reports, rankEvents, legends] = await Promise.all([
+    const [ratingsAuthored, ratingsReceived, connections, calls, messages, skills, reports, rankEvents, legends, photonLedger, notifications, constellations] = await Promise.all([
         Rating.countDocuments({ fromUser: userId }),
         Rating.countDocuments({ toUser: userId }),
         Connection.countDocuments({ $or: [{ requester: userId }, { receiver: userId }] }),
@@ -86,8 +89,11 @@ async function cascadeCounts(userId) {
         Report.countDocuments({ $or: [{ targetUserId: userId }, { reporterId: userId }] }),
         RankEvent.countDocuments({ userId }),
         Legend.countDocuments({ userId }),
+        PhotonLedger.countDocuments({ userId }),
+        Notification.countDocuments({ userId }),
+        Constellation.countDocuments({ members: userId }),
     ]);
-    return { profile: 1, ratingsAuthored, ratingsReceived, connections, calls, messages, skills, reports, rankEvents, legends };
+    return { profile: 1, ratingsAuthored, ratingsReceived, connections, calls, messages, skills, reports, rankEvents, legends, photonLedger, notifications, constellations };
 }
 
 // GET /records/users/:id/delete-preview
@@ -167,6 +173,9 @@ exports.hardDelete = async (req, res) => {
             Report.deleteMany({ $or: [{ targetUserId: u._id }, { reporterId: u._id }] }),
             RankEvent.deleteMany({ userId: u._id }),
             Legend.deleteMany({ userId: u._id }),
+            PhotonLedger.deleteMany({ userId: u._id }),
+            Notification.deleteMany({ userId: u._id }),
+            Constellation.deleteMany({ members: u._id }),
         ]);
         await User.deleteOne({ _id: u._id });
 

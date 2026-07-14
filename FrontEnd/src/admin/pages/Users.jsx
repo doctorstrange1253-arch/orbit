@@ -117,7 +117,12 @@ export default function Users() {
     if (role) params.set('role', role);
     adminApi.get(`/users?${params}`).then((r) => setData(r.data)).catch(() => setData({ rows: [], total: 0, pages: 1 }));
   }, [q, status, role, page]);
-  useEffect(() => { load(); }, [load]);
+  // Debounced: typing a query fires ONE request 300ms after the last keystroke,
+  // not one per keystroke (the admin API limiter is 120 req/min).
+  useEffect(() => {
+    const t = setTimeout(load, 300);
+    return () => clearTimeout(t);
+  }, [load]);
 
   return (
     <div>
