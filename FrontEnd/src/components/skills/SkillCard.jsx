@@ -32,12 +32,27 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, i
 
   const deleteMutation = useMutation({
     mutationFn: () => api.delete(`/skills/${skill._id}`),
+    // OPTIMISTIC: pull the card out of ['skills','my'] the instant the user
+    // confirms — the old invalidate-only flow left the card sitting there for
+    // a full round-trip + refetch ("skill deletion lag"). Rolls back on error.
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['skills', 'my'] });
+      const prev = queryClient.getQueryData(['skills', 'my']);
+      queryClient.setQueryData(['skills', 'my'], (old) =>
+        Array.isArray(old) ? old.filter((s) => s._id !== skill._id) : old);
+      return { prev };
+    },
+    onError: useCallback((err, _v, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(['skills', 'my'], ctx.prev);
+      addToast(err.response?.data?.message || 'Delete failed', 'error');
+    }, [addToast, queryClient]),
     onSuccess: useCallback(() => {
       addToast('Skill removed', 'success');
-      queryClient.invalidateQueries({ queryKey: ['skills', 'my'] });
       queryClient.invalidateQueries({ queryKey: ['cosmic'] }); // refresh standing (v7 §1)
     }, [addToast, queryClient]),
-    onError: useCallback((err) => addToast(err.response?.data?.message || 'Delete failed', 'error'), [addToast]),
+    onSettled: useCallback(() => {
+      queryClient.invalidateQueries({ queryKey: ['skills', 'my'] });
+    }, [queryClient]),
   });
 
   const handleCardClick = useCallback(() => {

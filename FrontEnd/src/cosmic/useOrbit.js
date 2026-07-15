@@ -47,6 +47,27 @@ export function useGiftPhotons() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload) => api.post('/orbit/photons/gift', payload).then((r) => r.data),
+    // OPTIMISTIC: debit the balance + bump sentToday the instant the user taps
+    // a preset, so the popover feels immediate; rolled back if the server
+    // rejects (cap hit, not connected, insufficient balance).
+    onMutate: async ({ amount }) => {
+      await qc.cancelQueries({ queryKey: ORBIT_KEY });
+      const prev = qc.getQueryData(ORBIT_KEY);
+      qc.setQueryData(ORBIT_KEY, (old) => {
+        if (!old) return old;
+        const balance = Math.max(0, (old.photons ?? old.stardust ?? 0) - amount);
+        return {
+          ...old,
+          photons: balance,
+          stardust: balance,
+          gift: old.gift ? { ...old.gift, sentToday: (old.gift.sentToday || 0) + amount } : old.gift,
+        };
+      });
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(ORBIT_KEY, ctx.prev);
+    },
     onSuccess: (data) => {
       qc.setQueryData(ORBIT_KEY, (prev) => ({ ...prev, ...data }));
       qc.invalidateQueries({ queryKey: ['orbit', 'shop'] }); // balance changed

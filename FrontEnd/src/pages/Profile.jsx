@@ -190,11 +190,15 @@ const Profile = () => {
         <p className="text-text-muted mt-1 text-sm">Your public persona on Orbit.</p>
       </div>
 
-      {/* Avatar + meta card — shows the equipped nebula background if any */}
+      {/* Avatar + meta card — shows the equipped nebula background if any.
+          When a nebula is worn the card becomes a dark RENDER surface
+          (cosmic-surface, like Holo-Bay), so the light-mode text remaps skip
+          it, and a scrim keeps name/email legible on ANY background art. */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-        className={`relative flex items-center gap-5 p-6 rounded-2xl overflow-hidden ${bgClass}`}
+        className={`relative flex items-center gap-5 p-6 rounded-2xl overflow-hidden ${bgClass} ${bgClass ? 'cosmic-surface' : ''}`}
         style={{ background: bgClass ? undefined : 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
         {effectClass && <span className={effectClass} aria-hidden="true" />}
+        {bgClass && <div className="pointer-events-none absolute inset-0 rounded-2xl bg-slate-950/45" aria-hidden="true" />}
         <div className="relative">
           <Avatar name={profile?.name || user?.name} size="xl" userId={profile?._id || user?._id} url={profile?.avatar} deco={decoClass} />
           <button
@@ -205,9 +209,9 @@ const Profile = () => {
             <Camera size={14} className="text-text-primary" />
           </button>
         </div>
-        <div className="min-w-0">
-          <p className={`text-xl font-bold truncate ${glowClass || 'text-text-primary'}`}><Nameplate plateKey={plateKey}>{profile?.name || user?.name}</Nameplate></p>
-          <p className={`text-sm truncate ${bgClass ? 'text-white/80' : 'text-text-muted'}`}>{profile?.email || user?.email}</p>
+        <div className="relative min-w-0">
+          <p className={`text-xl font-bold truncate ${glowClass || (bgClass ? 'text-white' : 'text-text-primary')}`}><Nameplate plateKey={plateKey}>{profile?.name || user?.name}</Nameplate></p>
+          <p className={`text-sm truncate ${bgClass ? 'text-white/90' : 'text-text-muted'}`}>{profile?.email || user?.email}</p>
           <div className="flex items-center gap-1.5 mt-2">
             <Shield size={13} style={{ color: trustColor }} />
             <span className="text-xs font-semibold" style={{ color: trustColor }}>

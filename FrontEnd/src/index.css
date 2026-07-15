@@ -648,21 +648,21 @@ html[data-mode="light"] .pill-want {
    class, so these were previously DEAD. Re-scoped to the real attribute so the
    faint white-on-light text becomes legible. btn-gradient sets its own
    color:white in CSS (not the .text-white utility), so buttons are unaffected. */
-html[data-mode="light"] .text-white { color: #1a1a2e; }
-html[data-mode="light"] .text-white\/10 { color: rgba(26, 26, 46, 0.1); }
-html[data-mode="light"] .text-white\/15 { color: rgba(26, 26, 46, 0.15); }
-html[data-mode="light"] .text-white\/20 { color: rgba(26, 26, 46, 0.2); }
-html[data-mode="light"] .text-white\/25 { color: rgba(26, 26, 46, 0.25); }
-html[data-mode="light"] .text-white\/30 { color: rgba(26, 26, 46, 0.3); }
-html[data-mode="light"] .text-white\/35 { color: rgba(26, 26, 46, 0.35); }
-html[data-mode="light"] .text-white\/40 { color: rgba(26, 26, 46, 0.4); }
-html[data-mode="light"] .text-white\/45 { color: rgba(26, 26, 46, 0.45); }
-html[data-mode="light"] .text-white\/50 { color: rgba(26, 26, 46, 0.5); }
-html[data-mode="light"] .text-white\/55 { color: rgba(26, 26, 46, 0.55); }
-html[data-mode="light"] .text-white\/60 { color: rgba(26, 26, 46, 0.6); }
-html[data-mode="light"] .text-white\/70 { color: rgba(26, 26, 46, 0.7); }
-html[data-mode="light"] .text-white\/80 { color: rgba(26, 26, 46, 0.8); }
-html[data-mode="light"] .text-white\/90 { color: rgba(26, 26, 46, 0.9); }
+html[data-mode="light"] .text-white:not(.cosmic-surface):not(.cosmic-surface *) { color: #1a1a2e; }
+html[data-mode="light"] .text-white\/10:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.1); }
+html[data-mode="light"] .text-white\/15:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.15); }
+html[data-mode="light"] .text-white\/20:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.2); }
+html[data-mode="light"] .text-white\/25:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.25); }
+html[data-mode="light"] .text-white\/30:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.3); }
+html[data-mode="light"] .text-white\/35:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.35); }
+html[data-mode="light"] .text-white\/40:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.4); }
+html[data-mode="light"] .text-white\/45:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.45); }
+html[data-mode="light"] .text-white\/50:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.5); }
+html[data-mode="light"] .text-white\/55:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.55); }
+html[data-mode="light"] .text-white\/60:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.6); }
+html[data-mode="light"] .text-white\/70:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.7); }
+html[data-mode="light"] .text-white\/80:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.8); }
+html[data-mode="light"] .text-white\/90:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.9); }
 
 /* Override bg-white utilities that are used as faint backgrounds.
    NOTE: Tailwind emits `bg-white/5`, not `bg-white/05` — the old \/05 selector

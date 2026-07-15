@@ -45,15 +45,39 @@ const NotificationBell = () => {
     refetchOnWindowFocus: true,
   });
 
+  // Always enabled (not `enabled: open`): the old lazy fetch meant the panel
+  // opened EMPTY and the user stared at nothing for a full round-trip. Keeping
+  // the cache warm from mount makes opening instant; the socket invalidation
+  // in App.jsx and the 25s badge poll keep it fresh.
   const { data: list } = useQuery({
     queryKey: ['notifications', 'list'],
     queryFn: () => api.get('/notifications', { params: { limit: 30 } }).then(r => r.data),
-    enabled: open,
+    staleTime: 20000,
+    refetchOnWindowFocus: true,
   });
 
   const deleteOne = useMutation({
     mutationFn: (id) => api.delete(`/notifications/${id}`),
-    onSuccess: () => {
+    // OPTIMISTIC: drop the row + decrement the badge instantly; the server
+    // call settles in the background and a failure rolls both caches back.
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['notifications'] });
+      const prevList = queryClient.getQueryData(['notifications', 'list']);
+      const prevUnread = queryClient.getQueryData(['notifications', 'unread']);
+      const wasUnread = prevList?.items?.some((n) => n._id === id && !n.read);
+      queryClient.setQueryData(['notifications', 'list'], (old) =>
+        old ? { ...old, items: (old.items || []).filter((n) => n._id !== id) } : old);
+      if (wasUnread) {
+        queryClient.setQueryData(['notifications', 'unread'], (old) =>
+          old ? { ...old, count: Math.max(0, (old.count || 0) - 1) } : old);
+      }
+      return { prevList, prevUnread };
+    },
+    onError: (_e, _id, ctx) => {
+      if (ctx?.prevList) queryClient.setQueryData(['notifications', 'list'], ctx.prevList);
+      if (ctx?.prevUnread) queryClient.setQueryData(['notifications', 'unread'], ctx.prevUnread);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications', 'unread'] });
       queryClient.invalidateQueries({ queryKey: ['notifications', 'list'] });
     },
@@ -61,10 +85,23 @@ const NotificationBell = () => {
 
   const clearAll = useMutation({
     mutationFn: () => api.delete('/notifications/clear-all'),
-    onSuccess: () => {
+    // OPTIMISTIC: empty the panel + zero the badge immediately.
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['notifications'] });
+      const prevList = queryClient.getQueryData(['notifications', 'list']);
+      const prevUnread = queryClient.getQueryData(['notifications', 'unread']);
+      queryClient.setQueryData(['notifications', 'list'], (old) => (old ? { ...old, items: [] } : old));
+      queryClient.setQueryData(['notifications', 'unread'], (old) => (old ? { ...old, count: 0 } : old));
+      return { prevList, prevUnread };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prevList) queryClient.setQueryData(['notifications', 'list'], ctx.prevList);
+      if (ctx?.prevUnread) queryClient.setQueryData(['notifications', 'unread'], ctx.prevUnread);
+    },
+    onSuccess: () => addToast("You're all caught up.", 'success'),
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications', 'unread'] });
       queryClient.invalidateQueries({ queryKey: ['notifications', 'list'] });
-      addToast("You're all caught up.", 'success');
     },
   });
 

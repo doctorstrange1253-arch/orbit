@@ -42,6 +42,9 @@
   background: linear-gradient(100deg,#94a3b8 42%,#ffffff 50%,#94a3b8 58%);
   background-size: 250% 100%;
   animation: cg-shimmer 2.6s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @keyframes cg-shimmer { to { background-position: -250% 0; } }
 
@@ -66,6 +69,9 @@
      gradient paints as a solid box over invisible glyphs. The multi-hue
      gradient sweep carries the color motion instead. */
   animation: cg-holo-pos 5s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @keyframes cg-holo-pos { to { background-position: 300% 0; } }
 
@@ -97,6 +103,9 @@
   background: linear-gradient(90deg,#0e7490 0%,#5eead4 42%,#ffffff 50%,#5eead4 58%,#0e7490 100%);
   background-size: 240% 100%;
   animation: cg-comet 2.4s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @keyframes cg-comet { from { background-position: 120% 0; } to { background-position: -120% 0; } }
 
@@ -116,6 +125,9 @@
   background: linear-gradient(90deg,#34d399,#22d3ee,#a78bfa,#34d399);
   background-size: 300% 100%;
   animation: cg-ribbon 4s ease-in-out infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @keyframes cg-ribbon {
   0%   { background-position: 0 0; }
@@ -129,6 +141,9 @@
   background: linear-gradient(90deg,#9ca3af,#f9fafb,#6b7280,#f9fafb,#9ca3af);
   background-size: 250% 100%;
   animation: cg-chrome 3s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @keyframes cg-chrome { to { background-position: 250% 0; } }
 
@@ -447,7 +462,11 @@
 /* Oil Slick — iridescent conic sheen */
 /* Clip-safety (Issue 4): cg-oil-hue removed — animating filter on a clipped
    element blanks the clip on Chromium/WebView. The conic sweep carries it. */
-.cg-oil { color: #a78bfa; background: conic-gradient(from 0deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 200% 200%; animation: cg-oil 6s linear infinite; }
+.cg-oil { color: #a78bfa; background: conic-gradient(from 0deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 200% 200%; animation: cg-oil 6s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 @keyframes cg-oil { 0% { background-position: 0 0; } 50% { background-position: 100% 100%; } 100% { background-position: 0 0; } }
 
 /* Neon Outline — a hollow neon-tube outline */
@@ -1652,3 +1671,43 @@
 /* 5 · Store card glass — inline dark glass stays dark on the light store
    page; !important beats the inline (non-important) value. */
 [data-mode="light"] .shop-card-glass { background: rgba(255, 255, 255, .82) !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   .pe-mini — MINIATURE profile-effect preview for 40px picker swatches.
+   The full-size .pe layers tile 1–2px particles across 80–150px sheets, which
+   is invisible (a black square) at swatch scale. The mini variant concentrates
+   the same particle art: the tile shrinks to ~38px (≈3× density), dots get a
+   brightness/saturation boost, and the animation runs faster so every swatch
+   is a tiny living storm of exactly the effect you'd equip.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.pe.pe-mini::before,
+.pe.pe-mini::after {
+  background-size: 38px 38px;
+  animation-duration: 5s, 2.2s; /* compress the slow drift; twinkle stays lively */
+  filter: brightness(1.35) saturate(1.25);
+}
+/* aurora + orbits paint a single non-tiled shape — keep their geometry, just
+   brighten and speed them up so they read at 40px. */
+.pe-aurora.pe-mini::before {
+  background-size: auto;
+  filter: blur(3px) brightness(1.5) saturate(1.3);
+  animation-duration: 4s;
+}
+.pe-orbits.pe-mini::before {
+  background-size: auto;
+  inset: 14%;
+  animation-duration: 5s;
+  filter: brightness(1.4);
+}
+/* streak effects (starfall/darkrain) read best a touch larger than dots */
+.pe-starfall.pe-mini::before,
+.pe-darkrain.pe-mini::before {
+  background-size: 52px 52px;
+  opacity: 0.95;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pe.pe-mini::before, .pe.pe-mini::after { animation: none; }
+}
+[data-anim-off="true"] .pe.pe-mini::before,
+[data-anim-off="true"] .pe.pe-mini::after { animation: none; }

@@ -16,7 +16,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Check, Lock, ArrowLeft, Shuffle, RotateCcw, Share2 } from 'lucide-react';
+import { Check, Lock, ArrowLeft, Shuffle, RotateCcw, Share2, ChevronDown } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
 import PhotonAmount from '../cosmic/PhotonAmount';
 import CelebrationBurst from '../cosmic/CelebrationBurst';
@@ -50,8 +50,15 @@ function Swatch({ item, size = 40 }) {
     );
   if (item.type === 'profile_effect')
     return (
-      <span className="cosmic-surface relative grid place-items-center overflow-hidden rounded-lg bg-slate-900/70" style={ { width: size, height: size } }>
-        <span className={meta.effectClass} aria-hidden="true" />
+      // pe-mini concentrates the particle tiles ~3× so the effect actually
+      // reads at swatch scale (full-size .pe sheets were invisible → the
+      // "all black tiles" bug). The deep-space radial backdrop makes the
+      // brightened particles pop like a tiny contained galaxy.
+      <span
+        className="cosmic-surface relative grid place-items-center overflow-hidden rounded-lg"
+        style={ { width: size, height: size, background: 'radial-gradient(circle at 50% 40%, rgba(56,66,120,.55), rgba(3,5,12,.95) 75%)' } }
+      >
+        <span className={`${meta.effectClass || ''} pe-mini`} aria-hidden="true" />
       </span>
     );
   if (item.type === 'nameplate')
@@ -81,34 +88,60 @@ function Swatch({ item, size = 40 }) {
   return <ItemIcon item={item} size={size} color={rarityInk(item.rarity)} />;
 }
 
-// Swatch grid for one cosmetic type. Hoisted (not defined in render) so React
-// keeps its identity stable across renders.
-function Picker({ title, items, activeKey, onPick, onClear, clearLabel }) {
+// Collapsible dropdown picker for one cosmetic type. Hoisted (not defined in
+// render) so React keeps its identity stable across renders. The swatch grid
+// lives INSIDE a capped internal scroll area, so choosing items never scrolls
+// the page — the hologram stage stays put (it's sticky on desktop too).
+function Picker({ title, items, activeKey, onPick, onClear, clearLabel, open, onToggle }) {
+  const activeItem = items.find((i) => i.key === activeKey) || null;
   return (
-    <div>
-      <div className="mb-2 flex items-center justify-between">
+    <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-900/40">
+      <button
+        onClick={onToggle}
+        aria-expanded={open}
+        className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition-colors hover:bg-white/5"
+      >
         <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">{title}</h3>
-        <button onClick={onClear} className="text-[11px] font-semibold text-slate-500 hover:text-slate-300">{clearLabel}</button>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {items.map((it) => {
-          const active = it.key === activeKey;
-          return (
-            <button
-              key={it.key}
-              onClick={() => onPick(it.key)}
-              title={`${it.name} · ${rarityOf(it.rarity).label}`}
-              style={rarityVars(it.rarity)}
-              className={`cv-auto relative grid h-14 w-14 place-items-center rounded-xl border transition
-                ${active ? 'ring-2 ring-white/70 border-white/30' : 'border-white/10 hover:border-white/25'}`}
-            >
-              <span className="absolute inset-0 rounded-xl" style={{ background: 'rgba(18,20,33,.7)' }} />
-              <span className="relative"><Swatch item={it} size={34} /></span>
-              {it.owned && <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-emerald-500 text-[9px] text-white"><Check size={10} /></span>}
-            </button>
-          );
-        })}
-      </div>
+        {/* live summary of the current pick, visible even when collapsed */}
+        <span className="ml-auto flex min-w-0 items-center gap-2">
+          {activeItem ? (
+            <>
+              <Swatch item={activeItem} size={22} />
+              <span className="max-w-[90px] truncate text-[11px] font-semibold text-slate-300">{activeItem.name}</span>
+            </>
+          ) : (
+            <span className="text-[11px] text-slate-500">None</span>
+          )}
+        </span>
+        <ChevronDown size={14} className={`flex-none text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div className="border-t border-white/10 p-3">
+          <div className="mb-2 flex justify-end">
+            <button onClick={onClear} className="text-[11px] font-semibold text-slate-500 hover:text-slate-300">{clearLabel}</button>
+          </div>
+          {/* capped + internally scrollable: picking never moves the page */}
+          <div className="flex max-h-56 flex-wrap gap-2 overflow-y-auto overscroll-contain pr-1">
+            {items.map((it) => {
+              const active = it.key === activeKey;
+              return (
+                <button
+                  key={it.key}
+                  onClick={() => onPick(it.key)}
+                  title={`${it.name} · ${rarityOf(it.rarity).label}`}
+                  style={rarityVars(it.rarity)}
+                  className={`cv-auto relative grid h-14 w-14 place-items-center rounded-xl border transition
+                    ${active ? 'ring-2 ring-white/70 border-white/30' : 'border-white/10 hover:border-white/25'}`}
+                >
+                  <span className="absolute inset-0 rounded-xl" style={{ background: 'rgba(18,20,33,.7)' }} />
+                  <span className="relative"><Swatch item={it} size={34} /></span>
+                  {it.owned && <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-emerald-500 text-[9px] text-white"><Check size={10} /></span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -139,6 +172,10 @@ export default function HoloBay() {
   const [tryDeco, setTryDeco] = useState(undefined);
   const [tryEffect, setTryEffect] = useState(undefined);
   const [tryPlate, setTryPlate] = useState(undefined);
+  // Accordion: which picker dropdown is open (one at a time keeps the column
+  // compact so the sticky stage and the pickers share the viewport).
+  const [openPicker, setOpenPicker] = useState('glow');
+  const togglePicker = (k) => setOpenPicker((cur) => (cur === k ? null : k));
 
   // Shared-look deep link (?glow=…&bg=…&deco=…&fx=…&np=…): once the catalog is
   // in, seed the preview from the URL — invalid/unknown keys are ignored, and
@@ -317,11 +354,13 @@ export default function HoloBay() {
           )}
         </div>
 
-        <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="mt-6 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
           {/* ── HOLOGRAM STAGE ── */}
           {/* cosmic-surface: the whole stage is a RENDER surface — it stays dark
-              in light mode so cosmetics preview exactly as others see them */}
-          <div className="holobay-stage cosmic-surface relative overflow-hidden rounded-3xl border border-cyan-400/20 p-6 sm:p-8">
+              in light mode so cosmetics preview exactly as others see them.
+              Sticky on desktop: the stage stays in view while you browse the
+              picker dropdowns, so trying looks never scrolls it away. */}
+          <div className="holobay-stage cosmic-surface relative overflow-hidden rounded-3xl border border-cyan-400/20 p-6 sm:p-8 lg:sticky lg:top-20">
             <div className="holobay-scan" aria-hidden="true" />
             <div className="relative mx-auto max-w-sm">
               {/* mock profile card wearing the previewed background */}
@@ -401,20 +440,25 @@ export default function HoloBay() {
           </div>
 
           {/* ── PICKERS ── */}
-          <div className="space-y-5">
+          <div className="space-y-3">
             <Picker title="Name Glow" items={glows} activeKey={glowKey}
+              open={openPicker === 'glow'} onToggle={() => togglePicker('glow')}
               onPick={(k) => setTryGlow(k === glowKey ? null : k)}
               onClear={() => setTryGlow(null)} clearLabel="None" />
             <Picker title="Profile Nebula" items={backgrounds} activeKey={bgKey}
+              open={openPicker === 'bg'} onToggle={() => togglePicker('bg')}
               onPick={(k) => setTryBg(k === bgKey ? null : k)}
               onClear={() => setTryBg(null)} clearLabel="None" />
             <Picker title="Avatar Frame" items={decos} activeKey={decoKey}
+              open={openPicker === 'deco'} onToggle={() => togglePicker('deco')}
               onPick={(k) => setTryDeco(k === decoKey ? null : k)}
               onClear={() => setTryDeco(null)} clearLabel="None" />
             <Picker title="Profile Effect" items={effects} activeKey={effectKey}
+              open={openPicker === 'fx'} onToggle={() => togglePicker('fx')}
               onPick={(k) => setTryEffect(k === effectKey ? null : k)}
               onClear={() => setTryEffect(null)} clearLabel="None" />
             <Picker title="Nameplate" items={plates} activeKey={plateKey}
+              open={openPicker === 'np'} onToggle={() => togglePicker('np')}
               onPick={(k) => setTryPlate(k === plateKey ? null : k)}
               onClear={() => setTryPlate(null)} clearLabel="None" />
 

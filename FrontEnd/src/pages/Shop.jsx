@@ -90,8 +90,13 @@ function Preview({ item }) {
     );
   if (item.type === 'profile_effect')
     return (
-      <span className="relative inline-block h-11 w-11 overflow-hidden rounded-lg" style={PREVIEW_DISC}>
-        <span className={meta.effectClass} aria-hidden="true" />
+      // pe-mini: concentrated particle tiles so the effect reads at 44px
+      // (full-size .pe sheets rendered as a plain black square here)
+      <span
+        className="relative inline-block h-11 w-11 overflow-hidden rounded-lg"
+        style={{ background: 'radial-gradient(circle at 50% 40%, rgba(56,66,120,.55), rgba(3,5,12,.95) 75%)' }}
+      >
+        <span className={`${meta.effectClass || ''} pe-mini`} aria-hidden="true" />
       </span>
     );
   if (item.type === 'nameplate')
@@ -129,7 +134,10 @@ function StoreCard({ item, onBuy, onEquip, busy }) {
       whileHover={{ y: -4 }}
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
       style={rarityVars(item.rarity)}
-      className={`group cv-auto relative flex flex-col gap-3 rounded-2xl border border-white/10 p-4 backdrop-blur-md ${glow}`}
+      // no backdrop-blur here: the glass layer below is ~75% opaque so the
+      // blur was invisible but cost a per-card backdrop filter every frame —
+      // a big part of the store-scroll stutter on mid-range phones
+      className={`group cv-auto relative flex flex-col gap-3 rounded-2xl border border-white/10 p-4 ${glow}`}
     >
       {/* card body glass */}
       <div className="shop-card-glass absolute inset-0 rounded-2xl -z-10" style={{ background: 'rgba(18,20,33,.75)' }} />
