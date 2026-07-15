@@ -22,6 +22,15 @@ function handleCallback(req, res) {
     if (!req.user) {
         return res.redirect(isApp ? `${APP_SCHEME}?error=oauth_failed` : `${FRONTEND_URL}/login?error=oauth_failed`);
     }
+    // Enforce the SAME ban/suspension gate as email login — without this,
+    // a banned or soft-deleted account could simply sign in with Google/
+    // GitHub/LinkedIn and walk straight past the ban.
+    const u = req.user;
+    const banned = (u.bannedUntil && new Date() < new Date(u.bannedUntil)) ||
+        ["banned", "suspended", "soft_deleted"].includes(u.status);
+    if (banned) {
+        return res.redirect(isApp ? `${APP_SCHEME}?error=account_banned` : `${FRONTEND_URL}/login?error=account_banned`);
+    }
     const token = generateToken(req.user);
     const userName = encodeURIComponent(req.user.name || '');
     const userId = req.user._id;

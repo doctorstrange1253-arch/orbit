@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
@@ -31,6 +31,20 @@ const Login = () => {
   const { setToken, setUser } = useAuthStore();
   const { addToast } = useUIStore();
   const [showPass, setShowPass] = useState(false);
+
+  // Surface OAuth-redirect errors (?error=oauth_failed / account_banned) —
+  // the backend lands here after a failed social login, and without this the
+  // user just saw the login page again with zero explanation.
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const err = searchParams.get('error');
+    if (!err) return;
+    const msg = err === 'account_banned'
+      ? 'This account is suspended or banned. Contact support if you believe this is a mistake.'
+      : 'Social sign-in failed. Please try again or use your email and password.';
+    addToast(msg, 'error');
+    setSearchParams({}, { replace: true }); // one-shot: don't re-toast on remount
+  }, [searchParams, setSearchParams, addToast]);
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema),
