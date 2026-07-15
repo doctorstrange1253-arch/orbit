@@ -138,7 +138,7 @@ const Settings = () => {
         >
           Appearance Settings
         </h1>
-        <p className="text-slate-400 mt-1 text-sm">
+        <p className="text-text-muted mt-1 text-sm">
           Customize your Orbit visual experience
         </p>
       </div>
@@ -149,7 +149,10 @@ const Settings = () => {
         animate={{ opacity: 1, y: 0 }}
         className="p-6 rounded-2xl space-y-5 bg-surface border border-border-subtle"
       >
-        <h2 className="font-display font-bold text-slate-900 dark:text-text-primary text-base flex items-center gap-2">
+        {/* text-text-primary tracks the app's data-mode toggle; the old
+            `text-slate-900 dark:...` pair followed the OS scheme instead, so
+            OS-light + app-dark rendered a near-black heading on a dark card */}
+        <h2 className="font-display font-bold text-text-primary text-base flex items-center gap-2">
           <Eye size={15} className="text-accent" /> Background Style
         </h2>
 

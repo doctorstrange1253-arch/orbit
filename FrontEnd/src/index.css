@@ -664,6 +664,15 @@ html[data-mode="light"] .text-white\/70:not(.cosmic-surface):not(.cosmic-surface
 html[data-mode="light"] .text-white\/80:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.8); }
 html[data-mode="light"] .text-white\/90:not(.cosmic-surface):not(.cosmic-surface *) { color: rgba(26, 26, 46, 0.9); }
 
+/* Slate text utilities appear on dark-designed components that also render
+   OUTSIDE .cosmic-page (e.g. MasteryBar inside skill cards, SignalLegend) —
+   remap them to readable ink in light mode, with the same render-surface
+   exemption as .text-white so cosmetics previews stay untouched. */
+html[data-mode="light"] .text-slate-200:not(.cosmic-surface):not(.cosmic-surface *) { color: #1e293b; }
+html[data-mode="light"] .text-slate-300:not(.cosmic-surface):not(.cosmic-surface *) { color: #334155; }
+html[data-mode="light"] .text-slate-400:not(.cosmic-surface):not(.cosmic-surface *) { color: #475569; }
+html[data-mode="light"] .text-slate-500:not(.cosmic-surface):not(.cosmic-surface *) { color: #64748b; }
+
 /* Override bg-white utilities that are used as faint backgrounds.
    NOTE: Tailwind emits `bg-white/5`, not `bg-white/05` — the old \/05 selector
    never matched anything. */
