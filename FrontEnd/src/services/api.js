@@ -53,11 +53,15 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const is401 = error.response?.status === 401;
+    // 403 + banned:true is the middleware's ban gate: the session is useless
+    // (every request will 403), so treat it like an expired session instead of
+    // leaving the user "logged in" with a completely broken UI.
+    const isBanned = error.response?.status === 403 && error.response?.data?.banned === true;
     const hasToken = !!useAuthStore.getState().token;
-    if (is401 && hasToken && !redirecting && window.location.pathname !== '/login') {
+    if ((is401 || isBanned) && hasToken && !redirecting && window.location.pathname !== '/login') {
       redirecting = true;                 // collapse concurrent 401s to a single redirect
       useAuthStore.getState().logout();   // clears the persisted token synchronously
-      window.location.replace('/login');  // replace() so the dead session isn't in history
+      window.location.replace(isBanned ? '/login?error=account_banned' : '/login');  // replace() so the dead session isn't in history
     }
     return Promise.reject(error);
   }

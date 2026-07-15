@@ -18,7 +18,10 @@ exports.requestConnection = async (req, res) => {
             return res.status(400).json({ message: "Cannot connect with yourself" });
         }
 
-        // Block if ANY connection already exists between these two users (any skill, any status)
+        // Block if a connection already exists between these two users — EXCEPT
+        // a declined one: a decline is "not now", not "never". The old blanket
+        // block made a single decline permanently un-connectable (and reported
+        // "already connected", which was simply false).
         const existing = await Connection.findOne({
             $or: [
                 { requester: req.user.id, receiver: receiverId },
@@ -26,12 +29,15 @@ exports.requestConnection = async (req, res) => {
             ]
         });
 
-        if (existing) {
+        if (existing && existing.status !== "declined") {
             const statusMsg = existing.status === 'pending'
                 ? 'A connection request is already pending with this user'
                 : 'You are already connected with this user';
             return res.status(400).json({ message: statusMsg });
         }
+        // Re-request after a decline: clear the stale row so the unique index
+        // doesn't reject the fresh request.
+        if (existing) await existing.deleteOne();
 
         const connection = new Connection({
             requester: req.user.id,

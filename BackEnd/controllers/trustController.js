@@ -267,6 +267,22 @@ exports.reportUser = async (req, res) => {
         await user.save();
         await recalculateTrustScore(userId);
 
+        // File the report in the moderation queue. Without this row the admin
+        // Moderation page had NOTHING to list — user reports only bumped a
+        // counter and silently vanished. Best-effort: the counter + fraud flag
+        // above are already saved, so a queue write failure shouldn't 500 the
+        // user's report.
+        try {
+            const Report = require("../models/Report");
+            await Report.create({
+                reporterId: req.user.id,
+                targetUserId: userId,
+                reason: (reason && String(reason).trim()) || "No reason given",
+            });
+        } catch (queueErr) {
+            console.error("[reportUser] moderation-queue write failed:", queueErr.message);
+        }
+
         res.status(200).json({ message: "User reported successfully" });
 
     } catch (err) {

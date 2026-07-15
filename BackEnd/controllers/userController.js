@@ -184,9 +184,14 @@ exports.updateAvatarUrl = async (req, res) => {
 
 
 // POST /god/unlock-all — God Mode: owner unlocks every cosmetic for themselves.
+// SERVER-SIDE role gate: the auth middleware only proves a valid login, and the
+// UI hiding the button is not security — without this check ANY user could call
+// the endpoint directly and unlock every paid cosmetic for free.
 exports.godUnlockAll = async (req, res) => {
     try {
         const uid = req.user._id || req.user.id;
+        const me = await User.findById(uid).select("role").lean();
+        if (!me || me.role !== "admin") return res.status(404).end(); // cloak like the admin portal
         const keys = require("../services/cosmeticsCatalog").getAllCatalog().map((c) => c.key);
         await User.updateOne({ _id: uid }, { $set: { "orbit.cosmetics.owned": keys } });
         return res.json({ ok: true, owned: keys.length });
