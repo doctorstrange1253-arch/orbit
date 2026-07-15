@@ -53,7 +53,10 @@ function issueSession(res, user) {
     res.cookie(SESSION_COOKIE, token, { ...baseCookie, maxAge: SESSION_TTL_MIN * 60 * 1000 });
     const csrf = randomToken();
     res.cookie(CSRF_COOKIE, csrf, { ...csrfCookieOpts, maxAge: SESSION_TTL_MIN * 60 * 1000 });
-    return csrf;
+    // token is ALSO returned in the response body: when the browser blocks the
+    // cross-site cookies (split deploy), the client authenticates with
+    // Authorization: Bearer instead — see adminAuth.requireAdmin.
+    return { csrf, token };
 }
 
 function clearAll(res) {
@@ -104,7 +107,11 @@ exports.login = async (req, res) => {
         );
         setPending(res, pending);
         await audit(req, { actorId: user._id, actorEmail: email, action: "auth.login.password_ok", success: true });
-        return res.json({ step: needsEnroll ? "enroll_totp" : "verify_totp" });
+        // pendingToken in the BODY: on the split deploy (Vercel→Render) browsers
+        // that block third-party cookies drop ssctl_pending, which stranded the
+        // login between password and TOTP. The client echoes it back via the
+        // x-ssctl-pending header. Short-lived + single-purpose.
+        return res.json({ step: needsEnroll ? "enroll_totp" : "verify_totp", pendingToken: pending });
     } catch (err) {
         console.error("[admin login]", err.message);
         return generic(res);
@@ -112,9 +119,11 @@ exports.login = async (req, res) => {
 };
 
 // Resolve and validate the pending cookie → returns the user or null.
+// Falls back to the x-ssctl-pending header (echoed from the login response
+// body) when third-party cookies are blocked on the split deploy.
 async function loadPending(req) {
     const cookies = require("../middleware/adminAuth").parseCookies(req);
-    const token = cookies[PENDING_COOKIE];
+    const token = cookies[PENDING_COOKIE] || req.headers["x-ssctl-pending"] || null;
     if (!token) return null;
     let decoded;
     try { decoded = verifyAdminToken(token); } catch { return null; }
@@ -191,12 +200,13 @@ exports.verifyTotp = async (req, res) => {
         await User.updateOne({ _id: user._id }, { $set: set });
         // Reload tokenVersion for the session token.
         const fresh = await User.findById(user._id).select("+admin");
-        const csrf = issueSession(res, fresh);
+        const { csrf, token: sessionToken } = issueSession(res, fresh);
         clearPending(res);
         await audit(req, { actorId: user._id, actorEmail: user.email, action: "auth.login.success", success: true });
         return res.json({
             ok: true,
             csrfToken: csrf,
+            sessionToken, // bearer fallback for cookie-blocked split deploys
             admin: { id: fresh._id, name: fresh.name, email: fresh.email, role: fresh.role },
             backupCodes, // non-null only on first enrolment; client must show once
         });

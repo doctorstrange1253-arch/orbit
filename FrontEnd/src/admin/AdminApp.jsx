@@ -5,7 +5,7 @@
  * admin theme.
  */
 import { useCallback, useEffect, useState } from 'react';
-import adminApi, { setAdminCsrf } from './adminApi';
+import adminApi, { setAdminCsrf, setAdminSession } from './adminApi';
 import AdminLogin from './AdminLogin';
 import AdminShell from './AdminShell';
 import './admin.css';
@@ -22,6 +22,7 @@ export default function AdminApp() {
       setState('authed');
     } catch {
       setAdminCsrf(null);
+      setAdminSession(null);          // stale bearer token → clear it too
       setState('login');
     }
   }, []);
@@ -38,7 +39,7 @@ export default function AdminApp() {
         <div className="ssctl-center"><div className="ssctl-spin" /></div>
       )}
       {state === 'login' && <AdminLogin onAuthed={probe} />}
-      {state === 'authed' && <AdminShell admin={admin} onLogout={() => { setAdmin(null); setState('login'); }} />}
+      {state === 'authed' && <AdminShell admin={admin} onLogout={() => { setAdminCsrf(null); setAdminSession(null); setAdmin(null); setState('login'); }} />}
     </div>
   );
 }

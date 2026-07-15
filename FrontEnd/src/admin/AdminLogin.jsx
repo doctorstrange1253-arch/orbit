@@ -5,7 +5,7 @@
  */
 import { useState } from 'react';
 import { ShieldCheck, KeyRound, Loader2, Copy, Check } from 'lucide-react';
-import adminApi, { setAdminCsrf } from './adminApi';
+import adminApi, { setAdminCsrf, setAdminSession, setAdminPending } from './adminApi';
 
 export default function AdminLogin({ onAuthed }) {
   const [step, setStep] = useState('password'); // password | enroll | verify | backup
@@ -23,6 +23,8 @@ export default function AdminLogin({ onAuthed }) {
     setErr(''); setBusy(true);
     try {
       const { data } = await adminApi.post('/auth/login', { email, password });
+      // Cookie-blocked fallback: carry the pending token via header until TOTP.
+      setAdminPending(data.pendingToken || null);
       if (data.step === 'enroll_totp') {
         const enroll = await adminApi.post('/auth/enroll-totp');
         setQr(enroll.data.qr);
@@ -40,7 +42,9 @@ export default function AdminLogin({ onAuthed }) {
     setErr(''); setBusy(true);
     try {
       const { data } = await adminApi.post('/auth/verify-totp', { code });
-      setAdminCsrf(data.csrfToken);   // remember token so subsequent mutations carry the CSRF header
+      setAdminCsrf(data.csrfToken);      // remember token so subsequent mutations carry the CSRF header
+      setAdminSession(data.sessionToken || null); // bearer auth survives blocked cross-site cookies
+      setAdminPending(null);             // pending step is over
       if (data.backupCodes && data.backupCodes.length) {
         setBackupCodes(data.backupCodes);
         setStep('backup');

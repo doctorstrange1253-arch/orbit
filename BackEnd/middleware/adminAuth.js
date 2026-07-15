@@ -3,10 +3,16 @@
  *
  * Security posture: ANY failure returns a plain 404 (never 401/403) so the admin
  * surface is indistinguishable from a non-existent route. The admin session is a
- * short-lived JWT in an HttpOnly/Secure/SameSite=Strict cookie (`ssctl_sid`),
- * fully separate from the user JWT. State-changing requests additionally require
- * a matching CSRF token (double-submit: cookie `ssctl_csrf` === header
- * `x-ssctl-csrf`).
+ * short-lived JWT, fully separate from the user JWT, accepted from EITHER:
+ *   (a) the HttpOnly/Secure cookie `ssctl_sid` — first-party / cookie-friendly
+ *       browsers. State-changing requests on this path additionally require the
+ *       double-submit CSRF token (cookie `ssctl_csrf` === header `x-ssctl-csrf`).
+ *   (b) an `Authorization: Bearer <token>` header — the SPLIT-DEPLOY fallback.
+ *       Vercel (frontend) → Render (backend) is a third-party cookie context,
+ *       which Safari blocks entirely and Chrome increasingly blocks; when the
+ *       browser drops the cookies, header auth keeps the portal working. A
+ *       bearer header is never attached automatically by the browser, so this
+ *       path is CSRF-immune by construction — no double-submit needed.
  */
 const User = require("../models/user");
 const { verifyAdminToken } = require("../utils/adminCrypto");
@@ -40,7 +46,17 @@ async function requireAdmin(req, res, next) {
         const cookies = parseCookies(req);
         req.adminCookies = cookies;
 
-        const token = cookies[SESSION_COOKIE];
+        // Session token: cookie first, Authorization: Bearer as the
+        // third-party-cookie-blocked fallback (split deploy).
+        let token = cookies[SESSION_COOKIE];
+        let viaHeader = false;
+        if (!token) {
+            const auth = req.headers.authorization || "";
+            if (auth.startsWith("Bearer ")) {
+                token = auth.slice(7).trim();
+                viaHeader = true;
+            }
+        }
         if (!token) return notFound(res);
 
         let decoded;
@@ -58,8 +74,10 @@ async function requireAdmin(req, res, next) {
         // tokenVersion mismatch → session was revoked ("log out everywhere").
         if ((user.admin?.tokenVersion || 0) !== (decoded.tv || 0)) return notFound(res);
 
-        // CSRF double-submit on state-changing verbs.
-        if (!["GET", "HEAD", "OPTIONS"].includes(req.method)) {
+        // CSRF double-submit on state-changing verbs — cookie-auth path only.
+        // Header auth carries no ambient authority (browsers never attach it on
+        // their own), so cross-site request forgery is impossible there.
+        if (!viaHeader && !["GET", "HEAD", "OPTIONS"].includes(req.method)) {
             const csrfCookie = cookies[CSRF_COOKIE];
             const csrfHeader = req.headers["x-ssctl-csrf"];
             if (!csrfCookie || !csrfHeader || csrfCookie !== csrfHeader) return notFound(res);

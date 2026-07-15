@@ -70,10 +70,11 @@ const corsOptions = {
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  // x-ssctl-csrf is the admin portal's double-submit CSRF header. Without it
-  // here, the CORS preflight rejects EVERY admin mutation (TOTP verify, grants,
-  // bans, seeds — all of it) on the split Vercel→Render deployment.
-  allowedHeaders: ["Content-Type", "Authorization", "X-Client-Platform", "x-ssctl-csrf"],
+  // x-ssctl-csrf is the admin portal's double-submit CSRF header and
+  // x-ssctl-pending carries the between-password-and-TOTP token when the
+  // browser blocks cross-site cookies. Without them here, the CORS preflight
+  // rejects EVERY admin mutation on the split Vercel→Render deployment.
+  allowedHeaders: ["Content-Type", "Authorization", "X-Client-Platform", "x-ssctl-csrf", "x-ssctl-pending"],
 };
 
 app.use(cors(corsOptions));

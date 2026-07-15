@@ -5,6 +5,15 @@
  * (withCredentials) instead of the user JWT, talks only to the unguessable
  * `/api/__ssctl` base, and attaches the double-submit CSRF header on mutations.
  * It never touches the user auth store.
+ *
+ * SPLIT-DEPLOY RESILIENCE: Vercel (frontend) → Render (backend) is a THIRD-
+ * PARTY cookie context. Safari blocks those cookies entirely; Chrome
+ * increasingly does. When cookies die, cookie-only auth bricks the whole
+ * portal ("every admin command is not working"). So the server also returns
+ * the session token in the login body, we keep it in sessionStorage, and every
+ * request carries `Authorization: Bearer` — the backend accepts either. The
+ * bearer path needs no CSRF (browsers never attach that header on their own),
+ * but we still send x-ssctl-csrf for the cookie path.
  */
 import axios from 'axios';
 
@@ -24,17 +33,14 @@ function readCookie(name) {
   return m ? decodeURIComponent(m[1]) : null;
 }
 
-// CSRF double-submit: the server sets `ssctl_csrf` on ITS domain and also returns
-// the same value in the login / `/auth/me` response bodies. On a SPLIT deployment
-// (frontend on Vercel, backend on Render) `document.cookie` can't read a cookie
-// scoped to the backend domain, so reading the cookie returns null and every
-// mutation would 404. We therefore remember the token the server told us and send
-// THAT as the header — the browser still attaches the matching cookie itself
-// (SameSite=None), so cookie === header holds. Cookie read is kept as a fallback
-// for same-origin/local dev. Persisted to sessionStorage so a reload before the
-// next `/auth/me` still has it.
+// ── Tokens the server hands us in response BODIES (cookie-independent) ──────
 let csrfToken = null;
-try { csrfToken = sessionStorage.getItem('ssctl_csrf') || null; } catch { /* no sessionStorage */ }
+let sessionToken = null;   // bearer fallback when cross-site cookies are blocked
+let pendingToken = null;   // between password and TOTP (login flow only)
+try {
+  csrfToken = sessionStorage.getItem('ssctl_csrf') || null;
+  sessionToken = sessionStorage.getItem('ssctl_bearer') || null;
+} catch { /* no sessionStorage */ }
 
 export function setAdminCsrf(token) {
   csrfToken = token || null;
@@ -44,8 +50,22 @@ export function setAdminCsrf(token) {
   } catch { /* no sessionStorage */ }
 }
 
-// Attach CSRF token (double-submit) on state-changing requests.
+export function setAdminSession(token) {
+  sessionToken = token || null;
+  try {
+    if (token) sessionStorage.setItem('ssctl_bearer', token);
+    else sessionStorage.removeItem('ssctl_bearer');
+  } catch { /* no sessionStorage */ }
+}
+
+export function setAdminPending(token) {
+  pendingToken = token || null;
+}
+
+// Attach bearer session + CSRF (double-submit) + pending-step tokens.
 adminApi.interceptors.request.use((config) => {
+  if (sessionToken) config.headers['Authorization'] = `Bearer ${sessionToken}`;
+  if (pendingToken) config.headers['x-ssctl-pending'] = pendingToken;
   const method = (config.method || 'get').toLowerCase();
   if (!['get', 'head', 'options'].includes(method)) {
     const csrf = csrfToken || readCookie('ssctl_csrf');
