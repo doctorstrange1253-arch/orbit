@@ -18,6 +18,7 @@ export default function AdminApp() {
     try {
       const { data } = await adminApi.get('/auth/me');
       setAdminCsrf(data.csrfToken);   // header source for mutations (cross-site cookie isn't JS-readable)
+      if (data.sessionToken) setAdminSession(data.sessionToken); // sliding session: keep the freshest token
       setAdmin(data.admin);
       setState('authed');
     } catch {
@@ -32,6 +33,14 @@ export default function AdminApp() {
   // positive here.
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { probe(); }, [probe]);
+
+  // Sliding session: while authed, re-probe every 10 min so the 30-min token
+  // keeps renewing during active use instead of silently expiring mid-session.
+  useEffect(() => {
+    if (state !== 'authed') return;
+    const t = setInterval(probe, 10 * 60 * 1000);
+    return () => clearInterval(t);
+  }, [state, probe]);
 
   return (
     <div className="ssctl">

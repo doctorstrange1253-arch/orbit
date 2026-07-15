@@ -219,14 +219,15 @@ exports.verifyTotp = async (req, res) => {
 // ── Session helpers ────────────────────────────────────────────────────────
 exports.me = async (req, res) => {
     const u = req.adminUser;
-    // Refresh CSRF token alongside identity.
-    const csrf = req.adminCookies?.[CSRF_COOKIE] || randomToken();
-    if (!req.adminCookies?.[CSRF_COOKIE]) {
-        res.cookie(CSRF_COOKIE, csrf, { ...csrfCookieOpts });
-    }
+    // SLIDING SESSION: re-issue a fresh 30-min session on every /auth/me probe.
+    // The old fixed-TTL token meant that exactly 30 minutes after login every
+    // single command started silently 404ing ("nothing works") until a re-login.
+    // Active admins now stay signed in; idle sessions still die after 30 min.
+    const { csrf, token: sessionToken } = issueSession(res, u);
     return res.json({
         admin: { id: u._id, name: u.name, email: u.email, role: u.role, portalRole: u.admin?.portalRole || "superadmin", lastAdminLoginAt: u.admin?.lastAdminLoginAt },
         csrfToken: csrf,
+        sessionToken, // bearer fallback for cookie-blocked split deploys
     });
 };
 

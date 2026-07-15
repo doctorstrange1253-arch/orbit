@@ -25,7 +25,10 @@ const ADMIN_BASE = `${USER_API}/__ssctl`;
 const adminApi = axios.create({
   baseURL: ADMIN_BASE,
   withCredentials: true,
-  timeout: 30000,
+  // Match services/api.js: a Render free-tier cold start takes ~30-60s. The old
+  // 30s timeout made the FIRST admin request after idle fail spuriously — which
+  // read as "the whole portal is down".
+  timeout: 45000,
 });
 
 function readCookie(name) {
