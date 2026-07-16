@@ -12,6 +12,9 @@ export default function AdminLogin({ onAuthed }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
+  // Lost-authenticator path: the verify step can submit a single-use backup
+  // code (minted at enrolment) instead of a TOTP code.
+  const [useBackup, setUseBackup] = useState(false);
   const [qr, setQr] = useState(null);
   const [backupCodes, setBackupCodes] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -41,10 +44,13 @@ export default function AdminLogin({ onAuthed }) {
     e.preventDefault();
     setErr(''); setBusy(true);
     try {
-      const { data } = await adminApi.post('/auth/verify-totp', { code });
+      const { data } = await adminApi.post('/auth/verify-totp', useBackup ? { backupCode: code } : { code });
       setAdminCsrf(data.csrfToken);      // remember token so subsequent mutations carry the CSRF header
       setAdminSession(data.sessionToken || null); // bearer auth survives blocked cross-site cookies
       setAdminPending(null);             // pending step is over
+      if (data.backupCodesRemaining !== undefined && data.backupCodesRemaining <= 2) {
+        window.alert(`Only ${data.backupCodesRemaining} backup code${data.backupCodesRemaining === 1 ? '' : 's'} left — re-enrol TOTP soon.`);
+      }
       if (data.backupCodes && data.backupCodes.length) {
         setBackupCodes(data.backupCodes);
         setStep('backup');
@@ -104,13 +110,17 @@ export default function AdminLogin({ onAuthed }) {
 
         {step === 'verify' && (
           <form onSubmit={submitCode}>
-            <label className="ssctl-label">Authenticator code</label>
-            <input className="ssctl-input" inputMode="numeric" autoComplete="one-time-code" value={code}
-              onChange={(e) => setCode(e.target.value)} placeholder="123456" required autoFocus
+            <label className="ssctl-label">{useBackup ? 'Backup code' : 'Authenticator code'}</label>
+            <input className="ssctl-input" inputMode={useBackup ? 'text' : 'numeric'} autoComplete="one-time-code" value={code}
+              onChange={(e) => setCode(e.target.value)} placeholder={useBackup ? 'XXXXXXXXXX' : '123456'} required autoFocus
               style={{ marginBottom: 16, letterSpacing: '0.3em', textAlign: 'center' }} />
             {err && <p className="ssctl-err" style={{ marginTop: 0 }}>{err}</p>}
             <button className="ssctl-btn" style={{ width: '100%' }} disabled={busy}>
               {busy ? <Loader2 size={16} /> : <ShieldCheck size={16} />} Verify
+            </button>
+            <button type="button" className="ssctl-btn ssctl-btn-ghost" style={{ width: '100%', marginTop: 10 }}
+              onClick={() => { setUseBackup((v) => !v); setCode(''); setErr(''); }}>
+              {useBackup ? 'Use authenticator code instead' : 'Lost your authenticator? Use a backup code'}
             </button>
           </form>
         )}

@@ -160,17 +160,33 @@ function generateBackupCodes(n = 8) {
     return codes;
 }
 
-// ── Step 2b: verify TOTP → issue full session ──────────────────────────────
+// ── Step 2b: verify TOTP (or a single-use backup code) → issue full session ─
 exports.verifyTotp = async (req, res) => {
     const p = await loadPending(req);
     if (!p) return res.status(404).end();
     const { user } = p;
     const code = (req.body?.code || "").replace(/\s/g, "");
+    // Backup-code path: for a lost authenticator. Only meaningful once TOTP is
+    // enrolled (that's when the codes were minted). Each code is single-use:
+    // its hash is removed the moment it verifies.
+    const backupCode = (req.body?.backupCode || "").replace(/\s/g, "").toUpperCase();
+    let usedBackupIndex = -1;
     try {
-        const secretEnc = user.admin.totpSecretEnc;
-        if (!secretEnc) return res.status(400).json({ message: "No TOTP secret." });
-        const secret = decrypt(secretEnc);
-        const valid = speakeasy.totp.verify({ secret, encoding: "base32", token: code, window: 1 });
+        let valid = false;
+        if (backupCode) {
+            const hashes = (user.admin.totpEnabled && Array.isArray(user.admin.backupCodeHashes))
+                ? user.admin.backupCodeHashes : [];
+            for (let i = 0; i < hashes.length; i++) {
+                // eslint-disable-next-line no-await-in-loop
+                if (await bcrypt.compare(backupCode, hashes[i])) { usedBackupIndex = i; break; }
+            }
+            valid = usedBackupIndex !== -1;
+        } else {
+            const secretEnc = user.admin.totpSecretEnc;
+            if (!secretEnc) return res.status(400).json({ message: "No TOTP secret." });
+            const secret = decrypt(secretEnc);
+            valid = speakeasy.totp.verify({ secret, encoding: "base32", token: code, window: 1 });
+        }
 
         if (!valid) {
             // TOTP failures also count toward lockout.
@@ -181,7 +197,7 @@ exports.verifyTotp = async (req, res) => {
                 update["admin.lockoutUntil"] = new Date(Date.now() + backoffMin * 60 * 1000);
             }
             await User.updateOne({ _id: user._id }, { $set: update });
-            await audit(req, { actorId: user._id, actorEmail: user.email, action: "auth.totp.fail", success: false });
+            await audit(req, { actorId: user._id, actorEmail: user.email, action: backupCode ? "auth.backup.fail" : "auth.totp.fail", success: false });
             return res.status(401).json({ message: "Invalid code." });
         }
 
@@ -197,6 +213,11 @@ exports.verifyTotp = async (req, res) => {
             backupCodes = generateBackupCodes();
             set["admin.backupCodeHashes"] = await Promise.all(backupCodes.map((c) => bcrypt.hash(c, 10)));
         }
+        // Burn the backup code that was just used — strictly single-use.
+        if (usedBackupIndex !== -1) {
+            set["admin.backupCodeHashes"] = user.admin.backupCodeHashes.filter((_, i) => i !== usedBackupIndex);
+            await audit(req, { actorId: user._id, actorEmail: user.email, action: "auth.backup.used", success: true, reason: `${set["admin.backupCodeHashes"].length} backup codes remaining` });
+        }
         await User.updateOne({ _id: user._id }, { $set: set });
         // Reload tokenVersion for the session token.
         const fresh = await User.findById(user._id).select("+admin");
@@ -209,6 +230,9 @@ exports.verifyTotp = async (req, res) => {
             sessionToken, // bearer fallback for cookie-blocked split deploys
             admin: { id: fresh._id, name: fresh.name, email: fresh.email, role: fresh.role },
             backupCodes, // non-null only on first enrolment; client must show once
+            // present only when a backup code was burned — lets the client warn
+            // "N backup codes left" so the admin re-enrolls before running dry
+            backupCodesRemaining: usedBackupIndex !== -1 ? (fresh.admin?.backupCodeHashes || []).length : undefined,
         });
     } catch (err) {
         console.error("[admin verifyTotp]", err.message);

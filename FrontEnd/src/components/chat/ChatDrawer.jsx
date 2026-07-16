@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, MessageCircle, Search, ArrowLeft, Check, CheckCheck, Maximize2, Minimize2, Bell, BellOff, MoreVertical, Trash2, Ban } from 'lucide-react';
+import { X, Send, MessageCircle, Search, ArrowLeft, Check, CheckCheck, Maximize2, Minimize2, Bell, BellOff, MoreVertical, Trash2, Ban, Flag } from 'lucide-react';
 import { formatDistanceToNow, format, isToday, isYesterday, isSameDay } from 'date-fns';
 import api from '../../services/api';
 import { useAuthStore } from '../../store/authStore';
@@ -219,6 +219,10 @@ const ChatWindow = ({ otherUser, onBack, onlineUsers, isExpanded }) => {
   const [confirmMsg, setConfirmMsg] = useState(null);      // { id, scope } pending message delete
   const [confirmClear, setConfirmClear] = useState(false); // clear-chat confirm
   const [isActioning, setIsActioning] = useState(false);
+  // Report-user modal — feeds the admin Moderation queue via POST /trust/report
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [isReporting, setIsReporting] = useState(false);
   const isNearBottomRef = useRef(true); // Track if user is scrolled near bottom
   const prevMessageCountRef = useRef(0); // Track previous message count for new-message detection
 
@@ -559,6 +563,22 @@ const ChatWindow = ({ otherUser, onBack, onlineUsers, isExpanded }) => {
     }
   };
 
+  const submitReport = async () => {
+    const reason = reportReason.trim();
+    if (!reason) { toast.error('Please describe what happened'); return; }
+    setIsReporting(true);
+    try {
+      await api.post('/trust/report', { userId: otherUser._id, reason });
+      toast.success('Report submitted — our moderators will review it');
+      setReportOpen(false);
+      setReportReason('');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Could not submit the report');
+    } finally {
+      setIsReporting(false);
+    }
+  };
+
   const clearChat = async () => {
     const prevMsgs   = queryClient.getQueryData(['messages', otherUser._id]);
     const prevConvos = queryClient.getQueryData(['conversations']);
@@ -620,6 +640,13 @@ const ChatWindow = ({ otherUser, onBack, onlineUsers, isExpanded }) => {
               className="absolute right-0 top-full mt-1 z-30 min-w-[160px] rounded-xl overflow-hidden shadow-2xl"
               style={{ background: 'var(--bg-app)', border: '1px solid var(--border-subtle)' }}
             >
+              <button
+                role="menuitem"
+                onClick={() => { setHeaderMenuOpen(false); setReportOpen(true); }}
+                className="w-full text-left px-3 py-2.5 text-xs text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors flex items-center gap-2"
+              >
+                <Flag size={13} /> Report user
+              </button>
               <button
                 role="menuitem"
                 onClick={() => { setHeaderMenuOpen(false); setConfirmClear(true); }}
@@ -860,6 +887,58 @@ const ChatWindow = ({ otherUser, onBack, onlineUsers, isExpanded }) => {
         confirmLabel="Clear"
         isLoading={isActioning}
       />
+
+      {/* Report user — reason goes to the admin Moderation queue */}
+      <AnimatePresence>
+        {reportOpen && (
+          <motion.div
+            className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => { if (!isReporting) setReportOpen(false); }}
+          >
+            <motion.div
+              className="w-full max-w-sm rounded-2xl p-5"
+              style={{ background: 'var(--bg-app)', border: '1px solid var(--border-subtle)' }}
+              initial={{ opacity: 0, y: 12, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }}
+              onClick={(e) => e.stopPropagation()}
+              role="dialog" aria-modal="true" aria-label={`Report ${otherUser.name}`}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Flag size={16} className="text-danger" />
+                <h3 className="font-semibold text-text-primary text-sm">Report {otherUser.name}</h3>
+              </div>
+              <p className="text-xs text-text-muted mb-3">
+                Tell us what happened. Our moderators review every report; the other person is not notified.
+              </p>
+              <textarea
+                value={reportReason}
+                onChange={(e) => setReportReason(e.target.value)}
+                rows={4}
+                maxLength={500}
+                placeholder="e.g. harassment, spam, scam attempt, inappropriate messages…"
+                className="input-glass w-full px-3 py-2.5 text-sm text-text-primary resize-none placeholder:text-text-muted"
+                autoFocus
+              />
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  onClick={() => setReportOpen(false)}
+                  disabled={isReporting}
+                  className="px-4 py-2 rounded-xl text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={submitReport}
+                  disabled={isReporting || !reportReason.trim()}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-danger/15 text-danger border border-danger/30 hover:bg-danger/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isReporting ? 'Submitting…' : 'Submit report'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
