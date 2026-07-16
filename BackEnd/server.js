@@ -208,7 +208,19 @@ io.on("connection", (socket) => {
     // Handle call ended event
     socket.on("call-ended", async (data) => {
         const { roomId, userId, otherUserId, callDuration } = data;
-        
+
+        // Authoritative whiteboard teardown — the client also DELETEs, but a
+        // closed tab / killed app / dropped network skips that path, and the
+        // board would otherwise rehydrate into the pair's next call on the
+        // same deterministic roomName. Server-side, unconditional.
+        if (roomId) {
+            try {
+                await require("./models/whiteboard").deleteOne({ roomName: roomId });
+            } catch (err) {
+                console.error("whiteboard teardown (call-ended):", err.message);
+            }
+        }
+
         if (otherUserId && callDuration) {
             try {
                 // Fetch user details
@@ -244,7 +256,29 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", async () => {
         // console.log("Socket disconnected:", socket.id);
-        
+
+        // Whiteboard orphan sweep — covers the UNGRACEFUL exits (tab closed,
+        // app killed, network dropped) where neither the client DELETE nor the
+        // call-ended event ever fires. After a grace period (so a quick page
+        // reload mid-call doesn't wipe an active board), if the room is empty
+        // on EVERY instance (fetchSockets spans the Redis adapter), the call is
+        // truly over → the board dies with it.
+        if (socket.wbRooms && socket.wbRooms.size) {
+            const rooms = [...socket.wbRooms];
+            setTimeout(async () => {
+                for (const roomId of rooms) {
+                    try {
+                        const peers = await io.in(roomId).fetchSockets();
+                        if (peers.length === 0) {
+                            await require("./models/whiteboard").deleteOne({ roomName: roomId });
+                        }
+                    } catch (err) {
+                        console.error("whiteboard sweep (disconnect):", err.message);
+                    }
+                }
+            }, 30000);
+        }
+
         // Remove user from online list
         if (socket.userId) {
             const currentCount = onlineUsers.get(socket.userId) || 0;
@@ -376,8 +410,23 @@ io.on("connection", (socket) => {
     });
 
     // Mirror the whiteboard open/close so the peer's board pops open/closed too.
-    socket.on("whiteboard-toggle", ({ roomId, open }) => {
-        if (roomId) socket.to(roomId).emit("whiteboard-toggle", { open });
+    // Membership-gated like every other whiteboard relay — without this, any
+    // socket that guessed a room id could pop strangers' boards open/closed.
+    // Verify-and-cache: the toggle often fires BEFORE whiteboard-join (the board
+    // component lazy-mounts), so fall back to a one-time membership check.
+    socket.on("whiteboard-toggle", async ({ roomId, open }) => {
+        if (!roomId) return;
+        if (!wbAllowed(roomId)) {
+            if (!socket.userId) return;
+            try {
+                const { verifyRoomMember } = require("./utils/roomMembership");
+                const { ok } = await verifyRoomMember(socket.userId, roomId);
+                if (!ok) return;
+                socket.wbRooms = socket.wbRooms || new Set();
+                socket.wbRooms.add(roomId);
+            } catch { return; }
+        }
+        socket.to(roomId).emit("whiteboard-toggle", { open });
     });
     
     socket.on("call-user", async ({ roomId, targetUserId, callerName, callerId }) => {

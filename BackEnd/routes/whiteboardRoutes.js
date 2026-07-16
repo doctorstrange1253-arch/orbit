@@ -42,7 +42,10 @@ router.put("/:roomName", auth, async (req, res) => {
 
         await Whiteboard.findOneAndUpdate(
             { roomName },
-            { roomName, snapshot, participants, lastEditedBy: userId },
+            // expiresAt refresh keeps an ACTIVE board alive (autosave ticks
+            // ~12s); orphans stop refreshing and the TTL reaps them.
+            { roomName, snapshot, participants, lastEditedBy: userId,
+              expiresAt: new Date(Date.now() + Whiteboard.WB_TTL_MS) },
             { upsert: true, new: true, setDefaultsOnInsert: true }
         );
         res.json({ message: "saved" });
