@@ -33,6 +33,15 @@ const useSocket = () => {
       queryClient.invalidateQueries({ queryKey: ['skills', 'all'] });
     });
 
+    // Someone equipped a new look → refresh the lists that embed their
+    // cosmetics so their cards update live. Skip our own equips: the shop
+    // mutation already painted them optimistically and invalidated locally.
+    socket.on('cosmetics-changed', (data) => {
+      if (data?.userId && data.userId === user._id) return;
+      queryClient.invalidateQueries({ queryKey: ['skills'] });
+      queryClient.invalidateQueries({ queryKey: ['leaderboard'] });
+    });
+
     // Listen for connection accepted
     socket.on('connection-accepted', (data) => {
       addToast(`${data.receiverName} accepted your connection request!`, 'success');

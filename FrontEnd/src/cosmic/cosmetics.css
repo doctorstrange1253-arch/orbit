@@ -252,6 +252,9 @@
      blank the text clip on Chromium/WebView (solid-box bug). */
   filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.45)) drop-shadow(0 0 6px rgba(168,85,247,.5));
   animation: cg-multiversal-pos 6s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @keyframes cg-multiversal-pos { to { background-position: 400% 0; } }
 
@@ -396,7 +399,11 @@
 @keyframes cg-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
 /* Scan Bar — a bright bar scans down the glyphs */
-.cg-scan { color: #7dd3fc; background: linear-gradient(180deg, #38bdf8 40%, #ffffff 50%, #38bdf8 60%); background-size: 100% 260%; animation: cg-scan 2.6s linear infinite; }
+.cg-scan { color: #7dd3fc; background: linear-gradient(180deg, #38bdf8 40%, #ffffff 50%, #38bdf8 60%); background-size: 100% 260%; animation: cg-scan 2.6s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 @keyframes cg-scan { to { background-position: 0 -260%; } }
 
 /* Embossed — a rotating light source presses the letters */
@@ -410,7 +417,11 @@
 }
 
 /* Marquee Lights — running theatre bulbs */
-.cg-marquee { color: #fde68a; background: repeating-linear-gradient(90deg, #f59e0b 0 6px, #fff7ed 6px 10px, #f59e0b 10px 16px); background-size: 200% 100%; animation: cg-marquee 1.4s linear infinite; }
+.cg-marquee { color: #fde68a; background: repeating-linear-gradient(90deg, #f59e0b 0 6px, #fff7ed 6px 10px, #f59e0b 10px 16px); background-size: 200% 100%; animation: cg-marquee 1.4s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 @keyframes cg-marquee { to { background-position: 32px 0; } }
 
 /* Heartbeat — a double-thump pulse */
@@ -500,7 +511,11 @@
 @keyframes cg-spectrum { to { filter: hue-rotate(360deg); } }
 
 /* Nebula Cloud — soft drifting multicolour cloud */
-.cg-nebula { color: #c084fc; background: linear-gradient(70deg, #7c3aed, #db2777, #2563eb, #7c3aed); background-size: 280% 280%; animation: cg-nebula 9s ease-in-out infinite; }
+.cg-nebula { color: #c084fc; background: linear-gradient(70deg, #7c3aed, #db2777, #2563eb, #7c3aed); background-size: 280% 280%; animation: cg-nebula 9s ease-in-out infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 @keyframes cg-nebula { 0%, 100% { background-position: 0 0; } 50% { background-position: 100% 100%; } }
 
 /* Quantum Flux — micro-jitter of an uncertain particle */
@@ -517,11 +532,26 @@
    Clip-safety (Issue 4): the hue-rotate animation was removed — animating
    filter on a text-clipped element blanks the clip on Chromium/WebView. The
    5-stop spectrum sweep + scale carry the symphony; the bloom is static. */
-.cg-cosmos { color: #f472b6; background: linear-gradient(90deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 320% 100%; filter: drop-shadow(0 0 8px rgba(244,114,182,.5)); animation: cg-cosmos-flow 5s linear infinite, cg-cosmos-scale 4s ease-in-out infinite; }
+.cg-cosmos { color: #f472b6; background: linear-gradient(90deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 320% 100%; filter: drop-shadow(0 0 8px rgba(244,114,182,.5)); animation: cg-cosmos-flow 5s linear infinite, cg-cosmos-scale 4s ease-in-out infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 @keyframes cg-cosmos-flow { to { background-position: 320% 0; } }
 @keyframes cg-cosmos-scale { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 
 /* ═══════════════─ PROFILE BACKGROUNDS (NEBULAE) ─═══════════════ */
+/* A skill card wearing an equipped nebula is a RENDER surface: the art is
+   dark by design, so re-pin the semantic text tokens to their dark-theme
+   values — otherwise light mode paints near-black text on the nebula.
+   (Overrides --color-* directly: the @theme aliases resolve at :root, so
+   overriding the underlying --text-* here would not propagate.) */
+.skill-card-nebula {
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.75);
+  --color-text-muted: rgba(255, 255, 255, 0.6);
+}
+
 .cbg { position: relative; overflow: hidden; isolation: isolate; }
 .cbg::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(4,3,13,.28) 0%, rgba(4,3,13,.42) 55%, rgba(4,3,13,.60) 100%); }
 .cbg > * { position: relative; z-index: 2; }

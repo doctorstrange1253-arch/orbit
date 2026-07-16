@@ -9,6 +9,8 @@ import Avatar from '../common/Avatar';
 import CosmicBadge from '../../cosmic/CosmicBadge';
 import TierProgress from '../../cosmic/TierProgress';
 import GlowName from '../../cosmic/GlowName';
+import Nameplate from '../../cosmic/Nameplate';
+import { equippedFromUser } from '../../cosmic/cosmetics';
 import MasteryBar from '../../cosmic/MasteryBar';
 import { useAuthStore } from '../../store/authStore';
 import { useUIStore } from '../../store/uiStore';
@@ -29,6 +31,15 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, i
   const owner = typeof skill.userId === 'object' ? skill.userId : user;
   const level = skill.level || 'intermediate';
   const ls = LEVEL_STYLES[level] || LEVEL_STYLES.intermediate;
+
+  // Equipped store cosmetics — the card wears the owner's full look (nebula
+  // background, avatar frame, nameplate, profile effect, name glow), exactly
+  // like the profile card, so looks are visible to everyone in Browse/Matches.
+  // OWN cards read from the live authStore user (not the fetched list row):
+  // equipping in the store updates the authStore optimistically, so the change
+  // paints here the same instant with zero refetch latency.
+  const cosmeticsSource = isOwner ? user : owner;
+  const { bgClass, decoClass, effectClass, plateKey } = equippedFromUser(cosmeticsSource);
 
   const deleteMutation = useMutation({
     mutationFn: () => api.delete(`/skills/${skill._id}`),
@@ -86,7 +97,7 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, i
 
   return (
     <motion.div
-      className="skill-card p-5 flex flex-col gap-4 cursor-pointer hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,198,255,0.12)] transition-all duration-300"
+      className={`skill-card p-5 flex flex-col gap-4 cursor-pointer hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,198,255,0.12)] transition-all duration-300 ${bgClass} ${bgClass ? 'cosmic-surface skill-card-nebula' : ''}`}
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.02 }}
@@ -94,12 +105,14 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, i
       layout
       onClick={handleCardClick}
     >
+      {/* owner's equipped profile effect — particles across the whole card */}
+      {effectClass && <span className={effectClass} aria-hidden="true" />}
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <Avatar name={owner?.name} url={owner?.avatar} size="md" userId={owner?._id} />
+          <Avatar name={owner?.name} url={owner?.avatar} size="md" userId={owner?._id} deco={decoClass} />
           <div className="min-w-0">
-            <p className="font-semibold text-text-primary text-sm truncate"><GlowName user={owner}>{owner?.name || 'Unknown'}</GlowName></p>
+            <p className="font-semibold text-text-primary text-sm truncate"><Nameplate plateKey={plateKey}><GlowName user={cosmeticsSource}>{owner?.name || 'Unknown'}</GlowName></Nameplate></p>
             <div className="flex items-center gap-2 mt-0.5">
               {owner?.location && (
                 <span className="text-xs text-text-muted truncate max-w-[100px]">{owner.location}</span>

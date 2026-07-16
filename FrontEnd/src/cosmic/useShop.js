@@ -11,8 +11,21 @@
  */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
+import { useAuthStore } from '../store/authStore';
 
 const SHOP_KEY = ['orbit', 'shop'];
+
+// shop slot type → user.orbit.cosmetics field (the shape GlowName /
+// equippedFromUser read). Own-name surfaces (My Skills, header, profile)
+// render from the authStore user, so equipping must update it in place —
+// otherwise the new look only appears after a full re-login.
+const SLOT_FIELD = {
+  name_glow: 'nameGlow',
+  background: 'background',
+  avatar_deco: 'avatarDeco',
+  profile_effect: 'profileEffect',
+  nameplate: 'nameplate',
+};
 
 export function useShop({ enabled = true } = {}) {
   return useQuery({
@@ -76,16 +89,32 @@ export function useEquipCosmetic() {
           catalog: (old.catalog || []).map((c) => ({ ...c, equipped: wearing.has(c.key) })),
         };
       });
-      return { prev };
+      // Paint the viewer's OWN surfaces the same instant: My Skills cards, the
+      // header and the profile all render cosmetics from the authStore user.
+      const { user, setUser } = useAuthStore.getState();
+      const prevUser = user;
+      const field = SLOT_FIELD[type];
+      if (user && field) {
+        setUser({
+          ...user,
+          orbit: {
+            ...(user.orbit || {}),
+            cosmetics: { ...(user.orbit?.cosmetics || {}), [field]: key },
+          },
+        });
+      }
+      return { prev, prevUser };
     },
     onError: (_e, _v, ctx) => {
       if (ctx?.prev) qc.setQueryData(SHOP_KEY, ctx.prev);
+      if (ctx?.prevUser) useAuthStore.getState().setUser(ctx.prevUser);
     },
     onSuccess: (data) => {
       qc.setQueryData(SHOP_KEY, (prev) => ({ ...prev, ...data }));
       // The equipped look is rendered by GlowName everywhere the user appears,
       // so refresh every surface that shows it — not just the profile page.
-      ['profile', 'cosmic', 'leaderboard', 'connections'].forEach((k) =>
+      // 'skills' covers Browse/My Skills/Matches lists that embed the owner.
+      ['profile', 'cosmic', 'leaderboard', 'connections', 'skills'].forEach((k) =>
         qc.invalidateQueries({ queryKey: [k] }));
       qc.invalidateQueries({ queryKey: ['orbit', 'me'] });
     },

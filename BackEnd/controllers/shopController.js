@@ -122,6 +122,12 @@ exports.equip = async (req, res) => {
             } }
         );
 
+        // Broadcast so everyone ELSE's open Browse/Matches refresh the wearer's
+        // new look live (same pattern as "new-skill"); the wearer's own client
+        // already painted optimistically.
+        const io = req.app.get("io");
+        if (io) io.emit("cosmetics-changed", { userId: String(req.user.id) });
+
         const fresh = await User.findById(req.user.id).select("orbit.cosmetics orbit.stardust").lean();
         return res.status(200).json(shapeShop(fresh.orbit));
     } catch (err) {
