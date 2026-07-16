@@ -175,7 +175,7 @@ exports.getObservatory = async (req, res) => {
     try {
         const cityParam = (req.params.city || "").trim();
         const me = await User.findById(req.user.id)
-            .select("name location city region country coordinates geo cosmic orbit.cosmetics").lean();
+            .select("name avatar location city region country coordinates geo cosmic orbit.cosmetics").lean();
         if (!me) return res.status(404).json({ message: "User not found" });
 
         // §8.5 — unify the Observatory candidate set with the leaderboard/Browse
@@ -191,10 +191,23 @@ exports.getObservatory = async (req, res) => {
             const cp = norm(cityParam);
             pool = candidates.filter((u) => norm(u.city) === cp || norm(u.location) === cp);
             label = cityParam;
+            // The viewer belongs in a foreign city's sky only if they match it.
+            if ((norm(me.city) === cp || norm(me.location) === cp)
+                && !pool.some((u) => String(u._id) === String(me._id))) {
+                pool = [...pool, me];
+            }
         } else {
             const filtered = scopeFilter(candidates, { scope: "city", me, lat, lng });
             pool = filtered.pool;
             label = filtered.label;
+            // Same rule as buildLeaderboard (v3 §2): the viewer is ALWAYS ranked
+            // in their own sky. mentorCandidates excludes them by id, so without
+            // this a viewer who is #1 on the city leaderboard was INVISIBLE here
+            // — someone else wore the North Star, `you` was always null, and the
+            // "Your standing" chip never rendered.
+            if (!pool.some((u) => String(u._id) === String(me._id))) {
+                pool = [...pool, me];
+            }
         }
 
         const ids = pool.map((u) => u._id);

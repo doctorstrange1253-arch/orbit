@@ -92,9 +92,9 @@ function heroMeter(you) {
 function Podium({ entries, meId, onOpen }) {
   const [first, second, third] = entries;
   const steps = [
-    { e: second, rank: 2, h: 64 },
-    { e: first,  rank: 1, h: 84 },
-    { e: third,  rank: 3, h: 52 },
+    { e: second, rank: 2, h: 96 },
+    { e: first,  rank: 1, h: 124 },
+    { e: third,  rank: 3, h: 80 },
   ];
   return (
     <div className="grid grid-cols-3 items-end gap-2 mb-4" role="list" aria-label="Top three mentors">
@@ -131,8 +131,12 @@ function Podium({ entries, meId, onOpen }) {
               className="w-full rounded-t-xl flex items-start justify-center pt-1.5"
               style={{
                 height: h,
-                background: `linear-gradient(180deg, ${tint}${isMe ? '44' : '2e'}, transparent)`,
-                border: '1px solid var(--border-subtle)',
+                // `solid` (medal tint blended toward --text-primary) instead of the
+                // raw pale tint: deep readable metals in LIGHT mode — the 18%-alpha
+                // pastel fill was nearly invisible on white — and a touch brighter
+                // in dark. Fades down the pedestal, never to fully transparent.
+                background: `linear-gradient(180deg, color-mix(in srgb, ${solid} ${isMe ? 52 : 40}%, transparent), color-mix(in srgb, ${solid} 12%, transparent))`,
+                border: `1px solid color-mix(in srgb, ${solid} 45%, var(--border-subtle))`,
                 borderBottom: 'none',
               }}
             >
