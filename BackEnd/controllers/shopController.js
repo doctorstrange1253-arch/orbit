@@ -12,18 +12,28 @@ const shop = require("../services/cosmeticsCatalog");
 function shapeShop(orbit) {
     const cosmetics = shop.normalizeCosmetics(orbit && orbit.cosmetics);
     const stardust = (orbit && orbit.stardust) || 0;
+    // Weekly Deal: rotates every Monday 00:00 UTC (pure function of the week —
+    // see cosmeticsCatalog.weeklyDeal). `price` is what buy() will actually
+    // charge; `cost` stays the list price so the client can show the slash.
+    const deal = shop.weeklyDeal();
     return {
         // Part 0: `photons` canonical, `stardust` kept for the compat window.
         photons: stardust,
         stardust,
         owned: cosmetics.owned,
         equipped: { name_glow: cosmetics.nameGlow, background: cosmetics.background, avatar_deco: cosmetics.avatarDeco, profile_effect: cosmetics.profileEffect, nameplate: cosmetics.nameplate },
-        catalog: shop.getLiveCatalog().map((c) => ({
-            ...c,
-            owned: cosmetics.owned.includes(c.key),
-            equipped: cosmetics.nameGlow === c.key || cosmetics.background === c.key || cosmetics.avatarDeco === c.key || cosmetics.profileEffect === c.key || cosmetics.nameplate === c.key,
-            affordable: stardust >= c.cost,
-        })),
+        deal,
+        catalog: shop.getLiveCatalog().map((c) => {
+            const price = shop.priceOf(c.key);
+            return {
+                ...c,
+                price,
+                dealPct: deal && deal.key === c.key ? deal.pct : 0,
+                owned: cosmetics.owned.includes(c.key),
+                equipped: cosmetics.nameGlow === c.key || cosmetics.background === c.key || cosmetics.avatarDeco === c.key || cosmetics.profileEffect === c.key || cosmetics.nameplate === c.key,
+                affordable: stardust >= price,
+            };
+        }),
     };
 }
 
@@ -71,14 +81,16 @@ exports.buy = async (req, res) => {
         // read-then-write race where two concurrent buys both passed the check
         // above against the same starting balance and double-spent (or the $set
         // on the whole `owned` array clobbered a parallel purchase).
+        // Charge result.price (today's price: admin discount + weekly deal), not
+        // the raw list cost — the same figure the shop displayed.
         const upd = await User.updateOne(
             {
                 _id: req.user.id,
-                "orbit.stardust": { $gte: result.item.cost },
+                "orbit.stardust": { $gte: result.price },
                 "orbit.cosmetics.owned": { $ne: key },
             },
             {
-                $inc: { "orbit.stardust": -result.item.cost },
+                $inc: { "orbit.stardust": -result.price },
                 $addToSet: { "orbit.cosmetics.owned": key },
             }
         );
@@ -87,9 +99,9 @@ exports.buy = async (req, res) => {
         }
 
         const fresh = await User.findById(req.user.id).select("orbit.cosmetics orbit.stardust").lean();
-        require("../services/orbitAnalytics").track("cosmetic.purchase", { userId: String(req.user.id), key, spent: result.item.cost });
-        require("../services/photonLedger").record(req.user.id, -result.item.cost, "cosmetic"); // C6 sink (once)
-        return res.status(200).json({ bought: key, spent: result.item.cost, spentPhotons: result.item.cost, ...shapeShop(fresh.orbit) });
+        require("../services/orbitAnalytics").track("cosmetic.purchase", { userId: String(req.user.id), key, spent: result.price });
+        require("../services/photonLedger").record(req.user.id, -result.price, "cosmetic"); // C6 sink (once)
+        return res.status(200).json({ bought: key, spent: result.price, spentPhotons: result.price, ...shapeShop(fresh.orbit) });
     } catch (err) {
         console.error("buy (shop) error:", err);
         res.status(500).json({ message: "Server error" });

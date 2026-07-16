@@ -48,7 +48,8 @@ export function useBuyCosmetic() {
         if (!old) return old;
         const item = (old.catalog || []).find((c) => c.key === key);
         if (!item || item.owned) return old;
-        const balance = Math.max(0, (old.photons ?? old.stardust ?? 0) - item.cost);
+        // `price` = today's charge (weekly deal / admin discount); cost is list.
+        const balance = Math.max(0, (old.photons ?? old.stardust ?? 0) - (item.price ?? item.cost));
         return {
           ...old,
           photons: balance,
@@ -57,7 +58,7 @@ export function useBuyCosmetic() {
           catalog: (old.catalog || []).map((c) =>
             c.key === key
               ? { ...c, owned: true, affordable: true }
-              : { ...c, affordable: balance >= c.cost }),
+              : { ...c, affordable: balance >= (c.price ?? c.cost) }),
         };
       });
       return { prev };

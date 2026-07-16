@@ -144,6 +144,12 @@ function StoreCard({ item, onBuy, onEquip, busy }) {
 
       <div className="flex items-start justify-between gap-2">
         <RarityBadge rkey={item.rarity} />
+        {/* This week's rotating deal — genuinely discounted at purchase time */}
+        {item.dealPct > 0 && !item.owned && (
+          <span className="inline-flex items-center rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-black text-rose-300 ring-1 ring-rose-400/40">
+            −{item.dealPct}%
+          </span>
+        )}
         {/* Seasonal / limited-window items (admin sets availableTo) get urgency */}
         {item.availableTo && !item.owned && (
           <span
@@ -188,7 +194,10 @@ function StoreCard({ item, onBuy, onEquip, busy }) {
             style={item.affordable ? { background: 'linear-gradient(90deg,#38bdf8,#8b5cf6,#ec4899)' } : undefined}
           >
             {item.affordable ? <PhotonIcon size={13} animated={false} /> : <Lock size={12} />}
-            {item.cost.toLocaleString()}
+            {(item.price ?? item.cost) < item.cost && (
+              <span className="font-bold line-through opacity-60">{item.cost.toLocaleString()}</span>
+            )}
+            {(item.price ?? item.cost).toLocaleString()}
           </button>
         ) : item.equipped ? (
           <button
@@ -222,7 +231,11 @@ export default function Shop() {
   const [sort, setSort] = useState('featured');
   const [ownedOnly, setOwnedOnly] = useState(false);
   const [celebrate, setCelebrate] = useState(null); // { rarity, name } after a buy
-  const reset = useMemo(() => nextReset(), []);
+  // Weekly Deal countdown: tick toward the SERVER's rotation boundary (Monday
+  // 00:00 UTC) so the deal really does change when the timer hits zero. The
+  // local next-Monday fallback only covers older backends without `deal`.
+  const dealEndsAt = data?.deal?.endsAt;
+  const reset = useMemo(() => (dealEndsAt ? new Date(dealEndsAt) : nextReset()), [dealEndsAt]);
   const cd = useCountdown(reset);
 
   const onBuy = (key) => buy.mutate(key, {
@@ -254,13 +267,20 @@ export default function Shop() {
     return list;
   }, [catalog, tab, sort, ownedOnly]);
 
-  // Featured = the single rarest item the viewer doesn't own yet (or rarest overall).
+  // Featured = the server's Weekly Deal (rotates every Monday, discounted for
+  // real). Fallback for older backends: the rarest item the viewer doesn't own
+  // — the old static pick that never changed and made the countdown a lie.
+  const dealKey = data?.deal?.key;
   const featured = useMemo(() => {
     if (!catalog.length) return null;
+    if (dealKey) {
+      const hit = catalog.find((c) => c.key === dealKey);
+      if (hit) return hit;
+    }
     const pool = catalog.filter((c) => !c.owned);
     const src = pool.length ? pool : catalog;
     return [...src].sort((a, b) => rarityOf(b.rarity).order - rarityOf(a.rarity).order)[0];
-  }, [catalog]);
+  }, [catalog, dealKey]);
 
   return (
     <div className="cosmic-page relative min-h-screen">
@@ -322,23 +342,33 @@ export default function Shop() {
                 <Preview item={featured} />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="inline-flex items-center gap-2">
+                <div className="inline-flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-amber-300">
-                    <SparkIcon size={12} /> Featured
+                    <SparkIcon size={12} /> {featured.dealPct > 0 ? 'Deal of the week' : 'Featured'}
                   </span>
+                  {featured.dealPct > 0 && (
+                    <span className="inline-flex items-center rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-black text-rose-300 ring-1 ring-rose-400/40">
+                      −{featured.dealPct}%
+                    </span>
+                  )}
                   <RarityBadge rkey={featured.rarity} />
                 </div>
                 <div className="mt-1 truncate text-lg font-black text-white">{featured.name}</div>
                 <div className="truncate text-xs text-slate-300">{featured.hint}</div>
               </div>
               <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:flex-col sm:items-end">
-                <div className="flex items-center gap-1 tabular-nums">
-                  {[['d', cd.d], ['h', cd.h], ['m', cd.m], ['s', cd.s]].map(([u, v]) => (
-                    <span key={u} className="rounded-md bg-black/40 px-2 py-1 text-center">
-                      <span className="block text-sm font-black text-white">{String(v).padStart(2, '0')}</span>
-                      <span className="block text-[9px] uppercase text-slate-400">{u}</span>
-                    </span>
-                  ))}
+                <div>
+                  <div className="flex items-center gap-1 tabular-nums">
+                    {[['d', cd.d], ['h', cd.h], ['m', cd.m], ['s', cd.s]].map(([u, v]) => (
+                      <span key={u} className="rounded-md bg-black/40 px-2 py-1 text-center">
+                        <span className="block text-sm font-black text-white">{String(v).padStart(2, '0')}</span>
+                        <span className="block text-[9px] uppercase text-slate-400">{u}</span>
+                      </span>
+                    ))}
+                  </div>
+                  {featured.dealPct > 0 && (
+                    <div className="mt-1 text-right text-[10px] text-slate-400">New deal every Monday</div>
+                  )}
                 </div>
                 {!featured.owned && (
                   <button
@@ -348,7 +378,10 @@ export default function Shop() {
                     style={featured.affordable ? { background: 'linear-gradient(90deg,#38bdf8,#8b5cf6,#ec4899)' } : undefined}
                   >
                     {featured.affordable ? <PhotonIcon size={13} animated={false} /> : <Lock size={12} />}
-                    {featured.cost.toLocaleString()}
+                    {(featured.price ?? featured.cost) < featured.cost && (
+                      <span className="font-bold line-through opacity-60">{featured.cost.toLocaleString()}</span>
+                    )}
+                    {(featured.price ?? featured.cost).toLocaleString()}
                   </button>
                 )}
               </div>

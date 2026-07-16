@@ -42,7 +42,7 @@ function CosmeticCard({ item, onBuy, onEquip, busy }) {
               ? 'bg-gradient-to-r from-amber-400 to-violet-500 text-slate-900 hover:brightness-110'
               : 'bg-white/5 text-slate-500 cursor-not-allowed'}`}
         >
-          {item.affordable ? <PhotonIcon size={13} animated={false} /> : <Lock size={13} />} {item.cost}
+          {item.affordable ? <PhotonIcon size={13} animated={false} /> : <Lock size={13} />} {item.price ?? item.cost}
         </button>
       ) : item.equipped ? (
         <button

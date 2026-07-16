@@ -1,5 +1,5 @@
 const {
-    CATALOG, getItem, applyPurchase, applyEquip, TYPES,
+    CATALOG, getItem, applyPurchase, applyEquip, TYPES, weeklyDeal, priceOf,
 } = require("../services/cosmeticsCatalog");
 
 const state = (over = {}) => ({ stardust: 1000, cosmetics: { owned: [], nameGlow: null, background: null }, ...over });
@@ -7,10 +7,13 @@ const GLOW = CATALOG.find((c) => c.type === "name_glow");
 const BG = CATALOG.find((c) => c.type === "background");
 
 describe("cosmeticsCatalog — purchase", () => {
-    it("buys an affordable, unowned item and deducts Stardust", () => {
+    it("buys an affordable, unowned item and deducts today's price", () => {
+        // priceOf, not cost: the item may be this week's rotating deal
+        const price = priceOf(GLOW.key);
         const r = applyPurchase(state({ stardust: GLOW.cost + 50 }), GLOW.key);
         expect(r.ok).toBe(true);
-        expect(r.stardust).toBe(50);
+        expect(r.price).toBe(price);
+        expect(r.stardust).toBe(GLOW.cost + 50 - price);
         expect(r.cosmetics.owned).toContain(GLOW.key);
         expect(r.item.key).toBe(GLOW.key);
     });
@@ -22,10 +25,11 @@ describe("cosmeticsCatalog — purchase", () => {
     });
 
     it("rejects when insufficient Stardust and does not deduct", () => {
-        const r = applyPurchase(state({ stardust: GLOW.cost - 1 }), GLOW.key);
+        const short = priceOf(GLOW.key) - 1;
+        const r = applyPurchase(state({ stardust: short }), GLOW.key);
         expect(r.ok).toBe(false);
         expect(r.reason).toBe("insufficient");
-        expect(r.stardust).toBe(GLOW.cost - 1);
+        expect(r.stardust).toBe(short);
         expect(r.cosmetics.owned).not.toContain(GLOW.key);
     });
 
@@ -65,6 +69,52 @@ describe("cosmeticsCatalog — equip", () => {
         const r = applyEquip(state({ cosmetics: { owned: [GLOW.key], nameGlow: GLOW.key, background: null } }), "name_glow", null);
         expect(r.ok).toBe(true);
         expect(r.cosmetics.nameGlow).toBeNull();
+    });
+});
+
+describe("cosmeticsCatalog — weekly deal", () => {
+    const WEEK = 7 * 24 * 60 * 60 * 1000;
+    const NOW = Date.UTC(2026, 6, 16); // fixed reference so the tests are stable
+
+    it("is deterministic within a week and discounts for real", () => {
+        const a = weeklyDeal(NOW);
+        const b = weeklyDeal(NOW + 60 * 1000);
+        expect(a).toEqual(b);
+        expect(a.pct).toBeGreaterThanOrEqual(20);
+        expect(a.pct).toBeLessThanOrEqual(40);
+        expect(a.dealCost).toBeLessThan(a.cost);
+        expect(a.dealCost).toBeGreaterThan(0);
+        expect(getItem(a.key)).not.toBeNull();
+    });
+
+    it("rotates when the week turns over", () => {
+        const keys = [0, 1, 2, 3].map((w) => weeklyDeal(NOW + w * WEEK).key);
+        expect(new Set(keys).size).toBeGreaterThan(1); // never the same deal forever
+    });
+
+    it("endsAt lands inside the current week", () => {
+        const d = weeklyDeal(NOW);
+        expect(d.endsAt).toBeGreaterThan(NOW);
+        expect(d.endsAt - NOW).toBeLessThanOrEqual(WEEK);
+        // the instant after endsAt is a NEW week — and a different deal
+        expect(weeklyDeal(d.endsAt + 1).key).not.toBe(d.key);
+    });
+
+    it("charges the deal price when buying the deal item", () => {
+        const d = weeklyDeal(NOW);
+        const r = applyPurchase(state({ stardust: d.dealCost }), d.key, NOW);
+        expect(r.ok).toBe(true);
+        expect(r.price).toBe(d.dealCost);
+        expect(r.stardust).toBe(0);
+    });
+
+    it("charges list price for a non-deal item", () => {
+        const d = weeklyDeal(NOW);
+        const other = CATALOG.find((c) => c.key !== d.key);
+        const r = applyPurchase(state({ stardust: other.cost }), other.key, NOW);
+        expect(r.ok).toBe(true);
+        expect(r.price).toBe(other.cost);
+        expect(r.stardust).toBe(0);
     });
 });
 

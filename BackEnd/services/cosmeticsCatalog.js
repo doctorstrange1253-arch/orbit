@@ -259,24 +259,69 @@ function normalizeCosmetics(c = {}) {
     };
 }
 
+// ── Pricing: admin discount + the rotating Weekly Deal ───────────────────────
+// The deal is a pure function of the calendar week (Monday 00:00 UTC), NOT a
+// static "rarest item" pick — so it genuinely changes when the countdown ends,
+// with no stored state and no drift between server instances or clients.
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const MONDAY0 = 4 * 24 * 60 * 60 * 1000; // Mon 5 Jan 1970 00:00 UTC — Monday-aligned epoch
+
+/** Effective list price after any admin-set discountPct (was never applied before). */
+function baseCost(item) {
+    const pct = Math.min(100, Math.max(0, item.discountPct || 0));
+    return Math.max(0, Math.round((item.cost * (100 - pct)) / 100));
+}
+
+/**
+ * weeklyDeal — this week's featured discount. Deterministic: the week number
+ * seeds both the pick (prime stride 131 so consecutive weeks land on far-apart
+ * catalog entries — never the same item two weeks running while the pool
+ * doesn't divide 131) and the depth (20–40% off), floored to a tidy multiple
+ * of 5 Photons.
+ *
+ * @returns {{ key, pct, cost, dealCost, endsAt }|null}
+ */
+function weeklyDeal(now = Date.now()) {
+    const pool = getLiveCatalog(now).filter((c) => (c.cost || 0) > 0);
+    if (!pool.length) return null;
+    const week = Math.floor((now - MONDAY0) / WEEK_MS);
+    const endsAt = MONDAY0 + (week + 1) * WEEK_MS;
+    const item = pool[(week * 131) % pool.length];
+    const pct = 20 + ((week * 37) % 5) * 5; // 20 | 25 | 30 | 35 | 40
+    const cost = baseCost(item);
+    const dealCost = Math.max(1, Math.floor((cost * (100 - pct)) / 100 / 5) * 5 || 1);
+    return { key: item.key, pct, cost, dealCost, endsAt };
+}
+
+/** What `key` actually costs right now (admin discount + weekly deal). */
+function priceOf(key, now = Date.now()) {
+    const item = getItem(key);
+    if (!item) return null;
+    const deal = weeklyDeal(now);
+    if (deal && deal.key === key) return deal.dealCost;
+    return baseCost(item);
+}
+
 /**
  * applyPurchase — pure buy. Validates the key exists, isn't already owned, and
- * is affordable; on success returns new { stardust, cosmetics } with the item
- * added to `owned` and Stardust deducted.
+ * is affordable at TODAY'S price (admin discount + weekly deal — the same
+ * price the shop displays); on success returns new { stardust, cosmetics }
+ * with the item added to `owned` and the charged `price`.
  *
- * @returns {{ ok, reason?, stardust, cosmetics, item? }}
+ * @returns {{ ok, reason?, stardust, cosmetics, item?, price? }}
  */
-function applyPurchase(state, key) {
+function applyPurchase(state, key, now = Date.now()) {
     const item = getItem(key);
     const cosmetics = normalizeCosmetics(state.cosmetics);
     const stardust = state.stardust || 0;
 
     if (!item) return { ok: false, reason: "not_found", stardust, cosmetics };
     if (cosmetics.owned.includes(key)) return { ok: false, reason: "already_owned", stardust, cosmetics };
-    if (stardust < item.cost) return { ok: false, reason: "insufficient", stardust, cosmetics };
+    const price = priceOf(key, now);
+    if (stardust < price) return { ok: false, reason: "insufficient", stardust, cosmetics };
 
     cosmetics.owned.push(key);
-    return { ok: true, stardust: stardust - item.cost, cosmetics, item };
+    return { ok: true, stardust: stardust - price, cosmetics, item, price };
 }
 
 /**
@@ -303,5 +348,6 @@ function applyEquip(state, type, key) {
 module.exports = {
     CATALOG, DEFAULT_CATALOG, TYPES, SLOT,
     getItem, getAllCatalog, getLiveCatalog, normalizeCosmetics, applyPurchase, applyEquip,
+    weeklyDeal, priceOf, baseCost,
     refresh, startAutoRefresh,
 };

@@ -248,7 +248,7 @@ export default function HoloBay() {
   // Price the previewed look: total of previewed items you DON'T own yet.
   const previewItems = [glowItem, bgItem, decoItem, effectItem, plateItem].filter(Boolean);
   const unownedPreview = previewItems.filter((it) => !it.owned);
-  const lookTotal = unownedPreview.reduce((sum, it) => sum + (it.cost || 0), 0);
+  const lookTotal = unownedPreview.reduce((sum, it) => sum + (it.price ?? it.cost ?? 0), 0);
   const balance = data?.photons ?? data?.stardust ?? 0;
 
   const busy = buy.isPending || equip.isPending;
@@ -279,7 +279,7 @@ export default function HoloBay() {
       <button onClick={() => onBuy(item.key)} disabled={busy || !item.affordable}
         className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-black ${item.affordable ? 'text-slate-900' : 'cursor-not-allowed bg-white/5 text-slate-500'}`}
         style={item.affordable ? { background: 'linear-gradient(90deg,#38bdf8,#8b5cf6,#ec4899)' } : undefined}>
-        {item.affordable ? <PhotonIcon size={12} animated={false} /> : <Lock size={11} />} {item.cost.toLocaleString()}
+        {item.affordable ? <PhotonIcon size={12} animated={false} /> : <Lock size={11} />} {(item.price ?? item.cost).toLocaleString()}
       </button>
     );
   };
