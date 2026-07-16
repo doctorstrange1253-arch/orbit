@@ -87,20 +87,43 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
       api.put(`/connections/${connection._id}/respond`, {
         action: action === 'accept' ? 'accepted' : 'declined',
       }),
-    onSuccess: () => {
-      addToast('Response sent', 'success');
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+    // OPTIMISTIC: the card leaves the Requests list the instant Accept/Decline
+    // is tapped (rolls back on error); the refetch on settle brings an
+    // accepted connection into the Established tab.
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['connections', 'pending'] });
+      const prev = queryClient.getQueryData(['connections', 'pending']);
+      queryClient.setQueryData(['connections', 'pending'], (old) => {
+        if (!old) return old;
+        const incoming = (old.incoming || []).filter((c) => c._id !== connection._id);
+        return { ...old, incoming, incomingCount: incoming.length };
+      });
+      return { prev };
     },
-    onError: (err) => addToast(err.response?.data?.message || 'Failed', 'error'),
+    onError: (err, _v, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(['connections', 'pending'], ctx.prev);
+      addToast(err.response?.data?.message || 'Failed', 'error');
+    },
+    onSuccess: () => addToast('Response sent', 'success'),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['connections'] }),
   });
 
   const cancelMutation = useMutation({
     mutationFn: () => api.delete(`/connections/cancel/${connection._id}`),
-    onSuccess: () => {
-      addToast('Request cancelled', 'success');
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+    // OPTIMISTIC: drop the outgoing request immediately, roll back on error.
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['connections', 'pending'] });
+      const prev = queryClient.getQueryData(['connections', 'pending']);
+      queryClient.setQueryData(['connections', 'pending'], (old) =>
+        old ? { ...old, outgoing: (old.outgoing || []).filter((c) => c._id !== connection._id) } : old);
+      return { prev };
     },
-    onError: (err) => addToast(err.response?.data?.message || 'Failed to cancel', 'error'),
+    onError: (err, _v, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(['connections', 'pending'], ctx.prev);
+      addToast(err.response?.data?.message || 'Failed to cancel', 'error');
+    },
+    onSuccess: () => addToast('Request cancelled', 'success'),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['connections'] }),
   });
 
   const handleCancel = () => {
