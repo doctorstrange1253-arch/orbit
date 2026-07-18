@@ -37,7 +37,16 @@ function DeletionModal({ user, onClose, onChanged }) {
         <h2 className="ssctl-h1" style={{ marginBottom: 4 }}>Delete data</h2>
         <p className="ssctl-muted" style={{ marginTop: 0, fontSize: 13 }}>{user.name} · {user.email}</p>
 
-        {!preview ? <div style={{ display: 'flex', justifyContent: 'center', padding: 30 }}><div className="ssctl-spin" /></div> : (
+        {!preview ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: 30 }}>
+            {err ? (
+              <>
+                <p className="ssctl-err" style={{ margin: 0 }}>{err}</p>
+                <button className="ssctl-btn" style={{ minHeight: 34 }} onClick={() => { setErr(''); load(); }}>Retry</button>
+              </>
+            ) : <div className="ssctl-spin" />}
+          </div>
+        ) : (
           <>
             <p className="ssctl-section-title" style={{ marginTop: 14 }}>Cascade preview</p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 13 }}>

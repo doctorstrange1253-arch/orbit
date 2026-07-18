@@ -770,7 +770,7 @@ html[data-mode="light"] .nav-tab-glass.active {
   color: var(--accent-1);
 }
 
-html[data-mode="light"] .skill-card {
+html[data-mode="light"] .skill-card:not(.cosmic-surface) {
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid var(--border-subtle);
   box-shadow: 0 2px 16px var(--shadow-color);
@@ -867,8 +867,8 @@ html[data-mode="light"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
 }
 
 @media (max-width: 640px) {
-  html[data-mode="light"] .glass-card,
-  html[data-mode="light"] .skill-card {
+  html[data-mode="light"] .glass-card:not(.cosmic-surface),
+  html[data-mode="light"] .skill-card:not(.cosmic-surface) {
     background: rgba(255, 255, 255, 0.95);
   }
 }

@@ -83,8 +83,9 @@ export class Board {
     ctx.setTransform(this.dpr * scale, 0, 0, this.dpr * scale, this.dpr * x, this.dpr * y);
   }
 
-  panBy(dx, dy) { this.viewport.x += dx; this.viewport.y += dy; this._dirtyBase = true; }
+  panBy(dx, dy) { this._viewTouched = true; this.viewport.x += dx; this.viewport.y += dy; this._dirtyBase = true; }
   zoomAt(cssX, cssY, factor) {
+    this._viewTouched = true;
     const w = this.toWorld(cssX, cssY);
     this.viewport.scale = Math.max(0.15, Math.min(6, this.viewport.scale * factor));
     // keep the point under the cursor stationary
@@ -93,7 +94,34 @@ export class Board {
     this._dirtyBase = true;
     this.onChange();
   }
-  resetView() { this.viewport = { scale: 1, x: 0, y: 0 }; this._dirtyBase = true; this.onChange(); }
+  resetView() { this._viewTouched = true; this.viewport = { scale: 1, x: 0, y: 0 }; this._dirtyBase = true; this.onChange(); }
+
+  fitToContent() {
+    const page = this.pages[this.pageIndex].id;
+    let has = false;
+    for (const o of this.objects.values()) { if (o.page === page) { has = true; break; } }
+    if (!has || !this._css.w || !this._css.h) return;
+    const b = this._contentBounds(page);
+    const scale = Math.max(0.15, Math.min(2, Math.min(this._css.w / b.w, this._css.h / b.h)));
+    this.viewport.scale = scale;
+    this.viewport.x = (this._css.w - b.w * scale) / 2 - b.x * scale;
+    this.viewport.y = (this._css.h - b.h * scale) / 2 - b.y * scale;
+    this._dirtyBase = true;
+    this.onChange();
+  }
+
+  _autoFitRemote() {
+    if (this._viewTouched || this.localLive) return;
+    const page = this.pages[this.pageIndex].id;
+    let has = false;
+    for (const o of this.objects.values()) { if (o.page === page) { has = true; break; } }
+    if (!has || !this._css.w || !this._css.h) return;
+    const b = this._contentBounds(page);
+    const tl = this.toWorld(0, 0), br = this.toWorld(this._css.w, this._css.h);
+    if (b.x >= tl.x && b.y >= tl.y && b.x + b.w <= br.x && b.y + b.h <= br.y) return;
+    this.fitToContent();
+    this._viewTouched = false;
+  }
 
   // ── Render loop ───────────────────────────────────────────────────────────
   markDirty() { this._dirtyBase = true; }
@@ -273,7 +301,7 @@ export class Board {
     }
   }
 
-  applyRemoteOp(op) { this._apply(op); this.onChange(); }
+  applyRemoteOp(op) { this._apply(op); this._autoFitRemote(); this.onChange(); }
 
   /** Commit local forward ops + their inverses (one undo unit). */
   _commit(forwards, inverses) {
@@ -306,6 +334,7 @@ export class Board {
   // ── Public mutations (build forward + inverse) ────────────────────────────
   addObject(obj) {
     if (this.objects.size >= LIMITS.maxObjects) return null;
+    this._viewTouched = true;
     obj.page = this.pages[this.pageIndex].id;
     const add = this._stamp({ t: OP.ADD, obj });
     this._commit([add], [{ t: OP.DELETE, id: obj.id }]);
@@ -457,6 +486,7 @@ export class Board {
     }
     for (const p of snap.pages || []) if (!this.pages.find((x) => x.id === p.id)) this.pages.push(p);
     this.clock = Math.max(this.clock, snap.clock || 0);
+    this._autoFitRemote();
     this._dirtyBase = true; this.onChange();
   }
 

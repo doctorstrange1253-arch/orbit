@@ -37,6 +37,7 @@ function cacheGet(key) {
     return null;
 }
 function cacheSet(key, v) { _cache.set(key, { t: Date.now(), v }); }
+function cacheClear() { _cache.clear(); }
 
 // Haversine (km) — mirrors the proven approach already used in geoController.
 function haversineKm(lat1, lng1, lat2, lng2) {
@@ -488,6 +489,7 @@ async function buildLeaderboard({ me, lat, lng, scope = "city", season = "" }) {
 
 module.exports = {
     buildLeaderboard,
+    cacheClear,
     // exported for tests / reuse
     resolvePool, scorePool, rankEntries, mentorsWithin, haversineKm,
     mentorCandidates, scopeFilter, scopeCounts, norm,

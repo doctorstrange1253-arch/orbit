@@ -226,9 +226,9 @@ const Navbar = () => {
             {/* ── Right side ── */}
             <div className="flex items-center gap-1.5 flex-shrink-0">
               {/* Orbit streak — glanceable loss-aversion cue (pulses when decaying) */}
-              <OrbitStreakBadge variant="nav" className="hidden lg:inline-flex" />
+              <OrbitStreakBadge variant="nav" className="hidden xl:inline-flex" />
               {/* Photons currency chip — live balance, tap → shop */}
-              <PhotonsChip variant="nav" className="hidden sm:inline-flex" />
+              <PhotonsChip variant="nav" className="hidden md:inline-flex" />
               <NavLink to="/profile" title="Profile"
                 className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all text-text-secondary hover:text-text-primary bg-surface border border-border-subtle"
               >
@@ -274,7 +274,7 @@ const Navbar = () => {
                 onClick={handleLogout}
                 aria-label="Logout"
                 title="Logout"
-                className="flex items-center justify-center w-8 h-8 rounded-xl text-text-muted hover:text-danger transition-all bg-surface border border-border-subtle"
+                className="hidden lg:flex items-center justify-center w-8 h-8 rounded-xl text-text-muted hover:text-danger transition-all bg-surface border border-border-subtle"
               >
                 <LogOut size={15} />
               </button>

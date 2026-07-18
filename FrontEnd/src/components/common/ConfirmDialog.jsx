@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, X } from 'lucide-react';
 
@@ -46,11 +47,16 @@ const ConfirmDialog = ({
     };
   }, [isOpen, onClose]);
 
-  return (
+  // PORTAL to <body>: this dialog is mounted from inside the chat drawer, a
+  // TRANSFORMED (framer-motion x-slide) overflow-hidden container at z-[95].
+  // position:fixed resolves against a transformed ancestor, so without the
+  // portal the dialog rendered clipped INSIDE the drawer, under its own
+  // z-index — Clear chat / delete confirms looked like they "did nothing".
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-[120] flex items-center justify-center p-4"
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}
@@ -160,7 +166,8 @@ const ConfirmDialog = ({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 

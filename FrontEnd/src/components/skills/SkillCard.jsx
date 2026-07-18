@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { motion } from 'framer-motion';
-import { Trash2, Video, UserPlus, Send, Globe, Star, MessageCircle } from 'lucide-react';
+import { Trash2, Video, UserPlus, Send, Globe, Star, MessageCircle, Check } from 'lucide-react';
 import api from '../../services/api';
 import Avatar from '../common/Avatar';
 import CosmicBadge from '../../cosmic/CosmicBadge';
@@ -21,7 +21,7 @@ const LEVEL_STYLES = {
   advanced:     { bg: 'rgba(0,198,255,0.1)',  border: 'rgba(0,198,255,0.3)',  color: '#00c6ff' },
 };
 
-const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, isConnected, onMessage, onCall }) => {
+const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, isConnected, isOnline, onMessage, onCall }) => {
   const { user } = useAuthStore();
   const { addToast } = useUIStore();
   const queryClient = useQueryClient();
@@ -110,7 +110,15 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, i
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <Avatar name={owner?.name} url={owner?.avatar} size="md" userId={owner?._id} deco={decoClass} />
+          <div className="relative flex-shrink-0">
+            <Avatar name={owner?.name} url={owner?.avatar} size="md" userId={owner?._id} deco={decoClass} />
+            {isOnline && (
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background z-10"
+                style={{ background: '#00e5a0' }}
+                title="Online"
+              />
+            )}
+          </div>
           <div className="min-w-0">
             <p className="font-semibold text-text-primary text-sm truncate"><Nameplate plateKey={plateKey}><GlowName user={cosmeticsSource}>{owner?.name || 'Unknown'}</GlowName></Nameplate></p>
             <div className="flex items-center gap-2 mt-0.5">
@@ -216,13 +224,36 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, i
             <Star size={14} fill="currentColor" /> Ratings
           </button>
 
-          {/* Connect button */}
-          <button
-            onClick={handleConnect}
-            className="btn-gradient flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium"
-          >
-            <UserPlus size={15} /> Connect
-          </button>
+          {isConnected ? (
+            <>
+              <span className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold"
+                style={{ background: 'rgba(0,229,160,0.1)', border: '1px solid rgba(0,229,160,0.3)', color: '#00e5a0' }}
+                title="You're already connected"
+              >
+                <Check size={13} /> Connected
+              </span>
+              <button
+                onClick={handleMessageClick}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all text-accent border border-accent/30 bg-accent/5 hover:bg-accent/10"
+              >
+                <MessageCircle size={14} /> Message
+              </button>
+              <button
+                onClick={handleCallClick}
+                className="btn-gradient flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-medium"
+                title="Start a video call"
+              >
+                <Video size={14} />
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={handleConnect}
+              className="btn-gradient flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium"
+            >
+              <UserPlus size={15} /> Connect
+            </button>
+          )}
         </div>
       )}
 

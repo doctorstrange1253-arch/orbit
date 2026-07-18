@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, MessageCircle, Search, ArrowLeft, Check, CheckCheck, Maximize2, Minimize2, Bell, BellOff, MoreVertical, Trash2, Ban, Flag } from 'lucide-react';
@@ -888,8 +889,7 @@ const ChatWindow = ({ otherUser, onBack, onlineUsers, isExpanded }) => {
         isLoading={isActioning}
       />
 
-      {/* Report user — reason goes to the admin Moderation queue */}
-      <AnimatePresence>
+      {createPortal(<AnimatePresence>
         {reportOpen && (
           <motion.div
             className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
@@ -938,7 +938,7 @@ const ChatWindow = ({ otherUser, onBack, onlineUsers, isExpanded }) => {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>, document.body)}
     </div>
   );
 };

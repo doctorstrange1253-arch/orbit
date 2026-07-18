@@ -241,6 +241,7 @@ exports.getObservatory = async (req, res) => {
             .sort((a, b) =>
                 b.score - a.score ||
                 b.weightedReviews - a.weightedReviews ||
+                b.reviewsCount - a.reviewsCount ||
                 String(a.name).localeCompare(String(b.name)) ||
                 String(a.userId).localeCompare(String(b.userId)))
             .map((e, i) => ({ ...e, rank: i + 1 }));

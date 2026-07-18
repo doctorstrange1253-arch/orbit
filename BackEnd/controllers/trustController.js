@@ -136,6 +136,8 @@ exports.submitRating = async (req, res) => {
         // Recalculate trust score for the rated user
         await recalculateTrustScore(toUserId);
 
+        require("../services/leaderboardService").cacheClear();
+
         res.status(201).json({ message: "Rating submitted successfully" });
 
         // Orbit Engine: leaving a review is a real-progress day for the reviewer.

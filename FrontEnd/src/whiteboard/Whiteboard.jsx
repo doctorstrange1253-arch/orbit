@@ -166,10 +166,27 @@ export default function Whiteboard({ socket, pc, roomId, user, otherUser, onClos
     const board = boardRef.current;
     const sync = syncRef.current;
 
+    const touches = new Map();
+    const pinchDist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    const pinchMid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+
     const down = (e) => {
       if (e.button === 2) return; // context menu
       cv.setPointerCapture?.(e.pointerId);
       const { cssX, cssY, x, y } = getWorld(e);
+
+      if (e.pointerType === 'touch') {
+        touches.set(e.pointerId, { x: cssX, y: cssY });
+        if (touches.size === 2) {
+          if (drawRef.current.mode === 'draw' || drawRef.current.mode === 'shape') {
+            board.setLocalLive(null); sync.sendLiveStroke(null);
+          }
+          const [a, b] = [...touches.values()];
+          drawRef.current = { mode: 'pinch', dist: pinchDist(a, b), mid: pinchMid(a, b) };
+          return;
+        }
+      }
+
       const t = tool.current;
       const kind = TOOLS[t]?.kind;
 
@@ -229,6 +246,21 @@ export default function Whiteboard({ socket, pc, roomId, user, otherUser, onClos
     const move = (e) => {
       const { cssX, cssY, x, y } = getWorld(e);
       const d = drawRef.current;
+
+      if (e.pointerType === 'touch' && touches.has(e.pointerId)) {
+        touches.set(e.pointerId, { x: cssX, y: cssY });
+        if (d.mode === 'pinch' && touches.size >= 2) {
+          const [a, b] = [...touches.values()];
+          const dist = pinchDist(a, b);
+          const mid = pinchMid(a, b);
+          if (d.dist > 0) board.zoomAt(mid.x, mid.y, dist / d.dist);
+          board.panBy(mid.x - d.mid.x, mid.y - d.mid.y);
+          d.dist = dist; d.mid = mid;
+          return;
+        }
+      }
+      if (d.mode === 'pinch') return;
+
       sync.sendCursor(x, y, tool.current);
 
       switch (d.mode) {
@@ -262,7 +294,14 @@ export default function Whiteboard({ socket, pc, roomId, user, otherUser, onClos
       }
     };
 
-    const up = () => {
+    const up = (e) => {
+      if (e && e.pointerType === 'touch') {
+        touches.delete(e.pointerId);
+        if (drawRef.current.mode === 'pinch') {
+          if (touches.size < 2) drawRef.current = {};
+          return;
+        }
+      }
       const d = drawRef.current; const board = boardRef.current; const sync = syncRef.current;
       switch (d.mode) {
         case 'draw':
@@ -303,12 +342,14 @@ export default function Whiteboard({ socket, pc, roomId, user, otherUser, onClos
     cv.addEventListener('pointerdown', down);
     cv.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
     cv.addEventListener('wheel', wheel, { passive: false });
     cv.addEventListener('dblclick', dbl);
     return () => {
       cv.removeEventListener('pointerdown', down);
       cv.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
       cv.removeEventListener('wheel', wheel);
       cv.removeEventListener('dblclick', dbl);
     };
@@ -447,6 +488,7 @@ export default function Whiteboard({ socket, pc, roomId, user, otherUser, onClos
         <button className="wb-icon-btn" title="Zoom out" onClick={() => boardRef.current.zoomAt(boardRef.current._css.w / 2, boardRef.current._css.h / 2, 0.9)}><Ic n="ZoomOut" size={17} /></button>
         <button className="wb-zoom" title="Reset view" onClick={() => boardRef.current.resetView()}>{Math.round(zoom * 100)}%</button>
         <button className="wb-icon-btn" title="Zoom in" onClick={() => boardRef.current.zoomAt(boardRef.current._css.w / 2, boardRef.current._css.h / 2, 1.1)}><Ic n="ZoomIn" size={17} /></button>
+        <button className="wb-icon-btn" title="Fit to drawing" onClick={() => boardRef.current.fitToContent()}><Ic n="Maximize" size={17} /></button>
         <span className="wb-sep" />
         <button className="wb-icon-btn" title="Pages" onClick={() => setShowPages((s) => !s)}><Ic n="Layers" size={17} /></button>
         <button className={`wb-icon-btn ${chatOpen ? 'active' : ''}`} title="Chat" onClick={() => setChatOpen((s) => !s)}>

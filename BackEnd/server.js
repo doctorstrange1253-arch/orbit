@@ -161,7 +161,8 @@ io.on("connection", (socket) => {
     // so a socket can only ever join its OWN user room.
     socket.on("register", () => {
         const userId = socket.userId;
-        if (userId) {
+        if (userId && !socket.presenceCounted) {
+            socket.presenceCounted = true;
             socket.join(`user_${userId}`);
 
             const currentCount = onlineUsers.get(userId) || 0;
@@ -280,7 +281,7 @@ io.on("connection", (socket) => {
         }
 
         // Remove user from online list
-        if (socket.userId) {
+        if (socket.userId && socket.presenceCounted) {
             const currentCount = onlineUsers.get(socket.userId) || 0;
             if (currentCount > 1) {
                 onlineUsers.set(socket.userId, currentCount - 1);

@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
@@ -14,6 +15,7 @@ import { Search, Compass, SlidersHorizontal, X, ChevronDown } from 'lucide-react
 import UserRatingsModal from '../components/modals/UserRatingsModal';
 import SwapRequestModal from '../components/modals/SwapRequestModal';
 import Spinner from '../components/common/Spinner';
+import useOnlineUsers from '../hooks/useOnlineUsers';
 
 import { useRef } from 'react';
 
@@ -26,6 +28,7 @@ const SORT_OPTIONS = [
 ];
 
 const BrowseSkills = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounce(search, 300);
   const [sortBy, setSortBy] = useState('rating');
@@ -37,10 +40,29 @@ const BrowseSkills = () => {
   
   const { ref: loadMoreRef, inView } = useInView();
 
+  const myId = useAuthStore((s) => s.user?._id);
+  const onlineUsers = useOnlineUsers();
+
   const { data: skills = [], isLoading, error, refetch } = useQuery({
     queryKey: ['skills', 'all'],
     queryFn: () => api.get('/skills/all').then(r => r.data),
   });
+
+  const { data: establishedConnections = [] } = useQuery({
+    queryKey: ['connections', 'established'],
+    queryFn: () => api.get('/connections/all').then(r => r.data),
+    staleTime: 60000,
+  });
+
+  const connectionByUserId = useMemo(() => {
+    const map = new Map();
+    for (const c of establishedConnections) {
+      const other = (c.requester?._id === myId ? c.receiver : c.requester);
+      const otherId = other?._id;
+      if (otherId && !map.has(String(otherId))) map.set(String(otherId), { connection: c, other });
+    }
+    return map;
+  }, [establishedConnections, myId]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -57,8 +79,6 @@ const BrowseSkills = () => {
     setSearch('');
     setDisplayCount(ITEMS_PER_PAGE);
   };
-
-  const myId = useAuthStore((s) => s.user?._id);
 
   const filteredAndSorted = useMemo(() => {
     // B-01 defence-in-depth: the server already excludes self (/skills/all),
@@ -216,19 +236,31 @@ const BrowseSkills = () => {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             <AnimatePresence>
-              {displayedSkills.map(s => (
-                <SkillCard
-                  key={s._id}
-                  skill={s}
-                  variant="browse"
-                  onConnect={(skillId, ownerId) => {
-                    // Open the swap request modal instead of direct mutation
-                    const owner = typeof s.userId === 'object' ? s.userId : { _id: ownerId };
-                    setSwapTarget({ skill: s, owner });
-                  }}
-                  onViewRatings={(owner) => setViewRatingsUser(owner)}
-                />
-              ))}
+              {displayedSkills.map(s => {
+                const ownerId = String(s.userId?._id || s.userId);
+                const conn = connectionByUserId.get(ownerId);
+                return (
+                  <SkillCard
+                    key={s._id}
+                    skill={s}
+                    variant="browse"
+                    isConnected={!!conn}
+                    isOnline={onlineUsers.has(ownerId)}
+                    onConnect={(skillId, oid) => {
+                      const owner = typeof s.userId === 'object' ? s.userId : { _id: oid };
+                      setSwapTarget({ skill: s, owner });
+                    }}
+                    onViewRatings={(owner) => setViewRatingsUser(owner)}
+                    onMessage={() => {
+                      const owner = conn?.other || (typeof s.userId === 'object' ? s.userId : null);
+                      if (owner) window.dispatchEvent(new CustomEvent('open-chat', { detail: owner }));
+                    }}
+                    onCall={() => {
+                      if (conn) navigate(`/call/${conn.connection._id}`, { state: { otherUser: conn.other, isCaller: true } });
+                    }}
+                  />
+                );
+              })}
             </AnimatePresence>
           </div>
           

@@ -5,6 +5,8 @@ import { Check, X, Video, Star, Clock, UserCheck, Trash2, MessageSquare, Message
 import api from '../../services/api';
 import Avatar from '../common/Avatar';
 import GlowName from '../../cosmic/GlowName';
+import Nameplate from '../../cosmic/Nameplate';
+import { equippedFromUser } from '../../cosmic/cosmetics';
 import GiftPhotonsButton from '../../cosmic/GiftPhotonsButton';
 import { useUIStore } from '../../store/uiStore';
 import { useAuthStore } from '../../store/authStore';
@@ -37,10 +39,10 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
     other = isIncoming ? connection.requester : connection.receiver;
   }
 
+  const { decoClass, plateKey } = equippedFromUser(other);
+
   // Track online users via socket
   useEffect(() => {
-    if (!isEstablished) return;
-
     const socket = connectSocket(user?._id);
 
     // Request initial online users list
@@ -64,7 +66,7 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
       socket.off('user-online', handleUserOnline);
       socket.off('user-offline-status', handleUserOffline);
     };
-  }, [isEstablished, user]);
+  }, [user]);
 
   const isOtherUserOnline = onlineUsers.has(other?._id);
 
@@ -143,9 +145,9 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
       {/* Left — user info */}
       <div className="flex items-center gap-4 min-w-0">
         <div className="relative flex-shrink-0">
-          <Avatar name={other?.name} url={other?.avatar} size="lg" userId={other?._id} />
-          {isEstablished && isOtherUserOnline && (
-            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green rounded-full border-2 border-background"
+          <Avatar name={other?.name} url={other?.avatar} size="lg" userId={other?._id} deco={decoClass} />
+          {isOtherUserOnline && (
+            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-background z-10"
               style={{ background: '#00e5a0' }}
               title="Online"
             />
@@ -154,7 +156,7 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
 
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h4 className="font-semibold text-text-primary truncate"><GlowName user={other}>{other?.name || 'Unknown User'}</GlowName></h4>
+            <h4 className="font-semibold text-text-primary truncate"><Nameplate plateKey={plateKey}><GlowName user={other}>{other?.name || 'Unknown User'}</GlowName></Nameplate></h4>
             {ts !== undefined && (
               <span className="text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1"
                 style={{ background: trustBg, border: `1px solid ${trustColor}30`, color: trustColor }}
