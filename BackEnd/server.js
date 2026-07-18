@@ -42,6 +42,7 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   "https://react-skill-swap-fully-fledged.vercel.app",
+  "https://orbit-wine-zeta.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",
   // Capacitor mobile app (APK / iOS): the WebView serves from these origins.
@@ -59,7 +60,7 @@ const allowedOrigins = [
 // `origin.endsWith(".vercel.app")` allowed ANY third-party Vercel app to call
 // the API (A11). Capacitor APK origins remain in `allowedOrigins`, so the mobile
 // app is unaffected.
-const VERCEL_ORIGIN = /^https:\/\/react-skill-swap-fully-fledged[a-z0-9-]*\.vercel\.app$/i;
+const VERCEL_ORIGIN = /^https:\/\/(react-skill-swap-fully-fledged|orbit-wine-zeta|orbit)[a-z0-9-]*\.vercel\.app$/i;
 
 const corsOptions = {
   origin: function (origin, callback) {
