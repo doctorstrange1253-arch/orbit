@@ -203,22 +203,16 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, i
         </div>
       </div>
 
-      {/* Action buttons */}
       {variant === 'browse' && !isOwner && (
-        <div style={{ display: 'flex', gap: 8 }}>
-          {/* View Ratings button */}
+        <div className="flex flex-wrap items-stretch gap-2">
           <button
             onClick={handleViewRatings}
             title="View this person's ratings"
+            className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold flex-shrink-0"
             style={{
-              flex: '0 0 auto',
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '10px 14px', borderRadius: 12,
-              fontSize: 13, fontWeight: 600,
               background: 'rgba(255,184,0,0.08)',
               border: '1px solid rgba(255,184,0,0.28)',
-              color: '#ffb800', cursor: 'pointer',
-              transition: 'background 0.2s',
+              color: '#ffb800',
             }}
           >
             <Star size={14} fill="currentColor" /> Ratings
@@ -226,7 +220,7 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, i
 
           {isConnected ? (
             <>
-              <span className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold"
+              <span className="flex items-center gap-1 px-2.5 py-2.5 rounded-xl text-xs font-semibold flex-shrink-0"
                 style={{ background: 'rgba(0,229,160,0.1)', border: '1px solid rgba(0,229,160,0.3)', color: '#00e5a0' }}
                 title="You're already connected"
               >
@@ -234,22 +228,22 @@ const SkillCard = memo(({ skill, variant = 'browse', onConnect, onViewRatings, i
               </span>
               <button
                 onClick={handleMessageClick}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all text-accent border border-accent/30 bg-accent/5 hover:bg-accent/10"
+                className="flex-1 min-w-[104px] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all text-accent border border-accent/30 bg-accent/5 hover:bg-accent/10"
               >
                 <MessageCircle size={14} /> Message
               </button>
               <button
                 onClick={handleCallClick}
-                className="btn-gradient flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-medium"
+                className="btn-gradient flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium flex-shrink-0"
                 title="Start a video call"
               >
-                <Video size={14} />
+                <Video size={14} /> Call
               </button>
             </>
           ) : (
             <button
               onClick={handleConnect}
-              className="btn-gradient flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium"
+              className="btn-gradient flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium"
             >
               <UserPlus size={15} /> Connect
             </button>

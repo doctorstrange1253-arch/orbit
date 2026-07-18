@@ -180,7 +180,7 @@ exports.getUserRatings = async (req, res) => {
         const userId  = req.params.userId;
         // Admin-hidden reviews are withheld from the public listing (spec I).
         const ratings = await Rating.find({ toUser: userId, hidden: { $ne: true } })
-            .populate("fromUser", "name avatar")
+            .populate("fromUser", "name avatar orbit.cosmetics cosmic.nameGlowTier")
             .sort({ createdAt: -1 });
 
         const user = await User.findById(userId).select("name avatar trustScore averageRating totalRatings isFlagged");
@@ -210,7 +210,7 @@ exports.getMyTrustScore = async (req, res) => {
         // Get recent ratings for breakdown (admin-hidden reviews stay hidden
         // from the recipient too — same as the public listing).
         const ratings = await Rating.find({ toUser: req.user.id, hidden: { $ne: true } })
-            .populate("fromUser", "name avatar")
+            .populate("fromUser", "name avatar orbit.cosmetics cosmic.nameGlowTier")
             .sort({ createdAt: -1 })
             .limit(5);
 
@@ -339,7 +339,7 @@ async function recalculateTrustScore(userId) {
 exports.getMyGivenRatings = async (req, res) => {
     try {
         const ratings = await Rating.find({ fromUser: req.user.id })
-            .populate("toUser", "name avatar trustScore")
+            .populate("toUser", "name avatar trustScore orbit.cosmetics cosmic.nameGlowTier")
             .sort({ createdAt: -1 })
             .limit(20);
 

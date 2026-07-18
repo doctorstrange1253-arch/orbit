@@ -440,6 +440,7 @@ async function buildLeaderboard({ me, lat, lng, scope = "city", season = "" }) {
             nameGlowTier: nameGlowFor(s.tier.tierId),     // v2 §8 (earned tier glow)
             nameGlow: (u.orbit && u.orbit.cosmetics && u.orbit.cosmetics.nameGlow) || null, // purchased shop glow (visible to all)
             avatarDeco: (u.orbit && u.orbit.cosmetics && u.orbit.cosmetics.avatarDeco) || null, // equipped avatar frame (visible to all)
+            nameplate: (u.orbit && u.orbit.cosmetics && u.orbit.cosmetics.nameplate) || null,
             weightedReviews: s.weightedReviews,
             reviewsCount: s.reviewsCount,
         };

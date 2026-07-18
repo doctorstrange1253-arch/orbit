@@ -15,6 +15,9 @@ import { postNativeNotification } from '../../utils/nativeNotify';
 import toast from 'react-hot-toast';
 import ErrorBoundary from '../common/ErrorBoundary';
 import ConfirmDialog from '../common/ConfirmDialog';
+import GlowName from '../../cosmic/GlowName';
+import Nameplate from '../../cosmic/Nameplate';
+import { equippedFromUser } from '../../cosmic/cosmetics';
 
 // Drop optimistic "temp-*" bubbles from a conversation cache — used when a
 // message is rejected (e.g. blocked for prohibited content) so it doesn't get
@@ -144,7 +147,7 @@ const ConversationList = ({ onSelect, selectedId, onlineUsers, onConversationDel
               aria-label={`Chat with ${convo.user.name}`}
             >
               <div className="relative flex-shrink-0">
-                <Avatar name={convo.user.name} url={convo.user.avatar} size="md" userId={convo.user._id} />
+                <Avatar name={convo.user.name} url={convo.user.avatar} size="md" userId={convo.user._id} deco={equippedFromUser(convo.user).decoClass} />
                 {isOnline && (
                   <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0f111a] rounded-full z-10 animate-pulse-slow"></span>
                 )}
@@ -160,7 +163,7 @@ const ConversationList = ({ onSelect, selectedId, onlineUsers, onConversationDel
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-2 mb-0.5">
                   <p className={`font-semibold text-sm truncate ${convo.unreadCount > 0 ? 'text-text-primary' : 'text-text-primary'}`}>
-                    {convo.user.name}
+                    <Nameplate plateKey={equippedFromUser(convo.user).plateKey}><GlowName user={convo.user}>{convo.user.name}</GlowName></Nameplate>
                   </p>
                   <span className="text-[10px] text-text-muted flex-shrink-0">
                     {convo.lastMessage?.createdAt ? formatTimestamp(convo.lastMessage.createdAt) : ''}
@@ -614,13 +617,13 @@ const ChatWindow = ({ otherUser, onBack, onlineUsers, isExpanded }) => {
           <ArrowLeft size={18} />
         </button>
         <div className="relative">
-          <Avatar name={otherUser.name} url={otherUser.avatar} size="md" userId={otherUser._id} />
+          <Avatar name={otherUser.name} url={otherUser.avatar} size="md" userId={otherUser._id} deco={equippedFromUser(otherUser).decoClass} />
           {isOnline && (
             <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0a0c14] rounded-full z-10"></span>
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-semibold text-text-primary text-sm truncate">{otherUser.name}</p>
+          <p className="font-semibold text-text-primary text-sm truncate"><Nameplate plateKey={equippedFromUser(otherUser).plateKey}><GlowName user={otherUser}>{otherUser.name}</GlowName></Nameplate></p>
           <p className={`text-[11px] font-medium ${isOnline ? 'text-green-400' : 'text-text-muted'}`}>
             {isOnline ? 'Active now' : (otherUser.lastSeen && !isNaN(new Date(otherUser.lastSeen).getTime()) ? `Last seen ${formatDistanceToNow(new Date(otherUser.lastSeen))} ago` : 'Offline')}
           </p>

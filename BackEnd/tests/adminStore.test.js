@@ -58,6 +58,22 @@ describe("StoreItem overlay + admin CRUD (DB)", () => {
         expect(r2.statusCode).toBe(400);
     });
 
+    it("defaults stay visible when StoreItem rows exist (merge, not replace)", async () => {
+        await StoreItem.create({ key: "glow_extra", type: "name_glow", name: "Extra", cost: 100, status: "live" });
+        await catalog.refresh();
+        const live = catalog.getLiveCatalog();
+        expect(live.some((c) => c.key === "glow_extra")).toBe(true);
+        expect(live.length).toBe(catalog.DEFAULT_CATALOG.length + 1);
+        expect(catalog.getItem("glow_void")).toBeTruthy();
+    });
+
+    it("a StoreItem row overriding a default key updates it in place without dropping the rest", async () => {
+        await StoreItem.create({ key: "glow_void", type: "name_glow", name: "Void Prime", cost: 999, status: "live" });
+        await catalog.refresh();
+        expect(catalog.getItem("glow_void").cost).toBe(999);
+        expect(catalog.getLiveCatalog().length).toBe(catalog.DEFAULT_CATALOG.length);
+    });
+
     it("archive flips status and drops the item from the live shop", async () => {
         await StoreItem.create({ key: "glow_temp", type: "name_glow", name: "Temp", cost: 100, status: "live" });
         await catalog.refresh();

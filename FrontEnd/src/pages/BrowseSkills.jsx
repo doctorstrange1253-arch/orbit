@@ -16,6 +16,7 @@ import UserRatingsModal from '../components/modals/UserRatingsModal';
 import SwapRequestModal from '../components/modals/SwapRequestModal';
 import Spinner from '../components/common/Spinner';
 import useOnlineUsers from '../hooks/useOnlineUsers';
+import { useNotificationStore } from '../store/notificationStore';
 
 import { useRef } from 'react';
 
@@ -42,6 +43,7 @@ const BrowseSkills = () => {
 
   const myId = useAuthStore((s) => s.user?._id);
   const onlineUsers = useOnlineUsers();
+  const { notifyUserOffline } = useNotificationStore();
 
   const { data: skills = [], isLoading, error, refetch } = useQuery({
     queryKey: ['skills', 'all'],
@@ -256,7 +258,12 @@ const BrowseSkills = () => {
                       if (owner) window.dispatchEvent(new CustomEvent('open-chat', { detail: owner }));
                     }}
                     onCall={() => {
-                      if (conn) navigate(`/call/${conn.connection._id}`, { state: { otherUser: conn.other, isCaller: true } });
+                      if (!conn) return;
+                      if (!onlineUsers.has(ownerId)) {
+                        notifyUserOffline(conn.other?.name || 'User');
+                        return;
+                      }
+                      navigate(`/call/${conn.connection._id}`, { state: { otherUser: conn.other, isCaller: true } });
                     }}
                   />
                 );

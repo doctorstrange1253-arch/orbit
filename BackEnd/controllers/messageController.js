@@ -204,8 +204,8 @@ exports.sendMessage = async (req, res) => {
         });
 
         const populated = await Message.findById(message._id)
-            .populate('sender',   'name avatar')
-            .populate('receiver', 'name avatar')
+            .populate('sender',   'name avatar orbit.cosmetics cosmic.nameGlowTier')
+            .populate('receiver', 'name avatar orbit.cosmetics cosmic.nameGlowTier')
             .lean();
 
         // Emit via socket if available
@@ -408,6 +408,8 @@ exports.getConversations = async (req, res) => {
                     'user.name':       1,
                     'user.avatar':     1,
                     'user.trustScore': 1,
+                    'user.orbit.cosmetics': 1,
+                    'user.cosmic.nameGlowTier': 1,
                     lastMessage:       1,
                     unreadCount:       1
                 }

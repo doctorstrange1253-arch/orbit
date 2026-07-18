@@ -3,6 +3,7 @@ import { connectSocket, disconnectSocket } from '../services/socket';
 import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
 import { useQueryClient } from '@tanstack/react-query';
+import api from '../services/api';
 
 /**
  * Hook that manages socket connection lifecycle and event listeners.
@@ -25,6 +26,12 @@ const useSocket = () => {
 
     const socket = connectSocket(user._id);
     isConnected.current = true;
+
+    api.get('/user/profile')
+      .then((r) => {
+        if (r.data && r.data._id) useAuthStore.getState().setUser(r.data);
+      })
+      .catch(() => {});
 
     // New skill in the community → refresh Browse live. No toast: broadcasting a
     // popup to every user on every skill add was phantom noise (v7 §3). Genuine

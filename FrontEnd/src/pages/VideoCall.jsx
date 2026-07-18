@@ -14,6 +14,9 @@ import ConfirmDialog from '../components/common/ConfirmDialog';
 import io from 'socket.io-client';
 import DraggableVideoTile from '../whiteboard/DraggableVideoTile';
 import useCallLayoutStore from '../store/callLayoutStore';
+import GlowName from '../cosmic/GlowName';
+import Nameplate from '../cosmic/Nameplate';
+import { equippedFromUser } from '../cosmic/cosmetics';
 
 // Whiteboard is a large module — load it only when a call actually opens it.
 const Whiteboard = lazy(() => import('../whiteboard/Whiteboard'));
@@ -704,15 +707,6 @@ const VideoCall = () => {
     setActiveRoom(Date.now().toString()); // Generate unique room ID
   };
 
-  // Reopen a saved whiteboard from a past call (keyed by the call's roomName).
-  // Works solo — no need for the other person to be online.
-  const handleOpenBoard = (other, call) => {
-    setCurrentOtherUser(other);
-    setIsCallerState(false);
-    setAutoBoard(true);
-    setActiveRoom(call.roomName);
-  };
-
   /* In an active call */
   if (activeRoom) {
     return <DirectVideoCall roomId={activeRoom} onEnd={handleEnd} otherUser={currentOtherUser} isCaller={isCallerState} autoBoard={autoBoard} />;
@@ -777,8 +771,7 @@ const VideoCall = () => {
             const otherName = other?.name || 'Unknown';
             const otherId   = other?._id || other;
             const isOtherOnline = onlineUsers.has(otherId);
-            
-            const hadSession = ['ended', 'accepted', 'completed'].includes(call.status);
+
             return (
               <motion.div key={call._id}
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
@@ -786,7 +779,7 @@ const VideoCall = () => {
               >
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="relative flex-shrink-0">
-                    <Avatar name={otherName} url={other?.avatar} size="md" userId={otherId} />
+                    <Avatar name={otherName} url={other?.avatar} size="md" userId={otherId} deco={equippedFromUser(other).decoClass} />
                     {isOtherOnline && (
                       <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background z-10"
                         style={{ background: '#00e5a0' }} title="Online" />
@@ -794,7 +787,7 @@ const VideoCall = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-2">
-                      <p className="font-semibold text-text-primary text-sm truncate">{otherName}</p>
+                      <p className="font-semibold text-text-primary text-sm truncate"><Nameplate plateKey={equippedFromUser(other).plateKey}><GlowName user={other}>{otherName}</GlowName></Nameplate></p>
                       <span className="text-[11px] text-text-muted flex-shrink-0 whitespace-nowrap">
                         {call.createdAt ? formatDistanceToNow(new Date(call.createdAt), { addSuffix: true }) : ''}
                       </span>
@@ -807,15 +800,6 @@ const VideoCall = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap sm:flex-shrink-0 justify-end">
-                  {hadSession && (
-                    <button
-                      onClick={() => handleOpenBoard(other, call)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border border-border-subtle text-text-secondary hover:text-accent hover:border-accent/40 whitespace-nowrap"
-                      title="Open the whiteboard from this session"
-                    >
-                      <PenTool size={12} /> Board
-                    </button>
-                  )}
                   <button
                     onClick={() => handleCallAgain(other)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all relative bg-accent text-text-on-accent hover:brightness-110 shadow-sm whitespace-nowrap"

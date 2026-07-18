@@ -221,7 +221,17 @@ function getLiveCatalog(now = Date.now()) {
 
 /** Rebuild the cache from an array of item-shaped rows (or reset to defaults). */
 function _load(rows) {
-    _effective = (rows && rows.length ? rows : DEFAULT_CATALOG).map(withStatus);
+    if (!rows || !rows.length) {
+        _effective = DEFAULT_CATALOG.map(withStatus);
+    } else {
+        const merged = new Map(DEFAULT_CATALOG.map((c) => [c.key, withStatus(c)]));
+        for (const r of rows) {
+            const clean = {};
+            for (const [k, v] of Object.entries(r)) if (v !== undefined) clean[k] = v;
+            merged.set(r.key, withStatus({ ...(merged.get(r.key) || {}), ...clean }));
+        }
+        _effective = [...merged.values()];
+    }
     _byKey = new Map(_effective.map((c) => [c.key, c]));
 }
 

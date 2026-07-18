@@ -172,7 +172,7 @@ export default function Observatory() {
                       <span className="text-[9px] font-bold mt-0.5" style={{ color: 'var(--accent-1, #00c6ff)' }}>You</span>
                     ) : (
                       <span className="text-[9px] text-text-muted mt-0.5 max-w-[64px] truncate opacity-0 group-hover:opacity-100 transition-opacity">
-                        {m.name}
+                        <GlowName nameGlowTier={nameGlowFor(m.tierId)} cosmeticGlowKey={m.nameGlow}>{m.name}</GlowName>
                       </span>
                     )}
                   </button>

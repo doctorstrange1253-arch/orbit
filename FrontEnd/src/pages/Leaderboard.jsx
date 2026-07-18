@@ -18,6 +18,7 @@ import { useLeaderboard } from '../cosmic/useCosmic';
 import CosmicBadge from '../cosmic/CosmicBadge';
 import CosmicLoader from '../cosmic/CosmicLoader';
 import GlowName from '../cosmic/GlowName';
+import Nameplate from '../cosmic/Nameplate';
 import { decoClassFor } from '../cosmic/cosmetics';
 import { getTier, TIER_FLOORS, TIER_ORDER } from '../cosmic/tiers';
 import { InfoDot } from '../cosmic/scoreInfo';
@@ -123,7 +124,7 @@ function Podium({ entries, meId, onOpen }) {
             </div>
             <div className="max-w-full px-1">
               <div className="truncate text-xs font-bold text-text-primary">
-                <GlowName nameGlowTier={e.nameGlowTier} cosmeticGlowKey={e.nameGlow}>{e.name}</GlowName>
+                <Nameplate plateKey={e.nameplate}><GlowName nameGlowTier={e.nameGlowTier} cosmeticGlowKey={e.nameGlow}>{e.name}</GlowName></Nameplate>
               </div>
               <div className="text-[10px] text-text-muted truncate">{getTier(e.tierId).displayName}</div>
             </div>
@@ -397,7 +398,7 @@ export default function Leaderboard() {
                     <Avatar name={e.name} url={e.avatar} size="sm" userId={e.userId} deco={decoClassFor(e.avatarDeco)} />
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-text-primary truncate flex items-center gap-1.5">
-                        <GlowName nameGlowTier={e.nameGlowTier} cosmeticGlowKey={e.nameGlow}>{e.name}</GlowName>{isMe && <span className="text-[9px] text-accent font-semibold opacity-70">you</span>}
+                        <Nameplate plateKey={e.nameplate}><GlowName nameGlowTier={e.nameGlowTier} cosmeticGlowKey={e.nameGlow}>{e.name}</GlowName></Nameplate>{isMe && <span className="text-[9px] text-accent font-semibold opacity-70">you</span>}
                       </div>
                       <div className="text-xs text-text-muted truncate">
                         {getTier(e.tierId).displayName}{e.title ? ` · ${e.title}` : ''}

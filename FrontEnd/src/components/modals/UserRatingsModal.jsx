@@ -4,6 +4,9 @@ import { X, Star, ShieldCheck, MessageSquare } from 'lucide-react';
 import api from '../../services/api';
 import Avatar from '../common/Avatar';
 import { SkelBox, SkelCircle } from '../ui/SkeletonPrimitives';
+import GlowName from '../../cosmic/GlowName';
+import Nameplate from '../../cosmic/Nameplate';
+import { equippedFromUser } from '../../cosmic/cosmetics';
 
 /**
  * UserRatingsModal
@@ -163,9 +166,9 @@ const UserRatingsModal = ({ user, isOpen, onClose }) => {
                     >
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <Avatar name={r.fromUser?.name || '?'} url={r.fromUser?.avatar} size="sm" userId={r.fromUser?._id} />
+                          <Avatar name={r.fromUser?.name || '?'} url={r.fromUser?.avatar} size="sm" userId={r.fromUser?._id} deco={equippedFromUser(r.fromUser).decoClass} />
                           <span style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 600, minWidth: 0, overflowWrap: 'anywhere' }}>
-                            {r.fromUser?.name || 'Anonymous'}
+                            <Nameplate plateKey={equippedFromUser(r.fromUser).plateKey}><GlowName user={r.fromUser}>{r.fromUser?.name || 'Anonymous'}</GlowName></Nameplate>
                           </span>
                         </div>
                         {/* Stars for this review */}
