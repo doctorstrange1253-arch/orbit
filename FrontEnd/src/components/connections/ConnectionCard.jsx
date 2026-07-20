@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { motion } from 'framer-motion';
-import { Check, X, Video, Star, Clock, UserCheck, Trash2, MessageSquare, MessageCircle } from 'lucide-react';
+import { Check, X, Video, Star, Clock, UserCheck, Trash2, MessageSquare, MessageCircle, UserMinus } from 'lucide-react';
 import api from '../../services/api';
 import Avatar from '../common/Avatar';
+import ConfirmDialog from '../common/ConfirmDialog';
 import GlowName from '../../cosmic/GlowName';
 import Nameplate from '../../cosmic/Nameplate';
 import { equippedFromUser } from '../../cosmic/cosmetics';
@@ -22,6 +23,7 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
   const { notifyUserOffline } = useNotificationStore();
   const navigate = useNavigate();
   const [onlineUsers, setOnlineUsers] = useState(new Set());
+  const [confirmUnfriend, setConfirmUnfriend] = useState(false);
 
   const isIncoming   = type === 'incoming';
   const isOutgoing   = type === 'outgoing';
@@ -133,6 +135,20 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
       cancelMutation.mutate();
     }
   };
+
+  const unfriendMutation = useMutation({
+    mutationFn: () => api.delete(`/connections/${connection._id}`),
+    onSuccess: () => {
+      addToast(`${other?.name || 'User'} removed from your connections`, 'success');
+      setConfirmUnfriend(false);
+      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['skills'] });
+    },
+    onError: (err) => {
+      addToast(err.response?.data?.message || 'Failed to remove connection', 'error');
+      setConfirmUnfriend(false);
+    },
+  });
 
   return (
     <motion.div
@@ -287,6 +303,15 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-danger rounded-full" title="User offline" />
               )}
             </button>
+            <button
+              onClick={() => setConfirmUnfriend(true)}
+              disabled={unfriendMutation.isPending}
+              className="flex items-center justify-center px-2.5 py-2 rounded-xl text-text-muted hover:text-danger hover:bg-danger/10 border border-border-subtle transition-all disabled:opacity-50"
+              title="Unfriend"
+              aria-label={`Unfriend ${other?.name || 'user'}`}
+            >
+              <UserMinus size={15} />
+            </button>
           </>
         )}
 
@@ -305,9 +330,28 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
             >
               <Star size={15} /> Leave Review
             </button>
+            <button
+              onClick={() => setConfirmUnfriend(true)}
+              disabled={unfriendMutation.isPending}
+              className="flex items-center justify-center px-2.5 py-2 rounded-xl text-text-muted hover:text-danger hover:bg-danger/10 border border-border-subtle transition-all disabled:opacity-50"
+              title="Unfriend"
+              aria-label={`Unfriend ${other?.name || 'user'}`}
+            >
+              <UserMinus size={15} />
+            </button>
           </>
         )}
       </div>
+
+      <ConfirmDialog
+        isOpen={confirmUnfriend}
+        onClose={() => setConfirmUnfriend(false)}
+        onConfirm={() => unfriendMutation.mutate()}
+        title={`Unfriend ${other?.name || 'this user'}?`}
+        description="This removes the connection for both of you. Your chat history stays, but you'll need to send a new request to connect again."
+        confirmLabel="Unfriend"
+        isLoading={unfriendMutation.isPending}
+      />
     </motion.div>
   );
 };

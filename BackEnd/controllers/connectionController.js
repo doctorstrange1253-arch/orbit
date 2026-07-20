@@ -273,6 +273,43 @@ exports.respondConnection = async (req, res) => {
     }
 };
 
+exports.removeConnection = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const myId = req.user.id;
+
+        const connection = await Connection.findOne({
+            _id: id,
+            $or: [{ requester: myId }, { receiver: myId }],
+        });
+
+        if (!connection) {
+            return res.status(404).json({ message: "Connection not found" });
+        }
+
+        if (connection.status === "pending") {
+            return res.status(400).json({ message: "Use cancel or decline for pending requests" });
+        }
+
+        const otherId = String(connection.requester) === String(myId)
+            ? String(connection.receiver)
+            : String(connection.requester);
+
+        await connection.deleteOne();
+
+        const io = req.app.get("io");
+        if (io) {
+            io.to(`user_${otherId}`).emit("connection-removed", { connectionId: id });
+        }
+
+        res.status(200).json({ message: "Connection removed", connectionId: id });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 // Cancel an outgoing connection request
 exports.cancelConnection = async (req, res) => {
     try {

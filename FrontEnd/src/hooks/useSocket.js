@@ -55,6 +55,11 @@ const useSocket = () => {
       queryClient.invalidateQueries({ queryKey: ['connections'] });
     });
 
+    socket.on('connection-removed', () => {
+      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['skills'] });
+    });
+
     // Force disconnect from video call (AI moderation)
     socket.on('force-disconnect', (data) => {
       addToast(data.reason || 'Call terminated by moderator', 'error');

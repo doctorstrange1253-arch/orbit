@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
-const { 
-  requestConnection, 
-  getPendingConnections, 
-  getMyConnections, 
-  respondConnection, 
+const {
+  requestConnection,
+  getPendingConnections,
+  getMyConnections,
+  respondConnection,
   cancelConnection,
+  removeConnection,
   getCompletedConnections,
-  markConnectionCompleted 
+  markConnectionCompleted
 } = require("../controllers/connectionController");
 
 // Send connection request
@@ -28,6 +29,9 @@ router.put("/:id/respond", auth, respondConnection);
 
 // Cancel connection request
 router.delete("/cancel/:id", auth, cancelConnection);
+
+// Unfriend: remove an established (accepted/completed) connection
+router.delete("/:id", auth, removeConnection);
 
 // Mark connection as completed
 router.put("/:id/complete", auth, markConnectionCompleted);
