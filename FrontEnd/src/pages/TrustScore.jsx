@@ -65,9 +65,8 @@ const ScoreRing = ({ score = 0 }) => {
   );
 };
 
-/* ── Factor bar ── */
-const FactorBar = ({ label, value, max, color, icon: Icon, delay }) => {
-  const pct = Math.round((value / max) * 100);
+const FactorRow = ({ label, desc, value, max, color, icon: Icon, delay }) => {
+  const pct = Math.max(0, Math.min(100, Math.round((value / max) * 100)));
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -75,12 +74,22 @@ const FactorBar = ({ label, value, max, color, icon: Icon, delay }) => {
       transition={{ delay, duration: 0.4 }}
       className="space-y-2"
     >
-      <div className="flex justify-between items-center">
-        <span className="flex items-center gap-2 text-sm text-text-secondary">
-          <Icon size={13} style={{ color }} /> {label}
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex items-center gap-2.5 min-w-0">
+          <span className="w-7 h-7 rounded-lg grid place-items-center flex-shrink-0"
+            style={{ background: `${color}14`, border: `1px solid ${color}33` }}>
+            <Icon size={13} style={{ color }} />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-sm font-semibold text-text-primary leading-tight truncate">{label}</span>
+            <span className="block text-[11px] text-text-muted leading-tight truncate">{desc}</span>
+          </span>
         </span>
-        <span className="text-sm font-bold" style={{ color }}>
-          {value}<span className="text-text-muted font-normal">/{max}</span>
+        <span className="text-right flex-shrink-0">
+          <span className="text-sm font-bold tabular-nums" style={{ color }}>
+            {value}<span className="text-text-muted font-normal">/{max}</span>
+          </span>
+          <span className="block text-[10px] text-text-muted tabular-nums">{pct}%</span>
         </span>
       </div>
       <div className="h-2 rounded-full overflow-hidden bg-surface-hover border border-border-subtle">
@@ -138,6 +147,15 @@ const TrustScore = () => {
   const { trustScore = 0, totalRatings = 0, averageRating = 0, isFlagged, flagReason, breakdown = {}, recentRatings = [] } = data || {};
   const bd = breakdown;
 
+  const factors = [
+    { label: 'Rating Score', desc: 'Stars partners leave after sessions', value: bd.ratingScore ?? 0, max: 40, color: '#ffb800', icon: Star, hint: 'Deliver great sessions and ask partners to rate you.' },
+    { label: 'Experience', desc: 'Skill swaps you have completed', value: bd.experienceScore ?? 0, max: 20, color: '#a855f7', icon: Award, hint: 'Complete more swaps to build your track record.' },
+    { label: 'Account Age', desc: 'How long you have been on Orbit', value: bd.ageScore ?? 0, max: 20, color: '#00c6ff', icon: Clock, hint: 'This grows automatically as your account matures.' },
+    { label: 'Activity', desc: 'Recent logins and engagement', value: bd.activityScore ?? 0, max: 20, color: '#00e5a0', icon: Activity, hint: 'Log in regularly and keep sessions going.' },
+  ];
+  const weakest = factors.reduce((a, b) => (b.max - b.value) > (a.max - a.value) ? b : a, factors[0]);
+  const nextTier = trustScore >= 70 ? null : trustScore >= 40 ? { label: 'Excellent', at: 70 } : { label: 'Good', at: 40 };
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <Helmet>
@@ -193,14 +211,41 @@ const TrustScore = () => {
         </div>
 
         {/* Factors breakdown */}
-        <div className="md:col-span-3 p-6 rounded-2xl space-y-5 bg-surface border border-border-subtle shadow-sm">
-          <h3 className="font-display font-bold text-text-primary text-base flex items-center gap-2">
-            <ShieldCheck size={16} className="text-accent" /> Score Breakdown
-          </h3>
-          <FactorBar label="Rating Score"    value={bd.ratingScore    ?? 0} max={40} color="#ffb800" icon={Star}       delay={0}    />
-          <FactorBar label="Experience"      value={bd.experienceScore ?? 0} max={20} color="#a855f7" icon={Award}      delay={0.07} />
-          <FactorBar label="Account Age"     value={bd.ageScore        ?? 0} max={20} color="#00c6ff" icon={Clock}      delay={0.14} />
-          <FactorBar label="Activity Score"  value={bd.activityScore   ?? 0} max={20} color="#00e5a0" icon={Activity}   delay={0.21} />
+        <div className="md:col-span-3 p-5 sm:p-6 rounded-2xl bg-surface border border-border-subtle shadow-sm flex flex-col">
+          <div className="flex items-center justify-between gap-2 flex-wrap mb-5">
+            <h3 className="font-display font-bold text-text-primary text-base flex items-center gap-2">
+              <ShieldCheck size={16} className="text-accent" /> Score Breakdown
+            </h3>
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full tabular-nums"
+              style={{ background: 'color-mix(in srgb, var(--accent-1) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--accent-1) 25%, transparent)', color: 'var(--accent-1)' }}>
+              {factors.reduce((s, f) => s + f.value, 0)}/100 pts
+            </span>
+          </div>
+          <div className="space-y-4">
+            {factors.map((f, i) => (
+              <FactorRow key={f.label} label={f.label} desc={f.desc} value={f.value} max={f.max} color={f.color} icon={f.icon} delay={i * 0.07} />
+            ))}
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.4 }}
+            className="mt-5 p-3.5 rounded-xl flex items-start gap-3"
+            style={{ background: 'color-mix(in srgb, var(--accent-1) 7%, transparent)', border: '1px solid color-mix(in srgb, var(--accent-1) 22%, transparent)' }}
+          >
+            <TrendingUp size={15} className="text-accent flex-shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-text-primary">
+                {nextTier
+                  ? `${Math.max(1, nextTier.at - Math.round(trustScore))} points to "${nextTier.label}"`
+                  : 'Top standing — keep it up!'}
+              </p>
+              <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
+                Biggest opportunity: <span className="font-semibold text-text-secondary">{weakest.label}</span>
+                {' '}(+{weakest.max - weakest.value} pts available). {weakest.hint}
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
 
