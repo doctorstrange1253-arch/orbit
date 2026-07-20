@@ -39,7 +39,11 @@ const PUSH_FORCED_OFF = (() => {
   try { return String(import.meta.env.VITE_ENABLE_PUSH).toLowerCase() === 'false'; }
   catch { return false; }
 })();
-const PUSH_ENABLED = FCM_CONFIGURED && !PUSH_FORCED_OFF;
+const PUSH_FORCED_ON = (() => {
+  try { return String(import.meta.env.VITE_ENABLE_PUSH).toLowerCase() === 'true'; }
+  catch { return false; }
+})();
+const PUSH_ENABLED = (FCM_CONFIGURED || PUSH_FORCED_ON) && !PUSH_FORCED_OFF;
 
 let onOpenLink = null;
 let lastToken = null;
