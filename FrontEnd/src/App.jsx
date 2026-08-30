@@ -57,6 +57,7 @@ const Sessions       = lazy(() => import('./pages/Sessions'));
 const SessionDetail  = lazy(() => import('./pages/SessionDetail'));
 const OrbitSessionRoom = lazy(() => import('./pages/OrbitSessionRoom'));
 const MySessions     = lazy(() => import('./pages/MySessions'));
+const MentorHub      = lazy(() => import('./pages/MentorHub'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -550,6 +551,8 @@ function AppInner() {
         <Route path="/sessions/:userId"    element={<ProtectedRoute><Suspense fallback={<PageLoader />}><SessionDetail /></Suspense></ProtectedRoute>} />
         <Route path="/session-room/:sessionId" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><OrbitSessionRoom /></Suspense></ProtectedRoute>} />
         <Route path="/my-sessions"         element={<ProtectedRoute><Suspense fallback={<PageLoader />}><MySessions /></Suspense></ProtectedRoute>} />
+        {/* Mentor-side: apply, manage profile, view bookings + earnings. */}
+        <Route path="/teach"               element={<ProtectedRoute><Suspense fallback={<PageLoader />}><MentorHub /></Suspense></ProtectedRoute>} />
 
         {/* Cosmic badge gallery — dev/QA route, reachable by URL, not in nav */}
         <Route path="/cosmic-gallery" element={<Layout><Suspense fallback={<PageLoader />}><BadgeGallery /></Suspense></Layout>} />

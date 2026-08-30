@@ -19,6 +19,15 @@ const { createNotification } = require("../services/notify");
 const { track: analytics } = require("../services/orbitAnalytics");
 
 // ── helpers ────────────────────────────────────────────────────────────────
+// Lazy-load PhotonLedger so this file doesn't pay the import cost on every
+// boot. The lazy thunk handles the Mongoose hot-reload guard too — if the
+// model was already registered (e.g. by tests or a previous require), reuse
+// it; otherwise register fresh.
+const PhotonLedger = () => {
+    const m = require("../models/PhotonLedger");
+    return m.default || m.PhotonLedger || m;
+};
+
 function shapeMentor(p, user) {
     return {
         userId: p.userId?.toString() || p.userId,
@@ -63,6 +72,83 @@ exports.applyAsMentor = async (req, res) => {
         return res.status(201).json({ ok: true, applicationStatus: profile.applicationStatus, id: String(profile._id) });
     } catch (err) {
         console.error("applyAsMentor:", err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+// ── GET /api/sessions/mentor/me ────────────────────────────────────────────
+// Returns the caller's MentorProfile in ANY application state (draft /
+// submitted / approved / rejected / suspended) plus a denormalized earnings
+// summary computed from PhotonLedger so the MentorHub can render the
+// approved-state dashboard without a second round-trip.
+exports.getMyMentor = async (req, res) => {
+    try {
+        const meId = req.user.id;
+        const profile = await MentorProfile.findOne({ userId: meId }).lean();
+        if (!profile) return res.json({ profile: null });
+        const user = await User.findById(meId).select("name avatar").lean();
+
+        // Aggregate the mentor's earnings from the photon ledger. Both pending
+        // and released payouts count toward the lifetime total the UI shows.
+        const earningsAgg = await PhotonLedger().aggregate([
+            { $match: { userId: meId, source: { $in: ["session_payout_pending", "session_payout_released"] } } },
+            { $group: { _id: "$source", total: { $sum: "$delta" } } },
+        ]);
+        const earnings = { totalInr: 0, pendingInr: 0, releasedInr: 0 };
+        for (const row of earningsAgg) {
+            const t = row.total || 0;
+            earnings.totalInr += t;
+            if (row._id === "session_payout_pending") earnings.pendingInr = t;
+            if (row._id === "session_payout_released") earnings.releasedInr = t;
+        }
+
+        return res.json({
+            profile: {
+                ...shapeMentor(profile, user),
+                applicationStatus: profile.applicationStatus,
+                status: profile.status,
+                payoutMultiplier: profile.payoutMultiplier,
+                availability: profile.availability,
+                rejectionReason: profile.rejectionReason || null,
+                suspensionReason: profile.suspensionReason || null,
+                createdAt: profile.createdAt,
+                updatedAt: profile.updatedAt,
+            },
+            earnings,
+        });
+    } catch (err) {
+        console.error("getMyMentor:", err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+// ── GET /api/sessions/mentor/bookings ──────────────────────────────────────
+// Sessions where the caller is the mentor. Returns denormalized student info
+// so the MentorHub can render the bookings list without N+1 round-trips.
+exports.getMyMentorBookings = async (req, res) => {
+    try {
+        const meId = req.user.id;
+        const sessions = await OrbitSession.find({ mentorId: meId })
+            .sort({ scheduledAt: -1 })
+            .limit(100)
+            .lean();
+        if (!sessions.length) return res.json({ items: [] });
+        const studentIds = [...new Set(sessions.map((s) => String(s.studentId)))];
+        const students = await User.find({ _id: { $in: studentIds } })
+            .select("name avatar")
+            .lean();
+        const byId = new Map(students.map((u) => [String(u._id), u]));
+        const items = sessions.map((s) => ({
+            ...s,
+            _id: String(s._id),
+            studentId: String(s.studentId),
+            mentorId: String(s.mentorId),
+            mentorProfileId: String(s.mentorProfileId),
+            student: byId.get(String(s.studentId)) || { name: "Student" },
+        }));
+        return res.json({ items });
+    } catch (err) {
+        console.error("getMyMentorBookings:", err);
         return res.status(500).json({ message: "Server error" });
     }
 };
