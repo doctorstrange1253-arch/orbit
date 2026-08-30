@@ -448,8 +448,12 @@ function AppInner() {
     });
 
     // Orbit Session: the peer started the session — push a toast so the
-    // student knows to hop in.
+    // student knows to hop in. Only meaningful to the student side; the
+    // mentor who started the room is already inside it, and a peer_learner
+    // who happens to be online has no /my-sessions tab to navigate to.
     socket.on('session:started', (data) => {
+      const roles = useAuthStore.getState().user?.roles || [];
+      if (!roles.includes('student')) return;
       useNotificationStore.getState().addNotification({
         type: 'info',
         title: 'Session started',

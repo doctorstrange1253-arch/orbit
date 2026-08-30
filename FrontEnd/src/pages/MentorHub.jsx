@@ -29,6 +29,7 @@ import EmptyState from '../components/common/EmptyState';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
 import MentorApplicationForm from '../components/mentor/MentorApplicationForm';
 import AvailabilityEditor from '../components/sessions/AvailabilityEditor';
+import { useAuthStore } from '../store/authStore';
 
 // State-level visual config. Each state has a title, a tinted chip color, an
 // icon, and copy for the hero. Colors use the semantic tokens so the state
@@ -73,6 +74,12 @@ const STATE_META = {
 
 const MentorHub = () => {
     const qc = useQueryClient();
+    // Some users are both mentor + student on the same account (e.g. they
+    // teach React and book sessions for Public Speaking). The /my-sessions
+    // quick-link is only valid for those users — pure mentors get a scroll
+    // anchor to the upcoming-sessions section on this same page instead.
+    const userRoles = useAuthStore((s) => s.user?.roles) || [];
+    const hasStudentRole = userRoles.includes('student');
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['sessions', 'mentor', 'me'],
         queryFn: () => api.get('/sessions/mentor/me').then((r) => r.data),
@@ -224,7 +231,10 @@ const ApprovedView = ({ profile, earnings, upcomingBookings, onRefresh }) => (
             <Stat label="Payout multiplier" value={`${Math.round((profile.payoutMultiplier || 0.85) * 100)}%`} sub={profile.ratingCutEligibleSince ? "Top tier unlocked" : "Top tier @ 4.8★ / 20+ ratings"} Icon={Sparkles} />
         </div>
 
-        {/* Quick links */}
+        {/* Quick links — only show "All bookings" if the user also holds the
+            student role. /my-sessions is the student-side view; mentors who
+            don't also pay for sessions get a separate Upcoming/Past list
+            rendered further down this page, not /my-sessions. */}
         <div className="grid sm:grid-cols-3 gap-3">
             <Link to={`/profile/${profile.userId}`} className="nav-tab-glass p-4 flex items-center justify-between hover:border-accent/40">
                 <span className="flex items-center gap-2 text-sm font-semibold text-text-primary"><Eye className="w-4 h-4 text-accent" /> Public profile</span>
@@ -234,10 +244,17 @@ const ApprovedView = ({ profile, earnings, upcomingBookings, onRefresh }) => (
                 <span className="flex items-center gap-2 text-sm font-semibold text-text-primary"><Edit3 className="w-4 h-4 text-accent" /> Edit profile</span>
                 <ArrowRight className="w-4 h-4 text-text-muted" />
             </a>
-            <Link to="/my-sessions" className="nav-tab-glass p-4 flex items-center justify-between hover:border-accent/40">
-                <span className="flex items-center gap-2 text-sm font-semibold text-text-primary"><BookOpen className="w-4 h-4 text-accent" /> All bookings</span>
-                <ArrowRight className="w-4 h-4 text-text-muted" />
-            </Link>
+            {hasStudentRole ? (
+              <Link to="/my-sessions" className="nav-tab-glass p-4 flex items-center justify-between hover:border-accent/40">
+                  <span className="flex items-center gap-2 text-sm font-semibold text-text-primary"><BookOpen className="w-4 h-4 text-accent" /> All bookings</span>
+                  <ArrowRight className="w-4 h-4 text-text-muted" />
+              </Link>
+            ) : (
+              <a href="#upcoming" className="nav-tab-glass p-4 flex items-center justify-between hover:border-accent/40">
+                  <span className="flex items-center gap-2 text-sm font-semibold text-text-primary"><BookOpen className="w-4 h-4 text-accent" /> Upcoming sessions</span>
+                  <ArrowRight className="w-4 h-4 text-text-muted" />
+              </a>
+            )}
         </div>
 
         {/* Upcoming bookings */}
