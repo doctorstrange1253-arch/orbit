@@ -1,0 +1,133 @@
+/**
+ * rarity.css — visual treatments for the 15-tier rarity ladder (Nebula Store).
+ * The per-tier COLOUR + halo SIZE are injected inline from rarity.js
+ * (`--rar` colour, `--rar-glow` px) so this file only owns the ANIMATION and
+ * shared shape. Reduced-motion (`prefers-reduced-motion`) and the app-wide
+ * `[data-anim-off="true"]` switch both freeze motion but keep the static halo,
+ * so rank still reads by intensity.
+ *
+ * PERF: pulses/breathing NEVER animate box-shadow directly — animating a
+ * shadow forces a full repaint of every glowing card on every frame, which is
+ * what made the store scroll stutter. Instead each element keeps a STATIC
+ * base shadow and a ::after overlay carrying the peak shadow, and only the
+ * overlay's `opacity` animates (compositor-only, no repaint).
+ */
+
+/* Keyword badge — the little pill under each store item's title. */
+.rar-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  /* --rar-ink is the contrast-floored tier color (rarity.js): identical to
+     --rar for bright tiers, lifted for dark-valued ones (Black Hole, Dark
+     Matter) so the label + border always read on a dark card. */
+  color: var(--rar-ink, var(--rar, #cbd5e1));
+  border: 1px solid color-mix(in srgb, var(--rar-ink, var(--rar, #cbd5e1)) 55%, transparent);
+  background: color-mix(in srgb, var(--rar, #cbd5e1) 12%, rgba(6, 8, 15, 0.6));
+  /* static base halo (the animated peak lives on ::after) */
+  box-shadow: 0 0 calc(var(--rar-glow, 8px) * 0.7) color-mix(in srgb, var(--rar, #cbd5e1) 55%, transparent);
+}
+
+/* the little rarity dot next to the label — keeps the TRUE tier color (a black
+   hole's dot SHOULD be black); the hairline ink ring makes dark dots read. */
+.rar-badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--rar, #cbd5e1);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--rar-ink, var(--rar, #cbd5e1)) 55%, transparent), 0 0 6px var(--rar, #cbd5e1);
+}
+
+/* peak-glow overlay: static shadow, only opacity animates (GPU-composited). */
+.rar-badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 var(--rar-glow, 8px) color-mix(in srgb, var(--rar, #cbd5e1) 90%, transparent);
+  opacity: 0;
+  will-change: opacity;
+  animation: rar-pulse-fade 3.4s ease-in-out infinite;
+}
+
+@keyframes rar-pulse-fade {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 1; }
+}
+
+/* Card halo — only the top tiers (rarity.card === true) get the class. The ring
+   colour + spread come from the same --rar / --rar-glow vars. */
+.rar-card-glow {
+  position: relative;
+  border-color: color-mix(in srgb, var(--rar, #a855f7) 45%, transparent) !important;
+  /* static base halo */
+  box-shadow:
+    0 0 calc(var(--rar-glow, 20px) * 0.7) color-mix(in srgb, var(--rar, #a855f7) 35%, transparent),
+    inset 0 0 22px color-mix(in srgb, var(--rar, #a855f7) 8%, transparent);
+}
+
+/* breathing peak overlay — opacity-only, no per-frame shadow repaint. */
+.rar-card-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    0 0 calc(var(--rar-glow, 20px) * 1.15) color-mix(in srgb, var(--rar, #a855f7) 60%, transparent),
+    inset 0 0 34px color-mix(in srgb, var(--rar, #a855f7) 14%, transparent);
+  opacity: 0;
+  will-change: opacity;
+  animation: rar-pulse-fade 5s ease-in-out infinite;
+}
+
+/* MULTIVERSAL — animated iridescent halo that cycles hue (the ultimate tier).
+   hue-rotate runs on the GPU; scope it and keep the cycle slow. */
+.rar-iridescent {
+  animation: rar-hue 8s linear infinite;
+}
+@keyframes rar-hue {
+  0%   { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* Featured-rail brand sweep — a slow sheen across the featured banner
+   (transform-only; already compositor-friendly). */
+.rar-featured-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.rar-featured-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.14) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: rar-sheen 6s ease-in-out infinite;
+  pointer-events: none;
+  will-change: transform;
+}
+@keyframes rar-sheen {
+  0%, 62%  { transform: translateX(-100%); }
+  85%, 100% { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rar-badge::after,
+  .rar-card-glow::after,
+  .rar-iridescent { animation: none; }
+  .rar-featured-sheen::after { display: none; }
+}
+[data-anim-off="true"] .rar-badge::after,
+[data-anim-off="true"] .rar-card-glow::after,
+[data-anim-off="true"] .rar-iridescent { animation: none; }
+[data-anim-off="true"] .rar-featured-sheen::after { display: none; }

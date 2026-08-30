@@ -1,0 +1,1748 @@
+/**
+ * cosmetics.css — visual styles for Photon-shop cosmetics (Orbit Engine, Tier 3).
+ * Keyed by catalog `key` so cosmic/cosmetics.js can map an equipped item to a
+ * class. Name glows (.cg-*) animate the text itself; backgrounds (.cbg-*) are
+ * animated panels behind profile headers. Each item is a DISTINCT animated
+ * EFFECT (motion/complexity scales with rarity tier) — never a plain recolor.
+ * Every effect has a reduced-motion fallback at the bottom of this file.
+ */
+
+/* ════════════════════ NAME GLOWS ═════════════════════════════ */
+@keyframes cg-pulse {
+  0%, 100% { text-shadow: 0 0 6px var(--cg-a), 0 0 12px var(--cg-b); }
+  50%      { text-shadow: 0 0 10px var(--cg-a), 0 0 22px var(--cg-b); }
+}
+
+.cg { font-weight: 800; animation: cg-pulse 3s ease-in-out infinite; }
+
+.cg-aurora { color: #5eead4; --cg-a: rgba(45,212,191,.75); --cg-b: rgba(16,185,129,.55); }
+.cg-ember  { color: #fdba74; --cg-a: rgba(251,146,60,.8);  --cg-b: rgba(239,68,68,.5); }
+.cg-plasma { color: #f0abfc; --cg-a: rgba(217,70,239,.8);  --cg-b: rgba(139,92,246,.6); }
+.cg-gold   { color: #fde68a; --cg-a: rgba(251,191,36,.85); --cg-b: rgba(245,158,11,.6); }
+.cg-void   {
+  color: #c4b5fd;
+  --cg-a: rgba(129,140,248,.8); --cg-b: rgba(236,72,153,.5);
+  background: linear-gradient(90deg,#a5b4fc,#f0abfc,#7dd3fc,#a5b4fc);
+  background-size: 300% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: cg-pulse 3s ease-in-out infinite, cg-void-shift 6s linear infinite;
+}
+@keyframes cg-void-shift { to { background-position: 300% 0; } }
+
+/* ─ Effect glows: a text-clipped gradient sweep helper for the metallic/holo set ─ */
+.cg-shimmer, .cg-holo, .cg-comet, .cg-ribbon, .cg-chrome, .cg-multiversal {
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 1 · Shimmer Sweep — a bright light bar travels across the letters */
+.cg-shimmer {
+  color: #e2e8f0;
+  background: linear-gradient(100deg,#94a3b8 42%,#ffffff 50%,#94a3b8 58%);
+  background-size: 250% 100%;
+  animation: cg-shimmer 2.6s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-shimmer { to { background-position: -250% 0; } }
+
+/* 2 · Neon Flicker — buzzing broken-sign flicker */
+.cg-neon {
+  color: #a5f3fc;
+  text-shadow: 0 0 6px #22d3ee, 0 0 14px #0891b2;
+  animation: cg-neon 2.4s steps(1, end) infinite;
+}
+@keyframes cg-neon {
+  0%, 18%, 22%, 55%, 57%, 100% { opacity: 1;  text-shadow: 0 0 6px #22d3ee, 0 0 14px #0891b2; }
+  20%, 56%                     { opacity: .5; text-shadow: none; }
+}
+
+/* 3 · Holographic Shift — travelling gradient + hue rotation */
+.cg-holo {
+  color: #f0abfc;
+  background: linear-gradient(90deg,#f472b6,#c084fc,#60a5fa,#f472b6);
+  background-size: 300% 100%;
+  /* Clip-safety (Issue 4): NEVER animate `filter` on a text-clipped element —
+     on Chromium/Android WebView the compositor can blank the clip mask and the
+     gradient paints as a solid box over invisible glyphs. The multi-hue
+     gradient sweep carries the color motion instead. */
+  animation: cg-holo-pos 5s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-holo-pos { to { background-position: 300% 0; } }
+
+/* 4 · Solar Flare — warm flares burst */
+.cg-solarflare {
+  color: #fed7aa;
+  animation: cg-solarflare 2.8s ease-in-out infinite;
+}
+@keyframes cg-solarflare {
+  0%, 100% { text-shadow: 0 0 6px #fb923c, 0 0 12px rgba(249,115,22,.5); }
+  45%      { text-shadow: 0 0 12px #fdba74, 0 0 26px #f97316, 0 0 40px rgba(234,88,12,.6); }
+}
+
+/* 5 · Chromatic Glitch — RGB-split jitter */
+.cg-glitch {
+  color: #e0f2fe;
+  animation: cg-glitch .9s steps(2, end) infinite;
+}
+@keyframes cg-glitch {
+  0%, 100% { text-shadow: 2px 0 #ef4444, -2px 0 #22d3ee; }
+  25%      { text-shadow: -2px 0 #ef4444, 2px 0 #22d3ee; }
+  50%      { text-shadow: 2px -1px #ef4444, -2px 1px #22d3ee; }
+  75%      { text-shadow: -1px 1px #ef4444, 1px -1px #22d3ee; }
+}
+
+/* 6 · Comet Trail — a bright head with a fading tail sweeps across */
+.cg-comet {
+  color: #a5f3fc;
+  background: linear-gradient(90deg,#0e7490 0%,#5eead4 42%,#ffffff 50%,#5eead4 58%,#0e7490 100%);
+  background-size: 240% 100%;
+  animation: cg-comet 2.4s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-comet { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+
+/* 7 · Frost Crystal — crystalline refraction shimmer */
+.cg-frost {
+  color: #bae6fd;
+  animation: cg-frost 3.2s ease-in-out infinite;
+}
+@keyframes cg-frost {
+  0%, 100% { text-shadow: 0 0 4px #7dd3fc, 0 0 8px rgba(224,242,254,.4); }
+  50%      { text-shadow: 0 0 9px #e0f2fe, 0 0 16px rgba(125,211,252,.7); }
+}
+
+/* 8 · Aurora Ribbon — a flowing ribbon of colour */
+.cg-ribbon {
+  color: #a7f3d0;
+  background: linear-gradient(90deg,#34d399,#22d3ee,#a78bfa,#34d399);
+  background-size: 300% 100%;
+  animation: cg-ribbon 4s ease-in-out infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-ribbon {
+  0%   { background-position: 0 0; }
+  50%  { background-position: 300% 0; }
+  100% { background-position: 0 0; }
+}
+
+/* 9 · Liquid Chrome — molten metallic highlight sweep */
+.cg-chrome {
+  color: #e5e7eb;
+  background: linear-gradient(90deg,#9ca3af,#f9fafb,#6b7280,#f9fafb,#9ca3af);
+  background-size: 250% 100%;
+  animation: cg-chrome 3s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-chrome { to { background-position: 250% 0; } }
+
+/* 10 · Pulsar Beam — rhythmic sharp pulses */
+.cg-pulsar {
+  color: #c7d2fe;
+  animation: cg-pulsar 1.6s ease-out infinite;
+}
+@keyframes cg-pulsar {
+  0%        { text-shadow: 0 0 4px #6366f1; }
+  10%       { text-shadow: 0 0 16px #a5b4fc, 0 0 28px #6366f1; }
+  40%, 100% { text-shadow: 0 0 4px #6366f1; }
+}
+
+/* 11 · Starlit Sparkle — twinkling starlight around the letters */
+.cg-starlit {
+  color: #e9d5ff;
+  animation: cg-starlit 2.4s ease-in-out infinite;
+}
+@keyframes cg-starlit {
+  0%, 100% { text-shadow: -6px -3px 4px #fff, 5px 2px 4px #f0abfc, 0 0 8px #a855f7; }
+  33%      { text-shadow: 6px -2px 4px #fff, -4px 3px 4px #f0abfc, 0 0 8px #a855f7; }
+  66%      { text-shadow: 2px 4px 4px #fff, -5px -3px 4px #f0abfc, 0 0 8px #a855f7; }
+}
+
+/* 12 · Quasar Jet — bipolar jets of light above/below */
+.cg-quasar {
+  color: #ddd6fe;
+  animation: cg-quasar 2.6s ease-in-out infinite;
+}
+@keyframes cg-quasar {
+  0%, 100% { text-shadow: 0 -8px 12px rgba(139,92,246,.7), 0 8px 12px rgba(59,130,246,.5); }
+  50%      { text-shadow: 0 -16px 20px rgba(167,139,250,.9), 0 16px 20px rgba(96,165,250,.7); }
+}
+
+/* 13 · Ion Surge — crackling electric surges */
+.cg-ion {
+  color: #fdba74;
+  animation: cg-ion 1.8s ease-in-out infinite;
+}
+@keyframes cg-ion {
+  0%, 100% { text-shadow: 0 0 6px #fb923c, 0 0 12px #f97316; }
+  20%      { text-shadow: 0 0 14px #fed7aa, 0 0 30px #fb923c; }
+  25%      { text-shadow: 0 0 4px #fb923c; }
+  30%      { text-shadow: 0 0 16px #fff7ed, 0 0 34px #f97316; }
+}
+
+/* 14 · Black-Hole Core — dark core, warping light rim */
+.cg-blackcore {
+  color: #0b0d17;
+  -webkit-text-stroke: .5px #94a3b8;
+  animation: cg-blackcore 3.4s ease-in-out infinite;
+}
+@keyframes cg-blackcore {
+  0%, 100% { text-shadow: 0 0 3px #94a3b8, 0 0 10px rgba(148,163,184,.6); }
+  50%      { text-shadow: 0 0 6px #cbd5e1, 0 0 18px rgba(148,163,184,.95); }
+}
+
+/* 15 · Event Lensing — gravitational-lens halo ring */
+.cg-lensing {
+  color: #ddd6fe;
+  animation: cg-lensing 3s ease-in-out infinite;
+}
+@keyframes cg-lensing {
+  0%, 100% { text-shadow: 0 0 4px #7c3aed, 0 0 10px rgba(124,58,237,.5); }
+  50%      { text-shadow: 0 0 2px #ede9fe, 0 0 14px #7c3aed, 0 0 26px rgba(167,139,250,.7); }
+}
+
+/* 16 · Singularity Pulse — intense infinite-density pulse */
+.cg-singularity {
+  color: #fbcfe8;
+  animation: cg-singularity 2.2s ease-in-out infinite;
+}
+@keyframes cg-singularity {
+  0%, 100% { text-shadow: 0 0 6px #ec4899, 0 0 14px rgba(236,72,153,.6); }
+  50%      { text-shadow: 0 0 16px #f9a8d4, 0 0 34px #ec4899, 0 0 50px rgba(190,24,93,.6); }
+}
+
+/* 17 · Dark Matter Field — invisible-mass particle shimmer */
+.cg-darkmatter {
+  color: #c4b5fd;
+  animation: cg-darkmatter 3.6s ease-in-out infinite;
+}
+@keyframes cg-darkmatter {
+  0%, 100% { filter: brightness(1);    text-shadow: 0 0 8px rgba(124,58,237,.6); }
+  50%      { filter: brightness(1.35); text-shadow: 0 0 18px rgba(167,139,250,.9); }
+}
+
+/* 18 · Antimatter Flare — annihilation-grade reactive flares */
+.cg-antimatter {
+  color: #fecaca;
+  animation: cg-antimatter 1.4s ease-in-out infinite;
+}
+@keyframes cg-antimatter {
+  0%, 100% { text-shadow: 0 0 6px #ef4444, 0 0 14px rgba(239,68,68,.5); }
+  30%      { text-shadow: 0 0 18px #fca5a5, 0 0 40px #ef4444, 0 0 60px rgba(185,28,28,.6); }
+  35%      { text-shadow: 0 0 4px #ef4444; }
+}
+
+/* 19 · Multiversal Iridescence — best-in-class iridescent motion */
+.cg-multiversal {
+  color: #e9d5ff;
+  background: linear-gradient(90deg,#f472b6,#a78bfa,#38bdf8,#34d399,#fbbf24,#f472b6);
+  background-size: 400% 100%;
+  /* Clip-safety (Issue 4): static aura only — an ANIMATED filter here can
+     blank the text clip on Chromium/WebView (solid-box bug). */
+  filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.45)) drop-shadow(0 0 6px rgba(168,85,247,.5));
+  animation: cg-multiversal-pos 6s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-multiversal-pos { to { background-position: 400% 0; } }
+
+/* ─ Name glows · batch 2 (each a distinct animation) ─ */
+/* 20 · Gravity Wave — the name ripples/wobbles */
+.cg-wave {
+  display: inline-block;
+  color: #cbd5e1;
+  text-shadow: 0 0 6px rgba(148,163,184,.6);
+  animation: cg-wave 2.8s ease-in-out infinite;
+}
+@keyframes cg-wave {
+  0%, 100% { transform: translateY(0) skewX(0); }
+  25%      { transform: translateY(-1px) skewX(-5deg); }
+  75%      { transform: translateY(1px) skewX(5deg); }
+}
+
+/* 21 · Stellar Breath — a slow breathing scale + glow */
+.cg-breathe {
+  display: inline-block;
+  color: #7dd3fc;
+  animation: cg-breathe 3s ease-in-out infinite;
+}
+@keyframes cg-breathe {
+  0%, 100% { transform: scale(1);    text-shadow: 0 0 6px rgba(125,211,252,.6); }
+  50%      { transform: scale(1.06); text-shadow: 0 0 16px rgba(125,211,252,.95); }
+}
+
+/* 22 · Colour Cascade — a vertical waterfall of colour */
+.cg-cascade {
+  color: #fbbf24;
+  background: linear-gradient(180deg,#fde68a,#f59e0b,#b45309,#fde68a);
+  background-size: 100% 300%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: cg-cascade 3s linear infinite;
+}
+@keyframes cg-cascade { to { background-position: 0 300%; } }
+
+/* 23 · Molten Flow — molten colour rises through the letters */
+.cg-lava {
+  color: #fca5a5;
+  background: linear-gradient(0deg,#7f1d1d,#ef4444,#fbbf24,#ef4444);
+  background-size: 100% 300%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: cg-lava 3.4s ease-in-out infinite;
+}
+@keyframes cg-lava { from { background-position: 0 0; } to { background-position: 0 -300%; } }
+
+/* 24 · Prism Shift — solid name split through the spectrum */
+.cg-prism {
+  color: #e0f2fe;
+  text-shadow: 0 0 6px #38bdf8, 0 0 14px #a78bfa;
+  animation: cg-prism 4s linear infinite;
+}
+@keyframes cg-prism { to { filter: hue-rotate(360deg); } }
+
+/* 25 · Toxic Glow — radioactive green flicker */
+.cg-toxic {
+  color: #bef264;
+  animation: cg-toxic 1.6s steps(1, end) infinite;
+}
+@keyframes cg-toxic {
+  0%, 100% { text-shadow: 0 0 6px #84cc16, 0 0 14px #4d7c0f; }
+  45%      { text-shadow: 0 0 14px #d9f99d, 0 0 30px #65a30d; }
+  50%      { text-shadow: 0 0 3px #65a30d; }
+}
+
+/* 26 · Ember Sparks — warm sparks twinkle around the name */
+.cg-sparks {
+  color: #fed7aa;
+  animation: cg-sparks 2s ease-in-out infinite;
+}
+@keyframes cg-sparks {
+  0%, 100% { text-shadow: -5px -3px 3px #fff7ed, 4px 2px 3px #fdba74, 0 0 8px #f97316; }
+  33%      { text-shadow: 5px -2px 3px #fff7ed, -4px 3px 3px #fdba74, 0 0 8px #f97316; }
+  66%      { text-shadow: 2px 4px 3px #fff7ed, -5px -2px 3px #fdba74, 0 0 8px #f97316; }
+}
+
+/* 27 · Nova Flash — periodic overexposed flash */
+.cg-flash {
+  color: #fed7aa;
+  animation: cg-flash 3s ease-in-out infinite;
+}
+@keyframes cg-flash {
+  0%, 60%, 100% { color: #fed7aa; text-shadow: 0 0 6px #fb923c, 0 0 12px #f97316; }
+  70%           { color: #ffffff; text-shadow: 0 0 20px #ffffff, 0 0 44px #fed7aa, 0 0 70px #fb923c; }
+  80%           { color: #fef3c7; text-shadow: 0 0 10px #fde68a; }
+}
+
+/* 28 · Temporal Echo — ghost echoes ripple outward */
+.cg-echo {
+  color: #ddd6fe;
+  animation: cg-echo 2.6s ease-in-out infinite;
+}
+@keyframes cg-echo {
+  0%, 100% { text-shadow: 3px 0 rgba(124,58,237,.5), -3px 0 rgba(56,189,248,.4), 6px 0 rgba(124,58,237,.25), -6px 0 rgba(56,189,248,.2); }
+  50%      { text-shadow: 8px 0 rgba(124,58,237,.5), -8px 0 rgba(56,189,248,.4), 16px 0 rgba(124,58,237,.2), -16px 0 rgba(56,189,248,.15); }
+}
+
+/* 29 · Kaleidoscope — full-spectrum flowing gradient */
+.cg-kaleido {
+  color: #e9d5ff;
+  background: linear-gradient(90deg,#ef4444,#f59e0b,#eab308,#22c55e,#3b82f6,#a855f7,#ef4444);
+  background-size: 400% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* Clip-safety (Issue 4): static aura; animated filter blanks the clip on
+     Chromium/WebView. The 7-stop rainbow sweep IS the kaleidoscope. */
+  filter: drop-shadow(0 0 5px rgba(168,85,247,.45));
+  animation: cg-kaleido-pos 4s linear infinite;
+}
+@keyframes cg-kaleido-pos { to { background-position: 400% 0; } }
+
+/* ─ Name glows · batch 3 (Part C — each a distinct animation) ─ */
+.cg-scan, .cg-marquee, .cg-oil, .cg-nebula, .cg-cosmos {
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Soft Focus — blurs gently in and out */
+.cg-focus { color: #e9d5ff; text-shadow: 0 0 8px rgba(216,180,254,.6); animation: cg-focus 3.4s ease-in-out infinite; }
+@keyframes cg-focus { 0%, 100% { filter: blur(0); } 50% { filter: blur(1.4px); } }
+
+/* Underline Sweep — a light bar runs along an underline */
+.cg-underline {
+  color: #fbcfe8;
+  background: linear-gradient(90deg, transparent, #f9a8d4, #ffffff, #f9a8d4, transparent) bottom / 45% 2px no-repeat;
+  background-position-x: -50%;
+  animation: cg-underline 2.8s linear infinite;
+}
+@keyframes cg-underline { to { background-position-x: 150%; } }
+
+/* Letter Spread — the letters breathe apart */
+.cg-spread { color: #a5f3fc; text-shadow: 0 0 8px rgba(34,211,238,.6); animation: cg-spread 3.6s ease-in-out infinite; }
+@keyframes cg-spread { 0%, 100% { letter-spacing: normal; } 50% { letter-spacing: .14em; } }
+
+/* Cursor Blink — a blinking caret follows the name */
+.cg-typewriter { color: #86efac; text-shadow: 0 0 6px rgba(34,197,94,.6); }
+.cg-typewriter::after { content: '▌'; margin-left: .05em; color: #bbf7d0; animation: cg-caret 1s steps(1, end) infinite; }
+@keyframes cg-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+/* Scan Bar — a bright bar scans down the glyphs */
+.cg-scan { color: #7dd3fc; background: linear-gradient(180deg, #38bdf8 40%, #ffffff 50%, #38bdf8 60%); background-size: 100% 260%; animation: cg-scan 2.6s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-scan { to { background-position: 0 -260%; } }
+
+/* Embossed — a rotating light source presses the letters */
+.cg-emboss { color: #e5e7eb; animation: cg-emboss 4s linear infinite; }
+@keyframes cg-emboss {
+  0%   { text-shadow: -1px -1px 1px rgba(255,255,255,.7), 1px 1px 2px rgba(0,0,0,.6); }
+  25%  { text-shadow: 1px -1px 1px rgba(255,255,255,.7), -1px 1px 2px rgba(0,0,0,.6); }
+  50%  { text-shadow: 1px 1px 1px rgba(255,255,255,.7), -1px -1px 2px rgba(0,0,0,.6); }
+  75%  { text-shadow: -1px 1px 1px rgba(255,255,255,.7), 1px -1px 2px rgba(0,0,0,.6); }
+  100% { text-shadow: -1px -1px 1px rgba(255,255,255,.7), 1px 1px 2px rgba(0,0,0,.6); }
+}
+
+/* Marquee Lights — running theatre bulbs */
+.cg-marquee { color: #fde68a; background: repeating-linear-gradient(90deg, #f59e0b 0 6px, #fff7ed 6px 10px, #f59e0b 10px 16px); background-size: 200% 100%; animation: cg-marquee 1.4s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-marquee { to { background-position: 32px 0; } }
+
+/* Heartbeat — a double-thump pulse */
+.cg-heartbeat { color: #fda4af; animation: cg-heartbeat 1.8s ease-in-out infinite; }
+@keyframes cg-heartbeat {
+  0%, 100% { transform: scale(1); text-shadow: 0 0 6px rgba(244,63,94,.5); }
+  14%      { transform: scale(1.09); text-shadow: 0 0 14px rgba(244,63,94,.9); }
+  28%      { transform: scale(1); }
+  42%      { transform: scale(1.06); text-shadow: 0 0 12px rgba(244,63,94,.8); }
+  56%      { transform: scale(1); }
+}
+
+/* Jelly Wobble — squash and skew */
+.cg-wobble { color: #c4b5fd; text-shadow: 0 0 8px rgba(167,139,250,.6); animation: cg-wobble 2.4s ease-in-out infinite; }
+@keyframes cg-wobble {
+  0%, 100% { transform: skewX(0) scaleY(1); }
+  25%      { transform: skewX(-6deg) scaleY(1.06); }
+  50%      { transform: skewX(0) scaleY(.95); }
+  75%      { transform: skewX(6deg) scaleY(1.04); }
+}
+
+/* Static Noise — grayscale TV static */
+.cg-static { color: #e5e7eb; animation: cg-static .28s steps(3, end) infinite; }
+@keyframes cg-static {
+  0%   { text-shadow: 0 0 3px #fff, 0 0 6px #9ca3af; opacity: 1; }
+  33%  { text-shadow: 0 0 2px #d1d5db; opacity: .82; }
+  66%  { text-shadow: 0 0 4px #f3f4f6, 0 0 7px #6b7280; opacity: .93; }
+  100% { text-shadow: 0 0 3px #e5e7eb; opacity: .88; }
+}
+
+/* Torchlight — warm flame flicker with a rise */
+.cg-torch { color: #fdba74; animation: cg-torch 1.4s ease-in-out infinite; }
+@keyframes cg-torch {
+  0%, 100% { text-shadow: 0 0 6px #fb923c, 0 -2px 12px rgba(249,115,22,.6); transform: translateY(0); }
+  30%      { text-shadow: 0 0 10px #fdba74, 0 -6px 18px rgba(234,88,12,.7); transform: translateY(-1px); }
+  55%      { text-shadow: 0 0 7px #fb923c, 0 -3px 14px rgba(249,115,22,.5); transform: translateY(0); }
+  80%      { text-shadow: 0 0 11px #fed7aa, 0 -7px 20px rgba(234,88,12,.75); transform: translateY(-1.5px); }
+}
+
+/* High Voltage — electric-blue arcs */
+.cg-volt { color: #bae6fd; animation: cg-volt .5s steps(2, end) infinite; }
+@keyframes cg-volt {
+  0%, 100% { text-shadow: 0 0 5px #38bdf8, 0 0 12px #0ea5e9; }
+  25%      { text-shadow: 2px 0 6px #e0f2fe, -2px 0 12px #38bdf8, 0 0 20px #0284c7; }
+  50%      { text-shadow: 0 0 4px #7dd3fc; }
+  75%      { text-shadow: -2px 0 6px #e0f2fe, 2px 0 12px #38bdf8, 0 0 22px #0284c7; }
+}
+
+/* Oil Slick — iridescent conic sheen */
+/* Clip-safety (Issue 4): cg-oil-hue removed — animating filter on a clipped
+   element blanks the clip on Chromium/WebView. The conic sweep carries it. */
+.cg-oil { color: #a78bfa; background: conic-gradient(from 0deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 200% 200%; animation: cg-oil 6s linear infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-oil { 0% { background-position: 0 0; } 50% { background-position: 100% 100%; } 100% { background-position: 0 0; } }
+
+/* Neon Outline — a hollow neon-tube outline */
+.cg-stroke { color: transparent; -webkit-text-stroke: 1px #f0abfc; text-shadow: 0 0 8px rgba(217,70,239,.7); animation: cg-stroke 2.6s ease-in-out infinite; }
+/* Safety: if text-stroke is unsupported, transparent text would vanish — keep a solid colour. */
+@supports not ((-webkit-text-stroke: 1px #000) or (text-stroke: 1px #000)) {
+  .cg-stroke { color: #f0abfc; }
+}
+@keyframes cg-stroke {
+  0%, 100% { -webkit-text-stroke-color: #f0abfc; text-shadow: 0 0 6px rgba(217,70,239,.6); }
+  50%      { -webkit-text-stroke-color: #fce7f3; text-shadow: 0 0 14px rgba(217,70,239,.95), 0 0 26px rgba(139,92,246,.6); }
+}
+
+/* Gravity Warp — 3D tilt as light bends */
+.cg-warp { color: #c7d2fe; text-shadow: 0 0 8px rgba(129,140,248,.6); animation: cg-warp 4.5s ease-in-out infinite; }
+@keyframes cg-warp {
+  0%, 100% { transform: perspective(300px) rotateY(-14deg); }
+  50%      { transform: perspective(300px) rotateY(14deg); }
+}
+
+/* Mirage — heat-haze wavering */
+.cg-mirage { color: #fde68a; text-shadow: 0 0 8px rgba(251,191,36,.5); animation: cg-mirage 3s ease-in-out infinite; }
+@keyframes cg-mirage {
+  0%, 100% { transform: translateY(0) skewX(0); filter: blur(0); }
+  33%      { transform: translateY(-1px) skewX(2deg); filter: blur(.6px); }
+  66%      { transform: translateY(1px) skewX(-2deg); filter: blur(.4px); }
+}
+
+/* Spectrum Cycle — sweeps through every hue */
+.cg-spectrum { color: #ff5470; text-shadow: 0 0 10px currentColor; animation: cg-spectrum 5s linear infinite; }
+@keyframes cg-spectrum { to { filter: hue-rotate(360deg); } }
+
+/* Nebula Cloud — soft drifting multicolour cloud */
+.cg-nebula { color: #c084fc; background: linear-gradient(70deg, #7c3aed, #db2777, #2563eb, #7c3aed); background-size: 280% 280%; animation: cg-nebula 9s ease-in-out infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-nebula { 0%, 100% { background-position: 0 0; } 50% { background-position: 100% 100%; } }
+
+/* Quantum Flux — micro-jitter of an uncertain particle */
+.cg-quantum { color: #fca5a5; animation: cg-quantum .18s steps(2, end) infinite; }
+@keyframes cg-quantum {
+  0%   { transform: translate(0, 0); opacity: 1; text-shadow: 0 0 6px #ef4444; }
+  25%  { transform: translate(.6px, -.4px); opacity: .8; }
+  50%  { transform: translate(-.5px, .5px); opacity: 1; text-shadow: 0 0 10px #fecaca, 0 0 16px #ef4444; }
+  75%  { transform: translate(.4px, .3px); opacity: .85; }
+  100% { transform: translate(0, 0); opacity: 1; }
+}
+
+/* Cosmic Symphony — flagship: flowing spectrum + bloom + scale.
+   Clip-safety (Issue 4): the hue-rotate animation was removed — animating
+   filter on a text-clipped element blanks the clip on Chromium/WebView. The
+   5-stop spectrum sweep + scale carry the symphony; the bloom is static. */
+.cg-cosmos { color: #f472b6; background: linear-gradient(90deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 320% 100%; filter: drop-shadow(0 0 8px rgba(244,114,182,.5)); animation: cg-cosmos-flow 5s linear infinite, cg-cosmos-scale 4s ease-in-out infinite;
+  /* re-assert clip AFTER any background shorthand: the shorthand resets background-clip to border-box, which paints the gradient as a solid box over invisible glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes cg-cosmos-flow { to { background-position: 320% 0; } }
+@keyframes cg-cosmos-scale { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+
+/* ═══════════════─ PROFILE BACKGROUNDS (NEBULAE) ─═══════════════ */
+/* A skill card wearing an equipped nebula is a RENDER surface: the art is
+   dark by design, so re-pin the semantic text tokens to their dark-theme
+   values — otherwise light mode paints near-black text on the nebula.
+   (Overrides --color-* directly: the @theme aliases resolve at :root, so
+   overriding the underlying --text-* here would not propagate.) */
+.skill-card-nebula {
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.75);
+  --color-text-muted: rgba(255, 255, 255, 0.6);
+}
+
+.cbg { position: relative; overflow: hidden; isolation: isolate; }
+.cbg::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(4,3,13,.28) 0%, rgba(4,3,13,.42) 55%, rgba(4,3,13,.60) 100%); }
+.cbg > * { position: relative; z-index: 2; }
+.cbg-nebula_violet { background:
+  radial-gradient(120% 140% at 20% 0%, rgba(139,92,246,.55), transparent 60%),
+  radial-gradient(120% 140% at 90% 30%, rgba(217,70,239,.35), transparent 55%),
+  linear-gradient(160deg, #1a0b2e, #0d0221); }
+.cbg-nebula_teal { background:
+  radial-gradient(120% 140% at 15% 10%, rgba(45,212,191,.5), transparent 60%),
+  radial-gradient(120% 140% at 85% 40%, rgba(56,189,248,.35), transparent 55%),
+  linear-gradient(160deg, #06283d, #041016); }
+.cbg-deep_field { background:
+  radial-gradient(80% 100% at 70% 20%, rgba(99,102,241,.25), transparent 60%),
+  radial-gradient(60% 80% at 20% 80%, rgba(236,72,153,.2), transparent 60%),
+  linear-gradient(160deg, #0b1020, #05070f); }
+.cbg-supernova { background:
+  radial-gradient(90% 120% at 50% 25%, rgba(251,191,36,.6), transparent 55%),
+  radial-gradient(120% 140% at 50% 25%, rgba(239,68,68,.4), transparent 65%),
+  linear-gradient(160deg, #2a1005, #0d0402); }
+
+/* 1 · Twinkling Starfield — a star layer softly pulses */
+.cbg-starfield { background: linear-gradient(160deg,#0b1020,#05070f); }
+.cbg-starfield::before {
+  content: ""; position: absolute; inset: -20%;
+  background:
+    radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 70% 60%, #fff, transparent),
+    radial-gradient(1px 1px at 40% 80%, #e0f2fe, transparent),
+    radial-gradient(1.5px 1.5px at 85% 25%, #fff, transparent),
+    radial-gradient(1px 1px at 55% 15%, #bae6fd, transparent);
+  animation: cbg-twinkle 3.5s ease-in-out infinite;
+}
+@keyframes cbg-twinkle { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+
+/* 2 · Aurora Waves — slow flowing curtains */
+.cbg-aurora_waves {
+  background:
+    linear-gradient(120deg, rgba(52,211,153,.4), rgba(56,189,248,.3), rgba(167,139,250,.35), rgba(52,211,153,.4)),
+    linear-gradient(160deg, #04121a, #02060c);
+  background-size: 300% 300%, 100% 100%;
+  animation: cbg-aurora 9s ease-in-out infinite;
+}
+@keyframes cbg-aurora {
+  0%   { background-position: 0% 50%, 0 0; }
+  50%  { background-position: 100% 50%, 0 0; }
+  100% { background-position: 0% 50%, 0 0; }
+}
+
+/* 3 · Drifting Nebula — clouds drift and swirl */
+.cbg-drifting_nebula {
+  background:
+    radial-gradient(60% 80% at 30% 30%, rgba(217,70,239,.45), transparent 60%),
+    radial-gradient(70% 90% at 70% 60%, rgba(99,102,241,.4), transparent 60%),
+    linear-gradient(160deg, #160a2b, #07030f);
+  background-size: 200% 200%, 220% 220%, 100% 100%;
+  animation: cbg-drift 14s ease-in-out infinite;
+}
+@keyframes cbg-drift {
+  0%   { background-position: 0 0, 100% 100%, 0 0; }
+  50%  { background-position: 40% 30%, 60% 70%, 0 0; }
+  100% { background-position: 0 0, 100% 100%, 0 0; }
+}
+
+/* Shared slow spin for disk/spiral layers */
+@keyframes cbg-spin { to { transform: rotate(360deg); } }
+
+/* 4 · Galaxy Spiral — a rotating spiral arm */
+.cbg-galaxy_spiral { background: linear-gradient(160deg,#0a0620,#05030d); }
+.cbg-galaxy_spiral::before {
+  content: ""; position: absolute; inset: -40%; border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, rgba(45,212,191,.35), transparent 40%, rgba(139,92,246,.4), transparent 75%);
+  animation: cbg-spin 18s linear infinite;
+}
+
+/* 5 · Solar Wind — streaming particles drift diagonally */
+.cbg-solar_wind {
+  background:
+    repeating-linear-gradient(115deg, transparent 0 18px, rgba(56,189,248,.12) 18px 20px),
+    linear-gradient(160deg, #04121f, #02070f);
+  background-size: 200% 200%, 100% 100%;
+  animation: cbg-wind 6s linear infinite;
+}
+@keyframes cbg-wind { to { background-position: 200% 0, 0 0; } }
+
+/* 6 · Pulsar Wave — expanding shockwave rings */
+.cbg-pulsar_wave { background: linear-gradient(160deg,#04101d,#02070f); }
+.cbg-pulsar_wave::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 40%; aspect-ratio: 1;
+  transform: translate(-50%, -50%); border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(56,189,248,.5), 0 0 40px rgba(56,189,248,.4);
+  animation: cbg-ring 3s ease-out infinite;
+}
+@keyframes cbg-ring {
+  0%   { transform: translate(-50%, -50%) scale(.2); opacity: .9; }
+  100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+}
+
+/* 7 · Meteor Rain — streaks fall across the sky */
+.cbg-meteor_rain { background: linear-gradient(160deg,#0a0a18,#04040c); }
+.cbg-meteor_rain::before {
+  content: ""; position: absolute; inset: -50%;
+  background: repeating-linear-gradient(215deg, transparent 0 40px, rgba(255,255,255,.5) 40px 42px, transparent 42px 120px);
+  animation: cbg-meteor 2.2s linear infinite;
+}
+@keyframes cbg-meteor { from { transform: translate(0, -20%); } to { transform: translate(-20%, 20%); } }
+
+/* 8 · Cosmic Dawn — a shifting dawn gradient */
+.cbg-cosmic_dawn {
+  background: linear-gradient(160deg, #312e81, #7c3aed, #db2777, #1e1b4b);
+  background-size: 100% 300%;
+  animation: cbg-dawn 12s ease-in-out infinite;
+}
+@keyframes cbg-dawn {
+  0%   { background-position: 0 0; }
+  50%  { background-position: 0 100%; }
+  100% { background-position: 0 0; }
+}
+
+/* 9 · Galaxy Core — a glowing rotating core */
+.cbg-galaxy_core {
+  background:
+    radial-gradient(60% 60% at 50% 45%, rgba(168,85,247,.5), transparent 60%),
+    linear-gradient(160deg, #0a0620, #04030d);
+}
+.cbg-galaxy_core::before {
+  content: ""; position: absolute; inset: -30%;
+  background: conic-gradient(from 0deg, rgba(236,72,153,.3), rgba(139,92,246,.4), rgba(56,189,248,.3), rgba(236,72,153,.3));
+  animation: cbg-spin 22s linear infinite;
+}
+
+/* 10 · Supernova Burst — a pulsing detonation */
+.cbg-supernova_burst {
+  background:
+    radial-gradient(60% 70% at 50% 40%, rgba(251,191,36,.7), rgba(239,68,68,.4) 45%, transparent 70%),
+    linear-gradient(160deg, #2a1005, #0d0402);
+  background-size: 200% 200%, 100% 100%;
+  animation: cbg-burst 4s ease-in-out infinite;
+}
+@keyframes cbg-burst {
+  0%, 100% { background-size: 160% 160%, 100% 100%; filter: brightness(.9); }
+  50%      { background-size: 230% 230%, 100% 100%; filter: brightness(1.3); }
+}
+
+/* 11 · Black-Hole Accretion — a spinning disk around a dark core */
+.cbg-blackhole {
+  background:
+    radial-gradient(30% 30% at 50% 50%, #000 40%, transparent 70%),
+    linear-gradient(160deg, #0a0a12, #040407);
+}
+.cbg-blackhole::before {
+  content: ""; position: absolute; inset: -20%; border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, rgba(251,146,60,.5), rgba(148,163,184,.3), transparent 60%);
+  -webkit-mask: radial-gradient(circle, transparent 32%, #000 34%);
+  mask: radial-gradient(circle, transparent 32%, #000 34%);
+  animation: cbg-spin 10s linear infinite;
+}
+
+/* 12 · Event Horizon — a lensing ring pulses */
+.cbg-event_horizon {
+  background:
+    radial-gradient(35% 35% at 50% 50%, #05030a 45%, rgba(124,58,237,.5) 60%, transparent 72%),
+    linear-gradient(160deg, #0a0618, #04030c);
+}
+.cbg-event_horizon::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 50%; aspect-ratio: 1;
+  transform: translate(-50%, -50%); border-radius: 50%;
+  box-shadow: 0 0 30px 6px rgba(124,58,237,.6), inset 0 0 30px rgba(167,139,250,.5);
+  animation: cbg-horizon 5s ease-in-out infinite;
+}
+@keyframes cbg-horizon {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: .7; }
+  50%      { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+}
+
+/* 13 · Wormhole — concentric rings tunnel inward */
+.cbg-wormhole {
+  background: repeating-radial-gradient(circle at 50% 50%, #1e1b4b 0 12px, #312e81 12px 24px, #0f172a 24px 36px);
+  background-position: 50% 50%;
+  animation: cbg-worm 6s linear infinite;
+}
+@keyframes cbg-worm { from { background-size: 300% 300%; } to { background-size: 120% 120%; } }
+
+/* 14 · Dark-Matter Web — filament web pulses */
+.cbg-darkmatter_web {
+  background:
+    repeating-linear-gradient(60deg, transparent 0 28px, rgba(124,58,237,.14) 28px 30px),
+    repeating-linear-gradient(-60deg, transparent 0 28px, rgba(76,29,149,.14) 28px 30px),
+    linear-gradient(160deg, #0c0620, #04020c);
+  animation: cbg-web 7s ease-in-out infinite;
+}
+@keyframes cbg-web { 0%, 100% { filter: brightness(.85); } 50% { filter: brightness(1.3); } }
+
+/* 15 · Antimatter Field — a reactive energy field */
+.cbg-antimatter_field {
+  background:
+    radial-gradient(50% 60% at 30% 40%, rgba(239,68,68,.4), transparent 60%),
+    radial-gradient(50% 60% at 70% 60%, rgba(190,24,93,.4), transparent 60%),
+    linear-gradient(160deg, #1a0505, #0a0203);
+  background-size: 200% 200%, 200% 200%, 100% 100%;
+  animation: cbg-antimatter 5s ease-in-out infinite;
+}
+@keyframes cbg-antimatter {
+  0%, 100% { background-position: 0 0, 100% 100%, 0 0; filter: brightness(1); }
+  50%      { background-position: 50% 50%, 50% 50%, 0 0; filter: brightness(1.3); }
+}
+
+/* 16 · Multiversal Field — shifting iridescent holo */
+.cbg-multiversal {
+  background: linear-gradient(120deg, #f472b6, #a78bfa, #38bdf8, #34d399, #fbbf24, #f472b6);
+  background-size: 400% 400%;
+  animation: cbg-multiversal 10s ease-in-out infinite;
+}
+@keyframes cbg-multiversal {
+  0%   { background-position: 0% 50%;   filter: hue-rotate(0); }
+  50%  { background-position: 100% 50%; filter: hue-rotate(180deg); }
+  100% { background-position: 0% 50%;   filter: hue-rotate(360deg); }
+}
+
+/* ─ Profile backgrounds · batch 2 (distinct animated scenes) ─ */
+/* 17 · Shooting Stars — a streak crosses, then a pause */
+.cbg-shooting_stars { background: linear-gradient(160deg,#0a0e1e,#05070f); }
+.cbg-shooting_stars::before {
+  content: ""; position: absolute; inset: -10%;
+  background:
+    radial-gradient(1.5px 1.5px at 25% 25%, #fff, transparent),
+    radial-gradient(1px 1px at 75% 55%, #cbd5e1, transparent),
+    linear-gradient(215deg, transparent 46%, rgba(255,255,255,.8) 48%, transparent 50%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%, 100% 100%, 55% 55%;
+  animation: cbg-shoot 4.5s linear infinite;
+}
+@keyframes cbg-shoot {
+  0%   { background-position: 0 0, 0 0, -60% -60%; }
+  35%  { background-position: 0 0, 0 0, 130% 130%; }
+  100% { background-position: 0 0, 0 0, 130% 130%; }
+}
+
+/* 18 · Plasma Storm — churning multicolour plasma */
+.cbg-plasma_storm {
+  background:
+    radial-gradient(45% 55% at 30% 40%, rgba(56,189,248,.5), transparent 60%),
+    radial-gradient(45% 55% at 70% 55%, rgba(217,70,239,.45), transparent 60%),
+    radial-gradient(40% 50% at 50% 70%, rgba(52,211,153,.4), transparent 60%),
+    linear-gradient(160deg,#0a1226,#04030f);
+  background-size: 200% 200%, 200% 200%, 200% 200%, 100% 100%;
+  animation: cbg-plasma 8s ease-in-out infinite;
+}
+@keyframes cbg-plasma {
+  0%, 100% { background-position: 0 0, 100% 0, 50% 100%, 0 0; filter: hue-rotate(0); }
+  50%      { background-position: 60% 40%, 20% 80%, 80% 20%, 0 0; filter: hue-rotate(40deg); }
+}
+
+/* 19 · Ring System — a tilted planetary ring rotates */
+.cbg-ring_system {
+  background:
+    radial-gradient(30% 30% at 50% 50%, rgba(251,191,36,.5), transparent 60%),
+    linear-gradient(160deg,#1a1206,#05040c);
+}
+.cbg-ring_system::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 150%; aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, rgba(251,191,36,.5), transparent 30%, rgba(251,146,60,.4), transparent 70%);
+  -webkit-mask: radial-gradient(circle, transparent 60%, #000 62%, #000 74%, transparent 76%);
+  mask: radial-gradient(circle, transparent 60%, #000 62%, #000 74%, transparent 76%);
+  animation: cbg-ringspin 20s linear infinite;
+}
+@keyframes cbg-ringspin {
+  from { transform: translate(-50%, -50%) scaleY(.42) rotate(-15deg); }
+  to   { transform: translate(-50%, -50%) scaleY(.42) rotate(345deg); }
+}
+
+/* 20 · Ion Stream — ion particles stream upward */
+.cbg-ion_stream {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 22px, rgba(45,212,191,.14) 22px 24px),
+    linear-gradient(160deg,#04121a,#03040f);
+  background-size: 100% 200%, 100% 100%;
+  animation: cbg-ion 5s linear infinite;
+}
+@keyframes cbg-ion { to { background-position: 0 -200%, 0 0; } }
+
+/* 21 · Crystal Cave — refracting crystalline facets */
+.cbg-crystal_cave {
+  background:
+    conic-gradient(from 0deg at 30% 30%, rgba(56,189,248,.25), rgba(224,242,254,.15), rgba(59,130,246,.25), rgba(56,189,248,.25)),
+    linear-gradient(160deg,#071522,#04070f);
+  background-size: 180% 180%, 100% 100%;
+  animation: cbg-crystal 7s ease-in-out infinite;
+}
+@keyframes cbg-crystal {
+  0%, 100% { background-position: 0 0, 0 0; filter: brightness(.95); }
+  50%      { background-position: 100% 100%, 0 0; filter: brightness(1.25); }
+}
+
+/* 22 · Quasar Beam — a rotating beam sweeps around */
+.cbg-quasar_beam {
+  background:
+    radial-gradient(30% 30% at 50% 50%, rgba(139,92,246,.5), transparent 65%),
+    linear-gradient(160deg,#0a0620,#04030d);
+}
+.cbg-quasar_beam::before {
+  content: ""; position: absolute; inset: -40%;
+  background: conic-gradient(from 0deg, transparent 0 46%, rgba(167,139,250,.55) 49% 51%, transparent 54% 96%, rgba(96,165,250,.45) 98%, transparent);
+  animation: cbg-spin 14s linear infinite;
+}
+
+/* 23 · Galaxy Collision — two cores spiral together */
+.cbg-galaxy_collision {
+  background:
+    radial-gradient(30% 40% at 25% 40%, rgba(236,72,153,.5), transparent 60%),
+    radial-gradient(30% 40% at 75% 60%, rgba(56,189,248,.5), transparent 60%),
+    linear-gradient(160deg,#0a0618,#04030c);
+  background-size: 200% 200%, 200% 200%, 100% 100%;
+  animation: cbg-collide 9s ease-in-out infinite;
+}
+@keyframes cbg-collide {
+  0%, 100% { background-position: 0% 50%, 100% 50%, 0 0; filter: brightness(1); }
+  50%      { background-position: 60% 50%, 40% 50%, 0 0; filter: brightness(1.2); }
+}
+
+/* 24 · Solar Corona — breathing corona with slow flares */
+.cbg-solar_corona {
+  background:
+    radial-gradient(40% 40% at 50% 50%, rgba(253,224,71,.7), rgba(249,115,22,.4) 55%, transparent 75%),
+    linear-gradient(160deg,#1a0f04,#05040c);
+  background-size: 200% 200%, 100% 100%;
+  animation: cbg-corona 5s ease-in-out infinite;
+}
+.cbg-solar_corona::before {
+  content: ""; position: absolute; inset: -30%;
+  background: conic-gradient(from 0deg, transparent, rgba(253,224,71,.25), transparent 25%, rgba(251,146,60,.25), transparent 50%, rgba(253,224,71,.25), transparent 75%);
+  animation: cbg-spin 26s linear infinite;
+}
+@keyframes cbg-corona {
+  0%, 100% { background-size: 150% 150%, 100% 100%; filter: brightness(.95); }
+  50%      { background-size: 210% 210%, 100% 100%; filter: brightness(1.25); }
+}
+
+/* 25 · Gamma Burst — sharp periodic detonations */
+.cbg-gamma_burst {
+  background:
+    radial-gradient(50% 60% at 50% 45%, rgba(163,230,53,.55), rgba(132,204,22,.3) 40%, transparent 70%),
+    linear-gradient(160deg,#0a1204,#04040c);
+  background-size: 200% 200%, 100% 100%;
+  animation: cbg-gamma 3.6s ease-in-out infinite;
+}
+@keyframes cbg-gamma {
+  0%, 55%, 100% { background-size: 120% 120%, 100% 100%; filter: brightness(.85); }
+  65%           { background-size: 260% 260%, 100% 100%; filter: brightness(1.5); }
+  75%           { background-size: 180% 180%, 100% 100%; filter: brightness(1.05); }
+}
+
+/* 26 · Time Warp — rings tunnel inward past slow spokes */
+.cbg-time_warp {
+  background:
+    repeating-radial-gradient(circle at 50% 50%, rgba(236,72,153,.16) 0 10px, transparent 10px 22px),
+    linear-gradient(160deg,#12061f,#04030c);
+  background-position: 50% 50%;
+  animation: cbg-timewarp 6s linear infinite;
+}
+.cbg-time_warp::before {
+  content: ""; position: absolute; inset: -40%;
+  background: repeating-conic-gradient(from 0deg, rgba(168,85,247,.12) 0deg 10deg, transparent 10deg 20deg);
+  animation: cbg-spin 30s linear infinite;
+}
+@keyframes cbg-timewarp {
+  from { background-size: 280% 280%, 100% 100%; }
+  to   { background-size: 110% 110%, 100% 100%; }
+}
+
+/* ─ Profile backgrounds · batch 3 (Part C — distinct animated scenes) ─ */
+
+/* Cosmic Sunrise — a warm glow breathes up from the horizon */
+.cbg-sunrise { background: linear-gradient(0deg, #f59e0b, #7c2d12 55%, #0b0a1f); animation: cbg-sunrise 7s ease-in-out infinite; }
+@keyframes cbg-sunrise { 0%, 100% { filter: brightness(.8); } 50% { filter: brightness(1.18); } }
+
+/* Moonrise — a soft luminous orb rises slowly */
+.cbg-moonrise { background: linear-gradient(0deg, #1e293b, #050510); }
+.cbg-moonrise::before {
+  content: ''; position: absolute; left: 50%; bottom: -45%;
+  width: 55%; padding-top: 55%; transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #e2e8f0, #94a3b8 60%, transparent 70%);
+  filter: blur(2px); animation: cbg-moonrise 12s ease-in-out infinite;
+}
+@keyframes cbg-moonrise { 0%, 100% { bottom: -45%; opacity: .7; } 50% { bottom: 15%; opacity: 1; } }
+
+/* Fireflies — soft dots drift and blink */
+.cbg-fireflies { background: radial-gradient(circle at 50% 60%, #0f2027, #050510); }
+.cbg-fireflies::before {
+  content: ''; position: absolute; inset: -20%;
+  background:
+    radial-gradient(circle, #fde68a 0 2px, transparent 3px) 10% 20% / 46px 46px,
+    radial-gradient(circle, #a7f3d0 0 2px, transparent 3px) 60% 70% / 64px 64px;
+  animation: cbg-fireflies 9s ease-in-out infinite;
+}
+@keyframes cbg-fireflies { 0%, 100% { transform: translate(0, 0); opacity: .45; } 50% { transform: translate(10px, -12px); opacity: 1; } }
+
+/* Bokeh Drift — large soft out-of-focus lights */
+.cbg-bokeh { background: radial-gradient(circle at 40% 40%, #2e1065, #0b0a1f); }
+.cbg-bokeh::before {
+  content: ''; position: absolute; inset: -25%;
+  background:
+    radial-gradient(circle, rgba(240,171,252,.55) 0 10px, transparent 16px) 20% 30% / 120px 120px,
+    radial-gradient(circle, rgba(125,211,252,.5) 0 8px, transparent 14px) 70% 60% / 150px 150px;
+  filter: blur(2px); animation: cbg-bokeh 14s ease-in-out infinite;
+}
+@keyframes cbg-bokeh { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-14px, 10px) scale(1.1); } }
+
+/* Cosmic Tide — gradient waves sweep side to side */
+.cbg-tide { background: linear-gradient(90deg, #0ea5e9, #22d3ee, #2563eb, #0ea5e9); background-size: 300% 100%; animation: cbg-tide 10s ease-in-out infinite; }
+@keyframes cbg-tide { 0%, 100% { background-position: 0 0; } 50% { background-position: 100% 0; } }
+
+/* Retro Grid — a neon grid scrolls toward the horizon */
+.cbg-grid { background: linear-gradient(0deg, #831843, #1e1b4b 70%); }
+.cbg-grid::before {
+  content: ''; position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(236,72,153,.5) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(90deg, rgba(236,72,153,.5) 0 1px, transparent 1px 40px);
+  background-size: 100% 40px, 40px 100%;
+  animation: cbg-grid 3s linear infinite;
+}
+@keyframes cbg-grid { to { background-position: 0 40px, 0 0; } }
+
+/* Lightning Storm — dark clouds flash */
+.cbg-lightning { background: linear-gradient(160deg, #1e293b, #020617); }
+.cbg-lightning::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 60% 30%, rgba(226,232,240,.9), transparent 45%);
+  opacity: 0; animation: cbg-lightning 6s steps(1, end) infinite;
+}
+@keyframes cbg-lightning { 0%, 92%, 100% { opacity: 0; } 93%, 95% { opacity: .95; } 94%, 97% { opacity: .2; } }
+
+/* Stardust Snow — gentle stardust drifts down */
+.cbg-snowfall { background: linear-gradient(0deg, #0b1120, #1e293b); }
+.cbg-snowfall::before {
+  content: ''; position: absolute; inset: -20% 0;
+  background:
+    radial-gradient(circle, #e0f2fe 0 1.5px, transparent 2.5px) 20% 0 / 50px 90px,
+    radial-gradient(circle, #ffffff 0 1px, transparent 2px) 70% 0 / 70px 120px;
+  animation: cbg-snowfall 8s linear infinite;
+}
+@keyframes cbg-snowfall { to { background-position: 20% 90px, 70% 120px; } }
+
+/* Prism Rain — diagonal rainbow streaks fall */
+.cbg-prism_rain { background: #04040c; }
+.cbg-prism_rain::before {
+  content: ''; position: absolute; inset: -30%;
+  background: repeating-linear-gradient(215deg, transparent 0 18px, rgba(244,114,182,.35) 18px 20px, rgba(56,189,248,.35) 20px 22px, transparent 22px 40px);
+  animation: cbg-prism_rain 3.5s linear infinite, cbg-prism_hue 7s linear infinite;
+}
+@keyframes cbg-prism_rain { to { transform: translate(-40px, 56px); } }
+@keyframes cbg-prism_hue { to { filter: hue-rotate(360deg); } }
+
+/* Cosmic Smoke — wispy plumes rise and dissipate */
+.cbg-smoke { background: linear-gradient(0deg, #1e293b, #050510); }
+.cbg-smoke::before {
+  content: ''; position: absolute; inset: -20%;
+  background: radial-gradient(ellipse 40% 30% at 40% 80%, rgba(148,163,184,.5), transparent 70%), radial-gradient(ellipse 35% 28% at 65% 85%, rgba(100,116,139,.45), transparent 70%);
+  filter: blur(6px); animation: cbg-smoke 11s ease-in-out infinite;
+}
+@keyframes cbg-smoke { 0% { transform: translateY(10%) scale(1); opacity: .3; } 50% { opacity: .7; } 100% { transform: translateY(-20%) scale(1.3); opacity: 0; } }
+
+/* Comet Orbit — a comet circles the frame */
+.cbg-comet_orbit { background: radial-gradient(circle at 50% 50%, #0b1e2a, #04040c); }
+.cbg-comet_orbit::before {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 70%; height: 70%; margin: -35% 0 0 -35%;
+  background: radial-gradient(circle at 85% 50%, #ffffff, #5eead4 30%, transparent 45%);
+  animation: cbg-comet_orbit 6s linear infinite;
+}
+@keyframes cbg-comet_orbit { to { transform: rotate(360deg); } }
+
+/* Lava Field — molten blobs bubble and rise */
+.cbg-lava_field { background: linear-gradient(0deg, #7f1d1d, #1c0a05); }
+.cbg-lava_field::before {
+  content: ''; position: absolute; inset: -10% 0;
+  background:
+    radial-gradient(circle at 25% 90%, #fbbf24 0 6%, transparent 12%),
+    radial-gradient(circle at 60% 95%, #f97316 0 8%, transparent 14%),
+    radial-gradient(circle at 82% 88%, #fb923c 0 5%, transparent 11%);
+  filter: blur(3px); animation: cbg-lava_field 7s ease-in-out infinite;
+}
+@keyframes cbg-lava_field { 0%, 100% { transform: translateY(6%) scale(1); } 50% { transform: translateY(-8%) scale(1.15); } }
+
+/* Frost Growth — crystalline frost creeps from the edges */
+.cbg-frost_grow { background: radial-gradient(circle, #0b1120 40%, #1e3a8a); }
+.cbg-frost_grow::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 30%, rgba(224,242,254,.35) 75%, rgba(224,242,254,.6) 100%);
+  animation: cbg-frost_grow 6s ease-in-out infinite;
+}
+@keyframes cbg-frost_grow { 0%, 100% { opacity: .3; transform: scale(1.15); } 50% { opacity: .8; transform: scale(1); } }
+
+/* Solar Eclipse — a dark disk crosses a bright corona */
+.cbg-solar_eclipse { background: radial-gradient(circle at 50% 50%, #fde68a, #b45309 30%, #1c0a05 70%); }
+.cbg-solar_eclipse::before {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 46%; padding-bottom: 46%; margin: -23% 0 0 -23%;
+  border-radius: 50%; background: #050308;
+  box-shadow: 0 0 24px 6px rgba(253,224,71,.55);
+  animation: cbg-solar_eclipse 9s ease-in-out infinite;
+}
+@keyframes cbg-solar_eclipse { 0% { transform: translateX(-160%); } 100% { transform: translateX(160%); } }
+
+/* Magnetar — rotating magnetic field lines */
+.cbg-magnetar { background: #04030d; }
+.cbg-magnetar::before {
+  content: ''; position: absolute; inset: -25%;
+  background: conic-gradient(from 0deg, transparent 0 8deg, rgba(56,189,248,.5) 10deg 12deg, transparent 14deg 30deg, rgba(167,139,250,.5) 32deg 34deg, transparent 36deg 60deg);
+  animation: cbg-magnetar 8s linear infinite;
+}
+@keyframes cbg-magnetar { to { transform: rotate(360deg); } }
+
+/* Spaghettification — streaks stretch toward the centre */
+.cbg-spaghetti { background: radial-gradient(circle, #1e1b4b, #04030c); }
+.cbg-spaghetti::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-conic-gradient(from 0deg, transparent 0 6deg, rgba(124,58,237,.4) 6deg 7deg);
+  animation: cbg-spaghetti 5s ease-in-out infinite;
+}
+@keyframes cbg-spaghetti { 0%, 100% { transform: scaleY(1); opacity: .6; } 50% { transform: scaleY(1.6); opacity: 1; } }
+
+/* Pulsar Lighthouse — twin beams sweep around */
+.cbg-lighthouse { background: radial-gradient(circle, #0b1120, #04030d); }
+.cbg-lighthouse::before {
+  content: ''; position: absolute; inset: -25%;
+  background: conic-gradient(from 0deg, rgba(253,230,138,.6) 0 6deg, transparent 6deg 180deg, rgba(253,230,138,.6) 180deg 186deg, transparent 186deg 360deg);
+  animation: cbg-lighthouse 4s linear infinite;
+}
+@keyframes cbg-lighthouse { to { transform: rotate(360deg); } }
+
+/* Dark Flow — faint filaments stream one way */
+.cbg-dark_flow { background: linear-gradient(60deg, #2e1065, #04020c); }
+.cbg-dark_flow::before {
+  content: ''; position: absolute; inset: -20%;
+  background: repeating-linear-gradient(60deg, transparent 0 24px, rgba(124,58,237,.28) 24px 26px, transparent 26px 52px);
+  animation: cbg-dark_flow 9s linear infinite;
+}
+@keyframes cbg-dark_flow { to { transform: translate(52px, 30px); } }
+
+/* Annihilation Wave — a bright wavefront expands and resets */
+.cbg-annihilation { background: radial-gradient(circle, #1a0505, #0a0203); }
+.cbg-annihilation::before {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%;
+  box-shadow: 0 0 30px 12px rgba(239,68,68,.6);
+  background: radial-gradient(circle, #fecaca, #ef4444 60%, transparent 70%);
+  animation: cbg-annihilation 4.5s ease-out infinite;
+}
+@keyframes cbg-annihilation { 0% { transform: scale(0); opacity: 1; } 70% { opacity: .9; } 100% { transform: scale(40); opacity: 0; } }
+
+/* Omniverse — flagship: layered rainbow rotation + drift */
+.cbg-omniverse { background: conic-gradient(from 0deg, #f472b6, #38bdf8, #34d399, #fbbf24, #f472b6); background-size: 180% 180%; animation: cbg-omniverse-hue 10s linear infinite, cbg-omniverse-pan 14s ease-in-out infinite; }
+.cbg-omniverse::before {
+  content: ''; position: absolute; inset: -20%;
+  background: radial-gradient(circle, #ffffff 0 1px, transparent 2px) 0 0 / 60px 60px;
+  opacity: .5; animation: cbg-omniverse-stars 12s linear infinite;
+}
+@keyframes cbg-omniverse-hue { to { filter: hue-rotate(360deg); } }
+@keyframes cbg-omniverse-pan { 0%, 100% { background-position: 0 0; } 50% { background-position: 100% 100%; } }
+@keyframes cbg-omniverse-stars { to { transform: translate(60px, 60px); } }
+
+/* ═══════════════─ REDUCED MOTION (accessibility) ─════════���═════ */
+/* Disable all motion but keep each cosmetic's static colour/glow identity. */
+@media (prefers-reduced-motion: reduce) {
+  .cg,
+  .cg-void,
+  .cg-shimmer, .cg-neon, .cg-holo, .cg-solarflare, .cg-glitch, .cg-comet,
+  .cg-frost, .cg-ribbon, .cg-chrome, .cg-pulsar, .cg-starlit, .cg-quasar,
+  .cg-ion, .cg-blackcore, .cg-lensing, .cg-singularity, .cg-darkmatter,
+  .cg-antimatter, .cg-multiversal,
+  .cg-wave, .cg-breathe, .cg-cascade, .cg-lava, .cg-prism, .cg-toxic,
+  .cg-sparks, .cg-flash, .cg-echo, .cg-kaleido,
+  .cg-focus, .cg-underline, .cg-spread, .cg-typewriter, .cg-typewriter::after,
+  .cg-scan, .cg-emboss, .cg-marquee, .cg-heartbeat, .cg-wobble, .cg-static,
+  .cg-torch, .cg-volt, .cg-oil, .cg-stroke, .cg-warp, .cg-mirage,
+  .cg-spectrum, .cg-nebula, .cg-quantum, .cg-cosmos {
+    animation: none !important;
+  }
+
+  .cbg-starfield::before,
+  .cbg-aurora_waves, .cbg-drifting_nebula, .cbg-galaxy_spiral::before,
+  .cbg-solar_wind, .cbg-pulsar_wave::before, .cbg-meteor_rain::before,
+  .cbg-cosmic_dawn, .cbg-galaxy_core::before, .cbg-supernova_burst,
+  .cbg-blackhole::before, .cbg-event_horizon::before, .cbg-wormhole,
+  .cbg-darkmatter_web, .cbg-antimatter_field, .cbg-multiversal,
+  .cbg-shooting_stars::before, .cbg-plasma_storm, .cbg-ring_system::before,
+  .cbg-ion_stream, .cbg-crystal_cave, .cbg-quasar_beam::before,
+  .cbg-galaxy_collision, .cbg-solar_corona, .cbg-solar_corona::before,
+  .cbg-gamma_burst, .cbg-time_warp, .cbg-time_warp::before,
+  .cbg-sunrise, .cbg-moonrise::before, .cbg-fireflies::before,
+  .cbg-bokeh::before, .cbg-tide, .cbg-grid::before, .cbg-lightning::before,
+  .cbg-snowfall::before, .cbg-prism_rain::before, .cbg-smoke::before,
+  .cbg-comet_orbit::before, .cbg-lava_field::before, .cbg-frost_grow::before,
+  .cbg-solar_eclipse::before, .cbg-magnetar::before, .cbg-spaghetti::before,
+  .cbg-lighthouse::before, .cbg-dark_flow::before, .cbg-annihilation::before,
+  .cbg-omniverse, .cbg-omniverse::before {
+    animation: none !important;
+  }
+
+  /* Hide the expanding-ring layers at rest so they don't freeze mid-pulse. */
+  .cbg-pulsar_wave::before,
+  .cbg-meteor_rain::before { opacity: .5; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AVATAR DECORATIONS (.cd) — Phase 3 premium cosmetic CLASS. An animated frame
+   that rides ON TOP of the avatar disc (rendered as an absolutely-positioned
+   overlay inside a rounded, overflow-hidden avatar box), so every ring stays
+   inside the circle and shows identically for every viewer. Built ONLY from
+   reliable primitives (border-arc rings, box-shadow halos, conic spins) — no
+   background-clip / mask / text-fill — so a decoration can never render as an
+   invisible block. Reduced-motion / [data-anim-off] gated at the very end.
+   ══════════════════════════════════════════════════════════════════════════ */
+.cd { position: absolute; inset: 0; border-radius: 9999px; pointer-events: none; z-index: 3; }
+.cd::before, .cd::after { content: ''; position: absolute; border-radius: 9999px; }
+
+@keyframes cd-spin     { to { transform: rotate(360deg); } }
+@keyframes cd-spin-rev { to { transform: rotate(-360deg); } }
+@keyframes cd-pulse    { 0%, 100% { opacity: .55; transform: scale(1); } 50% { opacity: 1; transform: scale(1.06); } }
+@keyframes cd-hue      { to { filter: hue-rotate(360deg); } }
+@keyframes cd-flicker  { 0%, 100% { opacity: .75; } 45% { opacity: 1; } 55% { opacity: .5; } }
+
+/* LUNAR · Pulse Ring */
+.cd-ring_pulse { box-shadow: inset 0 0 0 2px rgba(56,189,248,.9), inset 0 0 10px rgba(56,189,248,.5); animation: cd-pulse 2.6s ease-in-out infinite; }
+
+/* STELLAR · Orbit Arc */
+.cd-orbit_arc { box-shadow: inset 0 0 0 1px rgba(148,163,184,.35); }
+.cd-orbit_arc::before { inset: 1px; border: 2px solid transparent; border-top-color: #7dd3fc; filter: drop-shadow(0 0 4px #38bdf8); animation: cd-spin 3.2s linear infinite; }
+
+/* SOLAR · Spectrum Ring */
+.cd-spectrum_ring { box-shadow: inset 0 0 8px rgba(167,139,250,.35); }
+.cd-spectrum_ring::before { inset: 1px; border: 2px solid transparent; border-top-color: #38bdf8; border-right-color: #a78bfa; border-bottom-color: #ec4899; animation: cd-spin 4s linear infinite; }
+
+/* NEBULAR · Twin Orbit */
+.cd-double_ring::before { inset: 1px; border: 2px solid transparent; border-top-color: #34d399; border-left-color: #34d399; animation: cd-spin 3s linear infinite; }
+.cd-double_ring::after  { inset: 4px; border: 2px solid transparent; border-bottom-color: #22d3ee; border-right-color: #22d3ee; animation: cd-spin-rev 2.4s linear infinite; }
+
+/* ASTRAL · Sparkle Frame */
+.cd-sparkle { box-shadow: inset 0 0 0 1px rgba(226,232,240,.25); }
+.cd-sparkle::before { inset: 0; border: 2px dotted rgba(255,255,255,.9); filter: drop-shadow(0 0 3px #e0f2fe); animation: cd-spin 6s linear infinite; }
+.cd-sparkle::after  { inset: 3px; border: 1px dotted rgba(186,230,253,.7); animation: cd-spin-rev 8s linear infinite; }
+
+/* CELESTIAL · Flame Crown */
+.cd-flame { box-shadow: inset 0 0 0 2px rgba(251,146,60,.9), inset 0 0 14px rgba(249,115,22,.6); animation: cd-flicker 1.6s ease-in-out infinite; }
+.cd-flame::before { inset: 1px; border: 2px solid transparent; border-top-color: #fde68a; filter: drop-shadow(0 0 5px #f97316); animation: cd-spin 2.6s linear infinite; }
+
+/* GALACTIC · Ion Ring */
+.cd-electric { box-shadow: inset 0 0 0 1px rgba(56,189,248,.6); }
+.cd-electric::before { inset: 0; border: 2px dashed #bae6fd; filter: drop-shadow(0 0 4px #38bdf8); animation: cd-spin 1.8s linear infinite; }
+.cd-electric::after  { inset: 0; box-shadow: inset 0 0 12px rgba(56,189,248,.7); animation: cd-flicker .5s steps(2) infinite; }
+
+/* COSMIC · Frost Halo */
+.cd-frost { box-shadow: inset 0 0 0 2px rgba(224,242,254,.9), inset 0 0 12px rgba(147,197,253,.5); }
+.cd-frost::before { inset: 1px; border: 2px dotted #e0f2fe; animation: cd-spin 9s linear infinite; }
+
+/* HYPERNOVA · Solar Corona */
+.cd-corona { box-shadow: inset 0 0 0 2px rgba(253,224,71,.9), inset 0 0 16px rgba(249,115,22,.7); animation: cd-pulse 2.2s ease-in-out infinite; }
+.cd-corona::before { inset: 1px; border: 3px solid transparent; border-top-color: #fde047; border-right-color: #f97316; filter: drop-shadow(0 0 6px #f59e0b); animation: cd-spin 3.4s linear infinite; }
+
+/* BLACK_HOLE · Accretion Ring — dark rim + a warping light halo (slate rim, never invisible) */
+/* Issue 5 — dark-valued rings get a guaranteed light backing so the frame
+   shape always reads on the dark preview disc (both themes). */
+.cd-blackhole { box-shadow: inset 0 0 0 3px rgba(11,13,23,.95), inset 0 0 0 4.5px rgba(203,213,225,.85), inset 0 0 10px rgba(148,163,184,.30); }
+.cd-blackhole::before { inset: 1px; border: 2px solid transparent; border-top-color: #cbd5e1; border-right-color: #fb923c; filter: drop-shadow(0 0 6px rgba(251,146,60,.7)); animation: cd-spin 2.8s linear infinite; }
+
+/* EVENT_HORIZON · Lensing Halo */
+.cd-lensing { box-shadow: inset 0 0 0 2px rgba(124,58,237,.7), inset 0 0 18px rgba(167,139,250,.6); }
+.cd-lensing::before { inset: 2px; border: 2px solid transparent; border-top-color: #ede9fe; border-bottom-color: #7c3aed; filter: drop-shadow(0 0 6px #a78bfa); animation: cd-spin 5s linear infinite; }
+
+/* SINGULARITY · Singularity */
+.cd-singularity { box-shadow: inset 0 0 0 2px rgba(236,72,153,.9), inset 0 0 18px rgba(236,72,153,.6); animation: cd-pulse 1.6s ease-in-out infinite; }
+.cd-singularity::before { inset: 1px; border: 2px solid transparent; border-top-color: #f9a8d4; border-right-color: #ec4899; animation: cd-spin 2s linear infinite; }
+.cd-singularity::after  { inset: 4px; border: 1px solid transparent; border-bottom-color: #f9a8d4; animation: cd-spin-rev 1.4s linear infinite; }
+
+/* DARK_MATTER · Dark Halo */
+.cd-darkmatter { box-shadow: inset 0 0 0 2px rgba(76,29,149,.9), inset 0 0 0 3px rgba(167,139,250,.6), inset 0 0 16px rgba(167,139,250,.5); }
+.cd-darkmatter::before { inset: 0; border: 2px dotted #a78bfa; opacity: .8; animation: cd-spin 10s linear infinite, cd-flicker 2.4s ease-in-out infinite; }
+
+/* ANTIMATTER · Antimatter Ring */
+.cd-antimatter { box-shadow: inset 0 0 0 2px rgba(239,68,68,.9), inset 0 0 16px rgba(239,68,68,.6); animation: cd-flicker 1.2s ease-in-out infinite; }
+.cd-antimatter::before { inset: 1px; border: 2px solid transparent; border-top-color: #fecaca; border-right-color: #ef4444; filter: drop-shadow(0 0 6px #ef4444); animation: cd-spin 2.2s linear infinite; }
+.cd-antimatter::after  { inset: 4px; border: 1px solid transparent; border-bottom-color: #fca5a5; animation: cd-spin-rev 1.6s linear infinite; }
+
+/* MULTIVERSAL · Multiversal Ring — iridescent, hue-cycled */
+.cd-multiversal { box-shadow: inset 0 0 10px rgba(167,139,250,.4); }
+.cd-multiversal::before { inset: 0; border: 3px solid transparent; border-top-color: #f472b6; border-right-color: #38bdf8; border-bottom-color: #34d399; border-left-color: #fbbf24; filter: drop-shadow(0 0 6px rgba(167,139,250,.7)); animation: cd-spin 3.6s linear infinite, cd-hue 6s linear infinite; }
+.cd-multiversal::after  { inset: 4px; border: 2px solid transparent; border-top-color: #fbbf24; border-bottom-color: #f472b6; animation: cd-spin-rev 2.8s linear infinite, cd-hue 6s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cd, .cd::before, .cd::after { animation: none !important; }
+}
+[data-anim-off] .cd, [data-anim-off] .cd::before, [data-anim-off] .cd::after { animation: none !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROFILE EFFECTS (.pe) — a subtle animated foreground layer on the profile
+   card. Built ONLY from background-image dot/streak tiles + transform/opacity,
+   so a layer can never render as an opaque invisible block. pointer-events are
+   disabled and every layer is translucent, so text underneath stays readable.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.pe {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 4;
+}
+.pe::before,
+.pe::after {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  background-repeat: repeat;
+  will-change: background-position, opacity, transform;
+}
+
+@keyframes pe-fall    { from { background-position: 0 -70px; } to { background-position: 0 70px; } }
+@keyframes pe-rise    { from { background-position: 0 70px; }  to { background-position: 0 -70px; } }
+@keyframes pe-drift   { from { background-position: -70px 0; } to { background-position: 70px 0; } }
+@keyframes pe-diag    { from { background-position: 0 0; }     to { background-position: 90px 90px; } }
+@keyframes pe-diag2   { from { background-position: 0 0; }     to { background-position: -90px 100px; } }
+@keyframes pe-twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.75; } }
+@keyframes pe-flicker { 0%, 100% { opacity: 0.25; } 20% { opacity: 0.8; } 45% { opacity: 0.3; } 70% { opacity: 0.9; } }
+@keyframes pe-spin    { to { transform: rotate(360deg); } }
+@keyframes pe-sweep   { 0% { transform: translateX(-28%); } 100% { transform: translateX(28%); } }
+@keyframes pe-hue     { to { filter: hue-rotate(360deg); } }
+
+.pe-stardust::before {
+  background-image:
+    radial-gradient(1.6px 1.6px at 20% 30%, rgba(224, 231, 255, 0.9), transparent 60%),
+    radial-gradient(1.2px 1.2px at 70% 60%, rgba(199, 210, 254, 0.8), transparent 60%),
+    radial-gradient(1.6px 1.6px at 45% 82%, rgba(255, 255, 255, 0.7), transparent 60%);
+  background-size: 95px 95px;
+  animation: pe-diag 24s linear infinite, pe-twinkle 6s ease-in-out infinite;
+}
+.pe-bubbles::before {
+  background-image:
+    radial-gradient(4px 4px at 25% 90%, rgba(186, 230, 253, 0.55), transparent 62%),
+    radial-gradient(6px 6px at 60% 70%, rgba(125, 211, 252, 0.45), transparent 62%),
+    radial-gradient(3px 3px at 80% 40%, rgba(224, 242, 254, 0.55), transparent 62%);
+  background-size: 110px 130px;
+  animation: pe-rise 12s linear infinite;
+}
+.pe-fireflies::before {
+  background-image:
+    radial-gradient(2px 2px at 20% 40%, rgba(253, 230, 138, 0.95), transparent 55%),
+    radial-gradient(2.4px 2.4px at 65% 25%, rgba(250, 204, 21, 0.85), transparent 55%),
+    radial-gradient(2px 2px at 80% 75%, rgba(254, 240, 138, 0.9), transparent 55%);
+  background-size: 120px 120px;
+  animation: pe-drift 18s ease-in-out infinite alternate, pe-flicker 3.4s ease-in-out infinite;
+}
+.pe-snow::before {
+  background-image:
+    radial-gradient(2px 2px at 15% 10%, rgba(255, 255, 255, 0.95), transparent 60%),
+    radial-gradient(1.5px 1.5px at 55% 30%, rgba(248, 250, 252, 0.8), transparent 60%),
+    radial-gradient(2.4px 2.4px at 80% 55%, rgba(255, 255, 255, 0.85), transparent 60%),
+    radial-gradient(1.5px 1.5px at 35% 75%, rgba(226, 232, 240, 0.8), transparent 60%);
+  background-size: 90px 120px;
+  animation: pe-fall 11s linear infinite;
+}
+.pe-embers::before {
+  background-image:
+    radial-gradient(2px 2px at 25% 90%, rgba(253, 186, 116, 0.9), transparent 58%),
+    radial-gradient(2.4px 2.4px at 60% 80%, rgba(251, 146, 60, 0.85), transparent 58%),
+    radial-gradient(1.6px 1.6px at 80% 95%, rgba(254, 215, 170, 0.85), transparent 58%);
+  background-size: 100px 140px;
+  animation: pe-rise 9s linear infinite, pe-flicker 2.8s ease-in-out infinite;
+}
+.pe-sparkle::before {
+  background-image:
+    radial-gradient(1.8px 1.8px at 18% 22%, rgba(255, 255, 255, 0.95), transparent 55%),
+    radial-gradient(1.4px 1.4px at 72% 38%, rgba(254, 249, 195, 0.9), transparent 55%),
+    radial-gradient(2px 2px at 48% 68%, rgba(255, 255, 255, 0.9), transparent 55%),
+    radial-gradient(1.4px 1.4px at 88% 80%, rgba(253, 224, 71, 0.85), transparent 55%);
+  background-size: 80px 80px;
+  animation: pe-twinkle 2.6s ease-in-out infinite;
+}
+.pe-aurora::before {
+  inset: -40% -20%;
+  background: linear-gradient(115deg, transparent 20%, rgba(52, 211, 153, 0.22), rgba(56, 189, 248, 0.22), rgba(167, 139, 250, 0.22), transparent 80%);
+  filter: blur(6px);
+  animation: pe-sweep 9s ease-in-out infinite alternate;
+}
+.pe-starfall::before {
+  background-image:
+    linear-gradient(115deg, transparent 46%, rgba(224, 231, 255, 0.85) 50%, transparent 54%),
+    linear-gradient(115deg, transparent 60%, rgba(129, 140, 248, 0.7) 63%, transparent 66%);
+  background-size: 140px 140px;
+  opacity: 0.7;
+  animation: pe-diag2 3.6s linear infinite;
+}
+.pe-petals::before {
+  background-image:
+    radial-gradient(3px 2px at 22% 20%, rgba(251, 207, 232, 0.85), transparent 60%),
+    radial-gradient(2.5px 1.6px at 66% 44%, rgba(244, 114, 182, 0.7), transparent 60%),
+    radial-gradient(3px 2px at 84% 72%, rgba(249, 168, 212, 0.8), transparent 60%);
+  background-size: 115px 130px;
+  animation: pe-diag 16s linear infinite, pe-twinkle 5s ease-in-out infinite;
+}
+.pe-voidmotes::before {
+  background-image:
+    radial-gradient(2px 2px at 30% 30%, rgba(148, 163, 184, 0.8), transparent 55%),
+    radial-gradient(1.6px 1.6px at 70% 55%, rgba(203, 213, 225, 0.6), transparent 55%),
+    radial-gradient(2.4px 2.4px at 50% 78%, rgba(100, 116, 139, 0.7), transparent 55%);
+  background-size: 100px 100px;
+  transform-origin: 50% 50%;
+  animation: pe-spin 40s linear infinite, pe-twinkle 6s ease-in-out infinite;
+}
+.pe-lensflare::before {
+  background-image:
+    radial-gradient(5px 5px at 20% 40%, rgba(254, 240, 138, 0.6), transparent 60%),
+    radial-gradient(3px 3px at 60% 30%, rgba(255, 255, 255, 0.7), transparent 60%),
+    radial-gradient(6px 6px at 82% 66%, rgba(253, 224, 71, 0.5), transparent 60%);
+  background-size: 150px 120px;
+  filter: blur(0.5px);
+  animation: pe-drift 14s linear infinite, pe-twinkle 4.5s ease-in-out infinite;
+}
+.pe-orbits::before {
+  inset: 12%;
+  border-radius: 50%;
+  background:
+    radial-gradient(3px 3px at 50% 0%, rgba(103, 232, 249, 0.95), transparent 60%),
+    radial-gradient(2.4px 2.4px at 100% 50%, rgba(34, 211, 238, 0.85), transparent 60%),
+    radial-gradient(3px 3px at 50% 100%, rgba(165, 243, 252, 0.9), transparent 60%),
+    radial-gradient(2.4px 2.4px at 0% 50%, rgba(34, 211, 238, 0.85), transparent 60%);
+  transform-origin: 50% 50%;
+  animation: pe-spin 12s linear infinite;
+}
+.pe-darkrain::before {
+  background-image:
+    linear-gradient(105deg, transparent 47%, rgba(165, 180, 252, 0.7) 50%, transparent 53%),
+    linear-gradient(105deg, transparent 62%, rgba(129, 140, 248, 0.55) 64%, transparent 67%);
+  background-size: 90px 110px;
+  opacity: 0.6;
+  animation: pe-diag2 2.4s linear infinite;
+}
+.pe-ions::before {
+  background-image:
+    radial-gradient(2.2px 2.2px at 24% 34%, rgba(254, 202, 202, 0.95), transparent 55%),
+    radial-gradient(1.8px 1.8px at 68% 52%, rgba(248, 113, 113, 0.9), transparent 55%),
+    radial-gradient(2.2px 2.2px at 50% 80%, rgba(254, 226, 226, 0.9), transparent 55%);
+  background-size: 85px 85px;
+  animation: pe-drift 10s linear infinite, pe-flicker 1.8s steps(6) infinite;
+}
+.pe-multiverse::before {
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, rgba(244, 114, 182, 0.9), transparent 55%),
+    radial-gradient(2px 2px at 60% 50%, rgba(56, 189, 248, 0.9), transparent 55%),
+    radial-gradient(2px 2px at 40% 75%, rgba(52, 211, 153, 0.9), transparent 55%),
+    radial-gradient(2px 2px at 82% 20%, rgba(251, 191, 36, 0.9), transparent 55%);
+  background-size: 100px 100px;
+  animation: pe-diag 18s linear infinite, pe-hue 8s linear infinite, pe-twinkle 4s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NAMEPLATES (.np) — an animated plate behind the display name. The plate sits
+   BEHIND the text (isolation + z-index), text carries a shadow so it stays
+   legible over any plate. A shared sheen sweep animates every plate; per-tier
+   rules only set colours + a few high-tier glows.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.np-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 2px 14px;
+  border-radius: 9999px;
+  isolation: isolate;
+  vertical-align: bottom;
+}
+.np-content {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+.np {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.28);
+}
+.np::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: translateX(-140%);
+  animation: np-sheen 4.8s ease-in-out infinite;
+}
+@keyframes np-sheen { 0% { transform: translateX(-140%); } 55%, 100% { transform: translateX(260%); } }
+@keyframes np-hue   { to { filter: hue-rotate(360deg); } }
+
+.np-slate      { background: linear-gradient(90deg, #334155, #475569); }
+.np-frost      { background: linear-gradient(90deg, #0369a1, #38bdf8); }
+.np-solar      { background: linear-gradient(90deg, #b45309, #f59e0b); }
+.np-nebula     { background: linear-gradient(90deg, #6d28d9, #db2777); }
+.np-astral     { background: linear-gradient(90deg, #4338ca, #0891b2); }
+.np-ember      { background: linear-gradient(90deg, #b91c1c, #ea580c); }
+.np-ion        { background: linear-gradient(90deg, #0e7490, #06b6d4); box-shadow: inset 0 0 16px rgba(0,0,0,.28), 0 0 10px rgba(6,182,212,.4); }
+.np-crystal    { background: linear-gradient(90deg, #0369a1, #7dd3fc); box-shadow: inset 0 0 16px rgba(0,0,0,.25), 0 0 12px rgba(125,211,252,.4); }
+.np-corona     { background: linear-gradient(90deg, #c2410c, #f59e0b); box-shadow: inset 0 0 16px rgba(0,0,0,.28), 0 0 14px rgba(245,158,11,.45); }
+.np-void       { background: linear-gradient(90deg, #0f172a, #334155); box-shadow: inset 0 0 18px rgba(0,0,0,.5), 0 0 10px rgba(148,163,184,.3); }
+.np-lensing    { background: linear-gradient(90deg, #1e293b, #3b82f6); box-shadow: inset 0 0 16px rgba(0,0,0,.35), 0 0 14px rgba(59,130,246,.4); }
+.np-singular   { background: linear-gradient(90deg, #be185d, #ec4899); box-shadow: inset 0 0 16px rgba(0,0,0,.3), 0 0 16px rgba(236,72,153,.5); }
+.np-darkmatter { background: linear-gradient(90deg, #4c1d95, #7c3aed); box-shadow: inset 0 0 16px rgba(0,0,0,.35), 0 0 16px rgba(124,58,237,.5); }
+.np-antimatter { background: linear-gradient(90deg, #7f1d1d, #dc2626); box-shadow: inset 0 0 16px rgba(0,0,0,.32), 0 0 18px rgba(220,38,38,.55); }
+.np-multiversal {
+  background: linear-gradient(90deg, #db2777, #2563eb, #059669, #d97706);
+  background-size: 300% 100%;
+  box-shadow: inset 0 0 16px rgba(0,0,0,.3), 0 0 20px rgba(147,51,234,.55);
+  animation: np-hue 9s linear infinite;
+}
+
+/* Respect motion preferences — freeze every cosmetic animation. */
+@media (prefers-reduced-motion: reduce) {
+  .pe::before, .pe::after, .np::before, .np-multiversal { animation: none !important; }
+}
+[data-anim-off] .pe::before,
+[data-anim-off] .pe::after,
+[data-anim-off] .np::before,
+[data-anim-off] .np-multiversal { animation: none !important; }
+
+/* ═══════════ Theme + performance helpers (Photon UI polish) ═══════════ */
+
+/* Cosmic pages (Orbit / Store / Holo-Bay / Photon Log) are a dark "space"
+   surface in BOTH light and dark mode. Force light text tokens locally so any
+   theme-reactive text stays legible on the dark field — this fixes the
+   "black text" that vanished after switching to a light theme. */
+.cosmic-page {
+  --text-primary: #f8fafc;
+  --text-secondary: rgba(248, 250, 252, 0.72);
+  --text-muted: rgba(248, 250, 252, 0.5);
+  color: var(--text-primary);
+}
+
+/* Name-glow legibility: gradient-clipped glows paint transparent letters, which
+   can disappear on a pale tile. A soft dark drop-shadow keeps the glyph edges
+   readable on ANY background without changing the glow colour. */
+.cg-shimmer,
+.cg-holo,
+.cg-comet,
+.cg-ribbon,
+.cg-chrome,
+.cg-multiversal,
+.cg-void {
+  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
+}
+
+/* Scroll performance: skip layout/paint/animation for off-screen cosmetic
+   cards. Big win on the Store / Holo-Bay grids where many items animate at
+   once, which is what made those pages feel laggy while scrolling. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 132px;
+}
+
+/* ── GLOW CLIP FALLBACK (N3) ───────────────────────────────────────────
+   Text-clipped gradient glows set -webkit-text-fill-color: transparent, so
+   the name renders INVISIBLE if the gradient layer fails to paint (seen in
+   some Android WebView / APK builds). Safeguards:
+   1) On engines without background-clip:text, fall back to solid colored
+      text (currentColor) and drop the gradient.
+   2) On supporting engines, cast a faint silhouette so the glyph keeps a
+      visible edge while the gradient repaints. */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .cg-shimmer, .cg-holo, .cg-comet, .cg-ribbon, .cg-chrome, .cg-multiversal,
+  .cg-void, .cg-cascade, .cg-lava, .cg-kaleido,
+  .cg-scan, .cg-marquee, .cg-oil, .cg-nebula, .cg-cosmos {
+    -webkit-text-fill-color: currentColor;
+    background: none !important;
+  }
+}
+.cg-cascade, .cg-lava, .cg-scan, .cg-marquee, .cg-oil, .cg-nebula, .cg-cosmos {
+  filter: drop-shadow(0 0 2px rgba(255,255,255,.28));
+}
+
+/* ══ LIGHT-MODE VARIANT for cosmic surfaces (Store / Orbit / Holo-Bay / Mission Log) ══
+   The cosmic pages were authored dark-only (raw text-white / bg-slate-900 utilities
+   + a hardcoded #07080f backdrop), so they ignored html[data-mode="light"]. This
+   block gives them a genuine light variant WITHOUT touching dark mode: every rule is
+   gated on [data-mode="light"], and the backdrop swap uses !important to beat the
+   inline dark gradient only in light mode. */
+[data-mode="light"] .cosmic-page {
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  color: var(--text-primary);
+}
+[data-mode="light"] .cosmic-backdrop {
+  background:
+    radial-gradient(55% 45% at 20% 10%, rgba(37,99,235,.08), transparent 60%),
+    radial-gradient(55% 55% at 82% 18%, rgba(124,58,237,.08), transparent 62%),
+    #eef3fb !important;
+}
+/* neutral text remap (accent colours like violet/emerald/amber are left intact).
+   Every remap/inversion below is scoped with :not(.cosmic-surface):not(.cosmic-surface *):
+   cosmetic RENDER surfaces (Holo-Bay stage, swatch tiles, nameplate previews)
+   are authored on dark and must stay dark in BOTH themes — this light pass is
+   for page chrome only. */
+[data-mode="light"] .cosmic-page [class*="text-white"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-slate-100"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-slate-200"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #0f172a !important; }
+[data-mode="light"] .cosmic-page [class*="text-slate-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #334155 !important; }
+[data-mode="light"] .cosmic-page [class*="text-slate-400"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #475569 !important; }
+[data-mode="light"] .cosmic-page [class*="text-slate-500"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #64748b !important; }
+/* neutral surfaces → light cards (cosmetic surfaces exempted — see above) */
+[data-mode="light"] .cosmic-page [class*="bg-slate-900/"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="bg-slate-950/"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="bg-black/"]:not(.cosmic-surface):not(.cosmic-surface *) { background-color: rgba(255,255,255,.78) !important; }
+[data-mode="light"] .cosmic-page [class*="bg-white/5"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="bg-white/10"]:not(.cosmic-surface):not(.cosmic-surface *) { background-color: rgba(15,23,42,.05) !important; }
+/* stronger fills (active tab pills on the Store, etc.) keep their emphasis */
+[data-mode="light"] .cosmic-page [class*="bg-white/15"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="bg-white/20"]:not(.cosmic-surface):not(.cosmic-surface *) { background-color: rgba(15,23,42,.10) !important; }
+/* neutral borders */
+[data-mode="light"] .cosmic-page [class*="border-white/"]:not(.cosmic-surface):not(.cosmic-surface *) { border-color: rgba(15,23,42,.12) !important; }
+/* pale accent TINTS (100–300) — designed for the dark field, near-invisible on
+   the light one. Remap each family to its deep light-mode reading so Photon
+   balances, Equipped/Owned tags and status pills keep their hue AND contrast.
+   Saturated accents (400+) are left untouched. */
+[data-mode="light"] .cosmic-page [class*="text-violet-100"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-violet-200"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-violet-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #6d28d9 !important; }
+[data-mode="light"] .cosmic-page [class*="text-cyan-200"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-sky-200"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-sky-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #0369a1 !important; }
+[data-mode="light"] .cosmic-page [class*="text-emerald-200"]:not(.cosmic-surface):not(.cosmic-surface *),
+[data-mode="light"] .cosmic-page [class*="text-emerald-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #047857 !important; }
+[data-mode="light"] .cosmic-page [class*="text-amber-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #b45309 !important; }
+[data-mode="light"] .cosmic-page [class*="text-rose-300"]:not(.cosmic-surface):not(.cosmic-surface *) { color: #be123c !important; }
+/* white rings (Tailwind ring-* = box-shadow via --tw-ring-color) turn to ink so
+   selection states — Holo-Bay's active item, the Store's active tab — stay
+   visible on the light field. */
+[data-mode="light"] .cosmic-page [class*="ring-white/"]:not(.cosmic-surface):not(.cosmic-surface *) { --tw-ring-color: rgba(15,23,42,.30); }
+
+/* ══ Cosmetic render surfaces that need a SOLID dark base in light mode ══
+   The Holo-Bay stage backgrounds are translucent (they composited over the
+   dark page backdrop); in light mode the backdrop is pale, so re-ground the
+   stage on its own dark base. Dark mode is untouched. */
+[data-mode="light"] .holobay-stage {
+  background:
+    linear-gradient(180deg, rgba(56, 189, 248, 0.06), rgba(3, 5, 12, 0.5)),
+    repeating-linear-gradient(0deg, rgba(56, 189, 248, 0.05) 0px, rgba(56, 189, 248, 0.05) 1px, transparent 1px, transparent 4px),
+    #0a0e1b !important;
+}
+
+/* ══ Issue 6 — nebula swatches: the .cbg::after readability scrim protects
+   text on the REAL profile card, but a 40-48px store/picker swatch has no
+   text — the same scrim just made every nebula look muddy. The swatch
+   modifier keeps only a whisper of depth. */
+.cbg-swatch::after {
+  background: linear-gradient(180deg, rgba(4,3,13,.04) 0%, rgba(4,3,13,.16) 100%) !important;
+}
+
+/* ══ Issue 7 — Orbit streak hero: its Tailwind gradient stops (from-slate-900/60
+   to-violet-950/30) are NOT matched by the [class*="bg-slate-900/"] chrome
+   inversion (needs the literal bg- prefix), so the card stayed a dark slab in
+   light mode while its text was lifted to ink. Give it a real light variant. */
+[data-mode="light"] .orbit-hero-card {
+  background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(124,58,237,.10)) !important;
+}
+
+/* ══ Brand gradient headline (Store / Holo-Bay) ══
+   Class-based (was inline) so light mode can deepen the stops — the sky-400
+   start washed out against the pale field. Dark mode is pixel-identical. */
+.brand-gradient-text {
+  background: linear-gradient(90deg, #38bdf8, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-mode="light"] .brand-gradient-text {
+  background: linear-gradient(90deg, #0284c7, #7c3aed, #db2777);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ══ Currency + streak chips: keep them visible in light mode (L1) ══ */
+[data-mode="light"] .photons-chip > button {
+  background: #ffffff !important;
+  color: #6d28d9 !important;
+  box-shadow: 0 0 0 1px rgba(124,58,237,.30), 0 1px 6px rgba(124,58,237,.15) !important;
+}
+[data-mode="light"] .photons-chip > button .tabular-nums { color: #6d28d9 !important; }
+[data-mode="light"] .orbit-streak-badge {
+  background: #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(15,23,42,.10) !important;
+}
+[data-mode="light"] .orbit-streak-badge .tabular-nums { color: #0f172a !important; }
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 4 — light-mode contrast fixes (L2)
+   Every rule is gated on [data-mode="light"]; dark mode is untouched.
+   ═══════════════════════════════════════════════════════════ */
+
+/* 1 · Nav streak chip — bg is forced white above, so darken the pale
+   per-state text (amber/rose/slate) + the flame (currentColor). */
+[data-mode="light"] .orbit-streak-badge.text-amber-300 { color: #b45309 !important; }
+[data-mode="light"] .orbit-streak-badge.text-rose-300  { color: #be123c !important; }
+[data-mode="light"] .orbit-streak-badge.text-slate-300 { color: #475569 !important; }
+[data-mode="light"] .orbit-streak-badge [class*="text-rose-300"] { color: #be123c !important; }
+
+/* 2 · Dashboard Orbit widget lives on a LIGHT page (MySkills, not a
+   cosmic-page) — give it a light card + readable neutrals. The state
+   accent itself is handled theme-aware in JSX. */
+[data-mode="light"] .orbit-dash-widget {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, .10) !important;
+  box-shadow: 0 1px 6px rgba(15, 23, 42, .06) !important;
+}
+[data-mode="light"] .orbit-dash-widget [class*="text-white"]     { color: #0f172a !important; }
+[data-mode="light"] .orbit-dash-widget [class*="text-slate-400"] { color: #475569 !important; }
+[data-mode="light"] .orbit-dash-widget [class*="text-slate-500"] { color: #64748b !important; }
+
+/* 3 · Constellations "Pair up" — pale violet accent on the light hub. */
+[data-mode="light"] .orbit-pairup {
+  background: rgba(124, 58, 237, .12) !important;
+  color: #6d28d9 !important;
+  box-shadow: inset 0 0 0 1px rgba(124, 58, 237, .35) !important;
+}
+[data-mode="light"] .orbit-pairup:hover { background: rgba(124, 58, 237, .20) !important; }
+
+/* 4 · Rarity label pill — dark-designed pill on the now-light store.
+   Blend the tier colour toward ink so BOTH extremes read: very-dark
+   tiers (Dark Matter #4c1d95) and very-light tiers (Stellar #7dd3fc). */
+[data-mode="light"] .rar-badge {
+  color: color-mix(in srgb, var(--rar, #334155) 72%, #0f172a) !important;
+  background: color-mix(in srgb, var(--rar, #cbd5e1) 14%, #ffffff) !important;
+  border-color: color-mix(in srgb, var(--rar, #94a3b8) 45%, transparent) !important;
+  box-shadow: 0 0 calc(var(--rar-glow, 8px) * .4) color-mix(in srgb, var(--rar, #94a3b8) 30%, transparent) !important;
+}
+[data-mode="light"] .rar-badge::before {
+  background: color-mix(in srgb, var(--rar, #334155) 72%, #0f172a) !important;
+  box-shadow: 0 0 4px color-mix(in srgb, var(--rar, #94a3b8) 50%, transparent) !important;
+}
+
+/* 5 · Store card glass — inline dark glass stays dark on the light store
+   page; !important beats the inline (non-important) value. */
+[data-mode="light"] .shop-card-glass { background: rgba(255, 255, 255, .82) !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   .pe-mini — MINIATURE profile-effect preview for 40px picker swatches.
+   The full-size .pe layers tile 1–2px particles across 80–150px sheets, which
+   is invisible (a black square) at swatch scale. The mini variant concentrates
+   the same particle art: the tile shrinks to ~38px (≈3× density), dots get a
+   brightness/saturation boost, and the animation runs faster so every swatch
+   is a tiny living storm of exactly the effect you'd equip.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.pe.pe-mini::before,
+.pe.pe-mini::after {
+  background-size: 38px 38px;
+  animation-duration: 5s, 2.2s; /* compress the slow drift; twinkle stays lively */
+  filter: brightness(1.35) saturate(1.25);
+}
+/* aurora + orbits paint a single non-tiled shape — keep their geometry, just
+   brighten and speed them up so they read at 40px. */
+.pe-aurora.pe-mini::before {
+  background-size: auto;
+  filter: blur(3px) brightness(1.5) saturate(1.3);
+  animation-duration: 4s;
+}
+.pe-orbits.pe-mini::before {
+  background-size: auto;
+  inset: 14%;
+  animation-duration: 5s;
+  filter: brightness(1.4);
+}
+/* streak effects (starfall/darkrain) read best a touch larger than dots */
+.pe-starfall.pe-mini::before,
+.pe-darkrain.pe-mini::before {
+  background-size: 52px 52px;
+  opacity: 0.95;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pe.pe-mini::before, .pe.pe-mini::after { animation: none; }
+}
+[data-anim-off="true"] .pe.pe-mini::before,
+[data-anim-off="true"] .pe.pe-mini::after { animation: none; }

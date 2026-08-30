@@ -1,0 +1,69 @@
+/* PhotonIcon — periodic "catches-the-light" glow. Idle most of the cycle, then a
+   brief halo pulse + gloss sweep. Reduced-motion / anim-off → static. */
+
+.photon-icon {
+  display: inline-block;
+  filter: drop-shadow(0 0 1.5px rgba(139, 92, 246, 0.5));
+}
+
+.photon-icon--anim {
+  animation: photon-glow 5.5s ease-in-out infinite;
+}
+
+@keyframes photon-glow {
+  0%, 58%, 100% { filter: drop-shadow(0 0 1.5px rgba(139, 92, 246, 0.45)); }
+  74%           { filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.95)) drop-shadow(0 0 10px rgba(236, 72, 153, 0.55)); }
+}
+
+/* Diagonal gloss sweep. transform-box:fill-box makes the % translate relative to
+   the rect's own box so it reliably sweeps across the crystal. */
+.photon-icon__sweep {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: photon-sweep 5.5s ease-in-out infinite;
+}
+
+@keyframes photon-sweep {
+  0%, 60%   { transform: translateX(-130%) skewX(-16deg); opacity: 0; }
+  67%       { opacity: 0.9; }
+  82%       { transform: translateX(130%) skewX(-16deg); opacity: 0.9; }
+  88%, 100% { transform: translateX(130%) skewX(-16deg); opacity: 0; }
+}
+
+/* Ring energy flow — a dashed stroke drifting along the ellipse so the orbit
+   reads as circulating photons, not a static band. The dash period (48) divides
+   the ellipse circumference closely enough that the loop shows no seam. */
+.photon-icon__ring {
+  stroke-dasharray: 34 14;
+  animation: photon-ring-flow 5.5s linear infinite;
+}
+
+@keyframes photon-ring-flow {
+  to { stroke-dashoffset: -96; }
+}
+
+/* Quantum satellite twinkle — brightens as the halo pulse peaks (74%), so the
+   whole mark "catches the light" as one event. */
+.photon-icon__sat {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: photon-sat-twinkle 5.5s ease-in-out infinite;
+}
+
+@keyframes photon-sat-twinkle {
+  0%, 58%, 100% { opacity: 0.85; transform: scale(1); }
+  74%           { opacity: 1;    transform: scale(1.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photon-icon--anim { animation: none; }
+  .photon-icon__sweep { display: none; }
+  .photon-icon__ring, .photon-icon__sat { animation: none; }
+}
+
+/* App-wide "Animation Speed = 0 / off" switch used elsewhere in the app. */
+[data-anim-off="true"] .photon-icon--anim { animation: none; }
+[data-anim-off="true"] .photon-icon__sweep { display: none; }
+[data-anim-off="true"] .photon-icon__ring,
+[data-anim-off="true"] .photon-icon__sat { animation: none; }

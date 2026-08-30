@@ -1,0 +1,23 @@
+{
+  "appId": "app.orbit.mobile",
+  "appName": "Orbit",
+  "webDir": "dist",
+  "server": {
+    "url": "https://orbit-wine-zeta.vercel.app",
+    "androidScheme": "https",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    },
+    "SplashScreen": {
+      "launchShowDuration": 800,
+      "backgroundColor": "#0b0a20",
+      "showSpinner": false
+    }
+  }
+}

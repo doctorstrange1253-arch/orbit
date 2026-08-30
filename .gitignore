@@ -1,0 +1,18 @@
+node_modules/
+.env
+*.log
+.DS_Store
+*.md
+
+# Firebase / FCM.
+# IMPORTANT: google-services.json is the Android *client* build config, NOT a
+# server secret — its API key is restricted by package name + app-signing SHA,
+# so committing it is safe and expected. The APK build (local or CI) must have
+# it on disk at build time; without it Firebase never initialises and killed-app
+# push notifications never arrive. It is therefore intentionally NOT ignored.
+# (Prefer not to commit it? Set GOOGLE_SERVICES_JSON as a build env var and
+# scripts/write-google-services.mjs will write the file at build time.)
+# Genuine secrets stay ignored below — inject via env/secrets, never commit:
+GoogleService-Info.plist
+firebase-service-account*.json
+serviceAccountKey*.json

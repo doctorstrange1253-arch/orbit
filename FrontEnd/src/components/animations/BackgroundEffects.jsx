@@ -1,0 +1,1037 @@
+import { useEffect, useRef, memo, useState } from 'react';
+import useAppearanceStore, { THEMES } from '../../store/appearanceStore';
+import { useThemeStore } from '../../store/themeStore';
+
+/* ─────────────────────────────────────────────────────
+   Constellation: Dynamic animated graph with nodes
+───────────────────────────────────────────────────── */
+const ConstellationCanvas = memo(({ colors, speedMultiplier, mode = 'dark' }) => {
+  const canvasRef = useRef(null);
+  const animRef = useRef(null);
+  const mouseRef = useRef({ x: -9999, y: -9999 });
+
+  useEffect(() => {
+    // if (speedMultiplier === 0) return; // Allow initial frame render
+    const isLight = mode === 'light';
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const onMouseMove = (e) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', onMouseMove);
+
+    const hexToRgba = (hex) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r},${g},${b},`;
+    };
+
+    const COLORS = colors.map(hexToRgba);
+    const NODE_COUNT = Math.min(50, Math.floor((window.innerWidth * window.innerHeight) / 25000));
+    const CONNECT_DIST = 150;
+    const MOUSE_DIST = 170;
+
+    const nodes = Array.from({ length: NODE_COUNT }, (_, i) => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.4 * speedMultiplier,
+      vy: (Math.random() - 0.5) * 0.4 * speedMultiplier,
+      r: Math.random() * 2 + 1,
+      color: COLORS[i % COLORS.length],
+      pulsePhase: Math.random() * Math.PI * 2,
+      pulseSpeed: (Math.random() * 0.02 + 0.01) * speedMultiplier,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
+
+      nodes.forEach((n) => {
+        const dx = n.x - mx;
+        const dy = n.y - my;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (dist < MOUSE_DIST) {
+          const force = (MOUSE_DIST - dist) / MOUSE_DIST;
+          n.vx += (dx / dist) * force * 0.03 * speedMultiplier;
+          n.vy += (dy / dist) * force * 0.03 * speedMultiplier;
+        }
+
+        n.vx *= 0.995;
+        n.vy *= 0.995;
+        n.x += n.vx;
+        n.y += n.vy;
+
+        if (n.x < -20) n.x = canvas.width + 20;
+        if (n.x > canvas.width + 20) n.x = -20;
+        if (n.y < -20) n.y = canvas.height + 20;
+        if (n.y > canvas.height + 20) n.y = -20;
+
+        n.pulsePhase += n.pulseSpeed;
+      });
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i];
+          const b = nodes[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < CONNECT_DIST) {
+            const alpha = (1 - dist / CONNECT_DIST) * (isLight ? 0.4 : 0.5); // softer on light bg
+            const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+            grad.addColorStop(0, `${a.color}${alpha})`);
+            grad.addColorStop(1, `${b.color}${alpha})`);
+
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = alpha * 3; // Increased from 2 to 3
+            ctx.stroke();
+          }
+        }
+      }
+
+      nodes.forEach((n) => {
+        const pulse = 0.6 + 0.4 * Math.sin(n.pulsePhase);
+        const radius = n.r * pulse;
+        const alpha = 0.5 + 0.5 * pulse;
+
+        const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, radius * 3);
+        grd.addColorStop(0, `${n.color}${alpha * 0.4})`);
+        grd.addColorStop(1, `${n.color}0)`);
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, radius * 3, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `${n.color}${alpha})`;
+        ctx.fill();
+      });
+
+      if (speedMultiplier !== 0) {
+        animRef.current = requestAnimationFrame(draw);
+      }
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', onMouseMove);
+    };
+  }, [colors, speedMultiplier, mode]);
+
+  // if (speedMultiplier === 0) return null; // Canvas unmounting disabled to fix desktop layout collapse
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none block w-full h-full"
+      style={{ zIndex: 0 }}
+    />
+  );
+});
+
+ConstellationCanvas.displayName = 'ConstellationCanvas';
+
+/* ─────────────────────────────────────────────────────
+   Mesh: Animated blob mesh
+───────────────────────────────────────────────────── */
+const MeshBackground = memo(({ colors, speedMultiplier, mode = 'dark' }) => {
+  const canvasRef = useRef(null);
+  const animRef = useRef(null);
+
+  useEffect(() => {
+    const isLight = mode === 'light';
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const hexToRgb = (hex) => ({
+      r: parseInt(hex.slice(1, 3), 16),
+      g: parseInt(hex.slice(3, 5), 16),
+      b: parseInt(hex.slice(5, 7), 16),
+    });
+    const palette = colors.map(hexToRgb);
+
+    // More blobs than colors → a richer, overlapping mesh. They DRIFT and pulse,
+    // and additive ('lighter') compositing makes them blend where they overlap —
+    // a living color mesh, clearly distinct from the static Gradient style.
+    const BLOB_COUNT = 6;
+    const minDim = () => Math.min(canvas.width, canvas.height);
+    const blobs = Array.from({ length: BLOB_COUNT }, (_, i) => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.6 * speedMultiplier,
+      vy: (Math.random() - 0.5) * 0.6 * speedMultiplier,
+      r: minDim() * (0.30 + Math.random() * 0.18),
+      color: palette[i % palette.length],
+      pulse: Math.random() * Math.PI * 2,
+      pulseSpeed: (0.006 + Math.random() * 0.01) * speedMultiplier,
+    }));
+
+    const core = isLight ? 0.30 : 0.52;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = 'lighter';
+      blobs.forEach((b) => {
+        b.x += b.vx;
+        b.y += b.vy;
+        const pad = b.r * 0.35;
+        if (b.x < -pad || b.x > canvas.width + pad) b.vx *= -1;
+        if (b.y < -pad || b.y > canvas.height + pad) b.vy *= -1;
+        b.pulse += b.pulseSpeed;
+        const pr = b.r * (0.85 + 0.15 * Math.sin(b.pulse));
+        const { r, g, b: bl } = b.color;
+        const grd = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, pr);
+        grd.addColorStop(0, `rgba(${r},${g},${bl},${core})`);
+        grd.addColorStop(0.55, `rgba(${r},${g},${bl},${core * 0.35})`);
+        grd.addColorStop(1, `rgba(${r},${g},${bl},0)`);
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, pr, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalCompositeOperation = 'source-over';
+      if (speedMultiplier !== 0) animRef.current = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, [colors, speedMultiplier, mode]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none block w-full h-full"
+      style={{ zIndex: 0, filter: 'blur(40px)' }}
+    />
+  );
+});
+
+MeshBackground.displayName = 'MeshBackground';
+
+/* ─────────────────────────────────────────────────────
+   Particles: Floating dots
+───────────────────────────────────────────────────── */
+const ParticlesCanvas = memo(({ colors, speedMultiplier, mode = 'dark' }) => {
+  const canvasRef = useRef(null);
+  const animRef = useRef(null);
+
+  useEffect(() => {
+    if (speedMultiplier === 0) return;
+    const isLight = mode === 'light';
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const hexToRgba = (hex) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r},${g},${b},`;
+    };
+
+    const COLORS = colors.map(hexToRgba);
+    const PARTICLE_COUNT = 60;
+
+    const particles = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.5 * speedMultiplier,
+      vy: (Math.random() - 0.5) * 0.5 * speedMultiplier,
+      r: Math.random() * 2 + 0.5,
+      color: COLORS[i % COLORS.length],
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `${p.color}${isLight ? 0.5 : 0.6})`;
+        ctx.fill();
+      });
+
+      if (speedMultiplier !== 0) {
+        animRef.current = requestAnimationFrame(draw);
+      }
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, [colors, speedMultiplier, mode]);
+
+  // if (speedMultiplier === 0) return null; // Canvas unmounting disabled to fix desktop layout collapse
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none block w-full h-full"
+      style={{ zIndex: 0 }}
+    />
+  );
+});
+
+ParticlesCanvas.displayName = 'ParticlesCanvas';
+
+/* ─────────────────────────────────────────────────────
+   Matrix: Digital rain cascade effect
+───────────────────────────────────────────────────── */
+const MatrixCanvas = memo(({ colors, speedMultiplier, mode = 'dark' }) => {
+  const canvasRef = useRef(null);
+  const animRef = useRef(null);
+
+  useEffect(() => {
+    if (speedMultiplier === 0) return;
+    const isLight = mode === 'light';
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const hexToRgb = (hex) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return { r, g, b };
+    };
+
+    const color = hexToRgb(colors[0]);
+    const fontSize = 14;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = Array(columns).fill(1);
+
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+
+    const draw = () => {
+      ctx.fillStyle = isLight ? 'rgba(245, 247, 252, 0.12)' : 'rgba(6, 8, 16, 0.08)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        const alpha = Math.random() * 0.5 + 0.3;
+        ctx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
+        ctx.fillText(text, x, y);
+
+        if (y > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i] += speedMultiplier;
+      }
+
+      if (speedMultiplier !== 0) {
+        animRef.current = requestAnimationFrame(draw);
+      }
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, [colors, speedMultiplier, mode]);
+
+  // if (speedMultiplier === 0) return null; // Canvas unmounting disabled to fix desktop layout collapse
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none block w-full h-full"
+      style={{ zIndex: 0 }}
+    />
+  );
+});
+
+MatrixCanvas.displayName = 'MatrixCanvas';
+
+/* ─────────────────────────────────────────────────────
+   Waves: Smooth flowing wave patterns
+───────────────────────────────────────────────────── */
+const WavesCanvas = memo(({ colors, speedMultiplier, mode = 'dark' }) => {
+  const canvasRef = useRef(null);
+  const animRef = useRef(null);
+
+  useEffect(() => {
+    if (speedMultiplier === 0) return;
+    const isLight = mode === 'light';
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const hexToRgba = (hex) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r},${g},${b},`;
+    };
+
+    const COLORS = colors.map(hexToRgba);
+    let time = 0;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height / 2);
+
+        for (let x = 0; x < canvas.width; x += 5) {
+          const y =
+            canvas.height / 2 +
+            Math.sin((x * 0.01 + time * speedMultiplier * 0.5 + i * 2)) * 80 +
+            Math.sin((x * 0.005 + time * speedMultiplier * 0.3)) * 40;
+
+          ctx.lineTo(x, y);
+        }
+
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
+        ctx.closePath();
+
+        const alpha = (isLight ? 0.16 : 0.08) - i * 0.02; // stronger on light bg
+        ctx.fillStyle = `${COLORS[i]}${alpha})`;
+        ctx.fill();
+      }
+
+      time += 0.01;
+      if (speedMultiplier !== 0) {
+        animRef.current = requestAnimationFrame(draw);
+      }
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, [colors, speedMultiplier, mode]);
+
+  // if (speedMultiplier === 0) return null; // Canvas unmounting disabled to fix desktop layout collapse
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none block w-full h-full"
+      style={{ zIndex: 0 }}
+    />
+  );
+});
+
+WavesCanvas.displayName = 'WavesCanvas';
+
+/* ─────────────────────────────────────────────────────
+   Neural: Pulsing neural network
+───────────────────────────────────────────────────── */
+const NeuralCanvas = memo(({ colors, speedMultiplier, mode = 'dark' }) => {
+  const canvasRef = useRef(null);
+  const animRef = useRef(null);
+
+  useEffect(() => {
+    if (speedMultiplier === 0) return;
+    const isLight = mode === 'light';
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const hexToRgba = (hex) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r},${g},${b},`;
+    };
+
+    const COLORS = colors.map(hexToRgba);
+    const NODE_COUNT = 25;
+
+    const nodes = Array.from({ length: NODE_COUNT }, (_, i) => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      pulsePhase: Math.random() * Math.PI * 2,
+      pulseSpeed: (Math.random() * 0.02 + 0.01) * speedMultiplier,
+      color: COLORS[i % COLORS.length],
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw connections with pulse
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i];
+          const b = nodes[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 300) {
+            const pulse = (Math.sin(a.pulsePhase) + Math.sin(b.pulsePhase)) / 2;
+            const alpha = ((1 - dist / 300) * (pulse * 0.3 + 0.2)) * (isLight ? 0.85 : 1);
+
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `${a.color}${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw pulsing nodes
+      nodes.forEach((n) => {
+        n.pulsePhase += n.pulseSpeed;
+        const pulse = Math.sin(n.pulsePhase) * 0.5 + 0.5;
+        const radius = 3 + pulse * 2;
+        const alpha = 0.4 + pulse * 0.4;
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `${n.color}${alpha})`;
+        ctx.fill();
+
+        // Glow
+        const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, radius * 4);
+        grd.addColorStop(0, `${n.color}${alpha * 0.3})`);
+        grd.addColorStop(1, `${n.color}0)`);
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, radius * 4, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      if (speedMultiplier !== 0) {
+        animRef.current = requestAnimationFrame(draw);
+      }
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, [colors, speedMultiplier, mode]);
+
+  // if (speedMultiplier === 0) return null; // Canvas unmounting disabled to fix desktop layout collapse
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none block w-full h-full"
+      style={{ zIndex: 0 }}
+    />
+  );
+});
+
+NeuralCanvas.displayName = 'NeuralCanvas';
+
+/* ─────────────────────────────────────────────────────
+   LIGHT MODE ANIMATIONS: Airy Aurora Blobs
+   Soft floating gradient orbs with gentle drift & morph
+───────────────────────────────────────────────────── */
+const LightAuroraCanvas = memo(({ colors, speedMultiplier, themeName }) => {
+  const canvasRef = useRef(null);
+  const animRef = useRef(null);
+
+  useEffect(() => {
+    if (speedMultiplier === 0) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    // Use devicePixelRatio for sharp rendering
+    const dpr = window.devicePixelRatio || 1;
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    const resize = () => {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.scale(dpr, dpr);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const hexToRgba = (hex) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return { r, g, b };
+    };
+
+    const COLORS = colors.map(hexToRgba);
+    
+    // Theme-specific motifs
+    const getOrbConfig = () => {
+      switch(themeName) {
+        case 'spring-garden':
+          return { count: 6, size: 280, opacity: 0.18, speed: 0.3 };
+        case 'golden-hour':
+          return { count: 5, size: 320, opacity: 0.22, speed: 0.25 };
+        case 'lavender-dream':
+          return { count: 7, size: 260, opacity: 0.16, speed: 0.28 };
+        case 'ocean-breeze':
+          return { count: 6, size: 300, opacity: 0.2, speed: 0.32 };
+        default: // morning-sky
+          return { count: 5, size: 300, opacity: 0.2, speed: 0.3 };
+      }
+    };
+
+    const config = getOrbConfig();
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    
+    const orbs = Array.from({ length: config.count }, (_, i) => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * config.speed * speedMultiplier,
+      vy: (Math.random() - 0.5) * config.speed * speedMultiplier,
+      size: config.size + Math.random() * 60,
+      color: COLORS[i % COLORS.length],
+      pulsePhase: Math.random() * Math.PI * 2,
+      pulseSpeed: (Math.random() * 0.008 + 0.004) * speedMultiplier,
+      morphPhase: Math.random() * Math.PI * 2,
+      morphSpeed: (Math.random() * 0.006 + 0.003) * speedMultiplier,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+
+      orbs.forEach((orb) => {
+        // Move
+        orb.x += orb.vx;
+        orb.y += orb.vy;
+
+        // Wrap edges
+        if (orb.x < -orb.size) orb.x = w + orb.size;
+        if (orb.x > w + orb.size) orb.x = -orb.size;
+        if (orb.y < -orb.size) orb.y = h + orb.size;
+        if (orb.y > h + orb.size) orb.y = -orb.size;
+
+        // Pulse & morph
+        orb.pulsePhase += orb.pulseSpeed;
+        orb.morphPhase += orb.morphSpeed;
+        
+        const pulse = 0.85 + 0.15 * Math.sin(orb.pulsePhase);
+        const morph = 0.9 + 0.1 * Math.sin(orb.morphPhase);
+        const currentSize = orb.size * pulse * morph;
+        const currentOpacity = config.opacity * pulse;
+
+        // Draw soft gradient orb
+        const gradient = ctx.createRadialGradient(
+          orb.x, orb.y, 0,
+          orb.x, orb.y, currentSize
+        );
+        gradient.addColorStop(0, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${currentOpacity})`);
+        gradient.addColorStop(0.5, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${currentOpacity * 0.5})`);
+        gradient.addColorStop(1, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, 0)`);
+
+        ctx.beginPath();
+        ctx.arc(orb.x, orb.y, currentSize, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      });
+
+      if (speedMultiplier !== 0) {
+        animRef.current = requestAnimationFrame(draw);
+      }
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, [colors, speedMultiplier, themeName]);
+
+  // if (speedMultiplier === 0) return null; // Canvas unmounting disabled to fix desktop layout collapse
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 pointer-events-none"
+      style={{ zIndex: 0, filter: 'blur(60px)', width: '100%', height: '100%' }}
+    />
+  );
+});
+
+LightAuroraCanvas.displayName = 'LightAuroraCanvas';
+
+/* ─────────────────────────────────────────────────────
+   Layer 2: LightBokehCanvas
+───────────────────────────────────────────────────── */
+const LightBokehCanvas = memo(({ speedMultiplier }) => {
+  const canvasRef = useRef(null);
+  const animRef = useRef(null);
+
+  useEffect(() => {
+    if (speedMultiplier === 0) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    const resize = () => {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.scale(dpr, dpr);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    const motes = Array.from({ length: 80 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.2 * speedMultiplier,
+      vy: (Math.random() * -0.5 - 0.1) * speedMultiplier, // drift upwards
+      size: Math.random() * 2 + 0.5,
+      opacity: Math.random() * 0.4 + 0.1,
+      wobblePhase: Math.random() * Math.PI * 2,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      motes.forEach(m => {
+        m.x += m.vx + Math.sin(m.wobblePhase) * 0.1;
+        m.y += m.vy;
+        m.wobblePhase += 0.02 * speedMultiplier;
+
+        if (m.y < -10) m.y = h + 10;
+        if (m.x < -10) m.x = w + 10;
+        if (m.x > w + 10) m.x = -10;
+        
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${m.opacity})`;
+        ctx.fill();
+      });
+      if (speedMultiplier !== 0) {
+        animRef.current = requestAnimationFrame(draw);
+      }
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, [speedMultiplier]);
+
+  // if (speedMultiplier === 0) return null; // Canvas unmounting disabled to fix desktop layout collapse
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none w-full h-full" />;
+});
+LightBokehCanvas.displayName = 'LightBokehCanvas';
+
+/* ─────────────────────────────────────────────────────
+   LightModeEffects Wrapper
+───────────────────────────────────────────────────── */
+const LightModeEffects = memo(({ colors, speedMultiplier, themeName }) => {
+  const [ripples, setRipples] = useState([]);
+  
+  useEffect(() => {
+    if (speedMultiplier === 0) return;
+    const handleMouseMove = (e) => {
+      // Small parallax offset based on screen center
+      const px = (e.clientX / window.innerWidth - 0.5) * -30;
+      const py = (e.clientY / window.innerHeight - 0.5) * -30;
+      document.documentElement.style.setProperty('--px', `${px}px`);
+      document.documentElement.style.setProperty('--py', `${py}px`);
+    };
+
+    const handleClick = (e) => {
+      const newRipple = { x: e.clientX, y: e.clientY, id: Date.now() };
+      setRipples(prev => [...prev, newRipple]);
+      setTimeout(() => {
+        setRipples(prev => prev.filter(r => r.id !== newRipple.id));
+      }, 1000);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('click', handleClick);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('click', handleClick);
+    };
+  }, [speedMultiplier]);
+
+  // if (speedMultiplier === 0) return null; // Canvas unmounting disabled to fix desktop layout collapse
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+      <div style={{ transform: 'translate(calc(var(--px, 0px) * 0.5), calc(var(--py, 0px) * 0.5))', transition: 'transform 0.1s ease-out', width: '100%', height: '100%', position: 'absolute' }}>
+        <LightAuroraCanvas colors={colors} speedMultiplier={speedMultiplier} themeName={themeName} />
+      </div>
+      <div style={{ transform: 'translate(calc(var(--px, 0px) * 1.5), calc(var(--py, 0px) * 1.5))', transition: 'transform 0.1s ease-out', width: '100%', height: '100%', position: 'absolute' }}>
+        <LightBokehCanvas speedMultiplier={speedMultiplier} />
+      </div>
+      
+      {/* Click ripples */}
+      {ripples.map(r => (
+        <div key={r.id} className="absolute rounded-full border-2 animate-ripple" style={{
+          left: r.x - 20, top: r.y - 20, width: 40, height: 40, opacity: 0.5, borderColor: colors[0] || 'var(--accent-1)'
+        }} />
+      ))}
+    </div>
+  );
+});
+LightModeEffects.displayName = 'LightModeEffects';
+
+
+/* ─────────────────────────────────────────────────────
+   BackgroundEffects: Dynamic background system
+───────────────────────────────────────────────────── */
+const BackgroundEffects = memo(() => {
+  const { backgroundStyle, getColors, getSpeedMultiplier, theme, setTheme } = useAppearanceStore();
+  const { isDark } = useThemeStore();
+  const colors = getColors();
+  const speedMultiplier = getSpeedMultiplier();
+
+  // Respect prefers-reduced-motion
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isTabVisible, setIsTabVisible] = useState(true);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+    
+    const handler = (e) => setPrefersReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
+  useEffect(() => {
+    const handleVisibility = () => setIsTabVisible(!document.hidden);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  const effectiveSpeed = (prefersReducedMotion || !isTabVisible) ? 0 : speedMultiplier;
+
+  // Cross-check Zustand isDark with DOM data-mode attribute to survive any
+  // store/DOM desync (e.g. initializeTheme() hasn't run yet on first render,
+  // or localStorage was partially cleared). The DOM attribute wins if both
+  // sources are available, otherwise fall back to the Zustand value.
+  const domIsDark = typeof document !== 'undefined'
+    ? document.documentElement.getAttribute('data-mode') !== 'light'
+    : isDark;
+  const effectiveIsDark = isDark || domIsDark;
+
+  // Sync theme with effective mode to prevent light themes leaking into dark mode (and vice versa)
+  useEffect(() => {
+    const currentThemeMode = THEMES[theme]?.mode;
+    if (effectiveIsDark && currentThemeMode === 'light') {
+      setTheme('cyan-purple'); // fallback dark theme
+    } else if (!effectiveIsDark && currentThemeMode === 'dark') {
+      setTheme('morning-sky'); // fallback light theme
+    }
+  }, [effectiveIsDark, theme, setTheme]);
+
+  // Dark mode: deep space gradient. Light mode: airy pastel gradient using theme's bg color.
+  const darkGradientBg = `
+    radial-gradient(ellipse 100% 70% at 50% 0%, ${colors[0]}14 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 20% 100%, ${colors[1]}10 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 80% 100%, ${colors[2]}10 0%, transparent 50%),
+    var(--bg-app)
+  `;
+
+  const lightGradientBg = `
+    radial-gradient(ellipse 120% 60% at 50% -10%, ${colors[0]}28 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 10% 80%, ${colors[1]}20 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 90% 70%, ${colors[2]}20 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255,255,255,0.5) 0%, transparent 80%),
+    var(--bg-app)
+  `;
+
+  const minimalBg = 'var(--bg-app)';
+
+  const isGradientStyle = backgroundStyle === 'gradient';
+
+  // Base wash for the non-gradient styles (their canvas layers on top of this).
+  const baseBg = backgroundStyle === 'minimal'
+    ? minimalBg
+    : (effectiveIsDark ? darkGradientBg : lightGradientBg);
+
+  // The "Gradient" style is now a BOLD, FLOWING gradient — a multi-stop sweep of
+  // the three theme colors that drifts via background-position. Its motion is
+  // tied to the animation-speed setting (faster speed → shorter duration), and
+  // at speed 0 it holds a static, still-vivid gradient. This is what makes the
+  // choice actually read (it used to be a near-invisible static wash).
+  const gradientDuration = effectiveSpeed > 0 ? 24 / effectiveSpeed : 0;
+  const flowGradientImage = effectiveIsDark
+    ? `linear-gradient(120deg, ${colors[0]}59 0%, ${colors[1]}3d 22%, ${colors[2]}59 45%, ${colors[1]}3d 68%, ${colors[0]}59 100%)`
+    : `linear-gradient(120deg, ${colors[0]}33 0%, ${colors[1]}24 22%, ${colors[2]}33 45%, ${colors[1]}24 68%, ${colors[0]}33 100%)`;
+
+  const baseStyle = isGradientStyle
+    ? {
+        zIndex: -1,
+        backgroundColor: 'var(--bg-app)',
+        backgroundImage: flowGradientImage,
+        backgroundSize: '300% 300%',
+        animation: gradientDuration ? `gradientShift ${gradientDuration}s ease-in-out infinite` : 'none',
+      }
+    : { zIndex: -1, background: baseBg };
+
+  return (
+    <>
+      {/* Base gradient or solid */}
+      <div className="fixed inset-0 pointer-events-none" style={baseStyle} />
+
+      {/* Noise texture overlay for depth - only in light mode */}
+      {!effectiveIsDark && (
+        <div
+          className="fixed inset-0 pointer-events-none"
+          style={{
+            zIndex: -1,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat',
+            backgroundSize: '256px 256px',
+            opacity: 0.6,
+          }}
+        />
+      )}
+      
+      {/* Dynamic layer based on style - ONLY IN DARK MODE */}
+      {effectiveIsDark && (
+        <>
+          {backgroundStyle === 'constellation' && (
+            <ConstellationCanvas colors={colors} speedMultiplier={effectiveSpeed} />
+          )}
+          {backgroundStyle === 'mesh' && (
+            <MeshBackground colors={colors} speedMultiplier={effectiveSpeed} />
+          )}
+          {backgroundStyle === 'particles' && (
+            <ParticlesCanvas colors={colors} speedMultiplier={effectiveSpeed} />
+          )}
+          {backgroundStyle === 'matrix' && (
+            <MatrixCanvas colors={colors} speedMultiplier={effectiveSpeed} />
+          )}
+          {backgroundStyle === 'waves' && (
+            <WavesCanvas colors={colors} speedMultiplier={effectiveSpeed} />
+          )}
+          {backgroundStyle === 'neural' && (
+            <NeuralCanvas colors={colors} speedMultiplier={effectiveSpeed} />
+          )}
+          {/* gradient + minimal = static only, no canvas — this is intentional */}
+        </>
+      )}
+
+      {/* LIGHT MODE: Layered Effects (soft themed ambient base) */}
+      {!effectiveIsDark && backgroundStyle !== 'minimal' && backgroundStyle !== 'gradient' && (
+        <LightModeEffects colors={colors} speedMultiplier={effectiveSpeed} themeName={theme} />
+      )}
+
+      {/* LIGHT MODE: the selected style's own animation, colors synced to the
+          active light theme (same components as dark, re-tuned via mode="light").
+          gradient + minimal stay static, exactly like dark mode. */}
+      {!effectiveIsDark && (
+        <>
+          {backgroundStyle === 'constellation' && (
+            <ConstellationCanvas colors={colors} speedMultiplier={effectiveSpeed} mode="light" />
+          )}
+          {backgroundStyle === 'mesh' && (
+            <MeshBackground colors={colors} speedMultiplier={effectiveSpeed} mode="light" />
+          )}
+          {backgroundStyle === 'particles' && (
+            <ParticlesCanvas colors={colors} speedMultiplier={effectiveSpeed} mode="light" />
+          )}
+          {backgroundStyle === 'matrix' && (
+            <MatrixCanvas colors={colors} speedMultiplier={effectiveSpeed} mode="light" />
+          )}
+          {backgroundStyle === 'waves' && (
+            <WavesCanvas colors={colors} speedMultiplier={effectiveSpeed} mode="light" />
+          )}
+          {backgroundStyle === 'neural' && (
+            <NeuralCanvas colors={colors} speedMultiplier={effectiveSpeed} mode="light" />
+          )}
+        </>
+      )}
+    </>
+  );
+});
+
+BackgroundEffects.displayName = 'BackgroundEffects';
+export default BackgroundEffects;

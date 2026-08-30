@@ -1,0 +1,90 @@
+name: Build Android APK
+
+# Builds an installable Orbit debug APK in the cloud (free) and uploads it as a
+# downloadable artifact. Runs on every push that touches the frontend, and can
+# be triggered manually from the Actions tab. No local Android Studio needed.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'FrontEnd/**'
+      - '.github/workflows/android-apk.yml'
+  workflow_dispatch: {}
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: FrontEnd
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Node 22: required by Vite 8 (>=20.19) and @capacitor/cli (>=22).
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: FrontEnd/package-lock.json
+
+      - name: Setup Java (JDK 21)
+        uses: actions/setup-java@v4
+        with:
+          # JDK 21: required by Android Gradle Plugin 8.13 / compileSdk 36.
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages (API 36)
+        # compileSdk/targetSdk are 36 (see android/variables.gradle). API 36 is
+        # new enough that the runner's preinstalled SDK and AGP auto-download
+        # can't be relied on, so install the platform + build-tools explicitly.
+        run: |
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web app (Vite + PWA)
+        env:
+          # Firebase Android config, injected from a repo Actions secret so
+          # the APK gets FCM push WITHOUT committing google-services.json.
+          # Add it at Settings -> Secrets and variables -> Actions -> New
+          # repository secret (name GOOGLE_SERVICES_JSON; value = the file
+          # raw JSON or base64). scripts/write-google-services.mjs writes
+          # android/app/google-services.json here, before cap sync + Gradle.
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: npm run build
+
+      - name: Strip pre-compressed assets before sync
+        # Vite emits foo.js + foo.js.gz + foo.js.br. Android's asset merger strips
+        # the .gz/.br suffix, so the siblings collide ("Duplicate resources") and
+        # the APK build fails. They're useless inside the WebView, so drop them.
+        # (Belt-and-suspenders with android/app/build.gradle's ignoreAssetsPattern.)
+        run: find dist -type f \( -name '*.gz' -o -name '*.br' \) -delete
+
+      - name: Sync web build into Android project
+        run: npx cap sync android
+
+      - name: Build debug APK
+        working-directory: FrontEnd/android
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Rename APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk Orbit.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Orbit-apk
+          path: FrontEnd/Orbit.apk
+          if-no-files-found: error
+          retention-days: 30

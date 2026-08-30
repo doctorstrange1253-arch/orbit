@@ -1,0 +1,54 @@
+/**
+ * AdminApp — entry point for the Command Center, mounted at the secret slug.
+ * Probes the session via /auth/me: authenticated → AdminShell; otherwise →
+ * AdminLogin. Renders nothing of the user app and pulls in only the scoped
+ * admin theme.
+ */
+import { useCallback, useEffect, useState } from 'react';
+import adminApi, { setAdminCsrf, setAdminSession } from './adminApi';
+import AdminLogin from './AdminLogin';
+import AdminShell from './AdminShell';
+import './admin.css';
+
+export default function AdminApp() {
+  const [state, setState] = useState('loading'); // loading | login | authed
+  const [admin, setAdmin] = useState(null);
+
+  const probe = useCallback(async () => {
+    try {
+      const { data } = await adminApi.get('/auth/me');
+      setAdminCsrf(data.csrfToken);   // header source for mutations (cross-site cookie isn't JS-readable)
+      if (data.sessionToken) setAdminSession(data.sessionToken); // sliding session: keep the freshest token
+      setAdmin(data.admin);
+      setState('authed');
+    } catch {
+      setAdminCsrf(null);
+      setAdminSession(null);          // stale bearer token → clear it too
+      setState('login');
+    }
+  }, []);
+
+  // Probe runs once on mount; setState happens only after the awaited request
+  // resolves (not synchronously), so the set-state-in-effect rule is a false
+  // positive here.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { probe(); }, [probe]);
+
+  // Sliding session: while authed, re-probe every 10 min so the 30-min token
+  // keeps renewing during active use instead of silently expiring mid-session.
+  useEffect(() => {
+    if (state !== 'authed') return;
+    const t = setInterval(probe, 10 * 60 * 1000);
+    return () => clearInterval(t);
+  }, [state, probe]);
+
+  return (
+    <div className="ssctl">
+      {state === 'loading' && (
+        <div className="ssctl-center"><div className="ssctl-spin" /></div>
+      )}
+      {state === 'login' && <AdminLogin onAuthed={probe} />}
+      {state === 'authed' && <AdminShell admin={admin} onLogout={() => { setAdminCsrf(null); setAdminSession(null); setAdmin(null); setState('login'); }} />}
+    </div>
+  );
+}

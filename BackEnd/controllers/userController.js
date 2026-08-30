@@ -1,0 +1,202 @@
+const User = require("../models/user");
+const Skill = require("../models/skill");
+const Connection = require("../models/Connection");
+const { enforceContentPolicy } = require("../utils/contentModeration");
+
+// ================= GET PLATFORM STATS =================
+exports.getStats = async (req, res) => {
+    try {
+        const userCount = await User.countDocuments();
+        const skillCount = await Skill.countDocuments();
+        const connectionCount = await Connection.countDocuments({ status: 'accepted' });
+        
+        // Calculate average trust score in the DB (avoids loading every user doc).
+        const [agg] = await User.aggregate([
+            { $group: { _id: null, avgTrustScore: { $avg: "$trustScore" } } }
+        ]);
+        const avgTrustScore = agg?.avgTrustScore || 0;
+
+        res.status(200).json({
+            users: userCount,
+            skills: skillCount,
+            connections: connectionCount,
+            avgRating: avgTrustScore.toFixed(1)
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// ================= GET PROFILE =================
+exports.getProfile = async (req, res) => {
+    try {
+        // Exclude secrets even from the owner: the admin credential sub-doc
+        // (bcrypt hash, encrypted TOTP secret, backup codes) and the password-
+        // reset token must never travel to any client.
+        const user = await User.findById(req.user.id)
+            .select("-password -admin -resetPasswordToken -resetPasswordExpires");
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(user);
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// ================= GET PUBLIC PROFILE =================
+exports.getPublicProfile = async (req, res) => {
+    try {
+        // ALLOWLIST projection. The old denylist ("-password -email …") still
+        // exposed sensitive fields it didn't know about — resetPasswordToken,
+        // resetPasswordExpires, the admin credential sub-document, fcmTokens,
+        // lastLoginEmailAt. An explicit allowlist can never leak a new field.
+        const user = await User.findById(req.params.id).select(
+            "name bio avatar socialLinks location languages trustScore totalRatings averageRating lastSeen createdAt cosmic orbit.cosmetics orbit.streak.current orbit.streak.longest city region country"
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(user);
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+// ================= UPDATE PROFILE =================
+exports.updateProfile = async (req, res) => {
+    try {
+        const { name, bio, location, languages, socialLinks } = req.body || {};
+
+        // --- CONTENT MODERATION (same escalating warning/ban as skills) ---
+        // Scan the free-text fields a user can put words into (name + bio). A
+        // violation is a strike; 3 strikes → a temporary ban, and the profile
+        // is NOT saved.
+        if (name || bio) {
+            const mod = await enforceContentPolicy(req.user.id, [name, bio], { context: 'profile' });
+            if (!mod.ok) return res.status(mod.status).json(mod.body);
+        }
+        // --------------------
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.id,
+            { name, bio, location, languages, socialLinks },
+            { new: true, runValidators: true }
+        ).select("-password -admin -resetPasswordToken -resetPasswordExpires");
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+            message: "Profile updated successfully",
+            user: updatedUser
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+// ================= UPLOAD AVATAR (Custom Image) =================
+exports.uploadAvatar = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        // Cloudinary URL is in req.file.path
+        const avatarUrl = req.file.path;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.id,
+            { avatar: avatarUrl },
+            { new: true, returnDocument: 'after' }
+        ).select("-password -admin -resetPasswordToken -resetPasswordExpires");
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+            message: "Avatar uploaded successfully",
+            avatar: avatarUrl,
+            user: updatedUser
+        });
+
+    } catch (err) {
+        console.error("Avatar upload error:", err);
+        
+        // Better error messages
+        if (err.message && err.message.includes('cloud_name')) {
+            return res.status(500).json({ 
+                message: "Cloudinary not configured. Please add your Cloudinary credentials to .env file." 
+            });
+        }
+        
+        res.status(500).json({ 
+            message: err.message || "Upload failed. Please try again." 
+        });
+    }
+};
+
+
+// ================= UPDATE AVATAR URL (Preset or Remove) =================
+exports.updateAvatarUrl = async (req, res) => {
+    try {
+        const { avatar } = req.body || {};
+
+        // Allow empty string to remove avatar and use gradient
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.id,
+            { avatar: avatar || "" },
+            { new: true }
+        ).select("-password -admin -resetPasswordToken -resetPasswordExpires");
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+            message: "Avatar updated successfully",
+            avatar: updatedUser.avatar,
+            user: updatedUser
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+// POST /god/unlock-all — God Mode: owner unlocks every cosmetic for themselves.
+// SERVER-SIDE role gate: the auth middleware only proves a valid login, and the
+// UI hiding the button is not security — without this check ANY user could call
+// the endpoint directly and unlock every paid cosmetic for free.
+exports.godUnlockAll = async (req, res) => {
+    try {
+        const uid = req.user._id || req.user.id;
+        const me = await User.findById(uid).select("role").lean();
+        if (!me || me.role !== "admin") return res.status(404).end(); // cloak like the admin portal
+        const keys = require("../services/cosmeticsCatalog").getAllCatalog().map((c) => c.key);
+        await User.updateOne({ _id: uid }, { $set: { "orbit.cosmetics.owned": keys } });
+        return res.json({ ok: true, owned: keys.length });
+    } catch (err) {
+        console.error("[godUnlockAll]", err.message);
+        return res.status(500).json({ message: "Unlock failed." });
+    }
+};
