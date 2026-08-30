@@ -10,7 +10,7 @@ import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import OrbitLogo from '../components/common/OrbitLogo';
 import api from '../services/api';
 import Spinner from '../components/common/Spinner';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore, getLandingRoute } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
 import useLiftoffStore from '../cosmic/liftoffStore';
 import { oauthClickHandler, OAUTH_BASE } from '../services/nativeAuth';
@@ -27,8 +27,10 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   // A10: return to the page the user originally requested (set by ProtectedRoute).
-  const from = location.state?.from?.pathname || '/dashboard';
-  const { setToken, setUser } = useAuthStore();
+  // We only honor `from` if the user was sent here from a real in-app route —
+  // otherwise we land on a role-appropriate default (mentor → /teach, etc).
+  const explicitFrom = location.state?.from?.pathname;
+  const { setSession } = useAuthStore();
   const { addToast } = useUIStore();
   const [showPass, setShowPass] = useState(false);
 
@@ -54,29 +56,30 @@ const Login = () => {
   const loginMutation = useMutation({
     mutationFn: (creds) => api.post('/auth/login', creds),
     onSuccess: async ({ data }) => {
-      setToken(data.token);
-      // Backend returns only token on login — fetch the user profile
-      try {
-        const profileRes = await api.get('/user/profile', {
-          headers: { Authorization: `Bearer ${data.token}` }
-        });
-        setUser(profileRes.data);
+      // Login response now carries the user (with roles + rolesVersion) so
+      // we don't need a second /user/profile round-trip just to learn what
+      // the account can do. Storing both atomically avoids a render where
+      // token is set but user.roles is still the old persisted copy.
+      const user = data.user || null;
+      setSession({ user, token: data.token });
 
-        // Welcome moment (first signup-login, or returning after a long absence).
-        // Fired here rather than via LiftoffWatcher because it's NOT a tier change
-        // — it reintroduces the user to the tier they already hold.
-        if (data.welcome?.kind) {
-          const cosmic = profileRes.data?.cosmic || {};
-          useLiftoffStore.getState().play(cosmic.tierId || 'moon_4', {
-            direction: 'intro',
-            score: cosmic.score ?? null,
-            welcomeKind: data.welcome.kind,
-          });
-        }
-      } catch {
-        // Even if profile fetch fails, token is set — user will be loaded by app
+      // Welcome moment (first signup-login, or returning after a long absence).
+      // Fired here rather than via LiftoffWatcher because it's NOT a tier change
+      // — it reintroduces the user to the tier they already hold.
+      if (data.welcome?.kind && user) {
+        const cosmic = user.cosmic || {};
+        useLiftoffStore.getState().play(cosmic.tierId || 'moon_4', {
+          direction: 'intro',
+          score: cosmic.score ?? null,
+          welcomeKind: data.welcome.kind,
+        });
       }
-      navigate(from, { replace: true });
+
+      // Land the user in the place that matches what their account can do.
+      // If the route guard bounced them here (`explicitFrom` is set), respect
+      // that — e.g. they tried to open /teach and got sent to /login.
+      const landing = explicitFrom || getLandingRoute(user?.roles);
+      navigate(landing, { replace: true });
     },
     onError: (err) => {
       addToast(err.response?.data?.message || 'Login failed', 'error');
