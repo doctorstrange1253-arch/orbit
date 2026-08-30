@@ -2,10 +2,34 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+// Roles the frontend is allowed to set at registration. Kept as a module-level
+// constant so it can be shared by tests and the migration script.
+const VALID_ROLES = ["peer_learner", "mentor", "student"];
+
+// Strip sensitive fields before shipping a user object to the client. Mirrors
+// the projection used in userController.getProfile so register / login can
+// safely return the user in-band without leaking admin credentials or reset
+// tokens.
+const PUBLIC_USER_PROJECTION = "-password -admin -resetPasswordToken -resetPasswordExpires";
+
+/** Mint a JWT that carries the live roles + rolesVersion so the middleware
+ *  can short-circuit stale tokens. Mirrors the auth.js ROLES_STALE check. */
+function signSessionToken(user, isNative) {
+    return jwt.sign(
+        {
+            id: user._id,
+            roles: Array.isArray(user.roles) && user.roles.length > 0 ? user.roles : ["peer_learner"],
+            rolesVersion: typeof user.rolesVersion === "number" ? user.rolesVersion : 0,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: isNative ? "30d" : "1d" }
+    );
+}
+
 // ================= REGISTER =================
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, languages } = req.body || {};
+        const { name, email, password, languages, roles } = req.body || {};
 
         // Validation
         if (!name || !email || !password) {
@@ -26,6 +50,27 @@ exports.register = async (req, res) => {
             });
         }
 
+        // Validate the optional roles array. A user with no body field still
+        // gets ['peer_learner'] via the schema default, so explicit validation
+        // is only needed when the client sent something.
+        let chosenRoles = ["peer_learner"];
+        if (Array.isArray(roles)) {
+            if (roles.length === 0) {
+                return res.status(400).json({ message: "Pick at least one account type." });
+            }
+            const invalid = roles.filter((r) => !VALID_ROLES.includes(r));
+            if (invalid.length > 0) {
+                return res.status(400).json({
+                    message: `Unknown account type: ${invalid.join(", ")}. Allowed: ${VALID_ROLES.join(", ")}.`
+                });
+            }
+            // peer_learner is the free baseline — always ensure it is present
+            // so a user who only ticked "mentor" still has the P2P surface.
+            const set = new Set(roles);
+            set.add("peer_learner");
+            chosenRoles = Array.from(set);
+        }
+
         // Check existing user
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -40,7 +85,9 @@ exports.register = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            languages: languages || ["English"]
+            languages: languages || ["English"],
+            roles: chosenRoles,
+            rolesVersion: 0,
         });
 
         await user.save();
@@ -49,7 +96,23 @@ exports.register = async (req, res) => {
         const { sendRegistrationNotification } = require('../utils/sendEmail');
         sendRegistrationNotification(user.email, user.name);
 
-        res.status(201).json({ message: "User registered successfully" });
+        // Sign the new user's session so the client can land straight on
+        // their role-appropriate home without a second round-trip. This is a
+        // deliberate change from the prior "register then bounce to /login"
+        // flow — the role-selector step 2 sets the expectation that the
+        // server knows where to send them.
+        const isNative = String(req.headers["x-client-platform"] || "").toLowerCase() === "native";
+        const token = signSessionToken(user, isNative);
+
+        // Re-fetch with the public projection so the response shape matches
+        // what /user/profile returns (avoids a second client round-trip).
+        const safeUser = await User.findById(user._id).select(PUBLIC_USER_PROJECTION);
+
+        res.status(201).json({
+            message: "User registered successfully",
+            token,
+            user: safeUser,
+        });
 
     } catch (err) {
         console.log(err);
@@ -138,11 +201,7 @@ exports.login = async (req, res) => {
         // The website keeps a short 1-day session. The client signals its
         // platform via the X-Client-Platform header (set by the Capacitor build).
         const isNative = String(req.headers["x-client-platform"] || "").toLowerCase() === "native";
-        const token = jwt.sign(
-            { id: user._id },
-            process.env.JWT_SECRET,
-            { expiresIn: isNative ? "30d" : "1d" }
-        );
+        const token = signSessionToken(user, isNative);
 
         // Asynchronously send the email notification (don't block the response),
         // but only when outside the cooldown window (anti-spam).
@@ -151,9 +210,15 @@ exports.login = async (req, res) => {
             sendLoginNotification(user.email, user.name);
         }
 
+        // Ship the user with the response so the client can skip the
+        // post-login /user/profile fetch (the 3-card role redirect logic
+        // needs roles immediately on first paint).
+        const safeUser = await User.findById(user._id).select(PUBLIC_USER_PROJECTION);
+
         res.status(200).json({
             message: "Login successful",
             token,
+            user: safeUser,
             welcome   // null, { kind: "first" }, or { kind: "return", days }
         });
 

@@ -142,6 +142,26 @@ const userSchema = new mongoose.Schema({
         enum: ["user", "moderator", "admin"],
         default: "user"
     },
+    // ─────────────────────────────────────────────────────────────
+    //  ACCOUNT ROLES (peer_learner | mentor | student).
+    //  A user can hold multiple roles at once; `rolesVersion` lets the auth
+    //  middleware detect a stale JWT and force a refresh after a role change
+    //  so the in-flight token can never outlive the permission it grants.
+    //  peer_learner is the free default and is always pre-applied for new
+    //  signups (see scripts/migrateUserRoles.js for the backfill).
+    //  The legacy `role` string above stays for staff/admin tooling
+    //  (`requireAdmin`); do NOT collapse them — they are orthogonal.
+    // ─────────────────────────────────────────────────────────────
+    roles: {
+        type: [String],
+        enum: ["peer_learner", "mentor", "student"],
+        default: ["peer_learner"],
+        index: true,
+    },
+    rolesVersion: {
+        type: Number,
+        default: 0,
+    },
     status: {
         type: String,
         enum: ["active", "suspended", "banned", "soft_deleted"],
@@ -363,5 +383,11 @@ userSchema.index({ 'orbit.league.groupId': 1, 'orbit.league.weekXp': -1 });
 // ── Admin Command Center indexes (additive) ────────────────────────────────
 userSchema.index({ role: 1 });
 userSchema.index({ status: 1 });
+
+// ── Account Roles index (additive) ──────────────────────────────────────────
+// Multikey index for fast `{ roles: "mentor" }` and `{ roles: "student" }`
+// admin queries (e.g. "list all mentors"). Mongo creates one index entry per
+// distinct array value, so this also covers any single-role lookups.
+userSchema.index({ roles: 1 });
 
 module.exports = mongoose.models.User || mongoose.model("User", userSchema);
