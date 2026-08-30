@@ -6,6 +6,20 @@ import { Users, GraduationCap, BookOpen, Loader2, Check, AlertTriangle, ArrowRig
 import api from '../../services/api';
 import { useAuthStore, ACCOUNT_ROLES, ROLE_META } from '../../store/authStore';
 import { useUIStore } from '../../store/uiStore';
+import { useWindowSwitchStore } from '../fx/WindowSwitchOverlay';
+
+// Home route per role — used after a successful toggle so the user is
+// dropped into the new window with the cinematic overlay as the bridge.
+const ROLE_HOME = {
+  peer_learner: '/peer/dashboard',
+  mentor: '/mentor/hub',
+  student: '/student/sessions',
+};
+
+// The two non-peer roles are mutually exclusive. Enabling one implicitly
+// disables the other (this is the user's desired radio-button behavior).
+const PEER_BASELINE = 'peer_learner';
+const SWITCHABLE = ['mentor', 'student'];
 
 const ICONS = {
   peer_learner: Users,
@@ -96,8 +110,28 @@ const RoleSettings = () => {
       // Invalidate any cached mentor profile (state may have changed).
       qc.invalidateQueries({ queryKey: ['mentor'] });
       addToast(data.message || 'Your roles are updated', 'success');
-      // Clear the "just enabled" flag after 8s so the CTA auto-dismisses.
-      setTimeout(() => setJustEnabled(null), 8000);
+
+      // Auto-pilot: if a non-peer role was just enabled, fire the cinematic
+      // cross-window overlay and navigate the user into that window. The
+      // overlay's ~1.25s hold is exactly the "transition buffer" the user
+      // asked for — it covers the route change so the destination appears
+      // fully rendered, not in mid-load. Mentor's role window is the
+      // "Earn" / teaching surface; student's is the "Learn" / booking one.
+      if (justEnabled && (justEnabled === 'mentor' || justEnabled === 'student')) {
+        const targetWindow = justEnabled === 'mentor' ? 'mentor' : 'student';
+        const home = ROLE_HOME[justEnabled];
+        // Fire the overlay (a tiny delay so the auth-store swap is in place
+        // before navigation, preventing a flash of the previous window).
+        useWindowSwitchStore.getState().start(targetWindow);
+        setTimeout(() => {
+          navigate(home, { replace: false });
+        }, 220);
+        setTimeout(() => setJustEnabled(null), 8000);
+      } else {
+        // Just-disabling: no overlay, no navigation. The toggle just visually
+        // flips off and the user stays on /settings.
+        setJustEnabled(null);
+      }
     },
     onError: (err) => {
       const code = err.response?.data?.code;
@@ -108,6 +142,7 @@ const RoleSettings = () => {
       const friendly = describeError(code, msg);
       setRowError({ _: friendly });
       addToast(friendly, 'error');
+      setJustEnabled(null);
     },
   });
 
@@ -115,16 +150,24 @@ const RoleSettings = () => {
     if (role === 'peer_learner') return; // locked
     setRowError({}); // clear on new attempt
     const isAdding = !current.includes(role);
-    const next = isAdding
-      ? [...current, role]
-      : current.filter((r) => r !== role);
-    // Don't allow empty (defense — backend rejects too, but better UX here).
-    if (next.length === 0) {
-      setRowError({ _: 'You must keep at least one role.' });
-      return;
+
+    if (isAdding) {
+      // Mutually exclusive: enabling mentor drops student, and vice versa.
+      // peer_learner is always preserved (it's the baseline).
+      const next = [PEER_BASELINE, role];
+      setJustEnabled(role);
+      mutation.mutate(next);
+    } else {
+      // Disabling a role. peer_learner is locked so this can only fire for
+      // mentor / student. After removal, only peer_learner remains.
+      const next = current.filter((r) => r !== role);
+      if (next.length === 0) {
+        setRowError({ _: 'You must keep at least one role.' });
+        return;
+      }
+      setJustEnabled(null);
+      mutation.mutate(next);
     }
-    if (isAdding) setJustEnabled(role);
-    mutation.mutate(next);
   };
 
   const statusLabel = mentorStatus?.applicationStatus;
@@ -136,19 +179,19 @@ const RoleSettings = () => {
     <div className="space-y-4">
       <div className="rounded-xl border border-border-subtle bg-surface/40 p-4">
         <p className="text-sm text-text-secondary leading-relaxed">
-          Your account can hold any combination of roles. The baseline
+          Pick the lens you want to operate from. The baseline
           <span className="px-1.5 py-0.5 mx-1 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-400/30 text-[11px] font-bold uppercase tracking-wider align-middle">
             Free
           </span>
-          is always on. Adding the
+          is always on. Switch between
           <span className="px-1.5 py-0.5 mx-1 rounded bg-amber-500/15 text-amber-300 border border-amber-400/30 text-[11px] font-bold uppercase tracking-wider align-middle">
             Earn
           </span>
-          or
+          and
           <span className="px-1.5 py-0.5 mx-1 rounded bg-blue-500/15 text-blue-300 border border-blue-400/30 text-[11px] font-bold uppercase tracking-wider align-middle">
             Learn
           </span>
-          roles is free; we only ask for payment when you actually book or accept a paid session.
+          any time — only one is active at once, and we'll crossfade you into the new window with a short cinematic transition.
         </p>
       </div>
 
@@ -196,9 +239,18 @@ const RoleSettings = () => {
             <button
               type="button"
               onClick={() => {
+                if (justEnabled === 'mentor' || justEnabled === 'student') {
+                  const targetWindow = justEnabled === 'mentor' ? 'mentor' : 'student';
+                  // Fire the cinematic overlay + navigate. The auto-pilot in
+                  // onSuccess also does this; this manual CTA covers the rare
+                  // case where the PATCH is slow and the user wants to hop
+                  // into the new window before the auto-nav fires.
+                  useWindowSwitchStore.getState().start(targetWindow);
+                  setTimeout(() => {
+                    navigate(ROLE_HOME[justEnabled], { replace: false });
+                  }, 220);
+                }
                 setJustEnabled(null);
-                if (justEnabled === 'mentor') navigate('/mentor/hub');
-                else if (justEnabled === 'student') navigate('/student/mentors');
               }}
               className={[
                 'inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider',
