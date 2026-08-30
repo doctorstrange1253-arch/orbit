@@ -58,14 +58,21 @@ module.exports = async (req, res, next) => {
         // since this token was minted, the client's roles are stale. We 401
         // with code ROLES_STALE so the api.js interceptor can transparently
         // refresh the session and retry — no full page reload.
+        //
+        // Special case: GET /api/user/roles is the recovery endpoint. When
+        // roles are stale, we still let the request through with a `rolesStale`
+        // flag on req.user so getMyRoles can mint a fresh token in the
+        // response. Otherwise the recovery call itself would 401 and the
+        // interceptor would loop.
         const liveRoles = Array.isArray(user.roles) && user.roles.length > 0
             ? user.roles
             : ["peer_learner"]; // belt-and-braces: any pre-migration user sees this
         const liveRolesVersion = typeof user.rolesVersion === "number" ? user.rolesVersion : 0;
-        if (
-            typeof decoded.rolesVersion === "number" &&
-            decoded.rolesVersion !== liveRolesVersion
-        ) {
+        const rolesStale = typeof decoded.rolesVersion === "number" &&
+            decoded.rolesVersion !== liveRolesVersion;
+        const isRolesRefreshPath = req.method === "GET" &&
+            (req.path === "/user/roles" || req.path === "/api/user/roles");
+        if (rolesStale && !isRolesRefreshPath) {
             return res.status(401).json({
                 code: "ROLES_STALE",
                 message: "Your account roles changed. Please sign in again.",
@@ -75,12 +82,15 @@ module.exports = async (req, res, next) => {
         // Attach the live roles + version to req.user so handlers can use them
         // without a second DB round-trip. Keep `decoded` for back-compat with
         // the dozens of handlers that read req.user.id / req.user._id.
+        // `rolesStale` is true when the JWT's version lags the DB but the
+        // request is on the recovery path (so we let it through anyway).
         req.user = {
             ...decoded,
             id: decoded.id,
             _id: user._id,
             roles: liveRoles,
             rolesVersion: liveRolesVersion,
+            rolesStale,
         };
         next();
 

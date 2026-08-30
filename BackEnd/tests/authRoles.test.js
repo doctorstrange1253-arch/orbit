@@ -299,5 +299,30 @@ describe("auth middleware — ROLES_STALE detection", () => {
         expect(next).toHaveBeenCalled();
         expect(req.user.roles).toEqual(["peer_learner", "mentor"]);
         expect(req.user.rolesVersion).toBe(2);
+        expect(req.user.rolesStale).toBe(false);
+    });
+
+    test("lets GET /user/roles through when stale (so the controller can mint a fresh token)", async () => {
+        const u = await createUser({ roles: ["peer_learner"], rolesVersion: 9 });
+        const staleToken = jwt.sign(
+            { id: u._id, roles: ["peer_learner"], rolesVersion: 0 },
+            process.env.JWT_SECRET
+        );
+        // auth middleware only inspects req.method + req.path for the bypass
+        // check — the real Express router sets these; the mock just needs the
+        // same shape.
+        const req = {
+            header: () => `Bearer ${staleToken}`,
+            method: "GET",
+            path: "/user/roles",
+        };
+        const res = mockRes();
+        const next = jest.fn();
+        await auth(req, res, next);
+        expect(next).toHaveBeenCalled();
+        expect(res.status).not.toHaveBeenCalled();
+        expect(req.user.roles).toEqual(["peer_learner"]);
+        expect(req.user.rolesVersion).toBe(9);
+        expect(req.user.rolesStale).toBe(true);
     });
 });

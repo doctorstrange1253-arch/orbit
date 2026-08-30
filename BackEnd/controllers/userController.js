@@ -5,6 +5,7 @@ const OrbitSession = require("../models/OrbitSession");
 const MentorProfile = require("../models/MentorProfile");
 const jwt = require("jsonwebtoken");
 const { enforceContentPolicy } = require("../utils/contentModeration");
+const { PUBLIC_USER_PROJECTION } = require("./authController");
 
 // Mirror of the enum in models/user.js. Kept here so the toggle handler can
 // validate without dragging Mongoose's enum resolution into the hot path.
@@ -216,14 +217,30 @@ exports.godUnlockAll = async (req, res) => {
 // GET /api/user/roles — return the live roles + version for the caller. The
 // auth middleware already populated req.user.roles + req.user.rolesVersion, so
 // this is a pure read-through.
+//
+// If the request arrived via the stale-token recovery path (auth middleware
+// let a stale JWT through because this IS the refresh endpoint), we ALSO
+// return a fresh token + the public user shape so the api.js interceptor
+// can swap the token in place and retry the original request without a
+// hard reload. Otherwise the client would have to log in again from scratch.
 exports.getMyRoles = async (req, res) => {
     try {
         const uid = req.user._id || req.user.id;
         const u = await User.findById(uid).select("roles rolesVersion");
         if (!u) return res.status(404).json({ message: "User not found" });
+        const liveRoles = Array.isArray(u.roles) && u.roles.length > 0 ? u.roles : ["peer_learner"];
+        const liveRolesVersion = typeof u.rolesVersion === "number" ? u.rolesVersion : 0;
+        if (!req.user.rolesStale) {
+            return res.status(200).json({ roles: liveRoles, rolesVersion: liveRolesVersion });
+        }
+        // Stale-token recovery: include a fresh user + token so the client
+        // can swap them in one round-trip.
+        const fresh = await User.findById(uid).select(PUBLIC_USER_PROJECTION);
         return res.status(200).json({
-            roles: Array.isArray(u.roles) && u.roles.length > 0 ? u.roles : ["peer_learner"],
-            rolesVersion: typeof u.rolesVersion === "number" ? u.rolesVersion : 0,
+            roles: liveRoles,
+            rolesVersion: liveRolesVersion,
+            token: mintUserToken(fresh, isNativeRequest(req)),
+            user: fresh,
         });
     } catch (err) {
         console.error("[getMyRoles]", err);
