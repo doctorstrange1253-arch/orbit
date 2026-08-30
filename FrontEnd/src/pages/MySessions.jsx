@@ -4,8 +4,8 @@
  * Themed: glass-card-glow row, status pills use semantic token colors,
  * nav-tab-glass tab switcher, gradient-text page title.
  */
-import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
@@ -29,7 +29,16 @@ const STATUS_PILL = {
 
 const MySessions = () => {
     const me = useAuthStore((s) => s.user);
-    const [tab, setTab] = useState("upcoming");
+    // URL-driven tab so the Bookings/History nav pills can deep-link to
+    // the right view. ?tab=past → Past, everything else → Upcoming.
+    // Replaces the previous local useState so the tab survives a refresh
+    // and can be shared as a link.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const tab = searchParams.get('tab') === 'past' ? 'past' : 'upcoming';
+    const setTab = (next) => {
+        if (next === tab) return;
+        setSearchParams(next === 'past' ? { tab: 'past' } : {}, { replace: true });
+    };
 
     const { data: sessions = [], isLoading, error, refetch } = useQuery({
         queryKey: ['sessions', 'me'],
@@ -79,8 +88,8 @@ const MySessions = () => {
 
                 <div className="flex gap-2 mb-6">
                     {[
-                        { key: "upcoming", label: `Upcoming (${upcoming.length})` },
-                        { key: "past",     label: `Past (${past.length})` },
+                        { key: "upcoming", label: `Bookings (${upcoming.length})` },
+                        { key: "past",     label: `History (${past.length})` },
                     ].map((t) => (
                         <button
                             key={t.key}
@@ -107,7 +116,7 @@ const MySessions = () => {
                 ) : list.length === 0 ? (
                     <EmptyState
                         icon={<Calendar className="w-10 h-10" />}
-                        title={tab === "upcoming" ? "No upcoming sessions" : "No past sessions yet"}
+                        title={tab === "upcoming" ? "No upcoming bookings" : "No session history yet"}
                         message={tab === "upcoming" ? "Book a session with a mentor to see it here." : "Once you complete a session, it'll show up here."}
                     />
                 ) : (
@@ -139,7 +148,7 @@ const MySessions = () => {
                                     <div className="flex gap-2">
                                         {["booked", "confirmed", "live"].includes(s.status) && (
                                             <Link
-                                                to={`/session-room/${s._id}`}
+                                                to={`/student/room/${s._id}`}
                                                 className="inline-flex items-center gap-1.5 btn-gradient px-3.5 py-2 rounded-lg text-sm"
                                             >
                                                 <Video className="w-4 h-4" /> Join
@@ -147,7 +156,7 @@ const MySessions = () => {
                                         )}
                                         {s.status === "completed" && (
                                             <Link
-                                                to={`/sessions/${otherUserId}`}
+                                                to={`/student/mentors/${otherUserId}`}
                                                 className="inline-flex items-center gap-1.5 nav-tab-glass px-3.5 py-2 rounded-lg text-sm text-text-primary"
                                             >
                                                 <Star className="w-4 h-4" /> Rate / rebook
