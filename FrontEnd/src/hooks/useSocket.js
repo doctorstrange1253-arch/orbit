@@ -27,11 +27,27 @@ const useSocket = () => {
     const socket = connectSocket(user._id);
     isConnected.current = true;
 
-    api.get('/user/profile')
-      .then((r) => {
-        if (r.data && r.data._id) useAuthStore.getState().setUser(r.data);
-      })
-      .catch(() => {});
+    // Roles self-heal: if the persisted user lacks the roles fields (a
+    // pre-feature session), refresh from the live source. setUser is now
+    // defensive (merge) in the auth store, so this can never clobber a
+    // fresher value — but the merge means a missing-roles payload can
+    // still be a problem, hence the dedicated /user/roles hit.
+    const haveRoles = Array.isArray(user.roles) && user.roles.length > 0;
+    const haveVersion = typeof user.rolesVersion === 'number';
+    if (!haveRoles || !haveVersion) {
+      api.get('/user/roles')
+        .then((r) => {
+          const data = r.data || {};
+          if (data.user && data.token) {
+            useAuthStore.getState().setSession({ user: data.user, token: data.token });
+          } else if (data.user) {
+            useAuthStore.getState().setUser(data.user);
+          } else if (Array.isArray(data.roles)) {
+            useAuthStore.getState().setUser({ roles: data.roles, rolesVersion: data.rolesVersion ?? 0 });
+          }
+        })
+        .catch(() => {});
+    }
 
     // New skill in the community → refresh Browse live. No toast: broadcasting a
     // popup to every user on every skill add was phantom noise (v7 §3). Genuine

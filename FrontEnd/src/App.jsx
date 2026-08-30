@@ -153,7 +153,7 @@ function RouteTours() {
 function AppInner() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, token, setUser } = useAuthStore();
+  const { user, token, setUser, setSession } = useAuthStore();
 
   // Ensure the signed-in user is hydrated app-wide. On native (APK) OAuth the
   // token is stored even if the profile fetch blips, leaving `user` null — which
@@ -161,11 +161,39 @@ function AppInner() {
   // and was a likely cause of "I see myself in Browse" on the APK (B-01). A
   // reliable user._id fixes those defenses. Also self-heals a stale persisted
   // user that predates newer fields.
+  //
+  // Roles self-heal: if the persisted `user.roles` is missing, empty, or
+  // could plausibly be stale (e.g. the persist migrate() couldn't fix it),
+  // we hit GET /user/roles which always returns the live roles + rolesVersion
+  // (and, on a stale token, also a fresh JWT — see the api.js ROLES_STALE
+  // path). Without this branch, a peer_learner-only user who logged in
+  // before the roles feature shipped would keep seeing paid tabs that the
+  // server would then 403, or vice versa.
   useEffect(() => {
-    if (token && !user?._id) {
-      api.get('/user/profile').then(({ data }) => { if (data && data._id) setUser(data); }).catch(() => {});
+    if (!token || !user?._id) {
+      // Original hydration path: token is present but no user yet.
+      if (token && !user?._id) {
+        api.get('/user/profile').then(({ data }) => { if (data && data._id) setUser(data); }).catch(() => {});
+      }
+      return;
     }
-  }, [token, user?._id, setUser]);
+    const haveRoles = Array.isArray(user.roles) && user.roles.length > 0;
+    const haveVersion = typeof user.rolesVersion === 'number';
+    if (!haveRoles || !haveVersion) {
+      // Persisted user lacks the roles fields. Refresh from the live source.
+      api.get('/user/roles')
+        .then(({ data }) => {
+          if (data?.user && data?.token) {
+            setSession({ user: data.user, token: data.token });
+          } else if (data?.user) {
+            setUser(data.user);
+          } else if (Array.isArray(data?.roles)) {
+            setUser({ roles: data.roles, rolesVersion: data.rolesVersion ?? 0 });
+          }
+        })
+        .catch(() => {});
+    }
+  }, [token, user?._id, user?.roles, user?.rolesVersion, setUser, setSession]);
 
   // Ambient music is a GLOBAL, persistent preference — not tied to any single
   // page. Previously it lived on the Landing page and its unmount stopped the

@@ -68,15 +68,59 @@ export const useAuthStore = create(
         return roles.some((x) => list.includes(x));
       },
       landingRoute: () => getLandingRoute(get().user?.roles),
-      setUser: (user) => set({ user }),
+      // Defensive setUser: merge incoming fields onto the existing user so
+      // a stale or partial response (e.g. /user/profile from a build that
+      // didn't yet include `roles` / `rolesVersion`) can NEVER silently
+      // clobber a more recent value. The persisted state from a previous
+      // app version is the source of truth for fields the server didn't
+      // return this time.
+      setUser: (user) => set((state) => {
+        if (!user) return { user: null };
+        const merged = state.user ? { ...state.user, ...user } : user;
+        return { user: merged };
+      }),
       setToken: (token) => set({ token }),
       // Atomic swap used by the ROLES_STALE interceptor: replace both user
-      // and token in one set() so subscribers only re-render once.
-      setSession: ({ user, token }) => set({ user, token }),
+      // and token in one set() so subscribers only re-render once. We
+      // still merge onto the existing user defensively so partial
+      // payloads (e.g. user without roles because the refresh endpoint
+      // short-circuited) don't wipe the cached value.
+      setSession: ({ user, token }) => set((state) => {
+        const merged = user
+          ? (state.user ? { ...state.user, ...user } : user)
+          : state.user;
+        return { user: merged, token };
+      }),
       logout: () => {
         set({ user: null, token: null });
       },
     }),
-    { name: 'auth-storage' }
+    {
+      name: 'auth-storage',
+      // Bump the version when the shape of the persisted state changes
+      // meaningfully (e.g. when `roles` / `rolesVersion` were added). The
+      // migrate() function below runs once on rehydrate for any storage
+      // record that's still on an older version, so an old browser session
+      // doesn't get stuck with a user object that's missing the new fields.
+      version: 2,
+      migrate: (persisted, fromVersion) => {
+        if (!persisted || fromVersion >= 2) return persisted;
+        // v1 -> v2: ensure the user has a roles array. Pre-feature users
+        // may have been persisted with `role: "user"` (singular string)
+        // and no `roles` field. Default them to peer_learner, which the
+        // backend already does on the next login.
+        if (persisted.user && !Array.isArray(persisted.user.roles)) {
+          return {
+            ...persisted,
+            user: {
+              ...persisted.user,
+              roles: ['peer_learner'],
+              rolesVersion: typeof persisted.user.rolesVersion === 'number' ? persisted.user.rolesVersion : 0,
+            },
+          };
+        }
+        return persisted;
+      },
+    }
   )
 );
