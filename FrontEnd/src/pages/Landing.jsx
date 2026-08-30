@@ -11,6 +11,8 @@ import TypeWriter from '../components/animations/TypeWriter';
 import api from '../services/api';
 import { useSound } from '../utils/soundManager';
 import { useAuthStore } from '../store/authStore';
+import useAppearanceStore from '../store/appearanceStore';
+import AuroraField from '../components/fx/AuroraField';
 import Footer from '../components/layout/Footer';
 
 /* ── Motivational quotes that rotate (clean, no emojis) ── */
@@ -164,7 +166,14 @@ const Landing = () => {
       </Helmet>
 
       {/* ══════════════ HERO SECTION ══════════════ */}
-      <section ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center px-4">
+      <section ref={heroRef} className="aurora-stage relative min-h-screen flex flex-col items-center justify-center px-4">
+
+        {/* WebGL aurora shader — flows behind the hero content, reactive
+            to mouse + theme accent colors. Sits below the gradient burst
+            and the floating pills but above the global BackgroundEffects
+            canvas. Disabled in tests / SSR by the component's own feature
+            detection. */}
+        <AuroraField accentColors={useAppearanceStore.getState().customColors} />
 
         {/* Extra hero gradient burst */}
         <div

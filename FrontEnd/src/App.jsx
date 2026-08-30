@@ -25,6 +25,9 @@ import { Toaster } from 'react-hot-toast';
 import BadgeDefsSprite from './cosmic/BadgeDefsSprite';
 import LiftoffWatcher from './cosmic/LiftoffWatcher';
 import GodMode from './components/dev/GodMode';
+import WarpTransition from './components/fx/WarpTransition';
+import MagneticCursor from './components/fx/MagneticCursor';
+import CommandPalette from './components/fx/CommandPalette';
 
 // Eagerly loaded (first paint)
 import Landing from './pages/Landing';
@@ -523,6 +526,10 @@ function AppInner() {
           watcher fires it on a genuine tier increase for the logged-in user */}
       <Suspense fallback={null}><LiftoffOverlay /></Suspense>
       {token && user && <LiftoffWatcher />}
+      {/* Cinematic custom cursor — desktop only, opt-out via reduced-motion */}
+      <MagneticCursor />
+      {/* Global ⌘K / Ctrl+K command palette */}
+      <CommandPalette />
       <ToastContainer />
       <Toaster 
         position="bottom-right" 
@@ -563,7 +570,8 @@ function AppInner() {
 
       <RouteTours />
 
-      <Routes>
+      <WarpTransition>
+        <Routes location={location} key={location.pathname}>
         {/* Public — redirect logged-in users away */}
         <Route path="/"               element={<HomeRoute />} />
         <Route path="/login"          element={<PublicOnlyRoute><Login /></PublicOnlyRoute>} />
@@ -635,7 +643,8 @@ function AppInner() {
         {/* 404 — catch-all. AdminGate renders the hidden portal only when the
             path hashes to VITE_ADMIN_SLUG_HASH; otherwise it returns this 404. */}
         <Route path="*" element={<Suspense fallback={null}><AdminGate fallback={<NotFound />} /></Suspense>} />
-      </Routes>
+        </Routes>
+      </WarpTransition>
     </>
   );
 }

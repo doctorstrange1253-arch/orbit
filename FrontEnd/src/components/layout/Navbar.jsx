@@ -13,9 +13,10 @@ import PhotonsChip from '../../cosmic/PhotonsChip';
 import RoleSwitcher from './RoleSwitcher';
 import {
   LogOut, Layers, Compass, Users, Map,
-  ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History
+  ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, Command
 } from 'lucide-react';
 import soundManager from '../../utils/soundManager';
+import { usePaletteStore } from '../fx/CommandPalette';
 
 // Three independent nav pill lists, one per role window. The Navbar picks
 // the active list based on getCurrentWindow(location.pathname) so each
@@ -290,6 +291,19 @@ const Navbar = () => {
 
             {/* ── Right side ── */}
             <div className="flex items-center gap-1.5 flex-shrink-0">
+              {/* Global ⌘K command palette trigger — hidden on mobile, the
+                  nav still has a hamburger that surfaces a Search entry. */}
+              <button
+                type="button"
+                onClick={() => usePaletteStore.getState().openPalette()}
+                title="Command Palette (⌘K)"
+                aria-label="Open command palette"
+                className="hidden lg:inline-flex items-center gap-1.5 kbar-chip"
+              >
+                <Search size={11} />
+                <span className="hidden 2xl:inline">Search</span>
+                <kbd>⌘K</kbd>
+              </button>
               {/* Orbit streak — glanceable loss-aversion cue (pulses when decaying) */}
               <OrbitStreakBadge variant="nav" className="hidden xl:inline-flex" />
               {/* Photons currency chip — live balance, tap → shop */}

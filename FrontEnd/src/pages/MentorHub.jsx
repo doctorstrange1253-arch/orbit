@@ -30,6 +30,9 @@ import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
 import MentorApplicationForm from '../components/mentor/MentorApplicationForm';
 import AvailabilityEditor from '../components/sessions/AvailabilityEditor';
 import { useAuthStore } from '../store/authStore';
+import useAppearanceStore from '../store/appearanceStore';
+import AuroraField from '../components/fx/AuroraField';
+import HolographicCard from '../components/fx/HolographicCard';
 
 // State-level visual config. Each state has a title, a tinted chip color, an
 // icon, and copy for the hero. Colors use the semantic tokens so the state
@@ -108,18 +111,26 @@ const MentorHub = () => {
         .sort((a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt));
 
     return (
-        <div className="relative min-h-screen overflow-hidden">
+        <div className="aurora-stage relative min-h-screen overflow-hidden">
+            <AuroraField accentColors={useAppearanceStore.getState().customColors} />
             <FuturisticBackdrop />
 
             <div className="relative z-10 max-w-5xl mx-auto px-4 py-10 md:py-14">
                 <Helmet><title>Teach · Orbit Sessions</title></Helmet>
 
-                {/* Hero — adapts to state */}
+                {/* Hero — adapts to state. Wrapped in a HolographicCard so the
+                    cosmic-grade 'You're live' state gets a rarity-tier border
+                    and pointer-tracked sheen, signalling "this is a real
+                    achievement" to a returning mentor. */}
+                <HolographicCard
+                    rarity={state === "approved" ? "epic" : state === "submitted" ? "rare" : null}
+                    tilt={state === "approved"}
+                    className="p-6 md:p-8 mb-10"
+                >
                 <motion.header
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    className="mb-10"
                 >
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-4">
                         <GraduationCap className="w-3 h-3 text-accent" /> Teach on Orbit
@@ -141,6 +152,7 @@ const MentorHub = () => {
                         </div>
                     )}
                 </motion.header>
+                </HolographicCard>
 
                 {/* Body — branches on state */}
                 {isLoading ? (

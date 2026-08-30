@@ -29,6 +29,7 @@ import api from '../../services/api';
 import ErrorState from '../../components/common/ErrorState';
 import EmptyState from '../../components/common/EmptyState';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
+import HolographicCard from '../../components/fx/HolographicCard';
 
 const STATUS_PILL = {
     pending_payment: "bg-warning/10 text-warning border border-warning/30",
@@ -159,11 +160,15 @@ const Earnings = () => {
                 ) : (
                     <>
                         {/* ── Summary card ──────────────────────────────────────── */}
+                        <HolographicCard
+                            rarity="epic"
+                            tilt
+                            className="p-5 md:p-6 mb-5"
+                        >
                         <motion.section
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4 }}
-                            className="glass-card-glow p-5 md:p-6 mb-5"
                         >
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <StatTile
@@ -192,6 +197,7 @@ const Earnings = () => {
                                 </div>
                             )}
                         </motion.section>
+                        </HolographicCard>
 
                         {/* ── Released split ───────────────────────────────────── */}
                         <motion.section

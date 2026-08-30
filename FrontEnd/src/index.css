@@ -1068,3 +1068,254 @@ body, html {
 .animate-typing-bounce {
   animation: typing-bounce 1.4s infinite ease-in-out both;
 }@layer utilities { .text-gradient-fix { -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; } }
+
+/* ─── MAGNETIC CURSOR ───────────────────────────────────────────────────
+ * Hides the OS cursor on devices that can support our custom one
+ * (mouse + hover). The cursor effect itself is rendered by
+ * components/fx/MagneticCursor.jsx as two fixed-position divs.
+ */
+.cursor-hidden,
+.cursor-hidden * {
+  cursor: none !important;
+}
+@media (pointer: coarse), (hover: none) {
+  .cursor-hidden,
+  .cursor-hidden * {
+    cursor: auto !important;
+  }
+}
+
+/* ─── HOLOGRAPHIC CARD ──────────────────────────────────────────────────
+ * A reusable card surface that reacts to the pointer. The wrapper
+ * (HolographicCard.jsx) writes CSS vars (--hx, --hy, --hangle, --shineX,
+ * --shineY, --tiltX, --tiltY) on pointermove. These styles use them to
+ * draw a conic sheen, a radial highlight, an optional 3D tilt, and a
+ * rarity-tier animated border.
+ */
+.holo-card {
+  --hx: 0;
+  --hy: 0;
+  --hangle: 0deg;
+  --shineX: 50%;
+  --shineY: 50%;
+  --tiltX: 0deg;
+  --tiltY: 0deg;
+  position: relative;
+  isolation: isolate;
+  border-radius: 1rem;
+  background: linear-gradient(180deg,
+              color-mix(in srgb, var(--color-surface) 92%, transparent),
+              color-mix(in srgb, var(--color-surface) 80%, transparent));
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 200ms ease,
+              box-shadow 200ms ease;
+  will-change: transform;
+  overflow: hidden;
+}
+.holo-card:hover {
+  border-color: color-mix(in srgb, var(--color-accent, #7c3aed) 55%, var(--color-border));
+  box-shadow: 0 12px 40px -12px color-mix(in srgb, var(--color-accent, #7c3aed) 35%, transparent);
+}
+.holo-tilt {
+  transform: perspective(900px) rotateX(var(--tiltX)) rotateY(var(--tiltY));
+  transform-style: preserve-3d;
+}
+
+/* Conic sheen that follows the pointer. */
+.holo-sheen {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--hangle),
+    transparent 0deg,
+    color-mix(in srgb, var(--color-accent, #7c3aed) 18%, transparent) 60deg,
+    transparent 120deg,
+    color-mix(in srgb, var(--color-accent-2, #06b6d4) 14%, transparent) 180deg,
+    transparent 240deg,
+    color-mix(in srgb, var(--color-accent-3, #3b82f6) 18%, transparent) 300deg,
+    transparent 360deg
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
+}
+.holo-card:hover .holo-sheen { opacity: 0.9; }
+
+/* Soft radial highlight that follows the pointer. */
+.holo-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    240px circle at var(--shineX) var(--shineY),
+    color-mix(in srgb, #fff 14%, transparent),
+    transparent 60%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+.holo-card:hover::after { opacity: 1; }
+
+/* Rarity borders — animated, theme-tuned. */
+.holo-border {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 250ms ease;
+  z-index: 2;
+}
+.holo-card:hover .holo-border { opacity: 1; }
+.holo-rarity-common .holo-border {
+  background: linear-gradient(120deg, #94a3b8, #cbd5e1, #94a3b8);
+  background-size: 200% 100%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  padding: 1px;
+  animation: holoBorderShift 6s linear infinite;
+}
+.holo-rarity-rare .holo-border {
+  background: linear-gradient(120deg, #38bdf8, #818cf8, #38bdf8);
+  background-size: 200% 100%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  padding: 1px;
+  animation: holoBorderShift 5s linear infinite;
+}
+.holo-rarity-epic .holo-border {
+  background: linear-gradient(120deg, #c084fc, #f472b6, #c084fc);
+  background-size: 200% 100%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  padding: 1px;
+  animation: holoBorderShift 4s linear infinite;
+}
+.holo-rarity-mythic .holo-border {
+  background: conic-gradient(from var(--hangle),
+    #f472b6, #fbbf24, #34d399, #38bdf8, #c084fc, #f472b6);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  padding: 1.5px;
+}
+
+.holo-content { position: relative; z-index: 3; }
+
+@keyframes holoBorderShift {
+  to { background-position: 200% 0; }
+}
+
+/* Reduced motion: kill tilt and animations, keep static colors. */
+@media (prefers-reduced-motion: reduce) {
+  .holo-card { transform: none !important; transition: none; }
+  .holo-sheen, .holo-card::after { transition: none; }
+  .holo-rarity-common .holo-border,
+  .holo-rarity-rare .holo-border,
+  .holo-rarity-epic .holo-border { animation: none; }
+}
+
+/* ─── COMMAND PALETTE ───────────────────────────────────────────────────
+ * The palette itself is rendered by CommandPalette.jsx as a fixed
+ * dialog. These styles are mostly defensive (e.g. the .kbar shortcut
+ * chip in the navbar) — the palette body uses Tailwind utility
+ * classes inline.
+ */
+.kbar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  border: 1px solid var(--color-border);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: all 150ms ease;
+}
+.kbar-chip:hover {
+  border-color: color-mix(in srgb, var(--color-accent, #7c3aed) 50%, var(--color-border));
+  color: var(--color-text);
+}
+.kbar-chip kbd {
+  font-family: inherit;
+  font-size: 9px;
+  padding: 0 0.25rem;
+  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+  border-radius: 3px;
+  border: 1px solid var(--color-border);
+}
+
+/* ─── AURORA HERO BACKDROP ──────────────────────────────────────────────
+ * Wrapper used wherever the AuroraField is mounted. The aurora canvas
+ * is absolutely positioned inside this container.
+ */
+.aurora-stage {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: radial-gradient(ellipse at top,
+    color-mix(in srgb, var(--color-accent, #7c3aed) 14%, transparent),
+    transparent 60%),
+    radial-gradient(ellipse at bottom right,
+    color-mix(in srgb, var(--color-accent-2, #06b6d4) 10%, transparent),
+    transparent 50%),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-bg) 96%, transparent),
+      color-mix(in srgb, var(--color-bg) 100%, transparent));
+}
+.aurora-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 50%, transparent 51%),
+    radial-gradient(1px 1px at 80% 60%, rgba(255,255,255,0.3) 50%, transparent 51%),
+    radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,0.35) 50%, transparent 51%),
+    radial-gradient(1px 1px at 60% 20%, rgba(255,255,255,0.4) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 90% 40%, rgba(255,255,255,0.3) 50%, transparent 51%),
+    radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.25) 50%, transparent 51%);
+  background-size: 100% 100%;
+  pointer-events: none;
+  z-index: 1;
+  animation: auroraStarDrift 90s linear infinite;
+}
+@keyframes auroraStarDrift {
+  to { transform: translateY(-12%); }
+}
+
+/* ─── WARP PAGE TRANSITION ──────────────────────────────────────────────
+ * PageTransition wraps each route element. The CSS resets the inner
+ * stacking context so the wrap doesn't trap overflow / z-index.
+ */
+.page-transition {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+}
+
