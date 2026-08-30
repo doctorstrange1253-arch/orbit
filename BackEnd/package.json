@@ -9,7 +9,8 @@
     "test": "jest --maxWorkers=2",
     "seed:admin": "node scripts/seedAdmin.js",
     "seed:orbit-demo": "node scripts/seedOrbitDemo.js",
-    "seed:store": "node scripts/seedStore.js"
+    "seed:store": "node scripts/seedStore.js",
+    "migrate:binary-star": "node scripts/migrateConstellationToBinaryStar.js"
   },
   "keywords": [],
   "author": "",

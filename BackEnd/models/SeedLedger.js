@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
  * PRECISELY without tagging every model or risking orphaned/real data.
  *
  * `refs` are {model, id} of docs the run CREATED (partner-bot, rivals,
- * constellation, connection, skills). `targetUserId` + `prevOrbit` let teardown
+ * constellation (now BinaryStar), connection, skills). `targetUserId` + `prevOrbit` let teardown
  * restore the real account's orbit to exactly what it was before seeding.
  */
 const seedLedgerSchema = new mongoose.Schema({

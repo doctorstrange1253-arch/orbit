@@ -3,7 +3,7 @@ const router  = express.Router();
 const auth    = require("../middleware/auth");
 
 const { getMyOrbit, claimMission, rerollMission, buyFreeze, setPrefs, getLedger, giftPhotons } = require("../controllers/orbitController");
-const constellation = require("../controllers/constellationController");
+const binaryStar = require("../controllers/binaryStarController");
 const { getMyLeague } = require("../controllers/leagueController");
 const shop = require("../controllers/shopController");
 
@@ -30,11 +30,13 @@ router.post("/prefs", auth, setPrefs);
 // The viewer's recent Photon flows — earn/spend history for the Mission Log.
 router.get("/ledger", auth, getLedger);
 
-// ── Constellations (co-op Binary Star streaks, Tier 2) ─────────────────────
-router.get("/constellations", auth, constellation.getMine);
-router.post("/constellations/invite", auth, constellation.invite);
-router.post("/constellations/:id/respond", auth, constellation.respond);
-router.post("/constellations/:id/dissolve", auth, constellation.dissolve);
+// ── Binary Stars (co-op shared streaks, Tier 2) ─────────────────────────────
+// Hard-rename from /constellations to /binary-stars. The deployed APK breaks
+// until the new bundle ships — accepted by the user, no compat shim.
+router.get("/binary-stars", auth, binaryStar.getMine);
+router.post("/binary-stars/invite", auth, binaryStar.invite);
+router.post("/binary-stars/:id/respond", auth, binaryStar.respond);
+router.post("/binary-stars/:id/dissolve", auth, binaryStar.dissolve);
 
 // Weekly League — the viewer's division + live group standings (protected).
 router.get("/league", auth, getMyLeague);

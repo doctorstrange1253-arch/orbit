@@ -3,7 +3,7 @@ const { MongoMemoryServer } = require("mongodb-memory-server");
 const { buildDemoOrbit, seedDemoAccount, warp, teardown } = require("../services/orbitSeeder");
 const User = require("../models/user");
 const Skill = require("../models/skill");
-const Constellation = require("../models/Constellation");
+const BinaryStar = require("../models/BinaryStar");
 const Connection = require("../models/Connection");
 const SeedLedger = require("../models/SeedLedger");
 
@@ -65,8 +65,8 @@ describe("orbitSeeder — seed → warp → teardown (DB)", () => {
         expect(u.orbit.streak.current).toBe(60);
         expect(u.orbit.cosmetics.owned.length).toBe(2);
 
-        // partner-bot + active constellation
-        const con = await Constellation.findOne({ members: userId, status: "active" }).lean();
+        // partner-bot + active Binary Star
+        const con = await BinaryStar.findOne({ members: userId, status: "active" }).lean();
         expect(con).toBeTruthy();
         expect(con.streak.current).toBeGreaterThan(0);
 
@@ -107,7 +107,7 @@ describe("orbitSeeder — seed → warp → teardown (DB)", () => {
 
         // all seeded docs gone
         expect(await User.countDocuments({ email: /@orbit\.seed$/ })).toBe(0);
-        expect(await Constellation.countDocuments()).toBe(0);
+        expect(await BinaryStar.countDocuments()).toBe(0);
         expect(await Skill.countDocuments({ userId })).toBe(0);
         expect(await Connection.countDocuments()).toBe(0);
         expect(await SeedLedger.countDocuments()).toBe(0);

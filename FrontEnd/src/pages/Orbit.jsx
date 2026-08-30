@@ -13,7 +13,7 @@ import { Flame, Shield, Rocket, Clock, Trophy, Star, Bell, BellOff } from 'lucid
 import { useOrbit, useBuyFreeze, useOrbitPrefs } from '../cosmic/useOrbit';
 import PhotonIcon from '../cosmic/PhotonIcon';
 import MissionsPanel from '../cosmic/MissionsPanel';
-import ConstellationsPanel from '../cosmic/ConstellationsPanel';
+import ConstellationsPanel from '../cosmic/BinaryStarsPanel';
 import LeaguePanel from '../cosmic/LeaguePanel';
 import SignalLegend from '../cosmic/SignalLegend';
 import CosmicLoader from '../cosmic/CosmicLoader';

@@ -1,5 +1,5 @@
 /**
- * constellationEngine.js — pure math for co-op "Binary Star" shared streaks
+ * binaryStarEngine.js — pure math for co-op "Binary Star" shared streaks
  * (Orbit Engine, Tier 2). NO I/O, NO Date.now()/Math.random(); the day/week are
  * always passed in as UTC strings. Reuses the personal streak's date helpers so
  * both systems agree on day boundaries, and mirrors its mercy model (a shared

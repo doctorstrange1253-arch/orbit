@@ -168,7 +168,7 @@ exports.sendRegistrationNotification = async (userEmail, userName) => {
                 You've just joined a universe where <strong style="color:#ffffff;">every person is both a student and a teacher</strong>.
                 We are absolutely thrilled to have you. Here's a glimpse of what's waiting for you:
             </p>
-            ${feature('Discover your constellation', 'Browse skills near you and find perfect mutual matches — people who can teach what you want, and want what you teach.')}
+            ${feature('Discover your Binary Star', 'Browse skills near you and find perfect mutual matches — people who can teach what you want, and want what you teach.')}
             ${feature('Connect & exchange', 'Message, video-call, and swap skills in real time with brilliant people from around the world.')}
             ${feature('Rise through the cosmos', 'Earn reviews, climb from Stardust to Supernova, and shine on your city’s Observatory leaderboard.')}
             <div style="height:8px;"></div>

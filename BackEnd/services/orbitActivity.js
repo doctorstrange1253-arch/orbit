@@ -252,11 +252,11 @@ async function recordOrbitAction(io, userId, metric, opts = {}) {
         for (const c of completed) analytics.track("mission.complete", { userId: String(userId), key: c.key });
 
         // 4) Co-op Binary Star streaks — fan this action into the user's active
-        //    constellations. Required lazily to avoid a require cycle (constella-
-        //    tionActivity depends on this module's date helpers). Fire-and-forget.
+        //    Binary Stars. Required lazily to avoid a require cycle (binaryStar
+        //    Activity depends on this module's date helpers). Fire-and-forget.
         //    Gated on the Tier‑2 cohort (Part 8).
         if (flags.tierEnabledFor("tier2", userId)) {
-            require("./constellationActivity").recordPairAction(io, userId, { now }).catch(() => {});
+            require("./binaryStarActivity").recordBinaryStarAction(io, userId, { now }).catch(() => {});
         }
 
         return {

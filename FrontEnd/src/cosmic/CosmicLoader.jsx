@@ -22,7 +22,7 @@ const LEADERBOARD_THOUGHTS = [
   'Exploring the cosmos…',
   'Charting your local sky…',
   'Measuring starlight…',
-  'Aligning the constellations…',
+  'Aligning the Binary Stars…',
   'Calibrating cosmic ranks…',
   'Gathering stardust…',
   'Locating mentors in your orbit…',

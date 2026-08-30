@@ -53,7 +53,7 @@ const MISSION_TEMPLATES = Object.freeze([
     { key: "comms_relay",         metric: "message",    target: 25, stardust: 240, label: "Relay Network",       description: "Send 25 messages to partners" },
     { key: "binary_stars",        metric: "rating",     target: 2,  stardust: 110, label: "Binary Stars",        description: "Review 2 different partners" },
     { key: "supernova_surge",     metric: "swap",       target: 3,  stardust: 200, label: "Supernova Surge",     description: "Complete 3 skill swaps this week" },
-    { key: "constellation_forge", metric: "swap",       target: 4,  stardust: 300, label: "Constellation Forge", description: "Complete 4 skill swaps this week" },
+    { key: "binary_star_forge", metric: "swap",       target: 4,  stardust: 300, label: "Binary Star Forge", description: "Complete 4 skill swaps this week" },
     { key: "escape_velocity",     metric: "streak_day", target: 2,  stardust: 60,  label: "Escape Velocity",     description: "Stay in orbit 2 days this week" },
     { key: "stable_orbit",        metric: "streak_day", target: 5,  stardust: 180, label: "Stable Orbit",        description: "Stay in orbit 5 days this week" },
     { key: "full_revolution",     metric: "streak_day", target: 7,  stardust: 320, label: "Full Revolution",     description: "Stay in orbit all 7 days this week" },

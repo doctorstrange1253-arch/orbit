@@ -24,6 +24,7 @@ const videoRoutes = require("./routes/videoRoutes");
 const connectionRoutes = require("./routes/connectionRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const cosmicRoutes = require("./routes/cosmicRoutes");
+const sessionRoutes = require("./routes/sessionRoutes");
 
 // Middleware
 const errorHandler = require("./middleware/errorHandler");
@@ -35,6 +36,7 @@ const { startSentimentWorker } = require("./workers/sentimentWorker");
 const { startSeasonWorker } = require("./workers/seasonWorker");
 const { startOrbitWorker } = require("./workers/orbitWorker");
 const { startLeagueWorker } = require("./workers/leagueWorker");
+const { startSessionWorker } = require("./workers/sessionWorker");
 
 const app = express();
 app.set("trust proxy", 1); // Trust first proxy (needed for express-rate-limit on Render)
@@ -472,6 +474,60 @@ io.on("connection", (socket) => {
         }
     });
 
+    // ===== ORBIT SESSIONS (1-on-1 paid video calls) =====
+    // Reuses the existing WebRTC signaling transport; this is a thin auth +
+    // relay layer on top so paid sessions can't be hijacked or spoofed. The
+    // booking record (OrbitSession) is the source of truth — every relay
+    // verifies that socket.userId is a participant of the room BEFORE
+    // forwarding anything to the peer.
+    socket.on("session:join", async ({ sessionId, roomId }) => {
+        if (!socket.userId || !sessionId || !roomId) return;
+        try {
+            const OrbitSession = require("./models/OrbitSession");
+            const s = await OrbitSession.findById(sessionId).select("studentId mentorId roomId status").lean();
+            if (!s || s.roomId !== roomId) return;
+            const isParticipant = String(s.studentId) === String(socket.userId) || String(s.mentorId) === String(socket.userId);
+            if (!isParticipant) return;
+            socket.join(roomId);
+            socket.to(roomId).emit("session:peer-joined", { sessionId, userId: String(socket.userId) });
+        } catch (err) {
+            console.error("session:join:", err.message);
+        }
+    });
+
+    socket.on("session:start", async ({ sessionId, roomId }) => {
+        if (!socket.userId || !sessionId || !roomId) return;
+        try {
+            const OrbitSession = require("./models/OrbitSession");
+            const s = await OrbitSession.findById(sessionId).select("studentId mentorId roomId status");
+            if (!s || s.roomId !== roomId) return;
+            const isParticipant = String(s.studentId) === String(socket.userId) || String(s.mentorId) === String(socket.userId);
+            if (!isParticipant) return;
+            if (["booked", "confirmed"].includes(s.status)) {
+                s.status = "live";
+                s.startedAt = s.startedAt || new Date();
+                await s.save();
+            }
+            io.to(roomId).emit("session:started", { sessionId, byUserId: String(socket.userId) });
+        } catch (err) {
+            console.error("session:start:", err.message);
+        }
+    });
+
+    socket.on("session:end", async ({ sessionId, roomId }) => {
+        if (!socket.userId || !sessionId || !roomId) return;
+        try {
+            const OrbitSession = require("./models/OrbitSession");
+            const s = await OrbitSession.findById(sessionId).select("studentId mentorId roomId status");
+            if (!s || s.roomId !== roomId) return;
+            const isParticipant = String(s.studentId) === String(socket.userId) || String(s.mentorId) === String(socket.userId);
+            if (!isParticipant) return;
+            io.to(roomId).emit("session:ended", { sessionId, byUserId: String(socket.userId) });
+        } catch (err) {
+            console.error("session:end:", err.message);
+        }
+    });
+
     // ===== REAL-TIME CHAT =====
     socket.on("send-message", async ({ receiverId, content }) => {
         if (!socket.userId || !receiverId || !content?.trim()) return;
@@ -585,6 +641,23 @@ app.use(helmet({
 }));
 // CORS is already applied at the top of the file
 app.use(compression());
+
+// ── Razorpay webhook (raw body, MUST be before express.json) ───────────────
+// Razorpay signs the exact bytes of the request body. If the request goes
+// through `express.json()` first, the body is already a parsed Object and
+// `crypto.createHmac().update(req.body)` throws "Received an instance of
+// Object". Mounting this directly on `app` BEFORE the global json parser
+// gives us a Buffer that the controller can hash verbatim. Keep this block
+// in sync with `BackEnd/routes/sessionRoutes.js` (the webhook is NOT routed
+// through `/api/sessions` because the global json parser would eat the body
+// before the router could see it).
+const sessionsController = require("./controllers/sessionsController");
+app.post(
+    "/api/sessions/webhook",
+    express.raw({ type: "application/json" }),
+    sessionsController.webhook
+);
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(mongoSanitize); // Use custom sanitizer for Express 5 compatibility
@@ -618,6 +691,7 @@ app.use("/api/cosmic", cosmicRoutes);
 app.use("/api/orbit", require("./routes/orbitRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/device", require("./routes/deviceRoutes"));
+app.use("/api/sessions", sessionRoutes);
 
 // ── Admin Command Center (hardened, hidden) ────────────────────────────────
 // Namespaced under an unguessable base; every route 404-cloaks for non-admins.
@@ -678,6 +752,7 @@ mongoose.connect(process.env.MONGO_URI, {
         startSeasonWorker(); // Cosmic: monthly season lifecycle + rollover (idempotent)
         startOrbitWorker(io); // Orbit: daily decaying-streak reminders (loss-aversion nudge)
         startLeagueWorker(io); // Orbit: weekly League promotion/relegation + regroup
+        startSessionWorker(io); // Sessions: T-30min reminder + auto no-show mark+refund
         require("./services/flagStore").startAutoRefresh(); // Mission Control C1: live feature flags
         require("./services/configStore").startAutoRefresh(); // Admin: live gameplay/economy config overrides
         require("./services/cosmeticsCatalog").startAutoRefresh(); // Admin: live Nebula Store catalog (StoreItem overlay)
@@ -690,6 +765,14 @@ mongoose.connect(process.env.MONGO_URI, {
             require("./services/adminSeeder").seedAdminUser()
                 .then((r) => console.log(`[admin-seed] ✓ ${r.email} is admin.${r.totpEnabled ? " (TOTP preserved)" : " Enrol TOTP on first login."} You can now remove RUN_ADMIN_SEED.`))
                 .catch((e) => console.error("[admin-seed] failed:", e.message));
+        }
+
+        // One-shot Constellation → BinaryStar rename sweep. Idempotent. Set
+        // RUN_BINARY_STAR_MIGRATION=true on first boot only.
+        if (process.env.RUN_BINARY_STAR_MIGRATION === "true") {
+            require("./scripts/migrateConstellationToBinaryStar").main({ keepAlive: true })
+                .then(() => console.log("[migrate] binary-star migration done — you may now unset RUN_BINARY_STAR_MIGRATION."))
+                .catch((e) => console.error("[migrate] binary-star migration failed:", e.message));
         }
     })
     .catch(err => console.log("DB Error:", err));

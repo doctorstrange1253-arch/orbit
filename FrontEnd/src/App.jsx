@@ -53,6 +53,10 @@ const Orbit          = lazy(() => import('./pages/Orbit'));
 const Shop           = lazy(() => import('./pages/Shop'));
 const HoloBay        = lazy(() => import('./pages/HoloBay'));
 const MissionLog     = lazy(() => import('./pages/MissionLog'));
+const Sessions       = lazy(() => import('./pages/Sessions'));
+const SessionDetail  = lazy(() => import('./pages/SessionDetail'));
+const OrbitSessionRoom = lazy(() => import('./pages/OrbitSessionRoom'));
+const MySessions     = lazy(() => import('./pages/MySessions'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -121,6 +125,9 @@ const RICH_FLASH_TYPES = new Set([
   'perfect_match',
   'connection_request',
   'connection_accepted',
+  'session_booked',
+  'session_reminder',
+  'session_no_show',
 ]);
 
 // Maps a route to its first-visit walkthrough key.
@@ -398,6 +405,30 @@ function AppInner() {
       });
     });
 
+    // Orbit Session: an incoming call for a paid session reuses the same
+    // IncomingCallOverlay so the UX is identical to a free call. The
+    // `data.kind === 'session'` lets the overlay show a "Session" badge.
+    socket.on('session:invite', (data) => {
+      if (data?.callerId && user?._id && String(data.callerId) === String(user._id)) return;
+      setIncomingCall((prev) =>
+        prev && prev.roomId === data.roomId
+          ? prev
+          : { callerName: data.callerName, roomId: data.roomId, kind: 'session' }
+      );
+    });
+
+    // Orbit Session: the peer started the session — push a toast so the
+    // student knows to hop in.
+    socket.on('session:started', (data) => {
+      useNotificationStore.getState().addNotification({
+        type: 'info',
+        title: 'Session started',
+        message: 'Your mentor just opened the room. Tap My Sessions to join.',
+        duration: 8000,
+        link: '/my-sessions',
+      });
+    });
+
     // We don't disconnect the singleton completely here because other components (like ChatDrawer)
     // might still be relying on it while navigating. Disconnect is handled cleanly when logging out.
     return () => {
@@ -409,6 +440,8 @@ function AppInner() {
       socket.off('incoming-call');
       socket.off('call-ended');
       socket.off('force-disconnect');
+      socket.off('session:invite');
+      socket.off('session:started');
     };
   }, [token, user, queryClient, notifyConnectionRequest, notifyConnectionAccepted, notifyUserOffline, notifyCallEnded, notifyPerfectMatch]);
 
@@ -512,6 +545,11 @@ function AppInner() {
         <Route path="/settings"    element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         <Route path="/video"       element={<ProtectedRoute><VideoCall /></ProtectedRoute>} />
         <Route path="/call/:roomId" element={<ProtectedRoute><VideoCall /></ProtectedRoute>} />
+        {/* Orbit Sessions — paid 1-on-1 mentor video calls. */}
+        <Route path="/sessions"            element={<ProtectedRoute><Suspense fallback={<PageLoader />}><Sessions /></Suspense></ProtectedRoute>} />
+        <Route path="/sessions/:userId"    element={<ProtectedRoute><Suspense fallback={<PageLoader />}><SessionDetail /></Suspense></ProtectedRoute>} />
+        <Route path="/session-room/:sessionId" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><OrbitSessionRoom /></Suspense></ProtectedRoute>} />
+        <Route path="/my-sessions"         element={<ProtectedRoute><Suspense fallback={<PageLoader />}><MySessions /></Suspense></ProtectedRoute>} />
 
         {/* Cosmic badge gallery — dev/QA route, reachable by URL, not in nav */}
         <Route path="/cosmic-gallery" element={<Layout><Suspense fallback={<PageLoader />}><BadgeGallery /></Suspense></Layout>} />

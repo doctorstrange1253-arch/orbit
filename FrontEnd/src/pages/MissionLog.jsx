@@ -21,7 +21,7 @@ const SOURCE_META = {
   cosmetic:       { label: 'Nebula Store',       Icon: ShoppingBag },
   gift_sent:      { label: 'Gift sent',          Icon: Send },
   gift_received:  { label: 'Gift received',      Icon: Inbox },
-  constellation:  { label: 'Constellation bonus', Icon: Users },
+  constellation:  { label: 'Binary Star bonus', Icon: Users },
   admin_grant:    { label: 'Admin grant',        Icon: Gift },
   admin:          { label: 'Admin adjustment',   Icon: Gift },
 };

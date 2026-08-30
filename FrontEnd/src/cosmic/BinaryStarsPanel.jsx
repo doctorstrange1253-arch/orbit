@@ -1,10 +1,13 @@
 /**
- * ConstellationsPanel — co-op Binary Star streaks on the /orbit hub.
+ * BinaryStarsPanel — co-op Binary Star streaks on the /orbit hub.
  *
- * Shows active constellations (partner + shared flame + state), incoming and
+ * Shows active binary stars (partner + shared flame + state), incoming and
  * outgoing invites, and a partner picker (fed by the viewer's connections) to
- * form new Binary Stars. Reads ['orbit','constellations'] and mutates via the
- * constellation API.
+ * form new Binary Stars. Reads ['orbit','binaryStars'] and mutates via the
+ * binary-stars API.
+ *
+ * The "Constellation" → "Binary Star" rename shipped with the Orbit Sessions
+ * slice; this file is the renamed successor of cosmic/ConstellationsPanel.jsx.
  */
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -13,9 +16,9 @@ import Avatar from '../components/common/Avatar';
 import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
 import {
-  useConstellations, useConnectionsForInvite,
-  useInviteConstellation, useRespondConstellation, useDissolveConstellation,
-} from './useConstellations';
+  useBinaryStars, useConnectionsForInvite,
+  useInviteBinaryStar, useRespondBinaryStar, useDissolveBinaryStar,
+} from './useBinaryStars';
 
 const STATE_COPY = {
   active:   { color: '#fbbf24', text: 'Both showed up today' },
@@ -55,18 +58,18 @@ function ActiveCard({ c, onDissolve, dissolving }) {
   );
 }
 
-export default function ConstellationsPanel() {
-  const { data } = useConstellations();
+export default function BinaryStarsPanel() {
+  const { data } = useBinaryStars();
   const me = useAuthStore((s) => s.user);
   const { addToast } = useUIStore();
   const [pickerOpen, setPickerOpen] = useState(false);
 
-  const invite = useInviteConstellation();
-  const respond = useRespondConstellation();
-  const dissolve = useDissolveConstellation();
+  const invite = useInviteBinaryStar();
+  const respond = useRespondBinaryStar();
+  const dissolve = useDissolveBinaryStar();
   const { data: connections = [] } = useConnectionsForInvite(pickerOpen);
 
-  // Partners already in an active/pending constellation → excluded from picker.
+  // Partners already in an active/pending binary star → excluded from picker.
   const takenIds = useMemo(() => {
     const ids = new Set();
     for (const c of [...(data?.active || []), ...(data?.incoming || []), ...(data?.outgoing || [])]) {
@@ -110,7 +113,7 @@ export default function ConstellationsPanel() {
     <section className="rounded-2xl border border-white/10 bg-slate-900/30 p-4">
       <div className="flex items-center gap-2 mb-3">
         <Users size={18} className="text-violet-300" />
-        <h2 className="text-base font-bold text-white">Constellations</h2>
+        <h2 className="text-base font-bold text-white">Binary Stars</h2>
         <span className="hidden sm:inline text-xs text-slate-500">shared streaks with partners</span>
         <button
           onClick={() => setPickerOpen((v) => !v)}
@@ -161,7 +164,7 @@ export default function ConstellationsPanel() {
         </div>
       ))}
 
-      {/* Active constellations */}
+      {/* Active binary stars */}
       {active.length > 0 && (
         <div className="grid gap-2.5">
           {active.map((c) => <ActiveCard key={c.id} c={c} onDissolve={onDissolve} dissolving={dissolve.isPending} />)}

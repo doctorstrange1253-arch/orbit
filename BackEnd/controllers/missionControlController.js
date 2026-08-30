@@ -14,7 +14,7 @@ const preflight = require("../services/orbitPreflight");
 const fcm = require("../services/fcm");
 const User = require("../models/user");
 const Skill = require("../models/skill");
-const Constellation = require("../models/Constellation");
+const BinaryStar = require("../models/BinaryStar");
 const { rollForward } = require("../services/orbitActivity");
 const { shapeOrbit } = require("./orbitController");
 const { masteryFor } = require("../services/skillMastery");
@@ -184,7 +184,7 @@ exports.inspectUser = async (req, res) => {
         if (!user) return fail(res, "not_found", "user not found", requestId, 404);
 
         const { orbit } = rollForward(user.orbit);
-        const cons = await Constellation.find({ members: user._id, status: "active" })
+        const cons = await BinaryStar.find({ members: user._id, status: "active" })
             .populate("members", "name").lean();
         const skills = await Skill.find({ userId: user._id }).select("skillOffered sessionsTaught").lean();
 
@@ -193,7 +193,8 @@ exports.inspectUser = async (req, res) => {
             orbit: shapeOrbit(orbit),
             cosmic: { score: user.cosmic?.score ?? null, tierId: user.cosmic?.tierId ?? null },
             league: { division: league.divisionMeta(orbit.league.divisionId), weekXp: orbit.league.weekXp, lastResult: orbit.league.lastResult },
-            constellations: cons.map((c) => ({
+            // Key preserved as `binaryStars` in the admin contract (was `constellations` pre-slice).
+            binaryStars: cons.map((c) => ({
                 id: String(c._id), streak: c.streak?.current || 0,
                 partner: (c.members || []).map((m) => m.name).filter((n) => n !== user.name),
             })),
@@ -239,7 +240,7 @@ const PUSH_TEMPLATES = {
     message:               { title: "New message (test)", body: "This is a test message push.", link: "/dashboard" },
     connection_request:    { title: "Connection request (test)", body: "Someone wants to connect (test).", link: "/connections" },
     incoming_call:         { title: "Incoming call (test)", body: "Test incoming video call.", link: "/video" },
-    constellation_your_turn:{ title: "Your turn to shine (test)", body: "Keep your Binary Star glowing (test).", link: "/orbit" },
+    binary_star_your_turn:{ title: "Your turn to shine (test)", body: "Keep your Binary Star glowing (test).", link: "/orbit" },
     orbit_decay:           { title: "Orbit decaying (test)", body: "One action keeps your streak alive (test).", link: "/orbit" },
 };
 

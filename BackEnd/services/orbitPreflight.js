@@ -47,8 +47,8 @@ const CHECKS = {
     // B4 — no shame/coercive phrases in notification source (the runtime lint).
     notification_copy_clean() {
         const SOURCES = [
-            "services/orbitActivity.js", "services/constellationActivity.js",
-            "services/masteryActivity.js", "controllers/constellationController.js",
+            "services/orbitActivity.js", "services/binaryStarActivity.js",
+            "services/masteryActivity.js", "controllers/binaryStarController.js",
             "workers/orbitWorker.js", "workers/leagueWorker.js",
         ];
         const BANNED = [

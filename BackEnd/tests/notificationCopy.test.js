@@ -12,9 +12,9 @@ const path = require("path");
 // Files that build notification titles/bodies.
 const SOURCES = [
     "services/orbitActivity.js",
-    "services/constellationActivity.js",
+    "services/binaryStarActivity.js",
     "services/masteryActivity.js",
-    "controllers/constellationController.js",
+    "controllers/binaryStarController.js",
     "workers/orbitWorker.js",
     "workers/leagueWorker.js",
 ].map((p) => path.join(__dirname, "..", p));

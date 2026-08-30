@@ -15,10 +15,10 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const Skill = require("../models/skill");
 const Connection = require("../models/Connection");
-const Constellation = require("../models/Constellation");
+const BinaryStar = require("../models/BinaryStar");
 const SeedLedger = require("../models/SeedLedger");
 const engine = require("../services/orbitEngine");
-const conEngine = require("../services/constellationEngine");
+const conEngine = require("../services/binaryStarEngine");
 const league = require("../services/leagueService");
 const shop = require("../services/cosmeticsCatalog");
 const { utcDayStr, isoWeekId } = require("../services/orbitActivity");
@@ -148,14 +148,14 @@ async function seedDemoAccount({ userId, now = new Date(), rivals = 29 } = {}) {
         pair = conEngine.applyPairContribution(pair, members[1], members, day).state;
     }
     pair.freezeTokens = conEngine.grantWeeklyFreezePair({ tokens: 0, lastGrantWeek: "" }, weekId).freeze.tokens;
-    const con = await Constellation.create({
+    const con = await BinaryStar.create({
         members: [userId, bot._id].sort(),
         pairKey: conEngine.pairKeyOf(userId, bot._id),
         invitedBy: userId, status: "active", activatedAt: now,
         streak: pair.streak, lastActionDay: pair.lastActionDay,
         freeze: { tokens: pair.freezeTokens, lastGrantWeek: weekId },
     });
-    refs.push({ model: "Constellation", id: con._id });
+    refs.push({ model: "BinaryStar", id: con._id });
 
     // 3) League rivals sharing the user's group, XP spread so the user sits mid-pack.
     const groupId = orbit.league.groupId;
@@ -283,7 +283,7 @@ async function teardown({ userId, seedRunId } = {}) {
     if (!ledger) return { removed: 0, restored: false, reason: "no_seed_run" };
 
     // Delete created docs, grouped by model.
-    const byModel = { User, Skill, Connection, Constellation };
+    const byModel = { User, Skill, Connection, BinaryStar };
     let removed = 0;
     const grouped = ledger.refs.reduce((a, r) => ((a[r.model] ||= []).push(r.id), a), {});
     for (const [model, ids] of Object.entries(grouped)) {

@@ -21,7 +21,7 @@ const RankEvent = require("../models/RankEvent");
 const Legend = require("../models/Legend");
 const PhotonLedger = require("../models/PhotonLedger");
 const Notification = require("../models/Notification");
-const Constellation = require("../models/Constellation");
+const BinaryStar = require("../models/BinaryStar");
 const AuditLog = require("../models/AuditLog");
 const { audit } = require("../utils/adminAudit");
 
@@ -79,7 +79,7 @@ exports.listRecords = async (req, res) => {
 
 // Count everything that references a user (cascade preview).
 async function cascadeCounts(userId) {
-    const [ratingsAuthored, ratingsReceived, connections, calls, messages, skills, reports, rankEvents, legends, photonLedger, notifications, constellations] = await Promise.all([
+    const [ratingsAuthored, ratingsReceived, connections, calls, messages, skills, reports, rankEvents, legends, photonLedger, notifications, binaryStars] = await Promise.all([
         Rating.countDocuments({ fromUser: userId }),
         Rating.countDocuments({ toUser: userId }),
         Connection.countDocuments({ $or: [{ requester: userId }, { receiver: userId }] }),
@@ -91,9 +91,9 @@ async function cascadeCounts(userId) {
         Legend.countDocuments({ userId }),
         PhotonLedger.countDocuments({ userId }),
         Notification.countDocuments({ userId }),
-        Constellation.countDocuments({ members: userId }),
+        BinaryStar.countDocuments({ members: userId }),
     ]);
-    return { profile: 1, ratingsAuthored, ratingsReceived, connections, calls, messages, skills, reports, rankEvents, legends, photonLedger, notifications, constellations };
+    return { profile: 1, ratingsAuthored, ratingsReceived, connections, calls, messages, skills, reports, rankEvents, legends, photonLedger, notifications, binaryStars };
 }
 
 // GET /records/users/:id/delete-preview
@@ -175,7 +175,7 @@ exports.hardDelete = async (req, res) => {
             Legend.deleteMany({ userId: u._id }),
             PhotonLedger.deleteMany({ userId: u._id }),
             Notification.deleteMany({ userId: u._id }),
-            Constellation.deleteMany({ members: u._id }),
+            BinaryStar.deleteMany({ members: u._id }),
         ]);
         await User.deleteOne({ _id: u._id });
 

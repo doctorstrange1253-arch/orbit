@@ -6,7 +6,7 @@ const {
     pairKeyOf,
     PAIR_MILESTONES,
     FREEZE_CAP_PAIR,
-} = require("../services/constellationEngine");
+} = require("../services/binaryStarEngine");
 
 const A = "aaaaaaaaaaaaaaaaaaaaaaaa";
 const B = "bbbbbbbbbbbbbbbbbbbbbbbb";
@@ -19,7 +19,7 @@ const fresh = (over = {}) => ({
     ...over,
 });
 
-describe("constellationEngine — shared advance requires BOTH", () => {
+describe("binaryStarEngine — shared advance requires BOTH", () => {
     it("records one member's contribution without advancing", () => {
         const r = applyPairContribution(fresh(), A, MEMBERS, "2026-07-03");
         expect(r.recorded).toBe(true);
@@ -54,7 +54,7 @@ describe("constellationEngine — shared advance requires BOTH", () => {
     });
 });
 
-describe("constellationEngine — reset & shared freeze", () => {
+describe("binaryStarEngine — reset & shared freeze", () => {
     it("resets to 1 when the pair misses a day with no freeze", () => {
         const st = fresh({
             streak: { current: 9, longest: 9, lastBothDay: "2026-07-03", milestonesHit: [3, 7] },
@@ -92,7 +92,7 @@ describe("constellationEngine — reset & shared freeze", () => {
     });
 });
 
-describe("constellationEngine — milestones", () => {
+describe("binaryStarEngine — milestones", () => {
     it("pays each member once when a shared milestone is reached", () => {
         const st = fresh({
             streak: { current: 6, longest: 6, lastBothDay: "2026-07-03", milestonesHit: [3] },
@@ -112,7 +112,7 @@ describe("constellationEngine — milestones", () => {
     });
 });
 
-describe("constellationEngine — decay state & pair key", () => {
+describe("binaryStarEngine — decay state & pair key", () => {
     it("reports waiting on the partner when only one acted", () => {
         const r = pairDecayState({ current: 3, lastBothDay: "2026-07-02" }, { [A]: "2026-07-03" }, MEMBERS, "2026-07-03");
         expect(r.state).toBe("waiting");
