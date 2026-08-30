@@ -156,7 +156,6 @@ const userSchema = new mongoose.Schema({
         type: [String],
         enum: ["peer_learner", "mentor", "student"],
         default: ["peer_learner"],
-        index: true,
     },
     rolesVersion: {
         type: Number,
