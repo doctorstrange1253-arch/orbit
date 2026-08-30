@@ -1,11 +1,15 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { UserCircle, Shield, Save, Camera, Upload, X, Link as LinkIcon, Globe, Flame } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  UserCircle, Shield, Save, Camera, Upload, X, Link as LinkIcon, Globe, Flame,
+  ArrowRight, Users, GraduationCap, BookOpen, TrendingUp, Calendar, Wallet, Handshake, Inbox,
+} from 'lucide-react';
 import api from '../services/api';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore, getCurrentWindow, ROLE_META, ACCOUNT_ROLES } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
 import Avatar from '../components/common/Avatar';
 import Spinner from '../components/common/Spinner';
@@ -17,6 +21,7 @@ import Nameplate from '../cosmic/Nameplate';
 import { InfoDot, ScoreExplainerBody } from '../cosmic/scoreInfo';
 import { TRUST_TOOLTIP, TRUST_SCORE_INFO } from '../cosmic/scoreCopy';
 import LanguageMultiSelect from '../components/common/LanguageMultiSelect';
+import HolographicCard from '../components/fx/HolographicCard';
 
 const MAX_LANGUAGES = 5;
 
@@ -29,10 +34,60 @@ const PRESET_AVATARS = [
   '/avatars/avatar-6.svg',
 ];
 
+// ── "Your Active Windows" panel constants ───────────────────────────────
+// Mirror of the RoleSelector accent palette (peer=cyan, mentor=purple,
+// student=blue). Re-defined locally to avoid a hard import from a UI-only
+// component; the values are stable visual tokens, not behaviour.
+const ROLE_ICONS = {
+  peer_learner: Users,
+  mentor: GraduationCap,
+  student: BookOpen,
+};
+
+const ROLE_ACCENT = {
+  peer_learner: {
+    ring: 'ring-cyan-400/60',
+    bg: 'bg-cyan-500/10',
+    text: 'text-cyan-300',
+    border: 'border-cyan-400/30',
+    dot: 'bg-cyan-400',
+  },
+  mentor: {
+    ring: 'ring-purple-400/60',
+    bg: 'bg-purple-500/10',
+    text: 'text-purple-300',
+    border: 'border-purple-400/30',
+    dot: 'bg-purple-400',
+  },
+  student: {
+    ring: 'ring-blue-400/60',
+    bg: 'bg-blue-500/10',
+    text: 'text-blue-300',
+    border: 'border-blue-400/30',
+    dot: 'bg-blue-400',
+  },
+};
+
+// Where each role's window "home" lives. Matches the role-prefixed URL
+// scheme (App.jsx + RoleSelector) — opening a window drops the user into
+// the canonical landing surface for that role.
+const ROLE_HOME = {
+  peer_learner: '/peer/dashboard',
+  mentor: '/mentor/hub',
+  student: '/student/sessions',
+};
+
+const formatInr = (n) => {
+  const v = Number(n) || 0;
+  return v.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+};
+
 const Profile = () => {
   const { user, setUser } = useAuthStore();
   const { addToast }      = useUIStore();
   const queryClient       = useQueryClient();
+  const location          = useLocation();
+  const navigate          = useNavigate();
   const [langs, setLangs] = useState(['English']);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -55,6 +110,103 @@ const Profile = () => {
     queryKey: ['reviews', 'given'],
     queryFn: () => api.get('/trust/my-given').then(r => r.data.ratings),
   });
+
+  // ── "Your Active Windows" panel data ───────────────────────────────
+  // Compute the user's effective role set (peer_learner is always on).
+  // The array drives both the row list AND the conditional stat queries
+  // below — only call the endpoint for the roles the user actually has.
+  const userRoles = useMemo(() => {
+    const r = Array.isArray(user?.roles) && user.roles.length > 0
+      ? user.roles
+      : ['peer_learner'];
+    return r.includes('peer_learner') ? r : ['peer_learner', ...r];
+  }, [user?.roles]);
+  const userRolesSet = useMemo(() => new Set(userRoles), [userRoles]);
+
+  // The navbar's notion of "what window am I in" — used to highlight the
+  // matching row in the panel. On a shared page (e.g. /profile itself)
+  // getCurrentWindow returns null, so we fall back to whatever the
+  // navbar last wrote to sessionStorage. Mirrors the navbar's behaviour
+  // exactly so the "You're here" pin is consistent.
+  const activeWindowKey = useMemo(() => {
+    const here = getCurrentWindow(location.pathname);
+    if (here) return here;
+    if (typeof window === 'undefined') return 'peer';
+    try { return sessionStorage.getItem('orbit-last-window') || 'peer'; }
+    catch { return 'peer'; }
+  }, [location.pathname]);
+
+  // Role-keyed lookups for the panel (peer='peer', mentor='mentor', student='student').
+  const hasMentor  = userRolesSet.has('mentor');
+  const hasStudent = userRolesSet.has('student');
+  const hasPeer    = userRolesSet.has('peer_learner'); // always true
+
+  // ── Role-specific stat queries (only enabled when the user has the role) ──
+  // Mentor: earnings + bookings via /sessions/mentor/me (returns
+  //   { profile, earnings: { totalInr, pendingInr, releasedInr } }).
+  // We also reuse it to derive upcoming/past counts the same way
+  // MentorSessions does — no second endpoint needed.
+  const { data: mentorMe } = useQuery({
+    queryKey: ['sessions', 'mentor', 'me', 'profile-panel'],
+    queryFn: () => api.get('/sessions/mentor/me').then(r => r.data),
+    enabled: hasMentor,
+    retry: false,
+    staleTime: 30_000,
+  });
+  const { data: mentorBookings = [] } = useQuery({
+    queryKey: ['sessions', 'mentor', 'bookings', 'profile-panel'],
+    queryFn: () => api.get('/sessions/mentor/bookings').then(r => r.data?.items || []),
+    enabled: hasMentor,
+    retry: false,
+    staleTime: 60_000,
+  });
+
+  // Student: same /sessions/me the MySessions page uses; classify by
+  // scheduledAt + status locally.
+  const { data: studentSessions = [] } = useQuery({
+    queryKey: ['sessions', 'me', 'profile-panel'],
+    queryFn: () => api.get('/sessions/me').then(r => r.data?.items || []),
+    enabled: hasStudent,
+    retry: false,
+    staleTime: 60_000,
+  });
+
+  // Peer: pending requests count + matches list. The /connections/pending
+  // endpoint returns { incomingCount, incoming, outgoing } — we only
+  // need the scalar count.
+  const { data: peerPending } = useQuery({
+    queryKey: ['connections', 'pending', 'profile-panel'],
+    queryFn: () => api.get('/connections/pending').then(r => r.data),
+    enabled: hasPeer,
+    retry: false,
+    staleTime: 30_000,
+  });
+  const { data: peerMatches = [] } = useQuery({
+    queryKey: ['skills', 'matches', 'profile-panel'],
+    queryFn: () => api.get('/skills/matches').then(r => Array.isArray(r.data) ? r.data : (r.data?.items || [])),
+    enabled: hasPeer,
+    retry: false,
+    staleTime: 60_000,
+  });
+
+  // Derive student upcoming/past counts. Matches MySessions' bucketing
+  // rules so the numbers agree with what the user sees on /my-sessions.
+  const { studentUpcoming, studentPast } = useMemo(() => {
+    const now = Date.now();
+    let up = 0; let pa = 0;
+    for (const s of studentSessions) {
+      const at = new Date(s.scheduledAt).getTime();
+      const terminal = ['completed', 'cancelled', 'no_show', 'disputed'].includes(s.status);
+      if (terminal || at < now) pa++; else up++;
+    }
+    return { studentUpcoming: up, studentPast: pa };
+  }, [studentSessions]);
+
+  // Peer active-matches count: matches that aren't already an accepted
+  // connection are the "active" pool. /skills/matches already returns
+  // just the suggestion list, so the length is the right starting point
+  // for a glance-tile.
+  const peerActiveMatches = Array.isArray(peerMatches) ? peerMatches.length : 0;
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
@@ -189,6 +341,34 @@ const Profile = () => {
         </h1>
         <p className="text-text-muted mt-1 text-sm">Your public persona on Orbit.</p>
       </div>
+
+      {/* ── Your Active Windows ───────────────────────────────────────────
+          A role-aware summary that lives on the otherwise role-agnostic
+          /profile page. The navbar already shows the current role pill,
+          so without this panel a multi-role user (e.g. mentor + peer)
+          can't tell at a glance which side this shared page "belongs
+          to". The panel renders one row per role the user holds, marks
+          the active window with a ring + "You're here", and surfaces
+          1-3 role-specific stat tiles below. */}
+      <ActiveWindowsPanel
+        userRoles={userRoles}
+        userRolesSet={userRolesSet}
+        activeWindowKey={activeWindowKey}
+        onOpen={(path) => navigate(path)}
+        stats={{
+          mentor: hasMentor ? {
+            pendingInr: mentorMe?.earnings?.pendingInr,
+            totalInr: mentorMe?.earnings?.totalInr,
+            upcoming: mentorBookings.filter((s) => {
+              const at = new Date(s.scheduledAt).getTime();
+              const terminal = ['completed', 'cancelled', 'no_show', 'disputed'].includes(s.status);
+              return !terminal && at >= Date.now();
+            }).length,
+          } : null,
+          student: hasStudent ? { upcoming: studentUpcoming, past: studentPast } : null,
+          peer: hasPeer ? { pending: peerPending?.incomingCount, matches: peerActiveMatches } : null,
+        }}
+      />
 
       {/* Avatar + meta card — shows the equipped nebula background if any.
           When a nebula is worn the card becomes a dark RENDER surface
@@ -498,5 +678,268 @@ const Profile = () => {
     </div>
   );
 };
+
+/**
+ * ActiveWindowsPanel — "Your Active Windows" UI block.
+ *
+ * Renders one row per role the user actually holds (peer_learner is
+ * always present), marks the row matching the current window with a
+ * ring + "You're here" label, and shows 1-3 role-specific stat tiles
+ * for every active role. Wrapped in a HolographicCard (`rarity="rare"`,
+ * `tilt`) so the panel reads as the "advanced / overview" surface the
+ * Profile page is missing today.
+ *
+ * Props:
+ *   userRoles        string[]   normalized role list (peer_learner guaranteed)
+ *   userRolesSet     Set        O(1) membership test mirror of userRoles
+ *   activeWindowKey  'peer' | 'mentor' | 'student'  the navbar's notion of
+ *                                "where you are" — already falls back to
+ *                                sessionStorage when on a shared page
+ *   onOpen           fn(path)   navigate to the role's home route
+ *   stats            { mentor?, student?, peer? }   pre-shaped stat bundles
+ *                                for each active role (or null when the
+ *                                role isn't active). Lets the parent keep
+ *                                all data fetching in one place.
+ */
+const ActiveWindowsPanel = ({ userRoles, userRolesSet, activeWindowKey, onOpen, stats }) => {
+  // Map each account role to its window key (the string getCurrentWindow
+  // returns). peer_learner === 'peer', mentor === 'mentor', student ===
+  // 'student'. Centralised so the "You're here" highlight stays in sync
+  // with the navbar's route-prefix detection.
+  const ROLE_TO_WINDOW = {
+    peer_learner: 'peer',
+    mentor: 'mentor',
+    student: 'student',
+  };
+  const WINDOW_TO_META = {
+    peer:   { label: 'Peer Learner', role: 'peer_learner' },
+    mentor: { label: 'Mentor',       role: 'mentor' },
+    student:{ label: 'Student',      role: 'student' },
+  };
+
+  const hereMeta = WINDOW_TO_META[activeWindowKey];
+  // Roles the user holds but aren't their current window. Used to
+  // surface the "You also have the X role" hint when the panel renders
+  // on /profile but the user is currently in a different window.
+  const otherActiveRoles = userRoles.filter(
+    (r) => ROLE_TO_WINDOW[r] && ROLE_TO_WINDOW[r] !== activeWindowKey
+  );
+
+  return (
+    <HolographicCard rarity="rare" tilt className="p-5 md:p-6">
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div>
+          <h2 className="text-sm font-semibold uppercase tracking-widest text-text-muted flex items-center gap-2">
+            <Inbox className="w-3.5 h-3.5 text-accent" /> Your Active Windows
+          </h2>
+          <p className="text-xs text-text-muted mt-1">
+            {userRoles.length === 1
+              ? 'You have 1 role on Orbit.'
+              : `You have ${userRoles.length} roles on Orbit. Switch between them anytime.`}
+          </p>
+        </div>
+        {hereMeta && (
+          <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent border border-accent/30">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" /> You&rsquo;re in {hereMeta.label}
+          </span>
+        )}
+      </div>
+
+      {/* ── Role rows ──────────────────────────────────────────────── */}
+      <ul className="space-y-2.5" role="list">
+        {ACCOUNT_ROLES.filter((r) => userRolesSet.has(r)).map((role) => {
+          const meta = ROLE_META[role];
+          const accent = ROLE_ACCENT[role];
+          const Icon = ROLE_ICONS[role];
+          const isHere = ROLE_TO_WINDOW[role] === activeWindowKey;
+          return (
+            <li
+              key={role}
+              className={[
+                'flex items-center gap-3 p-3 rounded-xl border transition-all',
+                isHere
+                  ? `${accent.ring} ring-2 ${accent.bg} ${accent.border}`
+                  : 'border-border-subtle bg-surface/40',
+              ].join(' ')}
+            >
+              <div
+                className={[
+                  'flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center border',
+                  isHere ? accent.bg : 'bg-surface',
+                  isHere ? accent.border : 'border-border-subtle',
+                ].join(' ')}
+              >
+                <Icon size={18} className={isHere ? accent.text : 'text-text-secondary'} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-semibold text-text-primary">{meta.label}</span>
+                  <span
+                    className={[
+                      'text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border',
+                      isHere
+                        ? `${accent.bg} ${accent.text} ${accent.border}`
+                        : 'bg-surface text-text-muted border-border-subtle',
+                    ].join(' ')}
+                  >
+                    Active
+                  </span>
+                  {isHere && (
+                    <span className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-accent/15 text-accent border border-accent/30">
+                      You&rsquo;re here
+                    </span>
+                  )}
+                </div>
+                <p className="mt-0.5 text-[11px] text-text-muted truncate">{meta.description}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => onOpen?.(ROLE_HOME[role])}
+                className={[
+                  'flex-shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
+                  isHere
+                    ? 'bg-accent text-white hover:bg-accent/90'
+                    : 'bg-surface text-text-secondary hover:text-text-primary border border-border-subtle',
+                ].join(' ')}
+              >
+                Open <ArrowRight size={12} />
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* ── Stat tiles (one section per active role) ──────────────── */}
+      {(stats.mentor || stats.student || stats.peer) && (
+        <div className="mt-5 pt-5 border-t border-border-subtle space-y-4">
+          {stats.mentor && (
+            <RoleStatsBlock
+              accent={ROLE_ACCENT.mentor}
+              title="Mentor window"
+              tiles={[
+                {
+                  Icon: Wallet,
+                  label: 'Pending payout',
+                  value: stats.mentor.pendingInr != null ? `₹${formatInr(stats.mentor.pendingInr)}` : '—',
+                  tone: 'text-warning',
+                },
+                {
+                  Icon: TrendingUp,
+                  label: 'Total earned',
+                  value: stats.mentor.totalInr != null ? `₹${formatInr(stats.mentor.totalInr)}` : '—',
+                  tone: 'text-success',
+                },
+                {
+                  Icon: Calendar,
+                  label: 'Upcoming sessions',
+                  value: typeof stats.mentor.upcoming === 'number' ? stats.mentor.upcoming : '—',
+                  tone: 'text-accent',
+                },
+              ]}
+            />
+          )}
+          {stats.student && (
+            <RoleStatsBlock
+              accent={ROLE_ACCENT.student}
+              title="Student window"
+              tiles={[
+                {
+                  Icon: Calendar,
+                  label: 'Upcoming',
+                  value: typeof stats.student.upcoming === 'number' ? stats.student.upcoming : '—',
+                  tone: 'text-accent',
+                },
+                {
+                  Icon: BookOpen,
+                  label: 'Past sessions',
+                  value: typeof stats.student.past === 'number' ? stats.student.past : '—',
+                  tone: 'text-text-secondary',
+                },
+              ]}
+            />
+          )}
+          {stats.peer && (
+            <RoleStatsBlock
+              accent={ROLE_ACCENT.peer_learner}
+              title="Peer window"
+              tiles={[
+                {
+                  Icon: Inbox,
+                  label: 'Pending requests',
+                  value: typeof stats.peer.pending === 'number' ? stats.peer.pending : '—',
+                  tone: 'text-accent',
+                },
+                {
+                  Icon: Handshake,
+                  label: 'Active matches',
+                  value: typeof stats.peer.matches === 'number' ? stats.peer.matches : '—',
+                  tone: 'text-cyan-300',
+                },
+              ]}
+            />
+          )}
+        </div>
+      )}
+
+      {/* ── "You also have the X role" hint ──────────────────────────
+          Only shown on shared pages where getCurrentWindow() === null
+          but we still have a fallback window key. Tells the user
+          there's a paid/extra role available to switch into. */}
+      {otherActiveRoles.length > 0 && hereMeta && (
+        <div className="mt-4 flex items-center justify-between gap-3 p-3 rounded-xl bg-surface/60 border border-border-subtle">
+          <p className="text-xs text-text-secondary">
+            You also have{' '}
+            <span className="font-semibold text-text-primary">
+              {otherActiveRoles
+                .map((r) => ROLE_META[r]?.label)
+                .filter(Boolean)
+                .join(' + ')}
+            </span>{' '}
+            enabled.
+          </p>
+          <button
+            type="button"
+            onClick={() => onOpen?.(ROLE_HOME[otherActiveRoles[0]])}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline"
+          >
+            Open {ROLE_META[otherActiveRoles[0]]?.label} window <ArrowRight size={12} />
+          </button>
+        </div>
+      )}
+    </HolographicCard>
+  );
+};
+
+/**
+ * RoleStatsBlock — a labelled cluster of 1-3 stat tiles, used to group
+ * per-role numbers under a coloured heading so the panel stays readable
+ * when the user has all 3 roles active (would otherwise be 8 tiles in
+ * one row). `accent` is the same ROLE_ACCENT map the rows use so the
+ * colour story carries from row → stats.
+ */
+const RoleStatsBlock = ({ accent, title, tiles }) => (
+  <div>
+    <div className="flex items-center gap-2 mb-2">
+      <span className={`w-1.5 h-1.5 rounded-full ${accent.dot}`} />
+      <h3 className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{title}</h3>
+    </div>
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+      {tiles.map(({ Icon, label, value, tone }) => (
+        <div
+          key={label}
+          className="rounded-xl border border-border-subtle bg-surface/40 p-3 flex flex-col gap-1.5"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-text-muted truncate">
+              {label}
+            </span>
+            {Icon && <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${tone || 'text-text-secondary'}`} />}
+          </div>
+          <div className={`text-lg font-black ${tone || 'text-text-primary'} truncate`}>{value}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 export default Profile;

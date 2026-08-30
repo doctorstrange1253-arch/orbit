@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Users, GraduationCap, BookOpen, Loader2, Check, AlertTriangle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Users, GraduationCap, BookOpen, Loader2, Check, AlertTriangle, ArrowRight } from 'lucide-react';
 import api from '../../services/api';
 import { useAuthStore, ACCOUNT_ROLES, ROLE_META } from '../../store/authStore';
 import { useUIStore } from '../../store/uiStore';
@@ -59,6 +60,10 @@ const RoleSettings = () => {
   const [rowError, setRowError] = useState({});
   useEffect(() => { setRowError({}); }, [current.length]);
 
+  // Tracks the most-recently-enabled role so we can show a one-time
+  // "Welcome to your {role} window" callout with a CTA to enter it.
+  const [justEnabled, setJustEnabled] = useState(null); // 'mentor' | 'student' | null
+
   // Fetch the live profile so we know whether the mentor is approved/pending
   // (used in the description text). The /user/me/mentor endpoint exists in
   // the sessions slice and returns the application status.
@@ -91,6 +96,8 @@ const RoleSettings = () => {
       // Invalidate any cached mentor profile (state may have changed).
       qc.invalidateQueries({ queryKey: ['mentor'] });
       addToast(data.message || 'Your roles are updated', 'success');
+      // Clear the "just enabled" flag after 8s so the CTA auto-dismisses.
+      setTimeout(() => setJustEnabled(null), 8000);
     },
     onError: (err) => {
       const code = err.response?.data?.code;
@@ -107,14 +114,16 @@ const RoleSettings = () => {
   const toggle = (role) => {
     if (role === 'peer_learner') return; // locked
     setRowError({}); // clear on new attempt
-    const next = current.includes(role)
-      ? current.filter((r) => r !== role)
-      : [...current, role];
+    const isAdding = !current.includes(role);
+    const next = isAdding
+      ? [...current, role]
+      : current.filter((r) => r !== role);
     // Don't allow empty (defense — backend rejects too, but better UX here).
     if (next.length === 0) {
       setRowError({ _: 'You must keep at least one role.' });
       return;
     }
+    if (isAdding) setJustEnabled(role);
     mutation.mutate(next);
   };
 
@@ -142,6 +151,75 @@ const RoleSettings = () => {
           roles is free; we only ask for payment when you actually book or accept a paid session.
         </p>
       </div>
+
+      {justEnabled && current.includes(justEnabled) && (
+        <motion.div
+          initial={{ opacity: 0, y: -8, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className={[
+            'rounded-2xl p-5 border-2 flex items-center gap-4',
+            justEnabled === 'mentor'
+              ? 'border-purple-400/50 bg-purple-500/10'
+              : 'border-blue-400/50 bg-blue-500/10',
+          ].join(' ')}
+        >
+          <div className={[
+            'flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center',
+            justEnabled === 'mentor'
+              ? 'bg-purple-500/20 text-purple-200'
+              : 'bg-blue-500/20 text-blue-200',
+          ].join(' ')}>
+            {justEnabled === 'mentor'
+              ? <GraduationCap size={22} />
+              : <BookOpen size={22} />}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className={[
+              'text-sm font-bold',
+              justEnabled === 'mentor' ? 'text-purple-100' : 'text-blue-100',
+            ].join(' ')}>
+              {justEnabled === 'mentor'
+                ? 'Welcome to your Mentor window!'
+                : 'Welcome to your Student window!'}
+            </div>
+            <div className={[
+              'mt-1 text-xs leading-relaxed',
+              justEnabled === 'mentor' ? 'text-purple-200/80' : 'text-blue-200/80',
+            ].join(' ')}>
+              {justEnabled === 'mentor'
+                ? 'You can now set your skills, rate, and availability — and start earning from 1-on-1 video sessions.'
+                : 'You can now browse mentors, book sessions, and rate them after each one.'}
+            </div>
+          </div>
+          <div className="flex flex-col gap-1.5 flex-shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                setJustEnabled(null);
+                if (justEnabled === 'mentor') navigate('/mentor/hub');
+                else if (justEnabled === 'student') navigate('/student/mentors');
+              }}
+              className={[
+                'inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider',
+                justEnabled === 'mentor'
+                  ? 'bg-purple-500 hover:bg-purple-400 text-white'
+                  : 'bg-blue-500 hover:bg-blue-400 text-white',
+              ].join(' ')}
+            >
+              Enter {justEnabled === 'mentor' ? 'Mentor' : 'Student'} window
+              <ArrowRight size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setJustEnabled(null)}
+              className="text-[10px] text-text-muted hover:text-text-secondary"
+            >
+              Maybe later
+            </button>
+          </div>
+        </motion.div>
+      )}
 
       {rowError._ && (
         <div className="flex items-start gap-2 p-3 rounded-xl border border-amber-400/30 bg-amber-500/10 text-amber-200 text-sm">
