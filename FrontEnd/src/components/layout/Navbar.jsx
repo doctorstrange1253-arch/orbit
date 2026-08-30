@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { useAuthStore, ROLE_META } from '../../store/authStore';
+import { useAuthStore, getCurrentWindow } from '../../store/authStore';
 import Avatar from '../common/Avatar';
 import api from '../../services/api';
 import ChatDrawer from '../chat/ChatDrawer';
@@ -10,39 +10,53 @@ import NotificationBell from '../notifications/NotificationBell';
 import { unregisterPush } from '../../utils/pushNotify';
 import OrbitStreakBadge from '../../cosmic/OrbitStreakBadge';
 import PhotonsChip from '../../cosmic/PhotonsChip';
+import RoleSwitcher from './RoleSwitcher';
 import {
   LogOut, Layers, Compass, Users, Map,
-  ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX, ShoppingBag, Calendar, GraduationCap
+  ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History
 } from 'lucide-react';
 import soundManager from '../../utils/soundManager';
 
-// Each entry's `roles` is the allow-list of account roles a user must hold
-// at least one of to see this item in the nav. `peer_learner` covers the
-// free P2P product; `student` covers paid learning; `mentor` covers paid
-// teaching. Items without a `roles` field are visible to everyone signed in
-// (e.g. /orbit, /shop). The server still enforces role on each protected
-// route — this is purely a UX filter so the nav doesn't advertise tabs
-// the user can't open.
-const NAV = [
-  { name: 'Skills',       path: '/dashboard',   Icon: Layers,        roles: ['peer_learner'] },
-  { name: 'Browse',       path: '/browse',       Icon: Compass,       roles: ['peer_learner'] },
-  { name: 'Matches',      path: '/matches',      Icon: Handshake,     roles: ['peer_learner'] },
-  { name: 'Connections',  path: '/connections',  Icon: Users,         roles: ['peer_learner'] },
-  { name: 'Nearby',       path: '/nearby',       Icon: Map,           roles: ['peer_learner'] },
-  { name: 'Calls',        path: '/video',        Icon: Phone,         roles: ['peer_learner', 'mentor', 'student'] },
-  { name: 'Sessions',     path: '/sessions',     Icon: Calendar,      roles: ['student'] },
-  { name: 'My Sessions',  path: '/my-sessions',  Icon: Calendar,      roles: ['student'] },
-  { name: 'Teach',        path: '/teach',        Icon: GraduationCap, roles: ['mentor'] },
-  { name: 'Trust',        path: '/trust',        Icon: ShieldCheck,   roles: ['peer_learner', 'mentor', 'student'] },
-  { name: 'Leaderboard',  path: '/leaderboard',  Icon: Trophy,        roles: ['peer_learner', 'mentor', 'student'] },
-  { name: 'Orbit',        path: '/orbit',        Icon: Rocket,        roles: ['peer_learner', 'mentor', 'student'] },
-  { name: 'Store',        path: '/shop',         Icon: ShoppingBag,   roles: ['peer_learner', 'mentor', 'student'] },
+// Three independent nav pill lists, one per role window. The Navbar picks
+// the active list based on getCurrentWindow(location.pathname) so each
+// role gets a focused, role-specific nav — no cross-window leakage of
+// paid tabs into the peer view, no peer tabs in the mentor/student view.
+//
+// Shared pages (Orbit, Leaderboard, Shop, Profile) live at the root URL
+// but appear inside the role window that lists them. Multi-role users
+// see the role-switcher chip in the right-side cluster and can jump
+// between windows.
+//
+// The `window` tag is informational — it's how the active pill is matched
+// when the user is on a shared page (since the URL doesn't contain the
+// window prefix).
+
+const NAV_PEER = [
+  { name: 'Skills',       path: '/peer/dashboard',   Icon: Layers,      window: 'peer' },
+  { name: 'Browse',       path: '/peer/browse',      Icon: Compass,     window: 'peer' },
+  { name: 'Matches',      path: '/peer/matches',     Icon: Handshake,   window: 'peer' },
+  { name: 'Connections',  path: '/peer/connections', Icon: Users,       window: 'peer' },
+  { name: 'Nearby',       path: '/peer/nearby',      Icon: Map,         window: 'peer' },
+  { name: 'Calls',        path: '/peer/calls',       Icon: Phone,       window: 'peer' },
+  { name: 'Trust',        path: '/peer/trust',       Icon: ShieldCheck, window: 'peer' },
+  { name: 'Orbit',        path: '/orbit',            Icon: Rocket,      window: 'shared' },
+  { name: 'Leaderboard',  path: '/leaderboard',      Icon: Trophy,      window: 'shared' },
+  { name: 'Shop',         path: '/shop',             Icon: ShoppingBag, window: 'shared' },
 ];
 
-// Short badge copy for the role chip next to the avatar. Order matters:
-// the more specific (mentor/student) wins over the baseline (peer_learner)
-// so a user who is a mentor sees "Mentor" not "Peer".
-const ROLE_CHIP_PRIORITY = ['mentor', 'student', 'peer_learner'];
+const NAV_MENTOR = [
+  { name: 'Teach',        path: '/mentor/hub',       Icon: GraduationCap, window: 'mentor' },
+  { name: 'My Sessions',  path: '/mentor/sessions',  Icon: Calendar,      window: 'mentor' },
+  { name: 'Earnings',     path: '/mentor/earnings',  Icon: DollarSign,    window: 'mentor' },
+  { name: 'Profile',      path: '/profile',          Icon: UserCircle,    window: 'shared' },
+];
+
+const NAV_STUDENT = [
+  { name: 'My Sessions',  path: '/student/sessions',                Icon: Calendar, window: 'student' },
+  { name: 'Browse Mentors', path: '/student/mentors',              Icon: Compass,  window: 'student' },
+  { name: 'Bookings',     path: '/student/sessions?tab=upcoming',   Icon: Bookmark, window: 'student' },
+  { name: 'History',      path: '/student/sessions?tab=past',       Icon: History,  window: 'student' },
+];
 
 const Navbar = () => {
   const { user, logout } = useAuthStore();
@@ -63,36 +77,37 @@ const Navbar = () => {
   const drawerRef = useRef(null);
   const hamburgerRef = useRef(null);
 
-  // Account roles — read once per render. The store guarantees a non-empty
-  // array (peer_learner at minimum).
-  const userRoles = Array.isArray(user?.roles) && user.roles.length > 0
-    ? user.roles
-    : ['peer_learner'];
-  // Pick the most specific role for the chip near the avatar.
-  const chipRole = ROLE_CHIP_PRIORITY.find((r) => userRoles.includes(r)) || 'peer_learner';
+  // Window detection — picks which NAV_* array to render. The function is a
+  // pure string-prefix check so this is cheap and never stale (it tracks
+  // the URL on every render). null on shared pages (/settings, /profile,
+  // /leaderboard, /orbit, /shop) — in that case the pill list is empty
+  // and the right-side icons are the only nav the user sees.
+  const currentWindow = getCurrentWindow(location.pathname);
+  const visibleNav =
+    currentWindow === 'mentor'  ? NAV_MENTOR  :
+    currentWindow === 'student' ? NAV_STUDENT :
+    currentWindow === 'peer'    ? NAV_PEER    : [];
 
-  // Filter NAV by what this account can actually open. Items with no
-  // `roles` field are visible to everyone. This runs every render but
-  // NAV.length is ~12 so the cost is trivial and the result is in sync
-  // with the moment the store updates (after a role toggle in Settings).
-  const visibleNav = NAV.filter((item) => {
-    if (!item.roles) return true;
-    return item.roles.some((r) => userRoles.includes(r));
-  });
+  // Badges + counts are window-scoped: peer-only queries (pending
+  // connections, reciprocal matches) only run when the user is on the
+  // peer window — otherwise the queries would fire and 403 when the
+  // user is on /mentor or /student and has no peer_learner role data
+  // to read.
+  const inPeerWindow = currentWindow === 'peer';
 
   // Fetch counts for badges
   const { data: pending } = useQuery({
     queryKey: ['connections', 'pending'],
     queryFn: () => api.get('/connections/pending').then(res => res.data),
     refetchInterval: 30000,
-    enabled: userRoles.includes('peer_learner'),
+    enabled: inPeerWindow,
   });
 
   const { data: matchesData } = useQuery({
     queryKey: ['matches'],
     queryFn: () => api.get('/skills/matches').then(res => res.data),
     refetchInterval: 60000,
-    enabled: userRoles.includes('peer_learner'),
+    enabled: inPeerWindow,
   });
 
   const { data: unreadData } = useQuery({
@@ -106,10 +121,26 @@ const Navbar = () => {
   const unreadCount = unreadData?.count || 0;
 
   const navWithBadges = visibleNav.map(item => {
-    if (item.path === '/connections') return { ...item, badge: incomingCount };
-    if (item.path === '/matches') return { ...item, badge: matchesCount };
+    if (item.path === '/peer/connections') return { ...item, badge: incomingCount };
+    if (item.path === '/peer/matches') return { ...item, badge: matchesCount };
     return item;
   });
+
+  // Active-pill predicate. All paths in NAV_* are unique (each window's
+  // pills are disjoint), so we only need an exact-pathname match OR a
+  // path-prefix match for routes with params. Student sub-paths that use
+  // ?tab= are matched by their query string so the Bookings/History pill
+  // lights up when the URL carries the matching tab.
+  const isActive = (item) => {
+    const [base, qs] = item.path.split('?');
+    if (location.pathname !== base) return false;
+    if (qs) {
+      const want = new URLSearchParams(qs);
+      const have = new URLSearchParams(location.search);
+      for (const [k, v] of want) if (have.get(k) !== v) return false;
+    }
+    return true;
+  };
 
   // Scroll detection — hysteresis dead-band (on >64px, off <24px) batched in a
   // single rAF so tiny scroll jitter near one threshold can't flip the glass
@@ -226,7 +257,7 @@ const Navbar = () => {
             {/* ── Desktop nav pills ── */}
             <nav className="hidden xl:flex items-center gap-0.5 flex-1 justify-center" aria-label="Main navigation">
               {navWithBadges.map(({ name, path, Icon, badge }) => {
-                const active = location.pathname === path || (path !== '/dashboard' && location.pathname.startsWith(path));
+                const active = isActive({ path });
                 return (
                   <NavLink key={path} to={path}
                     className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 select-none ${
@@ -268,22 +299,10 @@ const Navbar = () => {
               >
                 <Avatar name={user?.name} url={user?.avatar} size="xs" userId={user?._id} />
                 <span className="hidden md:block max-w-[80px] truncate">{user?.name?.split(' ')[0]}</span>
-                {/* Role chip — small label that tells the user (and anyone
-                    looking over their shoulder) which mode their account is
-                    in. Priority: mentor > student > peer_learner. */}
-                <span
-                  className={[
-                    'hidden xl:inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded',
-                    chipRole === 'mentor'
-                      ? 'bg-purple-500/15 text-purple-200 border border-purple-400/30'
-                      : chipRole === 'student'
-                        ? 'bg-blue-500/15 text-blue-200 border border-blue-400/30'
-                        : 'bg-cyan-500/15 text-cyan-200 border border-cyan-400/30',
-                  ].join(' ')}
-                  aria-label={`Account role: ${ROLE_META[chipRole]?.label || chipRole}`}
-                >
-                  {ROLE_META[chipRole]?.short || chipRole}
-                </span>
+                {/* Role chip / switcher — static for single-role users,
+                    clickable dropdown for multi-role users (only visible
+                    at xl+ so it doesn't crowd smaller widths). */}
+                <RoleSwitcher />
               </NavLink>
               {/* Notification Bell (durable notification center) */}
               <NotificationBell />
