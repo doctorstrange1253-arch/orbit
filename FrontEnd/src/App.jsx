@@ -30,6 +30,7 @@ import MagneticCursor from './components/fx/MagneticCursor';
 import CommandPalette from './components/fx/CommandPalette';
 import WindowSwitchOverlay, { useWindowSwitchStore } from './components/fx/WindowSwitchOverlay';
 import { getCurrentWindow } from './store/authStore';
+import XpToast from './components/cosmic/XpToast';
 
 // Eagerly loaded (first paint)
 import Landing from './pages/Landing';
@@ -66,6 +67,17 @@ const MySessions     = lazy(() => import('./pages/MySessions'));
 const MentorHub      = lazy(() => import('./pages/MentorHub'));
 const MentorSessions = lazy(() => import('./pages/mentor/MentorSessions'));
 const MentorEarnings = lazy(() => import('./pages/mentor/Earnings'));
+// Courses (Phase B/D): mentor side + student side.
+const MentorCourseList   = lazy(() => import('./pages/mentor/CourseList'));
+const MentorCourseNew    = lazy(() => import('./pages/mentor/CourseBuilder'));
+const MentorCourseEdit   = lazy(() => import('./pages/mentor/CourseEditor'));
+const MentorPactHall     = lazy(() => import('./pages/mentor/PactHall'));
+const CoursesBrowse      = lazy(() => import('./pages/CoursesBrowse'));
+const CourseDetail       = lazy(() => import('./pages/CourseDetail'));
+const CourseLearn        = lazy(() => import('./pages/CourseLearn'));
+const CertificatePage    = lazy(() => import('./pages/CertificatePage'));
+// Gameology (Phase F): student lifetime identity dashboard.
+const GameologyPage      = lazy(() => import('./pages/Gameology'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -569,6 +581,12 @@ function AppInner() {
         onAction={handleNotificationAction}
       />
 
+      {/* XP toast listener — subscribes to the `gameology:xp` socket event and
+          fires a hot-toast on every learning bump. Mounted once so the toast
+          appears no matter which page the user is on. No DOM; the hook is the
+          whole component. */}
+      <XpToast />
+
       {/* Full-Screen Incoming Call Overlay */}
       <IncomingCallOverlay
         call={incomingCall}
@@ -614,6 +632,14 @@ function AppInner() {
         <Route path="/observatory" element={<ProtectedRoute><Observatory /></ProtectedRoute>} />
         <Route path="/cosmic-atlas" element={<Layout><Suspense fallback={<PageLoader />}><TierAtlas /></Suspense></Layout>} />
         <Route path="/settings"    element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        {/* Student courses catalog / learn / cert (Phase D student side) */}
+        <Route path="/courses"                                    element={<ProtectedRoute><Suspense fallback={<PageLoader />}><CoursesBrowse /></Suspense></ProtectedRoute>} />
+        <Route path="/courses/:id"                                element={<ProtectedRoute><Suspense fallback={<PageLoader />}><CourseDetail /></Suspense></ProtectedRoute>} />
+        <Route path="/courses/:id/learn"                          element={<ProtectedRoute><Suspense fallback={<PageLoader />}><CourseLearn /></Suspense></ProtectedRoute>} />
+        <Route path="/courses/:id/learn/:lessonId"                element={<ProtectedRoute><Suspense fallback={<PageLoader />}><CourseLearn /></Suspense></ProtectedRoute>} />
+        <Route path="/courses/:id/certificate/:certId"            element={<ProtectedRoute><Suspense fallback={<PageLoader />}><CertificatePage /></Suspense></ProtectedRoute>} />
+        {/* Gameology — student lifetime identity dashboard (Phase F) */}
+        <Route path="/gameology" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><GameologyPage /></Suspense></ProtectedRoute>} />
 
         {/* ── Peer window (/peer/*) — peer_learner (always on) ─────── */}
         <Route path="/peer/dashboard"   element={<ProtectedRoute><MySkills /></ProtectedRoute>} />
@@ -629,6 +655,12 @@ function AppInner() {
         <Route path="/mentor/hub"      element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorHub /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/mentor/sessions" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorSessions /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/mentor/earnings" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorEarnings /></Suspense></RoleGuard></ProtectedRoute>} />
+        {/* Mentor courses (Phase D mentor side) — author / edit / publish */}
+        <Route path="/mentor/courses"        element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorCourseList /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/mentor/courses/new"    element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorCourseNew /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/mentor/courses/:id/edit" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorCourseEdit /></Suspense></RoleGuard></ProtectedRoute>} />
+        {/* Mentor Pact Hall — the weekly mentor league page */}
+        <Route path="/mentor/pact" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorPactHall /></Suspense></RoleGuard></ProtectedRoute>} />
 
         {/* ── Student window (/student/*) — student ────────────────── */}
         <Route path="/student/sessions"          element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><MySessions /></Suspense></RoleGuard></ProtectedRoute>} />

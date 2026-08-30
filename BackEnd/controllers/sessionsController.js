@@ -401,6 +401,39 @@ exports.complete = async (req, res) => {
         if (s.mentorPayoutInr > 0) {
             await payment.initiatePayout({ mentorId: s.mentorId, amountInr: s.mentorPayoutInr });
         }
+
+        // ── Gameology + Pact hooks ───────────────────────────────────────────
+        // One fan-in: every session-completed XP / Pact-score bump goes through
+        // these service calls, never through ad-hoc $inc anywhere else.
+        // Fire-and-forget; never block the response.
+        const io = req.app.get("io");
+        const gameology = require("../services/gameologyService");
+        const pact = require("../services/pactService");
+        Promise.all([
+            gameology.awardXp(s.studentId, "session_completed", { sessionId: String(s._id) }),
+            pact.recordSession(s.mentorId, { durationMin: s.durationMin }),
+        ]).then(([g, p]) => {
+            if (g) {
+                io?.to(`user_${s.studentId}`).emit("gameology:xp", {
+                    event: "session_completed",
+                    xp: g.xpAwarded,
+                    totalXp: g.totalXp,
+                    level: g.level,
+                    leveledUp: g.leveledUp,
+                    currentStreak: g.currentStreak,
+                    weeklyXp: g.weeklyXp,
+                    league: g.league,
+                    newAchievements: g.newAchievements,
+                });
+            }
+            if (p) {
+                io?.to(`user_${s.mentorId}`).emit("pact:score", {
+                    weekScore: p.weekScore,
+                    weekId: p.weekId,
+                });
+            }
+        }).catch(() => {});
+
         analytics("session.complete", { sessionId: String(s._id), mentorPayoutInr: s.mentorPayoutInr });
         return res.json({ ok: true, status: s.status, mentorPayoutInr: s.mentorPayoutInr });
     } catch (err) {
@@ -432,6 +465,24 @@ exports.rate = async (req, res) => {
             return res.status(403).json({ message: "Not your session" });
         }
         await s.save();
+
+        // ── Pact: a student rating the mentor feeds the mentor's weekly
+        //    rating signal. We push it as a separate `bumpSignal` so the
+        //    cap is enforced per ISO week.
+        if (String(s.studentId) === String(meId) && targetMentorId) {
+            require("../services/pactService")
+                .recordSession(targetMentorId, { rating: stars })
+                .then((p) => {
+                    if (p) {
+                        const io = req.app.get("io");
+                        io?.to(`user_${targetMentorId}`).emit("pact:score", {
+                            weekScore: p.weekScore,
+                            weekId: p.weekId,
+                        });
+                    }
+                })
+                .catch(() => {});
+        }
 
         // Denormalize the rating onto the mentor's profile (if this is the student
         // rating the mentor) and decide whether to bump the payout multiplier.

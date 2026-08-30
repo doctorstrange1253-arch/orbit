@@ -208,6 +208,17 @@ exports.markConnectionCompleted = async (req, res) => {
         recordOrbitAction(io, connection.requester, "swap");
         recordOrbitAction(io, connection.receiver, "swap");
 
+        // Gameology: both partners earn peer_swap_completed XP. The two
+        // calls are independent so a single failure never blocks the other.
+        const gameology = require("../services/gameologyService");
+        Promise.all([
+            gameology.awardXp(connection.requester, "peer_swap_completed", { connectionId: String(connection._id) }),
+            gameology.awardXp(connection.receiver,  "peer_swap_completed", { connectionId: String(connection._id) }),
+        ]).then(([a, b]) => {
+            if (a) io?.to(`user_${connection.requester}`).emit("gameology:xp", { event: "peer_swap_completed", ...a });
+            if (b) io?.to(`user_${connection.receiver}`).emit("gameology:xp",  { event: "peer_swap_completed", ...b });
+        }).catch(() => {});
+
         // Skill Mastery: credit the owner of the swapped skill with one session
         // taught (advances their per-skill mastery ladder). Fire-and-forget.
         creditTeaching(io, connection.skill);

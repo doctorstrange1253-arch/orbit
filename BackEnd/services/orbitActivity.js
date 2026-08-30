@@ -259,6 +259,15 @@ async function recordOrbitAction(io, userId, metric, opts = {}) {
             require("./binaryStarActivity").recordBinaryStarAction(io, userId, { now }).catch(() => {});
         }
 
+        // 5) Gameology bridge — keep the LEARNING streak honest in parallel with
+        //    the engagement streak. No XP is granted here (the matching awardXp
+        //    call already credits the event); we only tick the day so the
+        //    "learned something today" counter advances. Best-effort, never
+        //    throws.
+        try {
+            require("./gameologyService").tickActiveDay(userId).catch(() => {});
+        } catch (_) { /* service not available — silently skip */ }
+
         return {
             streak: orbit.streak.current,
             counted: res.counted,

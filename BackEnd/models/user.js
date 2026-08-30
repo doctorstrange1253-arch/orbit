@@ -338,6 +338,58 @@ const userSchema = new mongoose.Schema({
             profileEffect: { type: String, default: null }, // equipped profile-effect key
             nameplate:  { type: String, default: null },   // equipped nameplate key
         },
+    },
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  GAMEOLOGY (additive — Duolingo-style cross-surface XP/Level/Streak/
+    //  League/Achievements for STUDENTS + PEER_LEARNERS. Distinct from `orbit`
+    //  (the cosmic engine): the cosmic engine is the weekly-league / Stardust
+    //  economy; Gameology is the lifetime XP / Level 1-50 / Learning Streak /
+    //  Achievements system. Both update on learning events; the cosmic engine
+    //  updates weekly, the Gameology layer accumulates lifetime. They are
+    //  complementary — see services/gameologyService.js.
+    // ─────────────────────────────────────────────────────────────────────
+    gameology: {
+        xp:            { type: Number, default: 0, min: 0 },
+        level:         { type: Number, default: 1, min: 1, max: 50 },
+        currentStreak: { type: Number, default: 0, min: 0 },
+        longestStreak: { type: Number, default: 0, min: 0 },
+        lastActiveDate:{ type: String, default: null }, // "YYYY-MM-DD" UTC
+        weeklyXp:      { type: Number, default: 0, min: 0 },
+        weeklyXpWeek:  { type: String, default: "" },   // "YYYY-Www"
+        leagueId:      { type: String, default: "bronze" }, // bronze|silver|gold|platinum|diamond|legend
+        achievements:  [{
+            key:        { type: String, required: true },
+            unlockedAt: { type: Date, default: Date.now },
+            _id:        false,
+        }],
+    },
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  MENTOR PACT (additive — the weekly head-to-head league for MENTORS).
+    //  Mirrors `orbit.league`'s shape (group of N, weekly reset, promote/relegate)
+    //  but with a wholly different surface (no XP bar, no level number, no daily
+    //  streak). See services/pactService.js + /mentor/pact in the frontend.
+    //  6 tiers: "initiate" | "adept" | "mentor" | "sage" | "luminary" | "oracle".
+    // ─────────────────────────────────────────────────────────────────────
+    pact: {
+        divisionId:        { type: String, default: "initiate" },
+        groupId:           { type: String, default: "" },         // "<divisionId>:<weekId>:<n>"
+        weekScore:         { type: Number, default: 0, min: 0 },
+        weekId:            { type: String, default: "" },         // "YYYY-Www" weekScore belongs to
+        lastResult:        { type: String, enum: ["promoted", "relegated", "held", ""], default: "" },
+        highestDivisionId: { type: String, default: "initiate" }, // lifetime best
+        steadyShieldWeeks: { type: Number, default: 0, min: 0 }, // +1 per held week (capped)
+        weeklyHistory:     [{
+            weekId:     { type: String, default: "" },
+            divisionId: { type: String, default: "" },
+            groupId:    { type: String, default: "" },
+            score:      { type: Number, default: 0 },
+            rank:       { type: Number, default: 0 },
+            groupSize:  { type: Number, default: 0 },
+            result:     { type: String, enum: ["promoted", "relegated", "held", ""], default: "" },
+            _id:        false,
+        }],
     }
 
 }, {
@@ -388,5 +440,17 @@ userSchema.index({ status: 1 });
 // admin queries (e.g. "list all mentors"). Mongo creates one index entry per
 // distinct array value, so this also covers any single-role lookups.
 userSchema.index({ roles: 1 });
+
+// ── Gameology leaderboard indexes (additive, students/peer) ─────────────────
+// `level -1, xp -1` covers the /gameology/leaderboard query (top N by level,
+// tiebreak by xp). `weeklyXp -1, weeklyXpWeek 1` covers the current-week view.
+userSchema.index({ "gameology.level": -1, "gameology.xp": -1 });
+userSchema.index({ "gameology.weeklyXp": -1, "gameology.weeklyXpWeek": 1 });
+
+// ── Mentor Pact leaderboard indexes (additive, mentors) ─────────────────────
+// Primary read: "all mentors in my group, sorted by weekScore". Secondary:
+// "top N of a division this week" for the global Pact Hall scroll.
+userSchema.index({ "pact.divisionId": 1, "pact.weekId": 1, "pact.weekScore": -1 });
+userSchema.index({ "pact.weekId": 1, "pact.weekScore": -1 });
 
 module.exports = mongoose.models.User || mongoose.model("User", userSchema);

@@ -11,6 +11,9 @@ import { unregisterPush } from '../../utils/pushNotify';
 import OrbitStreakBadge from '../../cosmic/OrbitStreakBadge';
 import PhotonsChip from '../../cosmic/PhotonsChip';
 import RoleSwitcher from './RoleSwitcher';
+import LevelBadge from '../cosmic/LevelBadge';
+import StreakFlame from '../cosmic/StreakFlame';
+import PactBadge from '../pact/PactBadge';
 import {
   LogOut, Layers, Compass, Users, Map,
   ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, Command
@@ -324,6 +327,19 @@ const Navbar = () => {
               </button>
               {/* Orbit streak — glanceable loss-aversion cue (pulses when decaying) */}
               <OrbitStreakBadge variant="nav" className="hidden xl:inline-flex" />
+              {/* Gameology (student-only): learning streak + level chip */}
+              {Array.isArray(user?.roles) && (user.roles.includes('peer_learner') || user.roles.includes('student')) && (
+                <>
+                  <StreakFlame compact className="hidden xl:inline-flex" />
+                  <LevelBadge compact className="hidden xl:inline-flex" />
+                </>
+              )}
+              {/* Mentor Pact tier chip (mentor-only) */}
+              {Array.isArray(user?.roles) && user.roles.includes('mentor') && (
+                <div className="hidden xl:inline-flex">
+                  <PactBadge size={20} withLabel />
+                </div>
+              )}
               {/* Photons currency chip — live balance, tap → shop */}
               <PhotonsChip variant="nav" className="hidden md:inline-flex" />
               <NavLink to="/profile" title="Profile"

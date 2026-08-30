@@ -31,6 +31,9 @@ import MentorApplicationForm from '../components/mentor/MentorApplicationForm';
 import AvailabilityEditor from '../components/sessions/AvailabilityEditor';
 import { useAuthStore } from '../store/authStore';
 import HolographicCard from '../components/fx/HolographicCard';
+import PactPulse from '../components/pact/PactPulse';
+import RivalWatch from '../components/pact/RivalWatch';
+import PactBadge from '../components/pact/PactBadge';
 
 // State-level visual config. Each state has a title, a tinted chip color, an
 // icon, and copy for the hero. Colors use the semantic tokens so the state
@@ -238,6 +241,21 @@ const ApprovedView = ({ profile, earnings, upcomingBookings, onRefresh }) => (
             <Stat label="Lifetime earnings" value={`₹${earnings.totalInr}`} sub={`Pending ₹${earnings.pendingInr} · Released ₹${earnings.releasedInr}`} Icon={RupeeIcon} />
             <Stat label="Rating" value={(profile.rating?.average || 0).toFixed(1)} sub={`${profile.rating?.count || 0} reviews`} Icon={Star} />
             <Stat label="Payout multiplier" value={`${Math.round((profile.payoutMultiplier || 0.85) * 100)}%`} sub={profile.ratingCutEligibleSince ? "Top tier unlocked" : "Top tier @ 4.8★ / 20+ ratings"} Icon={Sparkles} />
+        </div>
+
+        {/* Mentor Pact row — weekly league + pulse + rivals. The Pact Badge
+            here shows the caller's own tier (uses /pact/me under the hood). */}
+        <div className="grid md:grid-cols-[auto_1fr_1fr] gap-3 items-stretch">
+            <Link to="/mentor/pact" className="glass-card-glow p-4 flex items-center gap-3 hover:border-accent/40">
+                <PactBadge size={36} withLabel />
+                <div className="min-w-0">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-text-muted">Weekly Pact</div>
+                    <div className="text-sm font-bold text-text-primary">Your standing</div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-text-muted ml-auto" />
+            </Link>
+            <PactPulse />
+            <RivalWatch />
         </div>
 
         {/* Quick links — only show "All bookings" if the user also holds the

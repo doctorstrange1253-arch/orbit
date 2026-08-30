@@ -25,6 +25,9 @@ const connectionRoutes = require("./routes/connectionRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const cosmicRoutes = require("./routes/cosmicRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
+const courseRoutes = require("./routes/courseRoutes");
+const gameologyRoutes = require("./routes/gameologyRoutes");
+const pactRoutes = require("./routes/pactRoutes");
 
 // Middleware
 const errorHandler = require("./middleware/errorHandler");
@@ -37,6 +40,7 @@ const { startSeasonWorker } = require("./workers/seasonWorker");
 const { startOrbitWorker } = require("./workers/orbitWorker");
 const { startLeagueWorker } = require("./workers/leagueWorker");
 const { startSessionWorker } = require("./workers/sessionWorker");
+const { start: startPactWorker } = require("./workers/pactWorker");
 
 const app = express();
 app.set("trust proxy", 1); // Trust first proxy (needed for express-rate-limit on Render)
@@ -692,6 +696,9 @@ app.use("/api/orbit", require("./routes/orbitRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/device", require("./routes/deviceRoutes"));
 app.use("/api/sessions", sessionRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/gameology", gameologyRoutes);
+app.use("/api/pact", pactRoutes);
 
 // ── Admin Command Center (hardened, hidden) ────────────────────────────────
 // Namespaced under an unguessable base; every route 404-cloaks for non-admins.
@@ -753,6 +760,7 @@ mongoose.connect(process.env.MONGO_URI, {
         startOrbitWorker(io); // Orbit: daily decaying-streak reminders (loss-aversion nudge)
         startLeagueWorker(io); // Orbit: weekly League promotion/relegation + regroup
         startSessionWorker(io); // Sessions: T-30min reminder + auto no-show mark+refund
+        startPactWorker(io); // Mentor Pact: weekly Sunday roll + Wednesday Pact Pulse
         require("./services/flagStore").startAutoRefresh(); // Mission Control C1: live feature flags
         require("./services/configStore").startAutoRefresh(); // Admin: live gameplay/economy config overrides
         require("./services/cosmeticsCatalog").startAutoRefresh(); // Admin: live Nebula Store catalog (StoreItem overlay)
@@ -782,6 +790,30 @@ mongoose.connect(process.env.MONGO_URI, {
             require("./scripts/migrateUserRoles")()
                 .then(() => console.log("[migrate] user-roles backfill done — you may now unset RUN_USER_ROLES_MIGRATION."))
                 .catch((e) => console.error("[migrate] user-roles backfill failed:", e.message));
+        }
+
+        // One-shot `gameology` subdoc backfill. Idempotent. Set
+        // RUN_GAMEOLOGY_MIGRATION=true on first boot only.
+        if (process.env.RUN_GAMEOLOGY_MIGRATION === "true") {
+            require("./scripts/migrateGameologyInit")()
+                .then(() => console.log("[migrate] gameology backfill done — you may now unset RUN_GAMEOLOGY_MIGRATION."))
+                .catch((e) => console.error("[migrate] gameology backfill failed:", e.message));
+        }
+
+        // One-shot mentor `pact` subdoc seed. Idempotent. Set
+        // RUN_PACT_MIGRATION=true on first boot only.
+        if (process.env.RUN_PACT_MIGRATION === "true") {
+            require("./scripts/migratePactInit")()
+                .then(() => console.log("[migrate] pact backfill done — you may now unset RUN_PACT_MIGRATION."))
+                .catch((e) => console.error("[migrate] pact backfill failed:", e.message));
+        }
+
+        // One-shot achievement catalog seed. Idempotent. Set
+        // RUN_ACHIEVEMENT_SEED=true on first boot only.
+        if (process.env.RUN_ACHIEVEMENT_SEED === "true") {
+            require("./scripts/seedAchievements")()
+                .then(() => console.log("[seed] achievements seeded — you may now unset RUN_ACHIEVEMENT_SEED."))
+                .catch((e) => console.error("[seed] achievements failed:", e.message));
         }
     })
     .catch(err => console.log("DB Error:", err));
