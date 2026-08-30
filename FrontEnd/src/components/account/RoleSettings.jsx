@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Users, GraduationCap, BookOpen, Loader2, Check, AlertTriangle, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Users, Loader2, Check, AlertTriangle } from 'lucide-react';
 import api from '../../services/api';
 import { useAuthStore, ACCOUNT_ROLES, ROLE_META } from '../../store/authStore';
 import { useUIStore } from '../../store/uiStore';
@@ -78,6 +78,10 @@ const RoleSettings = () => {
   // "Welcome to your {role} window" callout with a CTA to enter it.
   const [justEnabled, setJustEnabled] = useState(null); // 'mentor' | 'student' | null
 
+  // Remember the previous roles array so an onError revert can put the user
+  // back where they were before the optimistic update.
+  const prevRolesRef = useRef(null);
+
   // Fetch the live profile so we know whether the mentor is approved/pending
   // (used in the description text). The /user/me/mentor endpoint exists in
   // the sessions slice and returns the application status.
@@ -90,20 +94,30 @@ const RoleSettings = () => {
 
   const mutation = useMutation({
     mutationFn: (next) => api.patch('/user/roles', { roles: next }),
-    onSuccess: (res) => {
+    // Optimistic update — flip the auth store immediately so the toggle
+    // reflects the new state on the very next render (no waiting on the
+    // PATCH round-trip). The `mutate` call site stashes the prior roles
+    // into prevRolesRef so onError can roll back.
+    onMutate: (next) => {
+      prevRolesRef.current = current;
+      useAuthStore.setState((s) => ({
+        user: s.user ? { ...s.user, roles: next } : s.user,
+      }));
+    },
+    onSuccess: (res, next) => {
       const data = res.data || {};
-      const next = Array.isArray(data.roles) ? data.roles : current;
+      const serverRoles = Array.isArray(data.roles) ? data.roles : next;
       // PATCH /user/roles always returns a fresh JWT + (now) the public user.
       // Swap them atomically so the next request never hits ROLES_STALE.
       if (data.token) {
         const freshUser = data.user || (() => {
           const cur = useAuthStore.getState().user;
-          return cur ? { ...cur, roles: next, rolesVersion: data.rolesVersion } : { roles: next, rolesVersion: data.rolesVersion };
+          return cur ? { ...cur, roles: serverRoles, rolesVersion: data.rolesVersion } : { roles: serverRoles, rolesVersion: data.rolesVersion };
         })();
         setSession({ user: freshUser, token: data.token });
       } else if (typeof data.rolesVersion === 'number') {
         useAuthStore.setState((s) => ({
-          user: s.user ? { ...s.user, roles: next, rolesVersion: data.rolesVersion } : s.user,
+          user: s.user ? { ...s.user, roles: serverRoles, rolesVersion: data.rolesVersion } : s.user,
         }));
       }
       setRowError({});
@@ -132,13 +146,20 @@ const RoleSettings = () => {
         // flips off and the user stays on /settings.
         setJustEnabled(null);
       }
+      prevRolesRef.current = null;
     },
     onError: (err) => {
+      // Roll back the optimistic update so the UI returns to the server's
+      // truth instead of pretending the toggle succeeded.
+      if (prevRolesRef.current) {
+        const rollback = prevRolesRef.current;
+        useAuthStore.setState((s) => ({
+          user: s.user ? { ...s.user, roles: rollback } : s.user,
+        }));
+        prevRolesRef.current = null;
+      }
       const code = err.response?.data?.code;
       const msg = err.response?.data?.message;
-      // Try to attribute the error to a specific row by looking at the
-      // roles in the request that failed (best effort — the server
-      // doesn't echo the offending role back, so we fall back to global).
       const friendly = describeError(code, msg);
       setRowError({ _: friendly });
       addToast(friendly, 'error');
@@ -153,7 +174,9 @@ const RoleSettings = () => {
 
     if (isAdding) {
       // Mutually exclusive: enabling mentor drops student, and vice versa.
-      // peer_learner is always preserved (it's the baseline).
+      // peer_learner is always preserved (it's the baseline). The optimistic
+      // update in onMutate makes the OTHER non-peer role's toggle flip off
+      // on the very next render — the user never sees both as ON at once.
       const next = [PEER_BASELINE, role];
       setJustEnabled(role);
       mutation.mutate(next);
@@ -197,79 +220,23 @@ const RoleSettings = () => {
 
       {justEnabled && current.includes(justEnabled) && (
         <motion.div
-          initial={{ opacity: 0, y: -8, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
           className={[
-            'rounded-2xl p-5 border-2 flex items-center gap-4',
+            'rounded-xl px-4 py-2.5 border flex items-center gap-2 text-sm',
             justEnabled === 'mentor'
-              ? 'border-purple-400/50 bg-purple-500/10'
-              : 'border-blue-400/50 bg-blue-500/10',
+              ? 'border-purple-400/40 bg-purple-500/10 text-purple-100'
+              : 'border-blue-400/40 bg-blue-500/10 text-blue-100',
           ].join(' ')}
         >
-          <div className={[
-            'flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center',
-            justEnabled === 'mentor'
-              ? 'bg-purple-500/20 text-purple-200'
-              : 'bg-blue-500/20 text-blue-200',
-          ].join(' ')}>
+          <Loader2 size={14} className="animate-spin flex-shrink-0" />
+          <span>
             {justEnabled === 'mentor'
-              ? <GraduationCap size={22} />
-              : <BookOpen size={22} />}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className={[
-              'text-sm font-bold',
-              justEnabled === 'mentor' ? 'text-purple-100' : 'text-blue-100',
-            ].join(' ')}>
-              {justEnabled === 'mentor'
-                ? 'Welcome to your Mentor window!'
-                : 'Welcome to your Student window!'}
-            </div>
-            <div className={[
-              'mt-1 text-xs leading-relaxed',
-              justEnabled === 'mentor' ? 'text-purple-200/80' : 'text-blue-200/80',
-            ].join(' ')}>
-              {justEnabled === 'mentor'
-                ? 'You can now set your skills, rate, and availability — and start earning from 1-on-1 video sessions.'
-                : 'You can now browse mentors, book sessions, and rate them after each one.'}
-            </div>
-          </div>
-          <div className="flex flex-col gap-1.5 flex-shrink-0">
-            <button
-              type="button"
-              onClick={() => {
-                if (justEnabled === 'mentor' || justEnabled === 'student') {
-                  const targetWindow = justEnabled === 'mentor' ? 'mentor' : 'student';
-                  // Fire the cinematic overlay + navigate. The auto-pilot in
-                  // onSuccess also does this; this manual CTA covers the rare
-                  // case where the PATCH is slow and the user wants to hop
-                  // into the new window before the auto-nav fires.
-                  useWindowSwitchStore.getState().start(targetWindow);
-                  setTimeout(() => {
-                    navigate(ROLE_HOME[justEnabled], { replace: false });
-                  }, 220);
-                }
-                setJustEnabled(null);
-              }}
-              className={[
-                'inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider',
-                justEnabled === 'mentor'
-                  ? 'bg-purple-500 hover:bg-purple-400 text-white'
-                  : 'bg-blue-500 hover:bg-blue-400 text-white',
-              ].join(' ')}
-            >
-              Enter {justEnabled === 'mentor' ? 'Mentor' : 'Student'} window
-              <ArrowRight size={14} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setJustEnabled(null)}
-              className="text-[10px] text-text-muted hover:text-text-secondary"
-            >
-              Maybe later
-            </button>
-          </div>
+              ? 'Switching to your Mentor window…'
+              : 'Switching to your Student window…'}
+          </span>
         </motion.div>
       )}
 
