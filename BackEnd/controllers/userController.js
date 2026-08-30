@@ -1,7 +1,14 @@
 const User = require("../models/user");
 const Skill = require("../models/skill");
 const Connection = require("../models/Connection");
+const OrbitSession = require("../models/OrbitSession");
+const MentorProfile = require("../models/MentorProfile");
+const jwt = require("jsonwebtoken");
 const { enforceContentPolicy } = require("../utils/contentModeration");
+
+// Mirror of the enum in models/user.js. Kept here so the toggle handler can
+// validate without dragging Mongoose's enum resolution into the hot path.
+const VALID_ROLES = ["peer_learner", "mentor", "student"];
 
 // ================= GET PLATFORM STATS =================
 exports.getStats = async (req, res) => {
@@ -200,3 +207,141 @@ exports.godUnlockAll = async (req, res) => {
         return res.status(500).json({ message: "Unlock failed." });
     }
 };
+
+// ── Account Roles API ──────────────────────────────────────────────────────
+// A user can hold multiple roles at once: peer_learner (free P2P), mentor
+// (paid teacher, gated by the MentorHub 5-state machine), and student (paid
+// learner). The frontend Settings → "Your roles" tile calls these endpoints.
+
+// GET /api/user/roles — return the live roles + version for the caller. The
+// auth middleware already populated req.user.roles + req.user.rolesVersion, so
+// this is a pure read-through.
+exports.getMyRoles = async (req, res) => {
+    try {
+        const uid = req.user._id || req.user.id;
+        const u = await User.findById(uid).select("roles rolesVersion");
+        if (!u) return res.status(404).json({ message: "User not found" });
+        return res.status(200).json({
+            roles: Array.isArray(u.roles) && u.roles.length > 0 ? u.roles : ["peer_learner"],
+            rolesVersion: typeof u.rolesVersion === "number" ? u.rolesVersion : 0,
+        });
+    } catch (err) {
+        console.error("[getMyRoles]", err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+// PATCH /api/user/roles — toggle roles on/off. Always returns a fresh JWT so
+// the client can swap it into the auth header without re-login.
+//
+// Rules enforced here (any failure → a structured 4xx with `code`):
+//   - At least one role must remain (the array can't go empty).
+//   - peer_learner can be removed ONLY if the caller has another role AND
+//     has no active P2P connection that requires it (defensive — the product
+//     is fine with peer_learner-only users, this just keeps it honest).
+//   - mentor can be added WITHOUT a MentorProfile in `approved` state — the
+//     frontend MentorHub handles the application. We only block the
+//     self-grant IF the user previously had a `suspended` MentorProfile
+//     (so a suspended mentor can't self-reinstate via this endpoint).
+//   - mentor can be removed freely. Existing paid sessions are not affected;
+//     the existing OrbitSession rows keep their mentorId so past bookings
+//     still render correctly for the student.
+//   - student can be added/removed freely — there's no application gate.
+//
+// On every successful toggle we bump `rolesVersion` so any in-flight JWT
+// for this user will hit the ROLES_STALE 401 in middleware/auth.js and the
+// api.js interceptor will refresh transparently.
+exports.updateMyRoles = async (req, res) => {
+    try {
+        const uid = req.user._id || req.user.id;
+        const incoming = Array.isArray(req.body?.roles) ? req.body.roles : null;
+        if (!incoming) {
+            return res.status(400).json({ code: "INVALID_BODY", message: "Body must include a `roles` array." });
+        }
+        const cleaned = Array.from(new Set(incoming.map((r) => String(r || "").trim())));
+        if (cleaned.length === 0) {
+            return res.status(422).json({ code: "EMPTY_ROLES", message: "You must keep at least one role." });
+        }
+        const invalid = cleaned.filter((r) => !VALID_ROLES.includes(r));
+        if (invalid.length > 0) {
+            return res.status(400).json({
+                code: "UNKNOWN_ROLE",
+                message: `Unknown role(s): ${invalid.join(", ")}.`,
+                allowed: VALID_ROLES,
+            });
+        }
+
+        // Load the user fresh so we can diff against the current set.
+        const u = await User.findById(uid).select("roles rolesVersion");
+        if (!u) return res.status(404).json({ message: "User not found" });
+        const before = Array.isArray(u.roles) ? u.roles : [];
+        const after = cleaned;
+
+        // Rule 1: at least one role must remain (the cleaned array already
+        // passes this — duplicates + invalid values are dropped — but the
+        // empty case is caught above).
+        if (after.length === 0) {
+            return res.status(422).json({ code: "EMPTY_ROLES", message: "You must keep at least one role." });
+        }
+
+        // Rule 2: adding `mentor` while a SUSPENDED MentorProfile exists is a
+        // self-reinstate — block it. The user must appeal through support.
+        const wantsMentor = after.includes("mentor") && !before.includes("mentor");
+        if (wantsMentor) {
+            const suspended = await MentorProfile.findOne({ userId: uid, applicationStatus: "suspended" }).lean();
+            if (suspended) {
+                return res.status(403).json({
+                    code: "MENTOR_SUSPENDED",
+                    message: "Your mentor account is suspended. Email support@orbit.dev to appeal.",
+                });
+            }
+        }
+
+        // No-op fast path: the requested set already matches. Return the
+        // current token so the client gets a consistent shape.
+        const same = before.length === after.length && before.every((r) => after.includes(r));
+        if (same) {
+            return res.status(200).json({
+                message: "Roles unchanged",
+                roles: after,
+                rolesVersion: typeof u.rolesVersion === "number" ? u.rolesVersion : 0,
+                token: mintUserToken(u, isNativeRequest(req)),
+            });
+        }
+
+        // Apply the change and bump rolesVersion atomically. The +1 in the
+        // same $set guarantees any JWT issued BEFORE this write is now
+        // stale (middleware/auth.js will 401 it on next request).
+        const updated = await User.findByIdAndUpdate(
+            uid,
+            { $set: { roles: after, rolesVersion: (u.rolesVersion || 0) + 1 } },
+            { new: true, projection: "roles rolesVersion" }
+        );
+
+        return res.status(200).json({
+            message: "Roles updated",
+            roles: updated.roles,
+            rolesVersion: updated.rolesVersion,
+            token: mintUserToken(updated, isNativeRequest(req)),
+        });
+    } catch (err) {
+        console.error("[updateMyRoles]", err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+function isNativeRequest(req) {
+    return String(req.headers["x-client-platform"] || "").toLowerCase() === "native";
+}
+
+function mintUserToken(user, isNative) {
+    return jwt.sign(
+        {
+            id: user._id,
+            roles: Array.isArray(user.roles) && user.roles.length > 0 ? user.roles : ["peer_learner"],
+            rolesVersion: typeof user.rolesVersion === "number" ? user.rolesVersion : 0,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: isNative ? "30d" : "1d" }
+    );
+}

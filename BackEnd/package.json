@@ -10,7 +10,8 @@
     "seed:admin": "node scripts/seedAdmin.js",
     "seed:orbit-demo": "node scripts/seedOrbitDemo.js",
     "seed:store": "node scripts/seedStore.js",
-    "migrate:binary-star": "node scripts/migrateConstellationToBinaryStar.js"
+    "migrate:binary-star": "node scripts/migrateConstellationToBinaryStar.js",
+    "migrate:user-roles": "node scripts/migrateUserRoles.js"
   },
   "keywords": [],
   "author": "",

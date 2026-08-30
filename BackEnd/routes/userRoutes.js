@@ -4,7 +4,7 @@ const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('../config/cloudinary');
 
-const { getProfile, getPublicProfile, updateProfile, getStats, uploadAvatar, updateAvatarUrl, godUnlockAll } = require("../controllers/userController");
+const { getProfile, getPublicProfile, updateProfile, getStats, uploadAvatar, updateAvatarUrl, godUnlockAll, getMyRoles, updateMyRoles } = require("../controllers/userController");
 const auth = require("../middleware/auth");
 
 // Configure Cloudinary storage for multer
@@ -17,7 +17,7 @@ const storage = new CloudinaryStorage({
   }
 });
 
-const upload = multer({ 
+const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB max
 });
@@ -27,6 +27,14 @@ router.get("/stats", getStats);
 
 // Get my profile (protected)
 router.get("/profile", auth, getProfile);
+
+// Account roles (Settings → "Your roles" tile). The auth middleware already
+// loads req.user.roles + rolesVersion from the DB on every request, so these
+// endpoints are pure read/write of the user's own role set. The PATCH always
+// returns a fresh JWT — the client swaps it into the auth header so the new
+// role takes effect on the very next request without a page reload.
+router.get("/roles", auth, getMyRoles);
+router.patch("/roles", auth, updateMyRoles);
 
 // Get public profile (public)
 router.get("/:id", getPublicProfile);

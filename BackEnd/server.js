@@ -774,6 +774,15 @@ mongoose.connect(process.env.MONGO_URI, {
                 .then(() => console.log("[migrate] binary-star migration done — you may now unset RUN_BINARY_STAR_MIGRATION."))
                 .catch((e) => console.error("[migrate] binary-star migration failed:", e.message));
         }
+
+        // One-shot User.roles backfill. Idempotent: safe to re-run (the
+        // `$exists: false` filter matches zero docs after the first pass).
+        // Set RUN_USER_ROLES_MIGRATION=true on first boot only, then remove.
+        if (process.env.RUN_USER_ROLES_MIGRATION === "true") {
+            require("./scripts/migrateUserRoles")()
+                .then(() => console.log("[migrate] user-roles backfill done — you may now unset RUN_USER_ROLES_MIGRATION."))
+                .catch((e) => console.error("[migrate] user-roles backfill failed:", e.message));
+        }
     })
     .catch(err => console.log("DB Error:", err));
 
