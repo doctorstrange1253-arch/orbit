@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Palette, Zap, Eye, RotateCcw, Check, Volume2, VolumeX, Moon, Sun, Bell, BellOff, HelpCircle, PlayCircle } from 'lucide-react';
+import { Palette, Zap, Eye, RotateCcw, Check, Volume2, VolumeX, Moon, Sun, Bell, BellOff, HelpCircle, PlayCircle, Users } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import useAppearanceStore, { THEMES, BACKGROUND_STYLES, ANIMATION_SPEEDS } from '../store/appearanceStore';
 import { useThemeStore } from '../store/themeStore';
@@ -11,6 +11,7 @@ import { getNotificationPermission, requestNotificationPermission } from '../uti
 import { useNavigate } from 'react-router-dom';
 import { useTourStore } from '../store/tourStore';
 import { TOUR_LIST } from '../components/common/tours';
+import RoleSettings from '../components/account/RoleSettings';
 
 // Help center: the route each replayable walkthrough opens on + card motion.
 const TOUR_ROUTE = { orbit: '/orbit', shop: '/shop', holobay: '/holobay', leaderboard: '/leaderboard' };
@@ -136,12 +137,26 @@ const Settings = () => {
         <h1
           className="text-3xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500"
         >
-          Appearance Settings
+          Settings
         </h1>
         <p className="text-text-muted mt-1 text-sm">
-          Customize your Orbit visual experience
+          Customize your Orbit experience
         </p>
       </div>
+
+      {/* Account roles — peer_learner / mentor / student. The visual tile is
+          kept in its own component so the toggle logic + per-row error
+          states stay out of this (already-large) settings page. */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-6 rounded-2xl space-y-5 bg-surface border border-border-subtle"
+      >
+        <h2 className="font-display font-bold text-text-primary text-base flex items-center gap-2">
+          <Users size={15} className="text-accent" /> Your Roles
+        </h2>
+        <RoleSettings />
+      </motion.div>
 
       {/* Background Style */}
       <motion.div
