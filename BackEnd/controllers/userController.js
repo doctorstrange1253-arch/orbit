@@ -315,13 +315,16 @@ exports.updateMyRoles = async (req, res) => {
         }
 
         // No-op fast path: the requested set already matches. Return the
-        // current token so the client gets a consistent shape.
+        // current token + public user so the client gets a consistent shape
+        // and can swap the token atomically (no ROLES_STALE roundtrip).
         const same = before.length === after.length && before.every((r) => after.includes(r));
         if (same) {
+            const publicUser = await User.findById(uid).select(PUBLIC_USER_PROJECTION);
             return res.status(200).json({
                 message: "Roles unchanged",
                 roles: after,
                 rolesVersion: typeof u.rolesVersion === "number" ? u.rolesVersion : 0,
+                user: publicUser,
                 token: mintUserToken(u, isNativeRequest(req)),
             });
         }
@@ -335,10 +338,15 @@ exports.updateMyRoles = async (req, res) => {
             { new: true, projection: "roles rolesVersion" }
         );
 
+        // Re-load the full public projection so the client can swap the user
+        // atomically alongside the fresh token — no follow-up GET needed.
+        const publicUser = await User.findById(uid).select(PUBLIC_USER_PROJECTION);
+
         return res.status(200).json({
             message: "Roles updated",
             roles: updated.roles,
             rolesVersion: updated.rolesVersion,
+            user: publicUser,
             token: mintUserToken(updated, isNativeRequest(req)),
         });
     } catch (err) {

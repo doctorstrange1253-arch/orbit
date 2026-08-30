@@ -70,7 +70,8 @@ module.exports = async (req, res, next) => {
         const liveRolesVersion = typeof user.rolesVersion === "number" ? user.rolesVersion : 0;
         const rolesStale = typeof decoded.rolesVersion === "number" &&
             decoded.rolesVersion !== liveRolesVersion;
-        const isRolesRefreshPath = req.method === "GET" &&
+        const isRolesRefreshPath =
+            (req.method === "GET" || req.method === "PATCH") &&
             (req.path === "/user/roles" || req.path === "/api/user/roles");
         if (rolesStale && !isRolesRefreshPath) {
             return res.status(401).json({
