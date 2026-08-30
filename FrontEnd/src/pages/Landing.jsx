@@ -150,6 +150,16 @@ const Landing = () => {
     // section can sit stuck at opacity:0 for those users (v6 §2).
     <MotionConfig reducedMotion="user">
     <div className="relative overflow-hidden">
+      {/* WebGL aurora — fixed full-viewport, runs behind every section so
+          the texture persists as the user scrolls. Position fixed keeps the
+          canvas at viewport size, not page size, so the GPU only renders
+          what's on screen. The component itself already pauses on tab hidden
+          and respects prefers-reduced-motion (time frozen). */}
+      <AuroraField
+        fixed
+        accentColors={useAppearanceStore.getState().customColors}
+      />
+
       <Helmet>
         <title>Orbit — Exchange Skills, Rise Together</title>
         <meta name="description" content="Peer-to-peer skill exchange platform. Teach what you know, learn what you don't. Completely free." />
@@ -167,13 +177,6 @@ const Landing = () => {
 
       {/* ══════════════ HERO SECTION ══════════════ */}
       <section ref={heroRef} className="aurora-stage relative min-h-screen flex flex-col items-center justify-center px-4">
-
-        {/* WebGL aurora shader — flows behind the hero content, reactive
-            to mouse + theme accent colors. Sits below the gradient burst
-            and the floating pills but above the global BackgroundEffects
-            canvas. Disabled in tests / SSR by the component's own feature
-            detection. */}
-        <AuroraField accentColors={useAppearanceStore.getState().customColors} />
 
         {/* Extra hero gradient burst */}
         <div

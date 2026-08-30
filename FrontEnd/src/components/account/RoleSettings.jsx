@@ -74,14 +74,15 @@ const RoleSettings = () => {
     onSuccess: (res) => {
       const data = res.data || {};
       const next = Array.isArray(data.roles) ? data.roles : current;
-      // The PATCH response carries the public user shape + fresh token
-      // when the version actually bumps; replace both atomically.
-      if (data.user && data.token) {
-        setSession({ user: data.user, token: data.token });
-      } else if (data.user) {
-        setSession({ user: data.user, token: useAuthStore.getState().token });
+      // PATCH /user/roles always returns a fresh JWT + (now) the public user.
+      // Swap them atomically so the next request never hits ROLES_STALE.
+      if (data.token) {
+        const freshUser = data.user || (() => {
+          const cur = useAuthStore.getState().user;
+          return cur ? { ...cur, roles: next, rolesVersion: data.rolesVersion } : { roles: next, rolesVersion: data.rolesVersion };
+        })();
+        setSession({ user: freshUser, token: data.token });
       } else if (typeof data.rolesVersion === 'number') {
-        // Roles unchanged (no-op fast path on the server). Patch locally.
         useAuthStore.setState((s) => ({
           user: s.user ? { ...s.user, roles: next, rolesVersion: data.rolesVersion } : s.user,
         }));

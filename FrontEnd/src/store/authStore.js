@@ -14,19 +14,19 @@ export const ROLE_META = {
     label: 'Peer Learner',
     short: 'Peer',
     accent: 'cyan',
-    description: 'Free skill-swap with peers worldwide. You teach what you know, you learn what you want.',
+    description: 'Free skill-swap worldwide.',
   },
   mentor: {
     label: 'Mentor',
     short: 'Mentor',
     accent: 'purple',
-    description: 'Get paid for 1-on-1 video sessions. Set your own rate and schedule.',
+    description: 'Get paid for 1-on-1 video sessions.',
   },
   student: {
     label: 'Student',
     short: 'Student',
     accent: 'blue',
-    description: 'Book sessions with mentors, learn live, leave ratings.',
+    description: 'Book mentors, learn live, rate them.',
   },
 };
 

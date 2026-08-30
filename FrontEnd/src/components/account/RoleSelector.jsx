@@ -71,7 +71,7 @@ const RoleSelector = ({ value = [], onChange, disabled = ['peer_learner'], layou
 
   const containerCls = layout === 'stack'
     ? 'flex flex-col gap-3'
-    : 'grid grid-cols-1 sm:grid-cols-3 gap-3';
+    : 'grid grid-cols-1 md:grid-cols-3 gap-3';
 
   return (
     <div className={containerCls} role="group" aria-label="Choose your account roles">
@@ -137,7 +137,7 @@ const RoleSelector = ({ value = [], onChange, disabled = ['peer_learner'], layou
                     </span>
                   )}
                 </div>
-                <p className="mt-1.5 text-xs text-text-muted leading-relaxed">
+                <p className="mt-1.5 text-xs text-text-muted leading-relaxed break-words">
                   {meta.description}
                 </p>
               </div>

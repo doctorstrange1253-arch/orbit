@@ -75,6 +75,15 @@ const Navbar = () => {
   // buried in Settings). Mirrors the global soundManager preference.
   const [musicOn, setMusicOn] = useState(soundManager.isMusicEnabled());
   const toggleMusic = () => setMusicOn(soundManager.toggleMusic());
+  // Remember the most recently active role window so shared pages
+  // (/orbit, /leaderboard, /shop, /settings, /profile) can still show
+  // a meaningful pill bar instead of going empty. Defaults to 'peer'
+  // for first-time visitors.
+  const [lastWindow, setLastWindow] = useState(() => {
+    if (typeof window === 'undefined') return 'peer';
+    try { return sessionStorage.getItem('orbit-last-window') || 'peer'; }
+    catch { return 'peer'; }
+  });
   const drawerRef = useRef(null);
   const hamburgerRef = useRef(null);
 
@@ -84,17 +93,26 @@ const Navbar = () => {
   // /leaderboard, /orbit, /shop) — in that case the pill list is empty
   // and the right-side icons are the only nav the user sees.
   const currentWindow = getCurrentWindow(location.pathname);
+  // Persist the active role window so shared pages (/orbit, /leaderboard,
+  // /shop, /settings, /profile) can fall back to it instead of going empty.
+  useEffect(() => {
+    if (currentWindow) {
+      try { sessionStorage.setItem('orbit-last-window', currentWindow); } catch {}
+      setLastWindow(currentWindow);
+    }
+  }, [currentWindow]);
+  const activeWindow = currentWindow || lastWindow;
   const visibleNav =
-    currentWindow === 'mentor'  ? NAV_MENTOR  :
-    currentWindow === 'student' ? NAV_STUDENT :
-    currentWindow === 'peer'    ? NAV_PEER    : [];
+    activeWindow === 'mentor'  ? NAV_MENTOR  :
+    activeWindow === 'student' ? NAV_STUDENT :
+    NAV_PEER;
 
   // Badges + counts are window-scoped: peer-only queries (pending
   // connections, reciprocal matches) only run when the user is on the
   // peer window — otherwise the queries would fire and 403 when the
   // user is on /mentor or /student and has no peer_learner role data
   // to read.
-  const inPeerWindow = currentWindow === 'peer';
+  const inPeerWindow = activeWindow === 'peer';
 
   // Fetch counts for badges
   const { data: pending } = useQuery({

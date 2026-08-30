@@ -26,7 +26,7 @@ void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
 // Fragment shader: domain-warped noise aurora. We avoid `fbm` loops by
 // using a small fixed octave count for a fast, repeatable look.
 const FRAG = `
-precision highp float;
+precision mediump float;
 uniform vec2  u_res;
 uniform float u_time;
 uniform vec2  u_mouse;
@@ -48,7 +48,7 @@ float vnoise(vec2 p){
 // Fractal noise (3 octaves).
 float fbm(vec2 p){
     float s = 0.0, a = 0.5;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
         s += a * vnoise(p);
         p = p * 2.0 + vec2(13.0, 7.0);
         a *= 0.5;
@@ -136,7 +136,7 @@ const hex2rgb = (h) => {
     return [r, g, b];
 };
 
-const AuroraField = ({ accentColors }) => {
+const AuroraField = ({ accentColors, fixed = false }) => {
     const canvasRef = useRef(null);
     const rafRef = useRef(0);
     const mouseRef  = useRef([0.5, 0.5]);
@@ -181,7 +181,7 @@ const AuroraField = ({ accentColors }) => {
         const uC2    = gl.getUniformLocation(prog, 'u_c2');
         const uC3    = gl.getUniformLocation(prog, 'u_c3');
 
-        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.0);
         const resize = () => {
             const w = canvas.clientWidth  || canvas.parentElement?.clientWidth  || 800;
             const h = canvas.clientHeight || canvas.parentElement?.clientHeight || 600;
@@ -247,8 +247,10 @@ const AuroraField = ({ accentColors }) => {
             ref={canvasRef}
             aria-hidden
             style={{
-                position: 'absolute', inset: 0, width: '100%', height: '100%',
-                pointerEvents: 'none', zIndex: 0,
+                position: fixed ? 'fixed' : 'absolute',
+                inset: 0, width: '100%', height: '100%',
+                pointerEvents: 'none',
+                zIndex: fixed ? -1 : 0,
             }}
         />
     );
