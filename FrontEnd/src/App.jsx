@@ -28,6 +28,8 @@ import GodMode from './components/dev/GodMode';
 import WarpTransition from './components/fx/WarpTransition';
 import MagneticCursor from './components/fx/MagneticCursor';
 import CommandPalette from './components/fx/CommandPalette';
+import WindowSwitchOverlay, { useWindowSwitchStore } from './components/fx/WindowSwitchOverlay';
+import { getCurrentWindow } from './store/authStore';
 
 // Eagerly loaded (first paint)
 import Landing from './pages/Landing';
@@ -173,6 +175,21 @@ function AppInner() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user, token, setUser, setSession } = useAuthStore();
+  const location = useLocation();
+
+  // Watch the URL: whenever the current window prefix CHANGES (e.g. /peer/*
+  // → /mentor/*), trigger the cinematic window-switch overlay. First-load
+  // navigation does NOT fire — the overlay is meant for actual transitions,
+  // not the initial page render.
+  const prevWindowRef = useRef(null);
+  useEffect(() => {
+    const newWindow = getCurrentWindow(location.pathname);
+    const prevWindow = prevWindowRef.current;
+    if (prevWindow && newWindow && prevWindow !== newWindow) {
+      useWindowSwitchStore.getState().start(newWindow);
+    }
+    if (newWindow) prevWindowRef.current = newWindow;
+  }, [location.pathname]);
 
   // Ensure the signed-in user is hydrated app-wide. On native (APK) OAuth the
   // token is stored even if the profile fetch blips, leaving `user` null — which
@@ -530,6 +547,8 @@ function AppInner() {
       <MagneticCursor />
       {/* Global ⌘K / Ctrl+K command palette */}
       <CommandPalette />
+      {/* Cinematic cross-window transition overlay (peer ⇄ mentor ⇄ student) */}
+      <WindowSwitchOverlay />
       <ToastContainer />
       <Toaster 
         position="bottom-right" 

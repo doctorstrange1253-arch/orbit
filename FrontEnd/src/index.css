@@ -1272,8 +1272,8 @@ body, html {
 }
 
 /* ─── AURORA HERO BACKDROP ──────────────────────────────────────────────
- * Wrapper used wherever the AuroraField is mounted. The aurora canvas
- * is absolutely positioned inside this container.
+ * Soft radial-gradient backdrop (CSS-only — no WebGL). Used on hero
+ * sections and other stage surfaces where we want a subtle accent tint.
  */
 .aurora-stage {
   position: relative;

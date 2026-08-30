@@ -11,8 +11,6 @@ import TypeWriter from '../components/animations/TypeWriter';
 import api from '../services/api';
 import { useSound } from '../utils/soundManager';
 import { useAuthStore } from '../store/authStore';
-import useAppearanceStore from '../store/appearanceStore';
-import AuroraField from '../components/fx/AuroraField';
 import Footer from '../components/layout/Footer';
 
 /* ── Motivational quotes that rotate (clean, no emojis) ── */
@@ -150,16 +148,6 @@ const Landing = () => {
     // section can sit stuck at opacity:0 for those users (v6 §2).
     <MotionConfig reducedMotion="user">
     <div className="relative overflow-hidden">
-      {/* WebGL aurora — fixed full-viewport, runs behind every section so
-          the texture persists as the user scrolls. Position fixed keeps the
-          canvas at viewport size, not page size, so the GPU only renders
-          what's on screen. The component itself already pauses on tab hidden
-          and respects prefers-reduced-motion (time frozen). */}
-      <AuroraField
-        fixed
-        accentColors={useAppearanceStore.getState().customColors}
-      />
-
       <Helmet>
         <title>Orbit — Exchange Skills, Rise Together</title>
         <meta name="description" content="Peer-to-peer skill exchange platform. Teach what you know, learn what you don't. Completely free." />

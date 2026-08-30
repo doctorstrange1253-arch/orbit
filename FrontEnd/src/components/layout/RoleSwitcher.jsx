@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore, ROLE_META, getCurrentWindow } from '../../store/authStore';
+import { useWindowSwitchStore } from '../fx/WindowSwitchOverlay';
 import { Users, GraduationCap, BookOpen, ChevronDown } from 'lucide-react';
 
 // Icons per role — small set, inline so we don't pull from elsewhere.
@@ -125,6 +126,13 @@ const RoleSwitcher = () => {
   // Multi-role: clickable dropdown.
   const pick = (role) => {
     setOpen(false);
+    // Fire the cinematic cross-window overlay when the user picks a window.
+    // Translate ROLE_META's `peer_learner` key back to the URL's `peer` prefix
+    // so the overlay label stays correct. The App-level pathname watcher would
+    // also pick this up, but calling `start` here gives us a tighter trigger
+    // that fires even if the user is already on the same window (rare).
+    const targetWindow = role === 'peer_learner' ? 'peer' : role;
+    useWindowSwitchStore.getState().start(targetWindow);
     navigate(ROLE_HOME[role] || '/peer/dashboard');
   };
 

@@ -30,8 +30,6 @@ import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
 import MentorApplicationForm from '../components/mentor/MentorApplicationForm';
 import AvailabilityEditor from '../components/sessions/AvailabilityEditor';
 import { useAuthStore } from '../store/authStore';
-import useAppearanceStore from '../store/appearanceStore';
-import AuroraField from '../components/fx/AuroraField';
 import HolographicCard from '../components/fx/HolographicCard';
 
 // State-level visual config. Each state has a title, a tinted chip color, an
@@ -112,7 +110,6 @@ const MentorHub = () => {
 
     return (
         <div className="aurora-stage relative min-h-screen overflow-hidden">
-            <AuroraField accentColors={useAppearanceStore.getState().customColors} />
             <FuturisticBackdrop />
 
             <div className="relative z-10 max-w-5xl mx-auto px-4 py-10 md:py-14">
