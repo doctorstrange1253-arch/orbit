@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore, ROLE_META } from '../../store/authStore';
 import Avatar from '../common/Avatar';
 import api from '../../services/api';
 import ChatDrawer from '../chat/ChatDrawer';
@@ -16,20 +16,33 @@ import {
 } from 'lucide-react';
 import soundManager from '../../utils/soundManager';
 
+// Each entry's `roles` is the allow-list of account roles a user must hold
+// at least one of to see this item in the nav. `peer_learner` covers the
+// free P2P product; `student` covers paid learning; `mentor` covers paid
+// teaching. Items without a `roles` field are visible to everyone signed in
+// (e.g. /orbit, /shop). The server still enforces role on each protected
+// route — this is purely a UX filter so the nav doesn't advertise tabs
+// the user can't open.
 const NAV = [
-  { name: 'Skills',       path: '/dashboard',   Icon: Layers     },
-  { name: 'Browse',       path: '/browse',       Icon: Compass    },
-  { name: 'Matches',      path: '/matches',      Icon: Handshake  },
-  { name: 'Connections',  path: '/connections',  Icon: Users      },
-  { name: 'Nearby',       path: '/nearby',       Icon: Map        },
-  { name: 'Calls',        path: '/video',        Icon: Phone      },
-  { name: 'Sessions',     path: '/sessions',     Icon: Calendar   },
-  { name: 'Teach',        path: '/teach',        Icon: GraduationCap },
-  { name: 'Trust',        path: '/trust',        Icon: ShieldCheck},
-  { name: 'Leaderboard',  path: '/leaderboard',  Icon: Trophy     },
-  { name: 'Orbit',        path: '/orbit',        Icon: Rocket     },
-  { name: 'Store',        path: '/shop',         Icon: ShoppingBag},
+  { name: 'Skills',       path: '/dashboard',   Icon: Layers,        roles: ['peer_learner'] },
+  { name: 'Browse',       path: '/browse',       Icon: Compass,       roles: ['peer_learner'] },
+  { name: 'Matches',      path: '/matches',      Icon: Handshake,     roles: ['peer_learner'] },
+  { name: 'Connections',  path: '/connections',  Icon: Users,         roles: ['peer_learner'] },
+  { name: 'Nearby',       path: '/nearby',       Icon: Map,           roles: ['peer_learner'] },
+  { name: 'Calls',        path: '/video',        Icon: Phone,         roles: ['peer_learner', 'mentor', 'student'] },
+  { name: 'Sessions',     path: '/sessions',     Icon: Calendar,      roles: ['student'] },
+  { name: 'My Sessions',  path: '/my-sessions',  Icon: Calendar,      roles: ['student'] },
+  { name: 'Teach',        path: '/teach',        Icon: GraduationCap, roles: ['mentor'] },
+  { name: 'Trust',        path: '/trust',        Icon: ShieldCheck,   roles: ['peer_learner', 'mentor', 'student'] },
+  { name: 'Leaderboard',  path: '/leaderboard',  Icon: Trophy,        roles: ['peer_learner', 'mentor', 'student'] },
+  { name: 'Orbit',        path: '/orbit',        Icon: Rocket,        roles: ['peer_learner', 'mentor', 'student'] },
+  { name: 'Store',        path: '/shop',         Icon: ShoppingBag,   roles: ['peer_learner', 'mentor', 'student'] },
 ];
+
+// Short badge copy for the role chip next to the avatar. Order matters:
+// the more specific (mentor/student) wins over the baseline (peer_learner)
+// so a user who is a mentor sees "Mentor" not "Peer".
+const ROLE_CHIP_PRIORITY = ['mentor', 'student', 'peer_learner'];
 
 const Navbar = () => {
   const { user, logout } = useAuthStore();
@@ -50,17 +63,36 @@ const Navbar = () => {
   const drawerRef = useRef(null);
   const hamburgerRef = useRef(null);
 
+  // Account roles — read once per render. The store guarantees a non-empty
+  // array (peer_learner at minimum).
+  const userRoles = Array.isArray(user?.roles) && user.roles.length > 0
+    ? user.roles
+    : ['peer_learner'];
+  // Pick the most specific role for the chip near the avatar.
+  const chipRole = ROLE_CHIP_PRIORITY.find((r) => userRoles.includes(r)) || 'peer_learner';
+
+  // Filter NAV by what this account can actually open. Items with no
+  // `roles` field are visible to everyone. This runs every render but
+  // NAV.length is ~12 so the cost is trivial and the result is in sync
+  // with the moment the store updates (after a role toggle in Settings).
+  const visibleNav = NAV.filter((item) => {
+    if (!item.roles) return true;
+    return item.roles.some((r) => userRoles.includes(r));
+  });
+
   // Fetch counts for badges
   const { data: pending } = useQuery({
     queryKey: ['connections', 'pending'],
     queryFn: () => api.get('/connections/pending').then(res => res.data),
     refetchInterval: 30000,
+    enabled: userRoles.includes('peer_learner'),
   });
 
   const { data: matchesData } = useQuery({
     queryKey: ['matches'],
     queryFn: () => api.get('/skills/matches').then(res => res.data),
     refetchInterval: 60000,
+    enabled: userRoles.includes('peer_learner'),
   });
 
   const { data: unreadData } = useQuery({
@@ -73,7 +105,7 @@ const Navbar = () => {
   const matchesCount = Array.isArray(matchesData) ? matchesData.length : (matchesData?.matches?.length || 0);
   const unreadCount = unreadData?.count || 0;
 
-  const navWithBadges = NAV.map(item => {
+  const navWithBadges = visibleNav.map(item => {
     if (item.path === '/connections') return { ...item, badge: incomingCount };
     if (item.path === '/matches') return { ...item, badge: matchesCount };
     return item;
@@ -236,6 +268,22 @@ const Navbar = () => {
               >
                 <Avatar name={user?.name} url={user?.avatar} size="xs" userId={user?._id} />
                 <span className="hidden md:block max-w-[80px] truncate">{user?.name?.split(' ')[0]}</span>
+                {/* Role chip — small label that tells the user (and anyone
+                    looking over their shoulder) which mode their account is
+                    in. Priority: mentor > student > peer_learner. */}
+                <span
+                  className={[
+                    'hidden xl:inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded',
+                    chipRole === 'mentor'
+                      ? 'bg-purple-500/15 text-purple-200 border border-purple-400/30'
+                      : chipRole === 'student'
+                        ? 'bg-blue-500/15 text-blue-200 border border-blue-400/30'
+                        : 'bg-cyan-500/15 text-cyan-200 border border-cyan-400/30',
+                  ].join(' ')}
+                  aria-label={`Account role: ${ROLE_META[chipRole]?.label || chipRole}`}
+                >
+                  {ROLE_META[chipRole]?.short || chipRole}
+                </span>
               </NavLink>
               {/* Notification Bell (durable notification center) */}
               <NotificationBell />

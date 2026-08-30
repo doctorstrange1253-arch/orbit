@@ -10,9 +10,11 @@ import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import OrbitLogo from '../components/common/OrbitLogo';
 import api from '../services/api';
 import Spinner from '../components/common/Spinner';
+import { useAuthStore, getLandingRoute } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
 import { oauthClickHandler, OAUTH_BASE } from '../services/nativeAuth';
 import LanguageMultiSelect from '../components/common/LanguageMultiSelect';
+import RoleSelector from '../components/account/RoleSelector';
 
 const MAX_LANGUAGES = 5;
 
@@ -35,9 +37,14 @@ const registerSchema = z.object({
   const Register = () => {
   const navigate = useNavigate();
   const { addToast } = useUIStore();
+  const { setSession } = useAuthStore();
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
   const [selectedLangs, setSelectedLangs] = useState(['English']);
+  // Default to peer_learner only; the user can also pick mentor and/or
+  // student in the same form. The backend forces peer_learner in regardless,
+  // so even an empty array would be repaired server-side.
+  const [selectedRoles, setSelectedRoles] = useState(['peer_learner']);
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm({
     resolver: zodResolver(registerSchema),
@@ -59,8 +66,24 @@ const registerSchema = z.object({
   const strengthColor = ['', '#ff4b4b', '#ffb800', '#00e5a0'][strength];
 
   const registerMutation = useMutation({
-    mutationFn: (data) => api.post('/auth/register', { ...data, languages: selectedLangs }),
-    onSuccess: () => {
+    mutationFn: (data) => api.post('/auth/register', {
+      ...data,
+      languages: selectedLangs,
+      roles: selectedRoles,
+    }),
+    onSuccess: ({ data }) => {
+      // The backend now returns user+token in the register response, so we
+      // skip the email-verification round-trip and land the user straight
+      // on the role-appropriate screen. peer_learner-only accounts go to
+      // /dashboard, mentors to /teach, students to /my-sessions.
+      if (data?.user && data?.token) {
+        setSession({ user: data.user, token: data.token });
+        const landing = getLandingRoute(data.user.roles);
+        addToast('Welcome to Orbit!', 'success');
+        navigate(landing, { replace: true });
+        return;
+      }
+      // Fallback for older backend responses — go sign in explicitly.
       addToast('Account created! Please sign in.', 'success');
       navigate('/login');
     },
@@ -291,6 +314,30 @@ const registerSchema = z.object({
               onChange={setSelectedLangs}
               maxSelections={MAX_LANGUAGES}
             />
+          </div>
+
+          {/* Account roles — multi-select, peer_learner locked on. The user
+              can also opt into the paid mentor and/or student roles during
+              signup; the backend will force peer_learner in regardless of
+              what the client sends. */}
+          <div className="pt-2">
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                What will you do on Orbit?
+              </label>
+              <span className="text-[10px] font-medium text-text-muted normal-case">
+                Pick all that apply
+              </span>
+            </div>
+            <RoleSelector
+              value={selectedRoles}
+              onChange={setSelectedRoles}
+            />
+            <p className="mt-2 text-[11px] text-text-muted leading-relaxed">
+              You can change these any time from Settings. New paid roles
+              can be added for free; we'll only ask for payment when you
+              book a paid session or accept one.
+            </p>
           </div>
 
           {/* Submit */}

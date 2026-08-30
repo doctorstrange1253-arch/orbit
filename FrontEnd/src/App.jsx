@@ -14,6 +14,7 @@ import ToastContainer from './components/common/Toast';
 import NotificationSystem from './components/notifications/NotificationSystem';
 import RatingModal from './components/modals/RatingModal';
 import IncomingCallOverlay from './components/modals/IncomingCallOverlay';
+import RoleGuard from './components/common/RoleGuard';
 import NotFound from './pages/NotFound';
 import Spinner from './components/common/Spinner';
 import { connectSocket } from './services/socket';
@@ -546,13 +547,16 @@ function AppInner() {
         <Route path="/settings"    element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         <Route path="/video"       element={<ProtectedRoute><VideoCall /></ProtectedRoute>} />
         <Route path="/call/:roomId" element={<ProtectedRoute><VideoCall /></ProtectedRoute>} />
-        {/* Orbit Sessions — paid 1-on-1 mentor video calls. */}
-        <Route path="/sessions"            element={<ProtectedRoute><Suspense fallback={<PageLoader />}><Sessions /></Suspense></ProtectedRoute>} />
-        <Route path="/sessions/:userId"    element={<ProtectedRoute><Suspense fallback={<PageLoader />}><SessionDetail /></Suspense></ProtectedRoute>} />
-        <Route path="/session-room/:sessionId" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><OrbitSessionRoom /></Suspense></ProtectedRoute>} />
-        <Route path="/my-sessions"         element={<ProtectedRoute><Suspense fallback={<PageLoader />}><MySessions /></Suspense></ProtectedRoute>} />
+        {/* Orbit Sessions — paid 1-on-1 mentor video calls. Browse + detail
+            and the room itself are student-only; the server-side requireRoles
+            gate is the source of truth, RoleGuard here is a UX layer so
+            bounced users see an explanation instead of a raw 403. */}
+        <Route path="/sessions"            element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><Sessions /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/sessions/:userId"    element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><SessionDetail /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/session-room/:sessionId" element={<ProtectedRoute><RoleGuard roles={['student', 'mentor']}><Suspense fallback={<PageLoader />}><OrbitSessionRoom /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/my-sessions"         element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><MySessions /></Suspense></RoleGuard></ProtectedRoute>} />
         {/* Mentor-side: apply, manage profile, view bookings + earnings. */}
-        <Route path="/teach"               element={<ProtectedRoute><Suspense fallback={<PageLoader />}><MentorHub /></Suspense></ProtectedRoute>} />
+        <Route path="/teach"               element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorHub /></Suspense></RoleGuard></ProtectedRoute>} />
 
         {/* Cosmic badge gallery — dev/QA route, reachable by URL, not in nav */}
         <Route path="/cosmic-gallery" element={<Layout><Suspense fallback={<PageLoader />}><BadgeGallery /></Suspense></Layout>} />
