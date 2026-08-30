@@ -308,6 +308,22 @@
   51%, 100% { opacity: 0; }
 }
 
+/* ─── FUTURISTIC BACKDROP ───
+   gridDrift + orbFloat are used by the FuturisticBackdrop component. The grid
+   uses `var(--text-muted)` so it renders as a faint gray grid in light mode and
+   a faint white grid in dark mode. Orbs use `var(--accent-*)` so they read as
+   colored in both themes. Both animations are GPU-only (transform) so they
+   stay 60fps even on the APK WebView. */
+@keyframes gridDrift {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 48px 48px, 48px 48px; }
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translate(-50%, -50%) translate3d(0, 0, 0); }
+  33%      { transform: translate(-50%, -50%) translate3d(20px, -16px, 0); }
+  66%      { transform: translate(-50%, -50%) translate3d(-16px, 14px, 0); }
+}
+
 /* ─── GLASS CARD ─── */
 .glass-card {
   background: var(--color-surface-glass);
