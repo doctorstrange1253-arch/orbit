@@ -31,17 +31,34 @@ export const ROLE_META = {
 };
 
 // Pick the post-login landing route for a given roles array. Priority:
-//   1. Has mentor + student  → /my-sessions (paid, recent context)
-//   2. Has mentor only       → /teach
-//   3. Has student only      → /my-sessions
-//   4. peer_learner only     → /dashboard
-//   5. Empty (shouldn't happen) → /dashboard
+//   1. Has mentor + student  → /student/sessions (paid, recent context)
+//   2. Has mentor only       → /mentor/hub
+//   3. Has student only      → /student/sessions
+//   4. peer_learner only     → /peer/dashboard
+//   5. Empty (shouldn't happen) → /peer/dashboard
+// Mirrors the role-prefixed URL scheme (see App.jsx + the three-window
+// refactor plan). The single-role peer_learner fallback lands on the peer
+// window's home because peer_learner is the baseline role every account
+// gets — it's the safest default.
 export function getLandingRoute(roles) {
   const set = new Set(Array.isArray(roles) ? roles : ['peer_learner']);
-  if (set.has('mentor') && set.has('student')) return '/my-sessions';
-  if (set.has('mentor')) return '/teach';
-  if (set.has('student')) return '/my-sessions';
-  return '/dashboard';
+  if (set.has('mentor') && set.has('student')) return '/student/sessions';
+  if (set.has('mentor')) return '/mentor/hub';
+  if (set.has('student')) return '/student/sessions';
+  return '/peer/dashboard';
+}
+
+// Returns 'peer' | 'mentor' | 'student' | null. The navbar uses this to
+// pick which pill list to render; the RoleSwitcher uses it to highlight
+// the current window. `null` means the user is on a shared page
+// (/settings, /profile, /leaderboard, /orbit, /shop, …) where no window-
+// specific nav applies. Pure function — safe to call inside render.
+export function getCurrentWindow(pathname) {
+  if (!pathname || typeof pathname !== 'string') return null;
+  if (pathname.startsWith('/peer'))    return 'peer';
+  if (pathname.startsWith('/mentor'))  return 'mentor';
+  if (pathname.startsWith('/student')) return 'student';
+  return null;
 }
 
 export const useAuthStore = create(
