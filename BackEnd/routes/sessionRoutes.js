@@ -36,6 +36,16 @@ router.post("/mentor/apply", C.applyAsMentor);
 router.get("/mentors", C.listMentors);
 router.get("/mentors/:userId", C.getMentor);
 
+// Mentor self-service: only callers with the 'mentor' role can read their
+// own profile / earnings / bookings. The 'mentor' role is granted in
+// Settings → Roles; MentorProfile (the application state machine) is a
+// separate thing that may or may not exist yet — the controller returns
+// { profile: null } / { items: [] } in that case so the client can render
+// the empty state. Mounted BEFORE the /mentors/:userId wildcard so an
+// incoming /mentor/me doesn't get matched as userId="me".
+router.get("/mentor/me",       requireRoles("mentor"), C.getMyMentor);
+router.get("/mentor/bookings", requireRoles("mentor"), C.getMyMentorBookings);
+
 // Booking is the one paid action that needs a hard role gate: only callers
 // with the 'student' role can book a session. The handler still re-checks
 // mentor existence + availability + conflict — this is just the first
