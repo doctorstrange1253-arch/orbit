@@ -76,7 +76,7 @@ const Sessions = () => {
                         </p>
                     </div>
                     <Link
-                        to="/my-sessions"
+                        to="/student/sessions"
                         className="self-start inline-flex items-center gap-1.5 text-xs font-semibold nav-tab-glass px-3.5 py-2 transition-colors text-text-primary"
                     >
                         <ListChecks className="w-3.5 h-3.5 text-accent" /> My Sessions
@@ -208,7 +208,7 @@ const MentorCard = ({ mentor }) => {
             transition={{ duration: 0.25 }}
         >
             <Link
-                to={`/sessions/${mentor.userId}`}
+                to={`/student/mentors/${mentor.userId}`}
                 className="group block glass-card-glow p-5 transition-all hover:shadow-glow-accent"
             >
                 <div className="flex items-center gap-3 mb-3">

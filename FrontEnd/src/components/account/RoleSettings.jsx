@@ -252,7 +252,7 @@ const RoleSettings = () => {
       {current.includes('mentor') && !statusLabel && (
         <button
           type="button"
-          onClick={() => navigate('/teach')}
+          onClick={() => navigate('/mentor/hub')}
           className="w-full text-left p-4 rounded-xl border border-purple-400/30 bg-purple-500/10 hover:bg-purple-500/15 transition-colors"
         >
           <div className="text-sm font-semibold text-purple-200">Set up your mentor profile →</div>

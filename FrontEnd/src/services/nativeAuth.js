@@ -59,7 +59,7 @@ async function finishSignIn(token) {
     console.error('[nativeAuth] profile hydrate failed after sign-in:', err?.message || err);
   }
   // Full navigation reliably re-mounts the app at the authed route in the WebView.
-  window.location.assign('/dashboard');
+  window.location.assign('/peer/dashboard');
 }
 
 /**

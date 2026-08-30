@@ -21,7 +21,7 @@ const Footer = () => {
           
           {/* Links */}
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-text-secondary">
-            <Link to="/browse" className="hover:text-accent transition-colors">{token ? 'Browse Skills' : 'Sign in to browse'}</Link>
+            <Link to="/peer/browse" className="hover:text-accent transition-colors">{token ? 'Browse Skills' : 'Sign in to browse'}</Link>
             <Link to="/register" className="hover:text-text-primary transition-colors">Get Started</Link>
             <a href="https://github.com" target="_blank" rel="noreferrer noopener" className="hover:text-text-primary transition-colors" aria-label="GitHub">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

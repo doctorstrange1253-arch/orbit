@@ -88,13 +88,13 @@ export const useNotificationStore = create((set, get) => ({
           handler: () => {
             // The OTHER user's public profile lives at /profile/:userId.
             // (/profile with no param is the viewer's OWN profile.)
-            window.location.href = otherUser?._id ? `/profile/${otherUser._id}` : '/matches';
+            window.location.href = otherUser?._id ? `/profile/${otherUser._id}` : '/peer/matches';
           },
         },
         {
           label: 'Find Matches',
           handler: () => {
-            window.location.href = '/matches';
+            window.location.href = '/peer/matches';
           },
         },
       ],
@@ -113,7 +113,7 @@ export const useNotificationStore = create((set, get) => ({
           primary: true,
           handler: () => {
             // Open the matched user's public profile (/profile/:userId), not /profile (own).
-            window.location.href = matchedUser?._id ? `/profile/${matchedUser._id}` : '/matches';
+            window.location.href = matchedUser?._id ? `/profile/${matchedUser._id}` : '/peer/matches';
           },
         },
       ],
@@ -131,7 +131,7 @@ export const useNotificationStore = create((set, get) => ({
           label: 'View Requests',
           primary: true,
           handler: () => {
-            window.location.href = '/connections?tab=requests';
+            window.location.href = '/peer/connections?tab=requests';
           },
         },
       ],
@@ -149,7 +149,7 @@ export const useNotificationStore = create((set, get) => ({
           label: 'View Connections',
           primary: true,
           handler: () => {
-            window.location.href = '/connections';
+            window.location.href = '/peer/connections';
           },
         },
       ],
@@ -176,7 +176,7 @@ export const useNotificationStore = create((set, get) => ({
           label: 'Accept Call',
           primary: true,
           handler: () => {
-            window.location.href = `/call/${roomId}`;
+            window.location.href = `/peer/calls/${roomId}`;
           },
         },
       ],

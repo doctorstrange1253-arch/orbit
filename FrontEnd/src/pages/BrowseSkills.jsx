@@ -263,7 +263,7 @@ const BrowseSkills = () => {
                         notifyUserOffline(conn.other?.name || 'User');
                         return;
                       }
-                      navigate(`/call/${conn.connection._id}`, { state: { otherUser: conn.other, isCaller: true } });
+                      navigate(`/peer/calls/${conn.connection._id}`, { state: { otherUser: conn.other, isCaller: true } });
                     }}
                   />
                 );

@@ -79,7 +79,7 @@ const useSocket = () => {
     // Force disconnect from video call (AI moderation)
     socket.on('force-disconnect', (data) => {
       addToast(data.reason || 'Call terminated by moderator', 'error');
-      window.location.href = '/connections';
+      window.location.href = '/peer/connections';
     });
 
     return () => {

@@ -79,7 +79,7 @@ const ConnectionCard = ({ connection, type, onRate, onViewRatings }) => {
       return;
     }
 
-    navigate(`/call/${connection._id}`, { state: { otherUser: other, isCaller: true } });
+    navigate(`/peer/calls/${connection._id}`, { state: { otherUser: other, isCaller: true } });
   };
 
   const ts = other?.trustScore;

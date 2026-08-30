@@ -245,7 +245,7 @@ const ApprovedView = ({ profile, earnings, upcomingBookings, onRefresh }) => (
                 <ArrowRight className="w-4 h-4 text-text-muted" />
             </a>
             {hasStudentRole ? (
-              <Link to="/my-sessions" className="nav-tab-glass p-4 flex items-center justify-between hover:border-accent/40">
+              <Link to="/student/sessions" className="nav-tab-glass p-4 flex items-center justify-between hover:border-accent/40">
                   <span className="flex items-center gap-2 text-sm font-semibold text-text-primary"><BookOpen className="w-4 h-4 text-accent" /> All bookings</span>
                   <ArrowRight className="w-4 h-4 text-text-muted" />
               </Link>

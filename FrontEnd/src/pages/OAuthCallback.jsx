@@ -30,11 +30,11 @@ const OAuthCallback = () => {
     })
       .then(({ data }) => {
         setUser(data);
-        navigate('/dashboard', { replace: true });
+        navigate('/peer/dashboard', { replace: true });
       })
       .catch(() => {
         // Profile fetch failed but token is valid — navigate anyway
-        navigate('/dashboard', { replace: true });
+        navigate('/peer/dashboard', { replace: true });
       });
   }, []); // run once on mount only
 

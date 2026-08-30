@@ -78,7 +78,7 @@ const NotFound = () => {
             Go Home
           </Link>
           <Link
-            to="/browse"
+            to="/peer/browse"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-text-secondary hover:text-text-primary transition-all"
             style={{
               background: 'var(--bg-surface)',

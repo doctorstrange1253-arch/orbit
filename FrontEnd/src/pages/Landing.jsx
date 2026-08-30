@@ -367,7 +367,7 @@ const Landing = () => {
           >
             {token ? (
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/peer/dashboard')}
                 className="btn-gradient w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-text-primary font-semibold text-base group relative overflow-hidden"
               >
                 <span className="relative z-10 flex items-center gap-2">
@@ -581,7 +581,7 @@ const Landing = () => {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 {token ? (
                   <button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/peer/dashboard')}
                     className="btn-gradient flex items-center gap-2 px-8 py-4 rounded-2xl font-semibold text-text-primary text-base group w-full sm:w-auto justify-center relative overflow-hidden"
                   >
                     <span className="relative z-10 flex items-center gap-2">

@@ -218,7 +218,7 @@ const Connections = () => {
                 title="No sent requests"
                 description="Browse skills and send connection requests to start swapping."
                 ctaLabel="Browse Skills"
-                onCta={() => window.location.assign('/browse')}
+                onCta={() => window.location.assign('/peer/browse')}
                 accentColor="#00e5a0"
               />
             )}

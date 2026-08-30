@@ -68,7 +68,7 @@ const BookingModal = ({ mentor, onClose }) => {
             qc.invalidateQueries({ queryKey: ['sessions', 'me'] });
             setStep(3);
             setBusy(false);
-            setTimeout(() => navigate('/my-sessions'), 1500);
+            setTimeout(() => navigate('/student/sessions'), 1500);
         } catch (e) {
             setBusy(false);
             setErr(e?.response?.data?.message || e?.message || "Booking failed");

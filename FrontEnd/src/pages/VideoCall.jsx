@@ -681,7 +681,7 @@ const VideoCall = () => {
   const handleEnd = (callDuration, otherUser) => {
     setActiveRoom(null);
     setAutoBoard(false);
-    navigate('/video');
+    navigate('/peer/calls');
 
     // If call had duration and other user, open rating modal
     if (callDuration && callDuration > 5 && otherUser) {

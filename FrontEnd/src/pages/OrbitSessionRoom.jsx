@@ -109,7 +109,7 @@ const OrbitSessionRoom = () => {
             <div className="p-8 max-w-md mx-auto text-center text-slate-200">
                 <h2 className="text-xl font-semibold mb-2">This session is {session.status}</h2>
                 <p className="text-slate-400 mb-4">It can't be joined right now.</p>
-                <Link to="/my-sessions" className="text-violet-400 hover:underline">Back to My Sessions</Link>
+                <Link to="/student/sessions" className="text-violet-400 hover:underline">Back to My Sessions</Link>
             </div>
         );
     }
@@ -121,7 +121,7 @@ const OrbitSessionRoom = () => {
         <div className="bg-black min-h-screen text-white">
             <Helmet><title>Orbit Session · {sessionId}</title></Helmet>
             <div className="flex items-center justify-between px-4 py-2 bg-slate-900 border-b border-slate-800">
-                <button onClick={() => navigate("/my-sessions")} className="flex items-center gap-1 text-sm text-slate-400 hover:text-white">
+                <button onClick={() => navigate("/student/sessions")} className="flex items-center gap-1 text-sm text-slate-400 hover:text-white">
                     <ArrowLeft className="w-4 h-4" /> My Sessions
                 </button>
                 <button
@@ -146,7 +146,7 @@ const OrbitSessionRoom = () => {
                     onSubmit={async ({ stars, comment }) => {
                         await rateMut.mutateAsync({ stars, comment });
                         setRatingOpen(false);
-                        navigate("/my-sessions");
+                        navigate("/student/sessions");
                     }}
                 />
             )}

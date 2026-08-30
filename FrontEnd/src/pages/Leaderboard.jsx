@@ -251,7 +251,7 @@ export default function Leaderboard() {
 
         {/* Viewer has no location → board fell back to Country; nudge them. */}
         {data?.viewerNeedsLocation && (
-          <button onClick={() => navigate('/nearby')}
+          <button onClick={() => navigate('/peer/nearby')}
             className="flex items-start gap-2 w-full text-left p-3 rounded-2xl mb-3 text-xs"
             style={{ background: 'var(--surface)', border: '1px solid var(--accent-1)' }}>
             <Compass size={14} className="mt-0.5 flex-none text-accent" />
@@ -361,7 +361,7 @@ export default function Leaderboard() {
             title="Set your location to see the board"
             description="The neighborhood and city boards need your location. Set it on the Nearby map, then come back."
             ctaLabel="Go to Nearby"
-            onCta={() => navigate('/nearby')}
+            onCta={() => navigate('/peer/nearby')}
           />
         )}
 

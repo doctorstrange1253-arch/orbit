@@ -79,7 +79,7 @@ const Matches = () => {
       notifyUserOffline(other?.name || 'User');
       return;
     }
-    navigate(`/call/${connectionId}`, { state: { otherUser: other, isCaller: true } });
+    navigate(`/peer/calls/${connectionId}`, { state: { otherUser: other, isCaller: true } });
   };
 
   const handleMessage = (other) => {
