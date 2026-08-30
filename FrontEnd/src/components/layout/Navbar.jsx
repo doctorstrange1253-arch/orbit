@@ -12,7 +12,7 @@ import OrbitStreakBadge from '../../cosmic/OrbitStreakBadge';
 import PhotonsChip from '../../cosmic/PhotonsChip';
 import {
   LogOut, Layers, Compass, Users, Map,
-  ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX, ShoppingBag
+  ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX, ShoppingBag, Calendar
 } from 'lucide-react';
 import soundManager from '../../utils/soundManager';
 
@@ -23,6 +23,7 @@ const NAV = [
   { name: 'Connections',  path: '/connections',  Icon: Users      },
   { name: 'Nearby',       path: '/nearby',       Icon: Map        },
   { name: 'Calls',        path: '/video',        Icon: Phone      },
+  { name: 'Sessions',     path: '/sessions',     Icon: Calendar   },
   { name: 'Trust',        path: '/trust',        Icon: ShieldCheck},
   { name: 'Leaderboard',  path: '/leaderboard',  Icon: Trophy     },
   { name: 'Orbit',        path: '/orbit',        Icon: Rocket     },
