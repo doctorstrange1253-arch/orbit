@@ -3,6 +3,8 @@
  * slots across 7 days × 24 hours. The shape mirrors the backend's
  * `availability.weekly: [{ dayOfWeek, slots: [{ startUtcHour, durationMin }] }]`
  * contract, so we serialize to the same shape on save.
+ *
+ * Themed: glass-card-glow wrapper, accent on-cells, themed hover, btn-gradient save.
  */
 import { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
@@ -21,8 +23,6 @@ const DAYS = [
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 const SLOT_MIN = 30;
 
-// `value` is a Set of "d-h" strings (compact row×col keys) so toggling
-// a single slot is O(1) and we never re-render the whole grid for one click.
 function gridFromWeekly(weekly = []) {
     const set = new Set();
     for (const day of weekly) {
@@ -37,7 +37,6 @@ function gridFromWeekly(weekly = []) {
     return set;
 }
 function weeklyFromGrid(set) {
-    // Collapse contiguous 30-min blocks into bigger slots per day.
     const out = [];
     for (const d of DAYS) {
         const slots = [];
@@ -45,7 +44,6 @@ function weeklyFromGrid(set) {
         while (i < 24) {
             const k = `${d.value}-${i}`;
             if (!set.has(k)) { i += 0.5; continue; }
-            // measure run
             let end = i;
             while (end < 24 && set.has(`${d.value}-${end}`)) end += 0.5;
             slots.push({ startUtcHour: i, durationMin: (end - i) * 60 });
@@ -87,16 +85,16 @@ const AvailabilityEditor = ({ value = { weekly: [] }, onSaved }) => {
     }
 
     return (
-        <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 space-y-3">
-            <div className="flex items-center justify-between">
+        <div className="glass-card-glow p-4 space-y-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
                 <div>
-                    <h3 className="font-semibold">Weekly availability</h3>
-                    <p className="text-xs text-slate-400">Click 30-minute blocks in UTC. Leave empty to accept any time.</p>
+                    <h3 className="font-semibold text-text-primary">Weekly availability</h3>
+                    <p className="text-xs text-text-muted">Click 30-minute blocks in UTC. Leave empty to accept any time.</p>
                 </div>
                 <button
                     onClick={save}
                     disabled={busy}
-                    className="flex items-center gap-1 bg-violet-600 hover:bg-violet-500 disabled:bg-slate-700 text-white text-sm px-3 py-1.5 rounded"
+                    className="inline-flex items-center gap-1 btn-gradient disabled:opacity-40 px-3 py-1.5 rounded-lg text-sm"
                 >
                     {busy ? <Loader className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                     Save
@@ -109,25 +107,27 @@ const AvailabilityEditor = ({ value = { weekly: [] }, onSaved }) => {
                         <tr>
                             <th className="w-12"></th>
                             {HOURS.map((h) => (
-                                <th key={h} className="text-slate-500 font-normal pb-1">{h}</th>
+                                <th key={h} className="text-text-muted font-normal pb-1">{h}</th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
                         {DAYS.map((d) => (
                             <tr key={d.value}>
-                                <th className="text-slate-400 pr-2 text-right font-normal">{d.label}</th>
+                                <th className="text-text-secondary pr-2 text-right font-normal">{d.label}</th>
                                 {HOURS.map((h) => {
-                                    // Render half-hour cells with a wider colspan (visually 30 min).
                                     const isOn = grid.has(`${d.value}-${h}`);
                                     return (
                                         <td key={h} className="p-0">
                                             <motion.button
                                                 whileTap={{ scale: 0.9 }}
                                                 onClick={() => toggle(d.value, h)}
-                                                className={`w-3 h-5 mx-px rounded-sm ${
-                                                    isOn ? "bg-violet-500" : "bg-slate-800 hover:bg-slate-700"
+                                                className={`w-3 h-5 mx-px rounded-sm transition-colors ${
+                                                    isOn
+                                                        ? 'bg-accent'
+                                                        : 'bg-surface border border-border-subtle hover:bg-accent/30'
                                                 }`}
+                                                style={isOn ? { boxShadow: '0 0 4px var(--accent-1)' } : undefined}
                                                 aria-label={`${d.label} ${h}:00 UTC`}
                                             />
                                         </td>
@@ -139,8 +139,8 @@ const AvailabilityEditor = ({ value = { weekly: [] }, onSaved }) => {
                 </table>
             </div>
 
-            {err && <p className="text-sm text-rose-400">{err}</p>}
-            {ok && <p className="text-sm text-emerald-300">Availability saved.</p>}
+            {err && <p className="text-sm text-danger bg-danger/10 border border-danger/30 rounded-lg p-2">{err}</p>}
+            {ok && <p className="text-sm text-success bg-success/10 border border-success/30 rounded-lg p-2">Availability saved.</p>}
         </div>
     );
 };
