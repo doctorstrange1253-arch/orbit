@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useState, useCallback, useRef } from 'react';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import api from './services/api';
@@ -59,6 +59,8 @@ const SessionDetail  = lazy(() => import('./pages/SessionDetail'));
 const OrbitSessionRoom = lazy(() => import('./pages/OrbitSessionRoom'));
 const MySessions     = lazy(() => import('./pages/MySessions'));
 const MentorHub      = lazy(() => import('./pages/MentorHub'));
+const MentorSessions = lazy(() => import('./pages/mentor/MentorSessions'));
+const MentorEarnings = lazy(() => import('./pages/mentor/Earnings'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -90,17 +92,31 @@ const isNativeApp = () => {
  *  (or /login when signed out). APK-only behavior — the web is unchanged. */
 const HomeRoute = () => {
   const token = useAuthStore((state) => state.token);
-  if (isNativeApp()) return <Navigate to={token ? '/dashboard' : '/login'} replace />;
+  if (isNativeApp()) return <Navigate to={token ? '/peer/dashboard' : '/login'} replace />;
   return <Landing />;
+};
+
+/** Legacy-URL redirect that preserves path params.
+ *  `<Navigate to="..." replace />` in the route table can't interpolate
+ *  `:roomId` / `:userId` / `:sessionId` — we have to read them with
+ *  `useParams()` and re-emit. Use this in the legacy redirect routes
+ *  below so /call/abc123 → /peer/calls/abc123, not /peer/calls. */
+const LegacyRedirect = ({ to }) => {
+  const params = useParams();
+  const resolved = Object.keys(params).reduce(
+    (acc, k) => acc.replace(`:${k}`, encodeURIComponent(params[k])),
+    to
+  );
+  return <Navigate to={resolved} replace />;
 };
 
 /** Redirect authenticated users away from public-only pages (login, register).
  *  Honors a `from` location (A10) so a just-logged-in user returns to the page
- *  they originally requested instead of always landing on /dashboard. */
+ *  they originally requested instead of always landing on /peer/dashboard. */
 const PublicOnlyRoute = ({ children }) => {
   const token = useAuthStore((state) => state.token);
   const location = useLocation();
-  if (token) return <Navigate to={location.state?.from?.pathname || '/dashboard'} replace />;
+  if (token) return <Navigate to={location.state?.from?.pathname || '/peer/dashboard'} replace />;
   return children;
 };
 
@@ -450,7 +466,7 @@ function AppInner() {
     // Orbit Session: the peer started the session — push a toast so the
     // student knows to hop in. Only meaningful to the student side; the
     // mentor who started the room is already inside it, and a peer_learner
-    // who happens to be online has no /my-sessions tab to navigate to.
+    // who happens to be online has no /student/sessions tab to navigate to.
     socket.on('session:started', (data) => {
       const roles = useAuthStore.getState().user?.roles || [];
       if (!roles.includes('student')) return;
@@ -459,7 +475,7 @@ function AppInner() {
         title: 'Session started',
         message: 'Your mentor just opened the room. Tap My Sessions to join.',
         duration: 8000,
-        link: '/my-sessions',
+        link: '/student/sessions',
       });
     });
 
@@ -483,7 +499,7 @@ function AppInner() {
     if (!incomingCall) return;
     const { roomId } = incomingCall;
     setIncomingCall(null);
-    navigate(`/call/${roomId}`, { state: { isCaller: false } });
+    navigate(`/peer/calls/${roomId}`, { state: { isCaller: false } });
   }, [incomingCall, navigate]);
 
   const handleDeclineCall = useCallback(() => {
@@ -555,20 +571,14 @@ function AppInner() {
         {/* Friendly aliases for guessed URLs (B-04) → canonical routes */}
         <Route path="/signup"         element={<Navigate to="/register" replace />} />
         <Route path="/signin"         element={<Navigate to="/login" replace />} />
-        <Route path="/skills"         element={<Navigate to="/browse" replace />} />
+        <Route path="/skills"         element={<Navigate to="/peer/browse" replace />} />
         <Route path="/oauth/callback" element={<OAuthCallback />} />
         <Route path="/forgot-password"         element={<ForgotPassword />} />
         <Route path="/reset-password/:token"   element={<ResetPassword />} />
 
-        {/* Protected (lazy-loaded) */}
-        <Route path="/dashboard"   element={<ProtectedRoute><MySkills /></ProtectedRoute>} />
-        <Route path="/browse"      element={<ProtectedRoute><BrowseSkills /></ProtectedRoute>} />
-        <Route path="/matches"     element={<ProtectedRoute><Matches /></ProtectedRoute>} />
-        <Route path="/connections" element={<ProtectedRoute><Connections /></ProtectedRoute>} />
+        {/* ── Shared (root) — accessible from any window ─────────────── */}
         <Route path="/profile"     element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/profile/:userId" element={<Layout><Suspense fallback={<PageLoader />}><PublicProfile /></Suspense></Layout>} />
-        <Route path="/nearby"      element={<ProtectedRoute><NearbyMap /></ProtectedRoute>} />
-        <Route path="/trust"       element={<ProtectedRoute><TrustScore /></ProtectedRoute>} />
         <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
         <Route path="/orbit"       element={<ProtectedRoute><Orbit /></ProtectedRoute>} />
         <Route path="/orbit/history" element={<ProtectedRoute><MissionLog /></ProtectedRoute>} />
@@ -577,18 +587,44 @@ function AppInner() {
         <Route path="/observatory" element={<ProtectedRoute><Observatory /></ProtectedRoute>} />
         <Route path="/cosmic-atlas" element={<Layout><Suspense fallback={<PageLoader />}><TierAtlas /></Suspense></Layout>} />
         <Route path="/settings"    element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-        <Route path="/video"       element={<ProtectedRoute><VideoCall /></ProtectedRoute>} />
-        <Route path="/call/:roomId" element={<ProtectedRoute><VideoCall /></ProtectedRoute>} />
-        {/* Orbit Sessions — paid 1-on-1 mentor video calls. Browse + detail
-            and the room itself are student-only; the server-side requireRoles
-            gate is the source of truth, RoleGuard here is a UX layer so
-            bounced users see an explanation instead of a raw 403. */}
-        <Route path="/sessions"            element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><Sessions /></Suspense></RoleGuard></ProtectedRoute>} />
-        <Route path="/sessions/:userId"    element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><SessionDetail /></Suspense></RoleGuard></ProtectedRoute>} />
-        <Route path="/session-room/:sessionId" element={<ProtectedRoute><RoleGuard roles={['student', 'mentor']}><Suspense fallback={<PageLoader />}><OrbitSessionRoom /></Suspense></RoleGuard></ProtectedRoute>} />
-        <Route path="/my-sessions"         element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><MySessions /></Suspense></RoleGuard></ProtectedRoute>} />
-        {/* Mentor-side: apply, manage profile, view bookings + earnings. */}
-        <Route path="/teach"               element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorHub /></Suspense></RoleGuard></ProtectedRoute>} />
+
+        {/* ── Peer window (/peer/*) — peer_learner (always on) ─────── */}
+        <Route path="/peer/dashboard"   element={<ProtectedRoute><MySkills /></ProtectedRoute>} />
+        <Route path="/peer/browse"      element={<ProtectedRoute><BrowseSkills /></ProtectedRoute>} />
+        <Route path="/peer/matches"     element={<ProtectedRoute><Matches /></ProtectedRoute>} />
+        <Route path="/peer/connections" element={<ProtectedRoute><Connections /></ProtectedRoute>} />
+        <Route path="/peer/nearby"      element={<ProtectedRoute><NearbyMap /></ProtectedRoute>} />
+        <Route path="/peer/trust"       element={<ProtectedRoute><TrustScore /></ProtectedRoute>} />
+        <Route path="/peer/calls"       element={<ProtectedRoute><VideoCall /></ProtectedRoute>} />
+        <Route path="/peer/calls/:roomId" element={<ProtectedRoute><VideoCall /></ProtectedRoute>} />
+
+        {/* ── Mentor window (/mentor/*) — mentor ──────────────────── */}
+        <Route path="/mentor/hub"      element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorHub /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/mentor/sessions" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorSessions /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/mentor/earnings" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorEarnings /></Suspense></RoleGuard></ProtectedRoute>} />
+
+        {/* ── Student window (/student/*) — student ────────────────── */}
+        <Route path="/student/sessions"          element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><MySessions /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/student/mentors"           element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><Sessions /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/student/mentors/:userId"   element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><SessionDetail /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/student/room/:sessionId"   element={<ProtectedRoute><RoleGuard roles={['student', 'mentor']}><Suspense fallback={<PageLoader />}><OrbitSessionRoom /></Suspense></RoleGuard></ProtectedRoute>} />
+
+        {/* ── Legacy URL redirects — keep old bookmarks working ────── */}
+        <Route path="/dashboard"   element={<Navigate to="/peer/dashboard" replace />} />
+        <Route path="/browse"      element={<Navigate to="/peer/browse" replace />} />
+        <Route path="/matches"     element={<Navigate to="/peer/matches" replace />} />
+        <Route path="/connections" element={<Navigate to="/peer/connections" replace />} />
+        <Route path="/nearby"      element={<Navigate to="/peer/nearby" replace />} />
+        <Route path="/trust"       element={<Navigate to="/peer/trust" replace />} />
+        <Route path="/video"       element={<Navigate to="/peer/calls" replace />} />
+        <Route path="/call/:roomId" element={<LegacyRedirect to="/peer/calls/:roomId" />} />
+        <Route path="/sessions"            element={<Navigate to="/student/mentors" replace />} />
+        <Route path="/sessions/:userId"    element={<LegacyRedirect to="/student/mentors/:userId" />} />
+        <Route path="/session-room/:sessionId" element={<LegacyRedirect to="/student/room/:sessionId" />} />
+        <Route path="/my-sessions"         element={<Navigate to="/student/sessions" replace />} />
+        <Route path="/teach"               element={<Navigate to="/mentor/hub" replace />} />
+        <Route path="/signup"              element={<Navigate to="/register" replace />} />
+        <Route path="/signin"              element={<Navigate to="/login" replace />} />
 
         {/* Cosmic badge gallery — dev/QA route, reachable by URL, not in nav */}
         <Route path="/cosmic-gallery" element={<Layout><Suspense fallback={<PageLoader />}><BadgeGallery /></Suspense></Layout>} />
