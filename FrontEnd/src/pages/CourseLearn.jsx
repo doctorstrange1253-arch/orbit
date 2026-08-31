@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -9,6 +9,13 @@ import LessonPlayer from '../components/courses/LessonPlayer';
 import QuizCard from '../components/courses/QuizCard';
 import CommentThread from '../components/courses/CommentThread';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
+// V3 — Game Engine. Level Card (pre-lesson), Attention Arc (decelerate
+// on disengage), Coach Quiz (friend-not-textbook rewrite), and the
+// post-pass Boss Ceremony for boss lessons.
+import LevelCard from '../components/gameEngine/LevelCard';
+import AttentionArc from '../components/gameEngine/AttentionArc';
+import CoachQuiz from '../components/gameEngine/CoachQuiz';
+import BossCeremony from '../components/gameEngine/BossCeremony';
 
 const CourseLearn = () => {
     const { id, lessonId } = useParams();
@@ -16,6 +23,15 @@ const CourseLearn = () => {
     const qc = useQueryClient();
     const [quizResult, setQuizResult] = useState(null);
     const [openQa, setOpenQa] = useState(false);
+    // V3 — the Game Engine state machine:
+    //   card (LevelCard) → video (LessonPlayer + AttentionArc) → quiz
+    //   (CoachQuiz) → done
+    // For Boss lessons: same flow, but on quiz pass → BossCeremony
+    // overlay (6s) before returning to the course.
+    const [stage, setStage] = useState('card');  // 'card' | 'video' | 'quiz' | 'done' | 'boss'
+    const [showBossCeremony, setShowBossCeremony] = useState(false);
+    const [bossConcepts, setBossConcepts] = useState([]);
+    const videoRef = useRef(null);
 
     const { data: course, isLoading } = useQuery({
         queryKey: ['courses', 'detail', id],
@@ -29,24 +45,34 @@ const CourseLearn = () => {
         [course, activeLessonId]
     );
 
+    // Reset the stage when the user navigates to a new lesson.
+    useEffect(() => {
+        setStage('card');
+        setShowBossCeremony(false);
+        setQuizResult(null);
+    }, [activeLessonId]);
+
     // Track completions optimistically
     const completed = new Set(
         (course?.lessons || []).filter((l) => l.isFree).map((l) => String(l._id))
     );
-    // We don't have the enrollment list in the detail; optimistically mark
-    // lessons as completed if the user has navigated to the cert page — but
-    // for the lesson view we rely on the mutation's `justCompleted` to add
-    // to the visible progress.
 
     const complete = useMutation({
         mutationFn: (lessonIdToComplete) => courses.completeLesson(id, lessonIdToComplete),
         onSuccess: (res) => {
             completed.add(activeLessonId);
+            // V3 — Boss lessons: show the 6s ceremony, then route.
+            if (activeLesson?.isBoss) {
+                setBossConcepts(activeLesson?.conceptSlugs || []);
+                setShowBossCeremony(true);
+                return;
+            }
             if (res?.justCompleted) {
                 navigate(`/courses/${id}/certificate/${res.certificateId || 'new'}`);
             }
             qc.invalidateQueries({ queryKey: ['courses', 'detail', id] });
             qc.invalidateQueries({ queryKey: ['gameology', 'me'] });
+            qc.invalidateQueries({ queryKey: ['knowledge', 'me'] });
         },
     });
 
@@ -58,7 +84,24 @@ const CourseLearn = () => {
         },
     });
 
-    useEffect(() => { setQuizResult(null); }, [activeLessonId]);
+    // V3 — Coach Quiz onPass → mark lesson complete. The mutation's
+    // onSuccess handles the boss-ceremony branch.
+    const onCoachQuizPass = () => {
+        if (!activeLesson) return;
+        complete.mutate(activeLesson._id);
+    };
+
+    const onBossCeremonyDone = () => {
+        setShowBossCeremony(false);
+        // Advance to the next lesson if there is one.
+        const lessons = course?.lessons || [];
+        const i = lessons.findIndex((l) => String(l._id) === String(activeLessonId));
+        const next = lessons[i + 1];
+        if (next) navigate(`/courses/${id}/learn/${next._id}`);
+        else navigate(`/courses/${id}`);
+        qc.invalidateQueries({ queryKey: ['courses', 'detail', id] });
+        qc.invalidateQueries({ queryKey: ['knowledge', 'me'] });
+    };
 
     if (isLoading) {
         return <div className="relative min-h-screen"><FuturisticBackdrop /><div className="relative z-10 max-w-6xl mx-auto p-12 text-text-secondary">Loading…</div></div>;
@@ -123,65 +166,111 @@ const CourseLearn = () => {
                             Lesson {(course.lessons || []).findIndex((l) => String(l._id) === String(activeLessonId)) + 1 || 0} of {course.lessons?.length || 0}
                         </div>
 
-                        <LessonPlayer
-                            lesson={activeLesson}
-                            onComplete={() => !completed.has(String(activeLessonId)) && complete.mutate(activeLessonId)}
-                            isCompleted={completed.has(String(activeLessonId))}
-                            isMarkingComplete={complete.isPending}
-                        />
-
-                        {activeLesson?.description && (
-                            <p className="mt-4 text-sm text-text-secondary leading-relaxed whitespace-pre-line">
-                                {activeLesson.description}
-                            </p>
+                        {/* V3 — Game Engine: 4-stage state machine
+                            card → video (with attention arc) → quiz (coach copy) → done.
+                            The stage advances as the user clicks Begin / finishes the
+                            video / passes the quiz. Boss lessons get the 6s
+                            BossCeremony after the quiz passes. */}
+                        {stage === 'card' && (
+                          <div className="mb-4">
+                            <LevelCard
+                              lesson={activeLesson}
+                              onBegin={() => setStage('video')}
+                            />
+                          </div>
                         )}
 
-                        {/* Quiz */}
-                        {activeLesson?.hasQuiz && (
-                            <div className="mt-6">
-                                <QuizCard
-                                    lesson={activeLesson}
-                                    onSubmit={(answers) => submitQuiz.mutate(answers)}
-                                    onRetry={() => setQuizResult(null)}
-                                    isSubmitting={submitQuiz.isPending}
-                                    result={quizResult}
-                                />
+                        {stage !== 'card' && (
+                          <>
+                            <div className="relative">
+                              <LessonPlayer
+                                  lesson={activeLesson}
+                                  onComplete={() => {
+                                    if (activeLesson?.hasQuiz) setStage('quiz');
+                                    else if (!completed.has(String(activeLessonId))) complete.mutate(activeLessonId);
+                                  }}
+                                  isCompleted={completed.has(String(activeLessonId))}
+                                  isMarkingComplete={complete.isPending}
+                              />
+                              <AttentionArc videoRef={videoRef} enabled={!completed.has(String(activeLessonId)) && stage === 'video'} />
                             </div>
-                        )}
 
-                        {/* Q&A */}
-                        <div className="mt-6">
-                            <button
-                                onClick={() => setOpenQa((v) => !v)}
-                                className="w-full flex items-center justify-between p-3 rounded-xl border border-border-subtle bg-surface/40 backdrop-blur-sm hover:border-accent/30"
-                            >
-                                <h3 className="text-sm font-bold text-text-primary inline-flex items-center gap-2">
-                                    <MessageCircle className="w-4 h-4 text-accent" /> Q&amp;A
-                                </h3>
-                                <span className="text-xs text-text-muted">{openQa ? 'Hide' : 'Show'}</span>
-                            </button>
-                            {openQa && (
-                                <div className="mt-3">
-                                    <CommentThread courseId={id} lessonId={activeLessonId} course={course} />
+                            {activeLesson?.description && (
+                                <p className="mt-4 text-sm text-text-secondary leading-relaxed whitespace-pre-line">
+                                    {activeLesson.description}
+                                </p>
+                            )}
+
+                            {/* V3 — Coach Quiz (friend-not-textbook). For boss
+                                lessons, the quiz is 5-10 questions + 100% to
+                                pass (set in the V3 schema; for non-boss the
+                                legacy passingScore applies). On pass, the
+                                complete mutation fires which routes to the
+                                BossCeremony for boss lessons. */}
+                            {activeLesson?.hasQuiz && stage === 'quiz' && (
+                                <div className="mt-6">
+                                    <CoachQuiz
+                                        questions={activeLesson.quiz?.questions || []}
+                                        passingScore={activeLesson.isBoss ? 100 : (activeLesson.quiz?.passingScore || 70)}
+                                        isBoss={!!activeLesson.isBoss}
+                                        onSubmit={({ score, passed, answers }) => {
+                                            // Also fire the V2 quiz endpoint so the
+                                            // backend records the score + XP for the
+                                            // quiz_passed event.
+                                            submitQuiz.mutate(answers);
+                                        }}
+                                        onPass={onCoachQuizPass}
+                                    />
                                 </div>
                             )}
-                        </div>
 
-                        {/* Auto-advance to next lesson on completion */}
-                        {complete.isSuccess && complete.data?.justCompleted && (
-                            <motion.div
-                                initial={{ scale: 0.95, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                className="mt-6 p-4 rounded-xl border border-emerald-400/40 bg-emerald-500/10 text-center"
-                            >
-                                <Sparkles className="w-6 h-6 text-emerald-300 mx-auto mb-1" />
-                                <div className="text-sm font-bold text-emerald-100">Course complete!</div>
-                                <div className="text-xs text-emerald-200/70">Taking you to your certificate…</div>
-                            </motion.div>
+                            {/* Q&A */}
+                            <div className="mt-6">
+                                <button
+                                    onClick={() => setOpenQa((v) => !v)}
+                                    className="w-full flex items-center justify-between p-3 rounded-xl border border-border-subtle bg-surface/40 backdrop-blur-sm hover:border-accent/30"
+                                >
+                                    <h3 className="text-sm font-bold text-text-primary inline-flex items-center gap-2">
+                                        <MessageCircle className="w-4 h-4 text-accent" /> Q&amp;A
+                                    </h3>
+                                    <span className="text-xs text-text-muted">{openQa ? 'Hide' : 'Show'}</span>
+                                </button>
+                                {openQa && (
+                                    <div className="mt-3">
+                                        <CommentThread courseId={id} lessonId={activeLessonId} course={course} />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Auto-advance to next lesson on completion (non-boss) */}
+                            {complete.isSuccess && complete.data?.justCompleted && !activeLesson?.isBoss && (
+                                <motion.div
+                                    initial={{ scale: 0.95, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    className="mt-6 p-4 rounded-xl border border-emerald-400/40 bg-emerald-500/10 text-center"
+                                >
+                                    <Sparkles className="w-6 h-6 text-emerald-300 mx-auto mb-1" />
+                                    <div className="text-sm font-bold text-emerald-100">Course complete!</div>
+                                    <div className="text-xs text-emerald-200/70">Taking you to your certificate…</div>
+                                </motion.div>
+                            )}
+                          </>
                         )}
                     </main>
                 </div>
             </div>
+
+            {/* V3 — Boss Ceremony (6s) after passing a Boss Level quiz.
+                Overlays the page until the student clicks Continue (or the
+                6s auto-advance has elapsed). */}
+            {showBossCeremony && activeLesson?.isBoss && (
+              <BossCeremony
+                lesson={activeLesson}
+                course={course}
+                concepts={bossConcepts}
+                onDone={onBossCeremonyDone}
+              />
+            )}
         </div>
     );
 };

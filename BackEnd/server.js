@@ -28,6 +28,9 @@ const sessionRoutes = require("./routes/sessionRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const gameologyRoutes = require("./routes/gameologyRoutes");
 const pactRoutes = require("./routes/pactRoutes");
+// V3 — Knowledge Graph: cross-course concept tracking. Powers the
+// Skill Map (V3-E) and the Coach Quiz (V3-D) concept-suggestion flow.
+const knowledgeGraphRoutes = require("./routes/knowledgeGraphRoutes");
 
 // Middleware
 const errorHandler = require("./middleware/errorHandler");
@@ -699,6 +702,7 @@ app.use("/api/sessions", sessionRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/gameology", gameologyRoutes);
 app.use("/api/pact", pactRoutes);
+app.use("/api/knowledge", knowledgeGraphRoutes);
 
 // ── Admin Command Center (hardened, hidden) ────────────────────────────────
 // Namespaced under an unguessable base; every route 404-cloaks for non-admins.

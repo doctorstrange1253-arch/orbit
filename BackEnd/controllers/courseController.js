@@ -462,6 +462,32 @@ exports.completeLesson = async (req, res) => {
         // Gameology: lesson_completed XP (only first time per lesson)
         if (!wasComplete) {
             await gameology.awardXp(meId, "lesson_completed", { courseId: String(c._id), lessonId: String(lesson._id) });
+            // V3 — Knowledge Graph: every lesson completion records a
+            // "touch" on each concept the lesson references. Idempotent
+            // re-watches re-apply the weight (legitimate refreshers).
+            // The KG service is best-effort; a failure here doesn't
+            // break the lesson completion.
+            try {
+                const kg = require("../services/knowledgeGraphService");
+                const touch = await kg.recordTouch(meId, lesson._id, c._id);
+                if (touch.touched.length > 0) {
+                    await gameology.awardXp(meId, "concept_touched", {
+                        courseId: String(c._id),
+                        lessonId: String(lesson._id),
+                        concepts: touch.touched.map((t) => t.slug),
+                    });
+                }
+            } catch { /* best-effort */ }
+        }
+
+        // V3 — Boss Level: tripled XP + dedicated achievement check.
+        if (lesson.isBoss && !wasComplete) {
+            try {
+                await gameology.awardXp(meId, "boss_level_passed", {
+                    courseId: String(c._id),
+                    lessonId: String(lesson._id),
+                });
+            } catch { /* best-effort */ }
         }
 
         // On 100% completion: course_completed XP + mint certificate

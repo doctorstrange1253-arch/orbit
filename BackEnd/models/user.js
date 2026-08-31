@@ -363,6 +363,11 @@ const userSchema = new mongoose.Schema({
             unlockedAt: { type: Date, default: Date.now },
             _id:        false,
         }],
+        // V3 — Knowledge Graph. Per-concept mastery is kept inline as a
+        // small Map. Each entry: { score: 0..10, lastTouchedAt, courses[] }.
+        // Updated by knowledgeGraphService.recordTouch on every lesson
+        // completion; read by the Skill Map (V3-E) and ConceptPath API.
+        conceptMastery: { type: mongoose.Schema.Types.Mixed, default: {} },
     },
 
     // ─────────────────────────────────────────────────────────────────────

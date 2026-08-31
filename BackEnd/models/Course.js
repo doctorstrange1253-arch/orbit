@@ -31,6 +31,11 @@ const QuestionSchema = new mongoose.Schema({
     options:     { type: [String], required: true, validate: (v) => Array.isArray(v) && v.length >= 2 && v.length <= 6 },
     correctIdx:  { type: Number, required: true, min: 0 },
     explanation: { type: String, default: "", maxlength: 1000 },
+    // V3 — the friend-not-textbook rewrite of the explanation. Shown
+    // by the CoachQuiz (V3-D) when the student gets the answer wrong.
+    // The V2 `explanation` stays for backward compat; new code prefers
+    // `coachCopy` when present.
+    coachCopy:   { type: String, default: "", maxlength: 1200 },
 }, { _id: false });
 
 const QuizSchema = new mongoose.Schema({
@@ -48,6 +53,20 @@ const LessonSchema = new mongoose.Schema({
     resources:    { type: [ResourceSchema], default: [] },
     quiz:         { type: QuizSchema, default: () => ({}) },
     isFree:       { type: Boolean, default: false }, // free preview even if course is paid
+    // V3 — Game Engine fields. The Level Card reads these as the
+    // 2-3s pre-lesson card (promise / why / one thing). Boss levels
+    // use isBoss + bossChallenge for the dramatic entry. The AI
+    // suggest button in CourseBuilder populates these.
+    isBoss:            { type: Boolean, default: false },
+    promiseCopy:       { type: String, default: "", maxlength: 240 },
+    whyCopy:           { type: String, default: "", maxlength: 240 },
+    rememberCopy:      { type: String, default: "", maxlength: 240 },
+    bossChallenge:     { type: String, default: "", maxlength: 800 },
+    // Concepts this lesson touches — joined to the cross-course
+    // Knowledge Graph via the LessonConcept collection. Mentor can
+    // attach concepts in the CourseEditor; the AI suggest button also
+    // suggests 1-3 concept slugs from the lesson's title/description.
+    conceptSlugs:      { type: [String], default: [] },
 }, { _id: true });
 
 const CourseSchema = new mongoose.Schema({

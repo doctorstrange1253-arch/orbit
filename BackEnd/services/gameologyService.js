@@ -38,6 +38,13 @@ const XP_VALUES = Object.freeze({
     peer_help_posted:      5,
     streak_bonus:         20,
     achievement_unlocked:  0,   // logged as a row but the XP is in the achievement doc
+    // V3 — fired on every lesson completion alongside the Knowledge
+    // Graph recordTouch. The XpEvent is an audit row only; the
+    // conceptMastery map on the user doc is the actual data.
+    concept_touched:        0,
+    // V3 — Boss level passed. Worth 3x a normal lesson + special
+    // Boss achievement check (BOSS_FIRST / BOSS_5 / BOSS_25).
+    boss_level_passed:    150,
 });
 
 // ── Pure math helpers ────────────────────────────────────────────────────
