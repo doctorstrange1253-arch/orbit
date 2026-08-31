@@ -31,20 +31,21 @@ export const ROLE_META = {
 };
 
 // Pick the post-login landing route for a given roles array. Priority:
-//   1. Has mentor + student  → /student/sessions (paid, recent context)
-//   2. Has mentor only       → /mentor/hub
-//   3. Has student only      → /student/sessions
-//   4. peer_learner only     → /peer/dashboard
+//   1. Has mentor + student  → /student/universe (V3 My Universe home)
+//   2. Has mentor only       → /mentor/observatory (V3 The Observatory)
+//   3. Has student only      → /student/universe (V3 My Universe)
+//   4. peer_learner only     → /peer/dashboard (V3 The Pulse)
 //   5. Empty (shouldn't happen) → /peer/dashboard
 // Mirrors the role-prefixed URL scheme (see App.jsx + the three-window
 // refactor plan). The single-role peer_learner fallback lands on the peer
 // window's home because peer_learner is the baseline role every account
-// gets — it's the safest default.
+// gets — it's the safest default. V3 — all three landing routes are the
+// V3 soul homes (Pulse / Observatory / My Universe), not the V2 dashboards.
 export function getLandingRoute(roles) {
   const set = new Set(Array.isArray(roles) ? roles : ['peer_learner']);
-  if (set.has('mentor') && set.has('student')) return '/student/sessions';
-  if (set.has('mentor')) return '/mentor/hub';
-  if (set.has('student')) return '/student/sessions';
+  if (set.has('mentor') && set.has('student')) return '/student/universe';
+  if (set.has('mentor')) return '/mentor/observatory';
+  if (set.has('student')) return '/student/universe';
   return '/peer/dashboard';
 }
 

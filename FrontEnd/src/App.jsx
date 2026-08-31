@@ -30,6 +30,9 @@ import MagneticCursor from './components/fx/MagneticCursor';
 import CommandPalette from './components/fx/CommandPalette';
 import WindowSwitchOverlay from './components/fx/WindowSwitchOverlay';
 import XpToast from './components/cosmic/XpToast';
+// V3 — getLandingRoute now returns V3 soul-home routes; HomeRoute uses it
+// to send APK users to the right home on launch.
+import { getLandingRoute } from './store/authStore';
 // V3 — Soul layer. The TransitSequence overlay replaces V2's
 // WindowSwitchOverlay for users who don't have prefers-reduced-motion set.
 // The V2 overlay is kept mounted as a no-op for reduced-motion users (its
@@ -88,6 +91,13 @@ const CertificatePage    = lazy(() => import('./pages/CertificatePage'));
 const GameologyPage      = lazy(() => import('./pages/Gameology'));
 // V3 — Identity Selection bloom screen. Replaces the V2 3-radio role picker.
 const IdentitySelection  = lazy(() => import('./pages/IdentitySelection'));
+// V3 — Soul Homes: The Pulse (peer), The Observatory (mentor), My Universe
+// (student). These are the V3 routes for /peer/dashboard, /mentor/observatory,
+// /student/universe. The V2 pages (MySkills, MentorHub, MySessions) stay
+// imported and routed as deprecated aliases.
+const PulseV3            = lazy(() => import('./pages/peer/Pulse'));
+const ObservatoryV3      = lazy(() => import('./pages/mentor/Observatory'));
+const UniverseV3         = lazy(() => import('./pages/student/Universe'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -119,7 +129,13 @@ const isNativeApp = () => {
  *  (or /login when signed out). APK-only behavior — the web is unchanged. */
 const HomeRoute = () => {
   const token = useAuthStore((state) => state.token);
-  if (isNativeApp()) return <Navigate to={token ? '/peer/dashboard' : '/login'} replace />;
+  if (isNativeApp()) {
+    // V3 — APK lands on the user's soul home (Pulse / Observatory / Universe)
+    // based on their highest-priority role. Falls back to /peer/dashboard
+    // (The Pulse) which is the safest default.
+    const roles = useAuthStore.getState().user?.roles || [];
+    return <Navigate to={token ? getLandingRoute(roles) : '/login'} replace />;
+  }
   return <Landing />;
 };
 
@@ -687,7 +703,7 @@ function AppInner() {
         <Route path="/identity" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><IdentitySelection /></Suspense></ProtectedRoute>} />
 
         {/* ── Peer window (/peer/*) — peer_learner (always on) ─────── */}
-        <Route path="/peer/dashboard"   element={<ProtectedRoute><MySkills /></ProtectedRoute>} />
+        <Route path="/peer/dashboard"   element={<ProtectedRoute><Suspense fallback={<PageLoader />}><PulseV3 /></Suspense></ProtectedRoute>} />
         <Route path="/peer/browse"      element={<ProtectedRoute><BrowseSkills /></ProtectedRoute>} />
         <Route path="/peer/matches"     element={<ProtectedRoute><Matches /></ProtectedRoute>} />
         <Route path="/peer/connections" element={<ProtectedRoute><Connections /></ProtectedRoute>} />
@@ -697,6 +713,7 @@ function AppInner() {
         <Route path="/peer/calls/:roomId" element={<ProtectedRoute><VideoCall /></ProtectedRoute>} />
 
         {/* ── Mentor window (/mentor/*) — mentor ──────────────────── */}
+        <Route path="/mentor/observatory" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><ObservatoryV3 /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/mentor/hub"      element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorHub /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/mentor/sessions" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorSessions /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/mentor/earnings" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorEarnings /></Suspense></RoleGuard></ProtectedRoute>} />
@@ -708,6 +725,7 @@ function AppInner() {
         <Route path="/mentor/pact" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorPactHall /></Suspense></RoleGuard></ProtectedRoute>} />
 
         {/* ── Student window (/student/*) — student ────────────────── */}
+        <Route path="/student/universe"          element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><UniverseV3 /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/student/sessions"          element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><MySessions /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/student/mentors"           element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><Sessions /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/student/mentors/:userId"   element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><SessionDetail /></Suspense></RoleGuard></ProtectedRoute>} />
@@ -725,8 +743,8 @@ function AppInner() {
         <Route path="/sessions"            element={<Navigate to="/student/mentors" replace />} />
         <Route path="/sessions/:userId"    element={<LegacyRedirect to="/student/mentors/:userId" />} />
         <Route path="/session-room/:sessionId" element={<LegacyRedirect to="/student/room/:sessionId" />} />
-        <Route path="/my-sessions"         element={<Navigate to="/student/sessions" replace />} />
-        <Route path="/teach"               element={<Navigate to="/mentor/hub" replace />} />
+        <Route path="/my-sessions"         element={<Navigate to="/student/universe" replace />} />
+        <Route path="/teach"               element={<Navigate to="/mentor/observatory" replace />} />
         <Route path="/signup"              element={<Navigate to="/register" replace />} />
         <Route path="/signin"              element={<Navigate to="/login" replace />} />
 
