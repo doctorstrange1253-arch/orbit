@@ -108,6 +108,8 @@ import PulseCeremony from './soul/league/pulseCeremony';
 // genre the user flared for, the server emits signal-flare:responded;
 // this listener catches it and opens the PlanetMaterialization overlay.
 import { SignalFlareListenerMount } from './hooks/useSignalFlareListener.jsx';
+// V3 — Moderation page (mentor's private inbox).
+const ModerationV3 = lazy(() => import('./pages/Moderation'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -746,6 +748,8 @@ function AppInner() {
         <Route path="/mentor/courses/:id/edit" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorCourseEdit /></Suspense></RoleGuard></ProtectedRoute>} />
         {/* Mentor Pact Hall — the weekly mentor league page */}
         <Route path="/mentor/pact" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorPactHall /></Suspense></RoleGuard></ProtectedRoute>} />
+        {/* V3 — Moderation Inbox (mentor-only) */}
+        <Route path="/mentor/moderation" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><ModerationV3 /></Suspense></RoleGuard></ProtectedRoute>} />
 
         {/* ── Student window (/student/*) — student ────────────────── */}
         <Route path="/student/universe"          element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><UniverseV3 /></Suspense></RoleGuard></ProtectedRoute>} />

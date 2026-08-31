@@ -34,6 +34,9 @@ const knowledgeGraphRoutes = require("./routes/knowledgeGraphRoutes");
 // V3 — Signal Flares: "I need this genre" requests. Powers the
 // Waiting Room and the Planet Materialization ceremony.
 const signalFlareRoutes = require("./routes/signalFlareRoutes");
+// V3 — Moderation (Yellow Card) + Cross-Soul Economy (MentorInvite).
+const moderationRoutes = require("./routes/moderationRoutes");
+const crossSoulWorker = require("./workers/crossSoulWorker");
 
 // Middleware
 const errorHandler = require("./middleware/errorHandler");
@@ -707,6 +710,7 @@ app.use("/api/gameology", gameologyRoutes);
 app.use("/api/pact", pactRoutes);
 app.use("/api/knowledge", knowledgeGraphRoutes);
 app.use("/api/flares", signalFlareRoutes);
+app.use("/api/moderation", moderationRoutes);
 
 // ── Admin Command Center (hardened, hidden) ────────────────────────────────
 // Namespaced under an unguessable base; every route 404-cloaks for non-admins.
@@ -826,6 +830,10 @@ mongoose.connect(process.env.MONGO_URI, {
                 .then(() => console.log("[migrate] pulse-league remap done — you may now unset RUN_PULSE_LEAGUE_MIGRATION."))
                 .catch((e) => console.error("[migrate] pulse-league remap failed:", e.message));
         }
+
+        // V3 — start the cross-soul weekly worker. Runs topStudentScan
+        // + topSwapperScan at Sunday 23:59 UTC. No-op env var required.
+        crossSoulWorker.start();
 
         // One-shot achievement catalog seed. Idempotent. Set
         // RUN_ACHIEVEMENT_SEED=true on first boot only.

@@ -89,6 +89,9 @@ router.post("/:id/lessons/reorder", mentor, c.reorderLessons);
 
 // ── Enrollment + progress ───────────────────────────────────────────────
 router.post("/:id/enroll", auth, c.enroll);
+// V3 — signed-URL stream endpoint. Used by the player for paid lessons.
+// Free lessons still go through this (the URL is the same, just signed).
+router.post("/:id/lessons/:lessonId/sign", auth, c.signLessonStream);
 router.get("/:id/enrollments", mentor, c.listEnrollments);
 router.post(
     "/:id/lessons/:lessonId/complete",

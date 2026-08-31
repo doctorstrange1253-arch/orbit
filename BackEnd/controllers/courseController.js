@@ -757,6 +757,43 @@ exports.deleteComment = async (req, res) => {
     }
 };
 
+// V3 — Copyright layer 3: signed URL streaming. The student hits this
+// endpoint to get a short-lived signed Cloudinary URL + a per-session
+// `viewKey`. The player uses the viewKey to render the forensic + visible
+// watermarks. Free lessons still get a signed URL (5-min TTL), but
+// without the watermark layer.
+exports.signLessonStream = async (req, res) => {
+    try {
+        const meId = req.user.id;
+        const { id, lessonId } = req.params;
+        // Verify the user is enrolled (or the lesson is free).
+        const c = await Course.findById(id).select("lessons isPublished").lean();
+        if (!c || !c.isPublished) return res.status(404).json({ message: "Course not found" });
+        const lesson = (c.lessons || []).find((l) => String(l._id) === String(lessonId));
+        if (!lesson) return res.status(404).json({ message: "Lesson not found" });
+
+        // Enforce enrollment unless the lesson is free.
+        if (!lesson.isFree) {
+            const enrollment = await Enrollment.findOne({ userId: meId, courseId: id }).lean();
+            if (!enrollment) return res.status(403).json({ message: "Enroll to watch this lesson" });
+        }
+
+        if (!lesson.videoUrl) return res.status(404).json({ message: "No video for this lesson" });
+
+        const streamSign = require("../services/streamSignService");
+        const signed = streamSign.sign({
+            userId: meId,
+            lessonId,
+            videoUrl: lesson.videoUrl,
+            videoPublicId: lesson.videoPublicId,
+        });
+        return res.json(signed);
+    } catch (err) {
+        console.error("signLessonStream:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 // ── Certificate retrieval ───────────────────────────────────────────────
 exports.getCertificate = async (req, res) => {
     try {
