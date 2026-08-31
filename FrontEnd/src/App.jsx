@@ -104,6 +104,10 @@ const SkillMapPublicV3   = lazy(() => import('./pages/SkillMapPublic'));
 // V3 — Pulse Ceremony (the rank-up ritual). Imported eagerly because
 // it's tiny and the store is read at module level.
 import PulseCeremony from './soul/league/pulseCeremony';
+// V3 — Signal Flare listener. When a mentor publishes a course in a
+// genre the user flared for, the server emits signal-flare:responded;
+// this listener catches it and opens the PlanetMaterialization overlay.
+import { SignalFlareListenerMount } from './hooks/useSignalFlareListener.jsx';
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -627,6 +631,9 @@ function AppInner() {
           usePulseCeremony.start(tier) when a student's Pulse tier
           crosses a threshold. Sits on document.body via portal. */}
       <PulseCeremony />
+      {/* V3 — Signal Flare listener: opens PlanetMaterialization when
+          a mentor publishes a course in a genre the user flared for. */}
+      <SignalFlareListenerMount />
       <ToastContainer />
       <Toaster 
         position="bottom-right" 

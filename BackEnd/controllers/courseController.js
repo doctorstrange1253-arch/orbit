@@ -229,9 +229,42 @@ exports.publishCourse = async (req, res) => {
         if (!(await ensureOwnership(c, req.user.id))) return res.status(403).json({ message: "Not your course" });
         const withVideo = (c.lessons || []).filter((l) => l.videoUrl).length;
         if (withVideo < 1) return res.status(409).json({ message: "Add at least one lesson with a video before publishing" });
+        const wasAlreadyPublished = !!c.isPublished;
         c.isPublished = true;
         c.publishedAt = c.publishedAt || new Date();
         await c.save();
+
+        // V3 — Signal Flares. If this publish *answers* any active flares
+        // (i.e. the course is the first in its constellation+genre), mark
+        // them as responded and emit the "flare-landed" socket event so
+        // the original students get the Planet Materialization animation.
+        // We only fire on a fresh publish (not on a re-publish).
+        if (!wasAlreadyPublished) {
+            try {
+                const flares = require("../services/signalFlareService");
+                const responderIds = await flares.markResponded(
+                    c.constellation || "general",
+                    c.category || "general",
+                    c._id
+                );
+                if (responderIds.length > 0) {
+                    const io = req.app.get("io");
+                    if (io) {
+                        for (const uid of responderIds) {
+                            io.to(`user_${uid}`).emit("signal-flare:responded", {
+                                courseId: String(c._id),
+                                courseTitle: c.title,
+                                constellation: c.constellation || "general",
+                                genre: c.category || "general",
+                            });
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn("[courses] flare markResponded failed:", e.message);
+            }
+        }
+
         return res.json({ ok: true, isPublished: true });
     } catch (err) {
         console.error("publishCourse:", err);

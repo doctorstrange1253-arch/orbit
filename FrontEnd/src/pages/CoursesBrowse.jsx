@@ -7,6 +7,9 @@ import { courses } from '../services/courses';
 import CourseCard from '../components/courses/CourseCard';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
 import EmptyState from '../components/common/EmptyState';
+// V3 — Signal Flare Waiting Room. Mounted in the empty state of the
+// catalog so users can ask for a genre that doesn't exist yet.
+import WaitingRoom from '../soul/signalFlare/WaitingRoom';
 
 const SORTS = [
     { id: 'newest',  label: 'Newest' },
@@ -98,11 +101,19 @@ const CoursesBrowse = () => {
                 {isLoading ? (
                     <div className="text-text-secondary text-sm py-12 text-center">Loading courses…</div>
                 ) : items.length === 0 ? (
-                    <EmptyState
-                        icon={<Sparkles className="w-8 h-8" />}
-                        title="No courses match"
-                        body="Try widening the filters or searching for a different topic."
-                    />
+                    <div className="grid lg:grid-cols-[1fr_auto] gap-4 items-start">
+                      {/* V3 — the Waiting Room replaces the empty state when
+                          the user is filtering by a category/genre. The
+                          user can fire a Signal Flare. If they're not
+                          filtering by category, the V2 EmptyState is
+                          shown alongside as a "no results" message. */}
+                      <WaitingRoom constellation="general" genre={searchParams.get('category') || 'general'} />
+                      <EmptyState
+                          icon={<Sparkles className="w-8 h-8" />}
+                          title="No courses match"
+                          body="Try widening the filters or searching for a different topic."
+                      />
+                    </div>
                 ) : (
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
