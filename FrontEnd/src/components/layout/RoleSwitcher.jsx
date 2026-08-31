@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore, ROLE_META, getCurrentWindow } from '../../store/authStore';
 import { useWindowSwitchStore } from '../fx/WindowSwitchOverlay';
-import { Users, GraduationCap, BookOpen, ChevronDown } from 'lucide-react';
+import { Users, GraduationCap, BookOpen, ChevronDown, Sparkles } from 'lucide-react';
 
 // Icons per role — small set, inline so we don't pull from elsewhere.
 const ROLE_ICONS = {
@@ -61,6 +61,12 @@ const RoleSwitcher = () => {
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
   const buttonRef = useRef(null);
+  // Long-press detector — V3 binds a 600ms long-press on the role chip to
+  // open the Identity Selection bloom screen (`/identity`). Pointerdown
+  // starts a timer; pointerup / pointerleave / pointercancel clears it.
+  const longPressTimerRef = useRef(null);
+  const longPressFiredRef = useRef(false);
+  const LONG_PRESS_MS = 600;
 
   const userRoles = Array.isArray(user?.roles) && user.roles.length > 0
     ? user.roles
@@ -105,6 +111,31 @@ const RoleSwitcher = () => {
   // Close on route change so the dropdown doesn't linger over the new page.
   useEffect(() => { setOpen(false); }, [location.pathname]);
 
+  // V3 — long-press to open Identity Selection. The bloom screen is the
+  // ceremonial way to switch souls; the dropdown is the fast way. A 600ms
+  // hold on the chip navigates to /identity, which renders the bloom.
+  const clearLongPress = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  };
+  const onPointerDown = () => {
+    if (!isMultiRole) return; // single-role users don't need the bloom screen
+    longPressFiredRef.current = false;
+    clearLongPress();
+    longPressTimerRef.current = setTimeout(() => {
+      longPressFiredRef.current = true;
+      setOpen(false);
+      navigate('/identity');
+    }, LONG_PRESS_MS);
+  };
+  const onPointerEnd = () => {
+    clearLongPress();
+  };
+  // Clean up the timer if the component unmounts mid-press.
+  useEffect(() => () => clearLongPress(), []);
+
   // Single-role: static chip. Mirrors the pre-refactor Navbar chip exactly
   // (same classes, same color, same uppercase short label) so single-role
   // users see no behavior change.
@@ -141,10 +172,22 @@ const RoleSwitcher = () => {
       <button
         ref={buttonRef}
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          // If a long-press already navigated to /identity, swallow this
+          // click so the dropdown doesn't immediately open on the new page.
+          if (longPressFiredRef.current) {
+            longPressFiredRef.current = false;
+            return;
+          }
+          setOpen((v) => !v);
+        }}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerEnd}
+        onPointerLeave={onPointerEnd}
+        onPointerCancel={onPointerEnd}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label="Switch window"
+        aria-label="Switch window (long-press for the bloom screen)"
         className={[
           'inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded transition-all',
           ACCENT[displayRole].chip,
@@ -156,6 +199,15 @@ const RoleSwitcher = () => {
           size={10}
           strokeWidth={2.5}
           className={'transition-transform ' + (open ? 'rotate-180' : '')}
+        />
+        {/* V3 — small sparkles hint for the long-press bloom screen. Tooltip
+            explains it on hover. Visually subtle so it doesn't compete with
+            the dropdown chevron. */}
+        <Sparkles
+          size={9}
+          strokeWidth={2.5}
+          className="ml-0.5 opacity-60"
+          aria-hidden
         />
       </button>
 

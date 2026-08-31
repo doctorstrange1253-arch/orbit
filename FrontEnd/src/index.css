@@ -38,6 +38,35 @@
   --animate-fade-in: fadeIn 0.5s ease both;
   --animate-fade-in-up: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-shimmer: shimmer 2s linear infinite;
+
+  /* ─── V3 SOUL LAYER ─── astronomical type scale (Supernova / Orbit / Stardust)
+     The scale lives in @theme so Tailwind v4 generates utility classes:
+     .text-supernova, .text-orbit, .text-orbit-bold, .text-stardust,
+     .text-stardust-eyebrow. Color comes from --soul-accent-1 (set on
+     <html> by useSoul() per active soul). */
+  --color-supernova: var(--soul-accent-1, #00c6ff);
+  --color-orbit: var(--text-primary);
+  --color-stardust: var(--text-muted);
+
+  --text-supernova: 700 clamp(2.5rem, 6vw, 4.5rem) / 0.95 'Space Grotesk', 'Poppins', system-ui;
+  --text-supernova--line-height: 0.95;
+  --text-supernova--font-weight: 700;
+
+  --text-orbit: 400 clamp(1rem, 1.2vw, 1.125rem) / 1.55 'Inter', 'Open Sans', system-ui;
+  --text-orbit--line-height: 1.55;
+
+  --text-orbit-bold: 700 clamp(1rem, 1.2vw, 1.125rem) / 1.4 'Inter', 'Open Sans', system-ui;
+  --text-orbit-bold--line-height: 1.4;
+  --text-orbit-bold--font-weight: 700;
+
+  --text-stardust: 500 0.75rem / 1.3 'JetBrains Mono', ui-monospace, monospace;
+  --text-stardust--line-height: 1.3;
+  --text-stardust--font-weight: 500;
+
+  --text-stardust-eyebrow: 700 0.6875rem / 1.0 'JetBrains Mono', ui-monospace, monospace;
+  --text-stardust-eyebrow--line-height: 1.0;
+  --text-stardust-eyebrow--font-weight: 700;
+  --text-stardust-eyebrow--letter-spacing: 0.18em;
 }
 
 /* ─── BASE ─── */
@@ -88,6 +117,29 @@
     --toast-text: #ffffff;
     --toast-border: rgba(255, 255, 255, 0.1);
     --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+    /* ─── V3 NEBULA PALETTE ─── 5 nebula pairs + Void.
+       Each pair is (from, to) for a soul's gradient. The default active
+       accent (--soul-accent-1 / --soul-accent-2) is set to Pulsar (Peer) at
+       boot; useSoul() rewrites these on every page to the active soul. */
+    --nebula-aurora-1: #a78bfa;
+    --nebula-aurora-2: #3b82f6;
+    --nebula-solaris-1: #fbbf24;
+    --nebula-solaris-2: #f43f5e;
+    --nebula-pulsar-1: #22d3ee;
+    --nebula-pulsar-2: #0d9488;
+    --nebula-supernova-1: #fff8e1;
+    --nebula-supernova-2: #fde68a;
+    --nebula-void-1: #1e1b4b;
+    --nebula-void-2: #581c87;
+
+    /* The active soul's two-stop gradient endpoints. useSoul() rewrites
+       these on every navigation. Default = Pulsar (Peer) until useSoul
+       has had a chance to read the URL. */
+    --soul-accent-1: var(--nebula-pulsar-1);
+    --soul-accent-2: var(--nebula-pulsar-2);
+    --soul-gradient: linear-gradient(135deg, var(--soul-accent-1), var(--soul-accent-2));
+    --soul-glow: var(--soul-accent-1);
 
     /* Elevated OPAQUE panel surface — popovers, dropdowns, cards over the app
        bg (v7 §2). Previously referenced as var(--surface) but never defined,
@@ -245,6 +297,61 @@
   ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--accent-1); }
 }
+
+/* ─── V3 SOUL LAYER: utility classes ───
+   The astronomical type scale is defined in @theme (text-supernova /
+   text-orbit / text-orbit-bold / text-stardust / text-stardust-eyebrow).
+   The few additional soul-aware utility classes below can't be expressed
+   in pure @theme because they read CSS custom properties that useSoul()
+   rewrites at runtime. */
+
+/* `text-soul-accent` — text in the active soul's primary accent. Re-color
+   on every navigation by the useSoul-driven effect in App.jsx. */
+.text-soul-accent {
+  color: var(--soul-accent-1);
+}
+
+/* `bg-soul-gradient` — a translucent gradient using the active soul's two
+   stops. Useful for hero panels, achievement banners, the Identity Bloom
+   body's center glow. */
+.bg-soul-gradient {
+  background: var(--soul-gradient);
+}
+
+/* `border-soul-glow` — a thin border in the active soul's primary accent.
+   Lower opacity than text-soul-accent so it reads as a halo, not a label. */
+.border-soul-glow {
+  border-color: color-mix(in oklab, var(--soul-accent-1) 32%, transparent);
+}
+
+/* `shadow-soul-glow` — a per-soul tinted shadow. The default shadow-card
+   token is a black-ish rgba; this is its V3 replacement, color-mixed from
+   the active soul. Use on cards, panels, and elevations that should read
+   as "of the current soul". */
+.shadow-soul-glow {
+  box-shadow: 0 8px 24px -8px color-mix(in oklab, var(--soul-accent-1) 22%, transparent),
+              0 2px 8px -4px color-mix(in oklab, var(--soul-accent-2) 14%, transparent);
+}
+
+/* The "selected body" pulse for the IdentityBloom body. Two layered
+   animations: a slow scale pulse and a soft glow. Honors prefers-reduced-
+   motion via a guard inside the body component. */
+@keyframes soul-bloom-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+.animate-soul-bloom-pulse { animation: soul-bloom-pulse 3.5s ease-in-out infinite; }
+
+@keyframes soul-bloom-shimmer {
+  0%, 100% { filter: hue-rotate(0deg); }
+  50%      { filter: hue-rotate(12deg); }
+}
+.animate-soul-bloom-shimmer { animation: soul-bloom-shimmer 6s ease-in-out infinite; }
+
+@keyframes soul-bloom-spin {
+  to { transform: rotate(360deg); }
+}
+.animate-soul-bloom-spin { animation: soul-bloom-spin 4s linear infinite; }
 
 /* ─── KEYFRAMES ─── */
 @keyframes slideUp {

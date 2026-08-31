@@ -28,9 +28,17 @@ import GodMode from './components/dev/GodMode';
 import WarpTransition from './components/fx/WarpTransition';
 import MagneticCursor from './components/fx/MagneticCursor';
 import CommandPalette from './components/fx/CommandPalette';
-import WindowSwitchOverlay, { useWindowSwitchStore } from './components/fx/WindowSwitchOverlay';
-import { getCurrentWindow } from './store/authStore';
+import WindowSwitchOverlay from './components/fx/WindowSwitchOverlay';
 import XpToast from './components/cosmic/XpToast';
+// V3 — Soul layer. The TransitSequence overlay replaces V2's
+// WindowSwitchOverlay for users who don't have prefers-reduced-motion set.
+// The V2 overlay is kept mounted as a no-op for reduced-motion users (its
+// own internal guard short-circuits). The hook is imported for the
+// URL-watcher effect below.
+import TransitSequence from './soul/TransitSequence';
+import { useIdentityTransit } from './soul/identityStore';
+import { soulForPathname } from './soul/registry';
+import { getLayeredNebula } from './soul/palette';
 
 // Eagerly loaded (first paint)
 import Landing from './pages/Landing';
@@ -78,6 +86,8 @@ const CourseLearn        = lazy(() => import('./pages/CourseLearn'));
 const CertificatePage    = lazy(() => import('./pages/CertificatePage'));
 // Gameology (Phase F): student lifetime identity dashboard.
 const GameologyPage      = lazy(() => import('./pages/Gameology'));
+// V3 — Identity Selection bloom screen. Replaces the V2 3-radio role picker.
+const IdentitySelection  = lazy(() => import('./pages/IdentitySelection'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -190,17 +200,41 @@ function AppInner() {
   const location = useLocation();
 
   // Watch the URL: whenever the current window prefix CHANGES (e.g. /peer/*
-  // → /mentor/*), trigger the cinematic window-switch overlay. First-load
-  // navigation does NOT fire — the overlay is meant for actual transitions,
-  // not the initial page render.
-  const prevWindowRef = useRef(null);
+  // → /mentor/*), trigger the cinematic V3 Transit Sequence ceremony. The
+  // V2 WindowSwitchOverlay stays mounted (it short-circuits under reduced-
+  // motion; here we *replace* the V2 trigger with the V3 one and let V2
+  // become a no-op fallback for users who set prefers-reduced-motion in
+  // their OS).
+  //
+  // First-load navigation does NOT fire — the ceremony is meant for actual
+  // transitions, not the initial page render.
+  const prevSoulRef = useRef(null);
   useEffect(() => {
-    const newWindow = getCurrentWindow(location.pathname);
-    const prevWindow = prevWindowRef.current;
-    if (prevWindow && newWindow && prevWindow !== newWindow) {
-      useWindowSwitchStore.getState().start(newWindow);
+    const newSoul = soulForPathname(location.pathname);
+    const prevSoul = prevSoulRef.current;
+    if (prevSoul && newSoul && prevSoul !== newSoul) {
+      // Only fire the ceremony when the user actually navigated between
+      // souls. A re-render that keeps the same path does nothing.
+      useIdentityTransit.getState().start({ from: prevSoul, to: newSoul });
     }
-    if (newWindow) prevWindowRef.current = newWindow;
+    if (newSoul) prevSoulRef.current = newSoul;
+  }, [location.pathname]);
+
+  // Sync the active soul's nebula into the CSS custom properties so every
+  // `text-soul-accent` / `bg-soul-gradient` / `shadow-soul-glow` consumer
+  // re-tints on every navigation. This is the V3 soul layer's whole reason
+  // for being: the *same* component renders differently per active soul.
+  useEffect(() => {
+    const activeSoul = soulForPathname(location.pathname);
+    if (!activeSoul) return;
+    const nb = getLayeredNebula(activeSoul, null);
+    if (!nb) return;
+    const root = document.documentElement;
+    root.style.setProperty('--soul-accent-1', nb.from);
+    root.style.setProperty('--soul-accent-2', nb.to);
+    root.style.setProperty('--soul-gradient', `linear-gradient(135deg, ${nb.from}, ${nb.to})`);
+    root.style.setProperty('--soul-glow', nb.from);
+    root.setAttribute('data-active-soul', activeSoul);
   }, [location.pathname]);
 
   // Ensure the signed-in user is hydrated app-wide. On native (APK) OAuth the
@@ -561,6 +595,12 @@ function AppInner() {
       <CommandPalette />
       {/* Cinematic cross-window transition overlay (peer ⇄ mentor ⇄ student) */}
       <WindowSwitchOverlay />
+      {/* V3 — Transit Sequence: 2.5s soul-switching ceremony. Replaces the
+          V2 overlay above for users without prefers-reduced-motion; the V2
+          overlay remains mounted as the reduced-motion fallback (its own
+          guard short-circuits it). The store (`useIdentityTransit`) is the
+          single source of truth, started by the URL-watcher effect above. */}
+      <TransitSequence />
       <ToastContainer />
       <Toaster 
         position="bottom-right" 
@@ -640,6 +680,11 @@ function AppInner() {
         <Route path="/courses/:id/certificate/:certId"            element={<ProtectedRoute><Suspense fallback={<PageLoader />}><CertificatePage /></Suspense></ProtectedRoute>} />
         {/* Gameology — student lifetime identity dashboard (Phase F) */}
         <Route path="/gameology" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><GameologyPage /></Suspense></ProtectedRoute>} />
+        {/* V3 — Identity Selection bloom screen. Replaces the V2 3-radio role
+            picker. The page is full-bleed (no Layout chrome) so the bloom is
+            the entire moment. Auth-required: signing in lands here only for
+            users who have not yet picked a soul. */}
+        <Route path="/identity" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><IdentitySelection /></Suspense></ProtectedRoute>} />
 
         {/* ── Peer window (/peer/*) — peer_learner (always on) ─────── */}
         <Route path="/peer/dashboard"   element={<ProtectedRoute><MySkills /></ProtectedRoute>} />
