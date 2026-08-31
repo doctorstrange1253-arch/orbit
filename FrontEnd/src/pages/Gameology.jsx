@@ -11,6 +11,10 @@ import StreakFlame from '../components/cosmic/StreakFlame';
 import LeagueTable from '../components/cosmic/LeagueTable';
 import HolographicCard from '../components/fx/HolographicCard';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
+// V3 — Pulse tier indicator + transparent formula popover
+import ThresholdIndicator from '../soul/league/ThresholdIndicator';
+import TransparentFormula from '../soul/league/TransparentFormula';
+import { TIERS } from '../soul/league/tierMeta';
 
 const xpForLevel = (l) => 100 * Math.max(0, l - 1) ** 2;
 
@@ -113,11 +117,30 @@ const Gameology = () => {
                         </div>
                         <div className="flex md:flex-col items-center md:items-end gap-3 md:gap-2">
                             <StreakFlame />
-                            <div className={`px-2.5 py-1 rounded-pill border ${leagueTint.border} bg-gradient-to-r ${leagueTint.from}`}>
-                                <span className={`text-[10px] font-black uppercase tracking-widest ${leagueTint.text}`}>
-                                    {leagueTint.label} · {weeklyXp} this week
-                                </span>
+                            {/* V3 — weekly tier chip + threshold indicator + formula
+                                popover. The tier name (Pulse tier) replaces the V2
+                                league label; the threshold indicator appears when
+                                the user is within 10% of the next tier; the
+                                "i" button opens the transparent formula. */}
+                            <div className="flex items-center gap-2 flex-wrap justify-end">
+                              <div
+                                className="px-2.5 py-1 rounded-pill border"
+                                style={{
+                                  background: (() => {
+                                    const m = TIERS[leagueId];
+                                    return m ? `linear-gradient(135deg, ${m.from}, ${m.to})` : 'rgba(255,255,255,0.04)';
+                                  })(),
+                                  border: '1px solid rgba(255,255,255,0.12)',
+                                  color: '#0f172a',
+                                }}
+                              >
+                                  <span className="text-[10px] font-black uppercase tracking-widest">
+                                      {(TIERS[leagueId] || { label: leagueId }).label} · {weeklyXp} this week
+                                  </span>
+                              </div>
+                              <ThresholdIndicator weeklyXp={weeklyXp} currentTier={leagueId} />
                             </div>
+                            <TransparentFormula />
                         </div>
                     </div>
                     <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3 text-center">

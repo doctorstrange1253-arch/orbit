@@ -62,12 +62,58 @@ function xpForLevel(level) {
 }
 
 function leagueForWeeklyXp(weeklyXp) {
-    if (weeklyXp >= 10000) return "legend";
-    if (weeklyXp >=  5000) return "diamond";
-    if (weeklyXp >=  2000) return "platinum";
-    if (weeklyXp >=   500) return "gold";
-    if (weeklyXp >=   100) return "silver";
-    return "bronze";
+    // V3 — 8 tiers Dust→Singularity. The tiers are named after cosmic
+    // career paths, not generic ranks. The XP thresholds are wider at
+    // the top so the late game feels earned, not grindable.
+    if (weeklyXp >= 50000) return "singularity";
+    if (weeklyXp >= 20000) return "pulsar";
+    if (weeklyXp >= 10000) return "nebula";
+    if (weeklyXp >=  5000) return "giant";
+    if (weeklyXp >=  2000) return "star";
+    if (weeklyXp >=   500) return "comet";
+    if (weeklyXp >=   100) return "meteor";
+    return "dust";
+}
+
+// V3 — ordered list of the 8 tiers, low → high. Used for the LeagueTable
+// ordering + the Pulse Ceremony's "next tier" calculation.
+const TIERS = Object.freeze([
+    "dust", "meteor", "comet", "star", "giant", "nebula", "pulsar", "singularity",
+]);
+
+// V3 — the XP threshold for the *start* of each tier. Reads from
+// leagueForWeeklyXp thresholds: a tier's threshold is the lowest
+// weeklyXp that maps to it. The "next tier" is whichever threshold
+// the user is approaching; the "previous tier" is the highest one
+// they've already cleared.
+const TIER_THRESHOLDS = Object.freeze({
+    dust:        0,
+    meteor:    100,
+    comet:     500,
+    star:     2000,
+    giant:    5000,
+    nebula:  10000,
+    pulsar:  20000,
+    singularity: 50000,
+});
+
+function tierIndex(tier) {
+    return TIERS.indexOf(tier);
+}
+
+// V3 — "Approaching <next tier>". True when the user is within 10% of
+// the next tier's threshold. Used by the ThresholdIndicator in the
+// Gameology page header.
+function isApproachingNextTier(weeklyXp, currentTier) {
+    const i = tierIndex(currentTier);
+    if (i < 0 || i >= TIERS.length - 1) return null;  // already at top
+    const next = TIERS[i + 1];
+    const threshold = TIER_THRESHOLDS[next];
+    const span = threshold - (TIER_THRESHOLDS[currentTier] || 0);
+    const distance = threshold - weeklyXp;
+    if (distance <= 0) return null;
+    if (distance / span <= 0.10) return next;
+    return null;
 }
 
 /** "YYYY-Www" (ISO week, UTC). */
@@ -399,10 +445,14 @@ module.exports = {
     XP_VALUES,
     MAX_LEVEL,
     ACHIEVEMENT_DEFAULTS,
+    TIERS,
+    TIER_THRESHOLDS,
     // pure math
     computeLevel,
     xpForLevel,
     leagueForWeeklyXp,
+    tierIndex,
+    isApproachingNextTier,
     isoWeek,
     todayUTC,
     tickStreak,

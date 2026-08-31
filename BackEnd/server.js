@@ -812,6 +812,17 @@ mongoose.connect(process.env.MONGO_URI, {
                 .catch((e) => console.error("[migrate] pact backfill failed:", e.message));
         }
 
+        // V3 — one-shot Pulse league remap (V2's 6 tiers → V3's 8).
+        // Maps bronze→dust, silver→meteor, gold→comet, platinum→star,
+        // diamond→giant, legend→nebula. Pulsar + singularity start empty;
+        // users earn them in V3. Idempotent. Set RUN_PULSE_LEAGUE_MIGRATION=true
+        // on first V3 boot only.
+        if (process.env.RUN_PULSE_LEAGUE_MIGRATION === "true") {
+            require("./scripts/migratePulseLeague").main()
+                .then(() => console.log("[migrate] pulse-league remap done — you may now unset RUN_PULSE_LEAGUE_MIGRATION."))
+                .catch((e) => console.error("[migrate] pulse-league remap failed:", e.message));
+        }
+
         // One-shot achievement catalog seed. Idempotent. Set
         // RUN_ACHIEVEMENT_SEED=true on first boot only.
         if (process.env.RUN_ACHIEVEMENT_SEED === "true") {

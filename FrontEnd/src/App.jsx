@@ -101,6 +101,9 @@ const UniverseV3         = lazy(() => import('./pages/student/Universe'));
 // V3 — Skill Map. The caller's constellation + the public shareable URL.
 const SkillMapV3         = lazy(() => import('./pages/SkillMap'));
 const SkillMapPublicV3   = lazy(() => import('./pages/SkillMapPublic'));
+// V3 — Pulse Ceremony (the rank-up ritual). Imported eagerly because
+// it's tiny and the store is read at module level.
+import PulseCeremony from './soul/league/pulseCeremony';
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -620,6 +623,10 @@ function AppInner() {
           guard short-circuits it). The store (`useIdentityTransit`) is the
           single source of truth, started by the URL-watcher effect above. */}
       <TransitSequence />
+      {/* V3 — Pulse Ceremony: the rank-up ritual. Fires from
+          usePulseCeremony.start(tier) when a student's Pulse tier
+          crosses a threshold. Sits on document.body via portal. */}
+      <PulseCeremony />
       <ToastContainer />
       <Toaster 
         position="bottom-right" 
