@@ -17,6 +17,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSoul } from '../../hooks/useSoul';
+// V3 — haptic + sound on star tap.
+import { Haptic } from '../haptics';
+import { SoulSound } from '../soundLibrary';
 
 const _isReducedMotion = () => {
   if (typeof window === 'undefined' || !window.matchMedia) return false;
@@ -196,6 +199,8 @@ const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
       }
     }
     if (nearest) {
+      Haptic.light();
+      SoulSound.pulseTick({ soul: 'mentor' });
       if (typeof onSelect === 'function') onSelect(nearest);
       else navigate(`/profile/${nearest.id}`);
     }

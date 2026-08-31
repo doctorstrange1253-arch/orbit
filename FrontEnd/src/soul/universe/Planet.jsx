@@ -22,6 +22,9 @@
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { useSoul } from '../../hooks/useSoul';
+// V3 — haptic + sound on planet tap (the soul "enters" the planet).
+import { Haptic } from '../haptics';
+import { SoulSound } from '../soundLibrary';
 
 const _isReducedMotion = () => {
   if (typeof window === 'undefined' || !window.matchMedia) return false;
@@ -52,7 +55,13 @@ const Planet = ({ enrollment, onZoom, size = 110, index = 0 }) => {
   return (
     <motion.button
       type="button"
-      onClick={() => typeof onZoom === 'function' && onZoom(enrollment, course)}
+      onClick={() => {
+        if (typeof onZoom === 'function') {
+          Haptic.light();
+          SoulSound.pulseTick({ soul: 'student' });
+          onZoom(enrollment, course);
+        }
+      }}
       className="group relative flex flex-col items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-full"
       style={{ width: size, height: size + 50 }}
       whileHover={reduced ? undefined : { scale: 1.05 }}

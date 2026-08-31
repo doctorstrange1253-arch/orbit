@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, Check, Loader2 } from 'lucide-react';
+// V3 — haptic + sound on lesson completion (the "in-the-body" moment).
+import { Haptic } from '../../soul/haptics';
+import { SoulSound } from '../../soul/soundLibrary';
 
 /**
  * LessonPlayer — frosted video player wrapper.
@@ -11,6 +14,9 @@ import { Play, Pause, Volume2, VolumeX, Maximize, Check, Loader2 } from 'lucide-
  * The Cloudinary URL pattern `https://res.cloudinary.com/.../video/upload/...`
  * plays directly in <video> with no extra setup. We mark complete via the
  * parent's completeLesson() call, not from inside this component.
+ *
+ * V3 — completion fires Haptic.medium + SoulSound.levelUp so the moment
+ * lands in the body, not just on the screen.
  */
 const LessonPlayer = ({ lesson, onComplete, isCompleted, isMarkingComplete }) => {
     const videoRef = useRef(null);
@@ -34,6 +40,10 @@ const LessonPlayer = ({ lesson, onComplete, isCompleted, isMarkingComplete }) =>
         setProgress(pct);
         if (!completeFiredRef.current && pct >= 90 && onComplete) {
             completeFiredRef.current = true;
+            // V3 — the lesson-complete confirmation: haptic first (instant),
+            // then the rising chord (levelUp reads the soul's voice).
+            Haptic.medium();
+            SoulSound.levelUp({ soul: 'student' });
             onComplete();
         }
     };

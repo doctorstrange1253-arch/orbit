@@ -17,6 +17,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useSoul } from '../../hooks/useSoul';
+// V3 — haptic + sound on constellation star tap.
+import { Haptic } from '../haptics';
+import { SoulSound } from '../soundLibrary';
 
 const _isReducedMotion = () => {
   if (typeof window === 'undefined' || !window.matchMedia) return false;
@@ -204,7 +207,11 @@ const ConstellationCanvas = ({ data, width = 800, height = 560, onSelectStar }) 
         best = s;
       }
     }
-    if (best && typeof onSelectStar === 'function') onSelectStar(best);
+    if (best && typeof onSelectStar === 'function') {
+      Haptic.light();
+      SoulSound.pulseTick({ soul: 'student' });
+      onSelectStar(best);
+    }
   };
 
   return (
