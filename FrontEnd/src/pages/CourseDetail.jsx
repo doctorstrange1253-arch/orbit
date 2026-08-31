@@ -9,6 +9,13 @@ import EnrollButton from '../components/courses/EnrollButton';
 import CommentThread from '../components/courses/CommentThread';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
 import PactBadge from '../components/pact/PactBadge';
+// V3 — Course Studio. The V2 curriculum accordion is replaced with a
+// spatial Course Map (soul/studio/CourseMap.jsx). Tapping a node fires
+// a VideoArrival (600ms) or BossCeremony (1.2s) before navigating.
+import CourseMap from '../soul/studio/CourseMap';
+import VideoArrival from '../soul/studio/VideoArrival';
+import BossCeremony from '../soul/studio/BossCeremony';
+import api from '../services/api';
 
 const fmtDur = (s) => {
     if (!s) return '';
@@ -23,10 +30,61 @@ const CourseDetail = () => {
     const [openLessons, setOpenLessons] = useState(true);
     const [openQa, setOpenQa] = useState(false);
 
+    // V3 — Course Studio state. `arrival` and `ceremony` carry the lesson
+    // being entered + the source rect of the tapped node. On done, we
+    // navigate to the player route.
+    const [arrival, setArrival] = useState(null);
+    const [ceremony, setCeremony] = useState(null);
+
+    // The user's enrollment (if any) — drives completed/active state.
+    const { data: enrollment } = useQuery({
+        queryKey: ['enrollment', 'me', id],
+        queryFn: () => api.get(`/courses/${id}/enrollments/me`).then((r) => r.data).catch(() => null),
+        retry: false,
+    });
+
     const { data: course, isLoading, error } = useQuery({
         queryKey: ['courses', 'detail', id],
         queryFn: () => courses.detail(id),
     });
+
+    const completedLessonIds = enrollment?.completedLessonIds || [];
+
+    // Capture the rect of the tapped node by reading the click event's
+    // target (the <button> inside LessonNode / BossNode). This avoids
+    // needing to plumb refs through CourseMap.
+    const onCourseMapClick = (e) => {
+      // Walk up to find the lesson/boss button.
+      let el = e.target;
+      while (el && el.tagName !== 'BUTTON') el = el.parentElement;
+      if (!el || !el.getAttribute('aria-label')) return;
+      // Match the lesson by title in the aria-label ("Lesson N: <title>")
+      // or by "Boss level: <title>".
+      const lessons = course?.lessons || [];
+      const lesson = lessons.find((l) => {
+        const title = (l.title || '').replace(/"/g, '');
+        return el.getAttribute('aria-label').includes(title);
+      });
+      if (!lesson) return;
+      const rect = el.getBoundingClientRect();
+      if (lesson.isBoss) {
+        setCeremony({ lesson, sourceRect: rect });
+      } else {
+        setArrival({ lesson, sourceRect: rect });
+      }
+    };
+
+    const onArrivalDone = () => {
+      const lessonId = arrival?.lesson?._id || arrival?.lesson?.id;
+      setArrival(null);
+      if (lessonId) navigate(`/courses/${id}/learn/${lessonId}`);
+    };
+
+    const onCeremonyDone = () => {
+      const lessonId = ceremony?.lesson?._id || ceremony?.lesson?.id;
+      setCeremony(null);
+      if (lessonId) navigate(`/courses/${id}/learn/${lessonId}`);
+    };
 
     if (isLoading) {
         return <div className="relative min-h-screen"><FuturisticBackdrop /><div className="relative z-10 max-w-4xl mx-auto p-12 text-text-secondary">Loading…</div></div>;
@@ -104,38 +162,30 @@ const CourseDetail = () => {
                     </div>
                 </motion.div>
 
-                {/* Curriculum */}
+                {/* Curriculum — V3 spatial Course Map */}
                 <section className="mb-6">
                     <button
                         onClick={() => setOpenLessons((v) => !v)}
                         className="w-full flex items-center justify-between p-3 rounded-xl border border-border-subtle bg-surface/40 backdrop-blur-sm hover:border-accent/30"
                     >
                         <h2 className="text-base font-bold text-text-primary inline-flex items-center gap-2">
-                            <BookOpen className="w-4 h-4 text-accent" /> Curriculum
+                            <BookOpen className="w-4 h-4 text-accent" /> Course Map
                         </h2>
                         {openLessons ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                     </button>
                     {openLessons && (
-                        <ol className="mt-3 rounded-xl border border-border-subtle bg-surface/30 divide-y divide-border-subtle/40">
-                            {(course.lessons || []).map((l, i) => (
-                                <li key={l._id} className="flex items-center gap-3 p-3">
-                                    <span className="w-7 h-7 rounded-full bg-surface/60 flex items-center justify-center text-xs font-black text-text-muted">{i + 1}</span>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="text-sm font-semibold text-text-primary truncate">{l.title}</div>
-                                        {l.description && <div className="text-xs text-text-muted truncate">{l.description}</div>}
-                                    </div>
-                                    <div className="flex items-center gap-2 text-xs text-text-muted">
-                                        {l.hasQuiz && <Award className="w-3.5 h-3.5 text-amber-300" />}
-                                        {l.durationSec > 0 && <span>{fmtDur(l.durationSec)}</span>}
-                                        {l.isFree ? (
-                                            <span className="text-emerald-300">Free</span>
-                                        ) : (
-                                            <Lock className="w-3.5 h-3.5" />
-                                        )}
-                                    </div>
-                                </li>
-                            ))}
-                        </ol>
+                        <div className="mt-3 rounded-2xl border border-border-subtle bg-surface/20 backdrop-blur-sm p-4 md:p-6">
+                            {/* V3 — the spatial Course Map. Click bubbles up to onCourseMapClick
+                                which finds the lesson button by aria-label and captures the
+                                node's bounding rect for the arrival/ceremony animation. */}
+                            <div onClick={onCourseMapClick}>
+                              <CourseMap
+                                course={course}
+                                completedLessonIds={completedLessonIds}
+                                onPick={() => { /* onCourseMapClick handles clicks via event bubbling */ }}
+                              />
+                            </div>
+                        </div>
                     )}
                 </section>
 
@@ -157,6 +207,25 @@ const CourseDetail = () => {
                     )}
                 </section>
             </div>
+
+            {/* V3 — Course Studio overlays. The arrival (normal lesson) and
+                ceremony (boss lesson) play on top of the page; onDone
+                navigates to the player route. */}
+            {arrival && (
+              <VideoArrival
+                sourceRect={arrival.sourceRect}
+                lesson={arrival.lesson}
+                onDone={onArrivalDone}
+                onCancel={() => setArrival(null)}
+              />
+            )}
+            {ceremony && (
+              <BossCeremony
+                lesson={ceremony.lesson}
+                onDone={onCeremonyDone}
+                onCancel={() => setCeremony(null)}
+              />
+            )}
         </div>
     );
 };

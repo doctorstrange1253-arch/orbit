@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { Plus, Save, ChevronLeft, Upload, Video, X, ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
+import { Plus, Save, ChevronLeft, Upload, Video, X, ChevronDown, ChevronRight, Trash2, Sparkles, Loader2 } from 'lucide-react';
 import { courses } from '../../services/courses';
+import { proposeLevel, isStubProposal } from '../../services/ai';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
 import HolographicCard from '../../components/fx/HolographicCard';
 
@@ -203,6 +204,7 @@ const CourseBuilder = () => {
                                     lesson={l}
                                     index={i}
                                     open={openLessons.has(l._tempId)}
+                                    courseTitle={state.title}
                                     onToggle={() => {
                                         const next = new Set(openLessons);
                                         next.has(l._tempId) ? next.delete(l._tempId) : next.add(l._tempId);
@@ -307,8 +309,12 @@ const ThumbnailDrop = ({ value, onChange }) => {
     );
 };
 
-const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAddQuestion, onUpdateQuestion, onRemoveQuestion, onUploadVideo }) => {
+const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAddQuestion, onUpdateQuestion, onRemoveQuestion, onUploadVideo, courseTitle }) => {
     const [uploading, setUploading] = useState(0);
+    const [aiBusy, setAiBusy] = useState(false);
+    const [aiProposal, setAiProposal] = useState(null);
+    const [aiError, setAiError] = useState(null);
+
     const handleVideo = async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -317,6 +323,42 @@ const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAdd
             await onUploadVideo(file, (pct) => setUploading(pct));
         } finally { setUploading(0); }
     };
+
+    // V3 — AI suggest. Calls /api/ai/level-proposal. The backend is
+    // gated by ENABLE_AI_COURSE_PROPOSAL; when off, the response is a
+    // templated stub the mentor can use as a starting point.
+    const handleAiSuggest = async () => {
+        if (aiBusy) return;
+        setAiBusy(true);
+        setAiError(null);
+        try {
+            const data = await proposeLevel({
+                courseTitle: courseTitle || '',
+                lessonTitle: lesson.title || '',
+                lessonDescription: lesson.description || '',
+            });
+            setAiProposal(data);
+        } catch (e) {
+            setAiError(e?.response?.data?.message || e?.message || 'AI unavailable');
+        } finally {
+            setAiBusy(false);
+        }
+    };
+
+    const applyAiProposal = () => {
+        if (!aiProposal) return;
+        const patch = {};
+        if (aiProposal.promiseCopy && !lesson.promiseCopy) patch.promiseCopy = aiProposal.promiseCopy;
+        if (aiProposal.whyCopy && !lesson.whyCopy) patch.whyCopy = aiProposal.whyCopy;
+        if (aiProposal.rememberCopy && !lesson.rememberCopy) patch.rememberCopy = aiProposal.rememberCopy;
+        if (aiProposal.bossChallenge) patch.bossChallenge = aiProposal.bossChallenge;
+        if (Array.isArray(aiProposal.quizQuestions) && aiProposal.quizQuestions.length > 0 && (!lesson.quiz?.questions || lesson.quiz.questions.length === 0)) {
+            patch.quiz = { ...(lesson.quiz || { passingScore: 70 }), questions: aiProposal.quizQuestions };
+        }
+        onUpdate(patch);
+        setAiProposal(null);
+    };
+
     return (
         <div className="rounded-xl border border-border-subtle bg-surface/30">
             <button onClick={onToggle} className="w-full flex items-center justify-between p-3 text-left">
@@ -338,6 +380,79 @@ const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAdd
                         <textarea rows={2} value={lesson.description} onChange={(e) => onUpdate({ description: e.target.value })}
                             className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-sm text-text-primary" />
                     </Field>
+
+                    {/* V3 — AI suggest button (gated by ENABLE_AI_COURSE_PROPOSAL
+                        on the server). When clicked, it drafts a promise copy +
+                        3 quiz questions + 1 boss challenge from the lesson's
+                        title + description. The mentor accepts, edits, or
+                        dismisses. */}
+                    <div className="flex items-center justify-between pt-1">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">AI helper</span>
+                        <button
+                            type="button"
+                            onClick={handleAiSuggest}
+                            disabled={aiBusy || !lesson.title}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-accent/10 text-accent border border-accent/30 text-[10px] font-bold uppercase tracking-widest hover:bg-accent/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {aiBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                            {aiBusy ? 'Drafting' : 'Suggest lesson'}
+                        </button>
+                    </div>
+                    {aiError && (
+                        <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-2 text-xs text-rose-200">
+                            {aiError}
+                        </div>
+                    )}
+                    {aiProposal && (
+                        <div className="rounded-lg border border-accent/30 bg-accent/5 p-3 space-y-2 text-xs">
+                            <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-accent">
+                                    {isStubProposal(aiProposal) ? 'Suggested (template)' : 'AI suggested'}
+                                </span>
+                                <div className="flex items-center gap-1">
+                                    <button onClick={() => setAiProposal(null)} className="text-text-muted hover:text-text-primary">Dismiss</button>
+                                    <button onClick={applyAiProposal} className="text-accent hover:underline font-bold">Apply</button>
+                                </div>
+                            </div>
+                            {aiProposal.promiseCopy && (
+                                <div>
+                                    <div className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Promise</div>
+                                    <div className="text-text-primary">{aiProposal.promiseCopy}</div>
+                                </div>
+                            )}
+                            {aiProposal.whyCopy && (
+                                <div>
+                                    <div className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Why it matters</div>
+                                    <div className="text-text-secondary">{aiProposal.whyCopy}</div>
+                                </div>
+                            )}
+                            {aiProposal.rememberCopy && (
+                                <div>
+                                    <div className="text-[9px] font-bold uppercase tracking-widest text-text-muted">One thing to remember</div>
+                                    <div className="text-text-secondary">{aiProposal.rememberCopy}</div>
+                                </div>
+                            )}
+                            {Array.isArray(aiProposal.quizQuestions) && aiProposal.quizQuestions.length > 0 && (
+                                <div>
+                                    <div className="text-[9px] font-bold uppercase tracking-widest text-text-muted">
+                                        {aiProposal.quizQuestions.length} quiz question{aiProposal.quizQuestions.length > 1 ? 's' : ''}
+                                    </div>
+                                    <ol className="list-decimal pl-4 text-text-secondary space-y-0.5">
+                                        {aiProposal.quizQuestions.slice(0, 3).map((q, i) => (
+                                            <li key={i} className="line-clamp-1">{q.prompt || `Question ${i + 1}`}</li>
+                                        ))}
+                                    </ol>
+                                </div>
+                            )}
+                            {aiProposal.bossChallenge && (
+                                <div>
+                                    <div className="text-[9px] font-bold uppercase tracking-widest text-amber-300">Boss challenge</div>
+                                    <div className="text-text-secondary">{aiProposal.bossChallenge}</div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     <Field label="Video">
                         <div className="flex items-center gap-3">
                             <div className="flex-1 text-xs text-text-muted truncate">
