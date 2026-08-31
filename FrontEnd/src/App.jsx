@@ -98,6 +98,9 @@ const IdentitySelection  = lazy(() => import('./pages/IdentitySelection'));
 const PulseV3            = lazy(() => import('./pages/peer/Pulse'));
 const ObservatoryV3      = lazy(() => import('./pages/mentor/Observatory'));
 const UniverseV3         = lazy(() => import('./pages/student/Universe'));
+// V3 — Skill Map. The caller's constellation + the public shareable URL.
+const SkillMapV3         = lazy(() => import('./pages/SkillMap'));
+const SkillMapPublicV3   = lazy(() => import('./pages/SkillMapPublic'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
 // recording, not in nav. Mirrors marketing/orbit-teaser-reveal.html.
 const OrbitTeaserReveal = lazy(() => import('./cosmic/OrbitTeaserReveal'));
@@ -701,6 +704,12 @@ function AppInner() {
             the entire moment. Auth-required: signing in lands here only for
             users who have not yet picked a soul. */}
         <Route path="/identity" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><IdentitySelection /></Suspense></ProtectedRoute>} />
+        {/* V3 — Skill Map. The caller's constellation chart at /skill-map;
+            the public shareable variant at /skill-map/:userId. The public
+            route is NOT wrapped in ProtectedRoute — anyone with the URL
+            can view the constellation (V3 design: it's a public artifact). */}
+        <Route path="/skill-map" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><SkillMapV3 /></Suspense></ProtectedRoute>} />
+        <Route path="/skill-map/:userId" element={<Layout><Suspense fallback={<PageLoader />}><SkillMapPublicV3 /></Suspense></Layout>} />
 
         {/* ── Peer window (/peer/*) — peer_learner (always on) ─────── */}
         <Route path="/peer/dashboard"   element={<ProtectedRoute><Suspense fallback={<PageLoader />}><PulseV3 /></Suspense></ProtectedRoute>} />
