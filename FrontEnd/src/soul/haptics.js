@@ -75,6 +75,10 @@ export const Haptic = {
   // minute on the active horizon) so it must be cheap and gentle.
   pulseTick: () => _vibrate(8),
 
+  // A short 12ms tick. The "page flipping" feel. Fired on the
+  // WeekStrip's 3D flip cards so the flip has body.
+  pageFlip: () => _vibrate(12, { alwaysFire: true }),
+
   // Cancel any in-flight pattern. Useful when a long haptic is interrupted
   // by another event (e.g. user switches souls mid-transit).
   cancel: () => {

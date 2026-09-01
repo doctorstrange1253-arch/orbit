@@ -49,9 +49,9 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
   // border-left on columns 2–4 so they line up regardless of the
   // number's width.
   const cols = [
-    { value: stats.swaps,   label: 'Swaps' },
-    { value: stats.lessons, label: 'Lessons' },
-    { value: stats.skills,  label: 'Skills carried' },
+    { value: stats.swaps,   label: stats.swaps === 1 ? 'Swap' : 'Swaps' },
+    { value: stats.lessons, label: stats.lessons === 1 ? 'Lesson' : 'Lessons' },
+    { value: stats.skills,  label: stats.skills === 1 ? 'Skill carried' : 'Skills carried' },
     { value: stats.xp,      label: 'XP earned' },
   ];
 
@@ -61,7 +61,7 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
         className="font-mono uppercase tracking-[0.28em] mb-5"
         style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
       >
-        <span style={{ color: accent }}>II.</span> This week, by the numbers.
+        <span style={{ color: accent }}>II.</span> By the numbers, this week.
       </p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6">
         {cols.map((c, i) => (

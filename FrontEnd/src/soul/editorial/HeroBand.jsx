@@ -63,7 +63,7 @@ function dayExtremes(events = []) {
 function buildLede(events = []) {
   const since = startOfWeekMs();
   const recent = events.filter((e) => new Date(e.createdAt).getTime() >= since);
-  if (recent.length === 0) return 'Nothing in the can yet. Today is the first page.';
+  if (recent.length === 0) return 'Nothing yet this week. Today is the first day.';
 
   const swaps    = recent.filter((e) => e.event === 'peer_swap_completed').length;
   const lessons  = recent.filter((e) => e.event === 'lesson_completed').length;
@@ -83,10 +83,10 @@ function buildLede(events = []) {
   const extras = [];
   if (lessons) extras.push(`${lessons} kept`);
   if (quizzes) extras.push(`${quizzes} quizzed`);
-  if (helped)  extras.push(`${helped} reply${helped === 1 ? '' : 'ies'}`);
+  if (helped)  extras.push(`${helped} repl${helped === 1 ? 'y' : 'ies'}`);
   const line2 = extras.length === 0
     ? 'A quiet week, kept simple.'
-    : `${extras.slice(0, 2).join(', ')}${extras.length > 2 ? ', and a thread still open.' : '.'}`;
+    : `${extras.slice(0, 2).join(', ')}${extras.length > 2 ? ', and more in motion.' : '.'}`;
 
   // Line 3 — data-driven surprise. The day of the week with the most
   // (or least) activity. This is the line the user didn't expect.
@@ -176,7 +176,7 @@ export default function HeroBand({ events = [] }) {
           className="font-mono uppercase tracking-[0.28em]"
           style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
         >
-          The number
+          Weekly XP
         </p>
         <div
           className="font-display font-black leading-[0.9] tracking-[-0.04em] mt-3"
@@ -194,7 +194,7 @@ export default function HeroBand({ events = [] }) {
           className="font-mono uppercase tracking-[0.22em] mt-2"
           style={{ fontSize: '0.7rem', color: 'rgba(245,245,245,0.66)' }}
         >
-          XP earned this week
+          Earned so far this week
         </p>
       </div>
     </section>

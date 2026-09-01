@@ -207,6 +207,18 @@ export const SoulSound = {
       _tone(ac, m, { freq: f, t: t + i * 0.1, dur: 0.9, type: 'triangle', peak: 0.16, lp: 3000 });
     });
   }, { alwaysFire: true }),
+
+  // 450ms paper-flip. Two layered noise bursts (the rustle + the
+  // body of the page) and a soft low thump as the page lands. Used
+  // by the WeekStrip's 3D flip cells.
+  pageFlip: () => _play((ac, m, t) => {
+    // High-freq rustle at the leading edge (the corner catching air)
+    _noise(ac, m, { t: t, dur: 0.16, peak: 0.12, lp: 9000, hp: 2400 });
+    // Mid-freq body of the page bending
+    _noise(ac, m, { t: t + 0.05, dur: 0.22, peak: 0.10, lp: 4200, hp: 700 });
+    // Low thump when the page lands
+    _tone(ac, m, { freq: 90, t: t + 0.22, dur: 0.18, type: 'sine', peak: 0.14, slideTo: 55, lp: 220 });
+  }, { alwaysFire: true }),
 };
 
 export const _soundLibraryTest = { C, SOUL_VOICE, _ctx, _tone, _noise };
