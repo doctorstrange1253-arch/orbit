@@ -178,17 +178,29 @@ export default function HeroBand({ events = [] }) {
         >
           Weekly XP
         </p>
-        <div
-          className="font-display font-black leading-[0.9] tracking-[-0.04em] mt-3"
-          style={{
-            fontSize: 'clamp(4rem, 9vw, 6.4rem)',
-            background: `linear-gradient(135deg, ${accent}, ${accentTo})`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
-        >
-          {xp.toLocaleString()}
+        <div className="mt-3 flex items-baseline gap-2">
+          <span
+            className="font-display font-black leading-[0.88] tracking-[-0.04em]"
+            style={{
+              fontSize: 'clamp(3.6rem, 7.5vw, 5.4rem)',
+              background: `linear-gradient(135deg, ${accent}, ${accentTo})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            {xp.toLocaleString()}
+          </span>
+          <span
+            className="font-mono uppercase tracking-[0.18em]"
+            style={{
+              fontSize: '0.95rem',
+              color: 'rgba(245,245,245,0.62)',
+              fontWeight: 600,
+            }}
+          >
+            xp
+          </span>
         </div>
         <p
           className="font-mono uppercase tracking-[0.22em] mt-2"
