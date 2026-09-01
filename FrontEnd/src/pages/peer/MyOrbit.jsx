@@ -9,12 +9,12 @@
  * skills (the "good priority" surface, with Add Skill as the
  * section opener) → numbers → day-by-day → people → quote.
  *
- *   I.   The week that was.      (hero: name + varied-cadence lede)
- *   II.  The skills you carry.   (Add Skill CTA, then archive grid)
- *   III. By the numbers.         (4-col stats strip, uniform Playfair)
- *   IV.  Day by day.             (7-cell current-week strip)
- *   V.   The people who stayed.  (horizontal person row)
- *   VI.  The quote you earned.   (optional pull quote, data-driven)
+ *   The week that was.      (hero: name + varied-cadence lede)
+ *   The skills you carry.   (Add Skill CTA, then archive grid)
+ *   By the numbers.         (4-col stats strip, uniform Playfair)
+ *   Day by day.             (7-cell current-week strip)
+ *   The people who stayed.  (horizontal person row)
+ *   The quote you earned.   (optional pull quote, data-driven)
  *
  * Plus a thin masthead at the top and a colophon footer at the
  * bottom. No boxes, no chips, no colored backgrounds — the type
@@ -155,15 +155,15 @@ const MyOrbit = () => {
           content piece in each section is the first thing the eye
           lands on. */}
 
-      {/* I. The week that was. (hero) */}
-      <SectionBoundary name="I. The week that was">
+      {/* The week that was. (hero) */}
+      <SectionBoundary name="The week that was">
         <HeroBand events={safeHistory} />
       </SectionBoundary>
 
-      {/* II. The skills you carry. (promoted — second section, after
+      {/* The skills you carry. (promoted — second section, after
           the greeting. No eyebrow; the Add Skill CTA is the first
           thing in the section.) */}
-      <SectionBoundary name="II. The skills you carry">
+      <SectionBoundary name="The skills you carry">
         <section className="py-8" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
           {/* Add Skill — promoted to the first thing in the section.
               No eyebrow, no section title — just the CTA above the
@@ -201,23 +201,23 @@ const MyOrbit = () => {
         </section>
       </SectionBoundary>
 
-      {/* III. By the numbers. (the 4-cell strip, now uniform) */}
-      <SectionBoundary name="III. By the numbers">
+      {/* By the numbers. (the 4-cell strip, now uniform) */}
+      <SectionBoundary name="By the numbers">
         <StatsStrip events={safeHistory} skillsCount={skillList.length} />
       </SectionBoundary>
 
-      {/* IV. Day by day. (the 7-cell week strip) */}
-      <SectionBoundary name="IV. Day by day">
+      {/* Day by day. (the 7-cell week strip) */}
+      <SectionBoundary name="Day by day">
         <WeekStrip events={safeHistory} />
       </SectionBoundary>
 
-      {/* V. The people who stayed. */}
-      <SectionBoundary name="V. The people who stayed">
+      {/* The people who stayed. */}
+      <SectionBoundary name="The people who stayed">
         <PeopleRow />
       </SectionBoundary>
 
-      {/* VI. The quote you earned. (optional) */}
-      <SectionBoundary name="VI. The quote you earned">
+      {/* The quote you earned. (optional) */}
+      <SectionBoundary name="The quote you earned">
         <PullQuote />
       </SectionBoundary>
 

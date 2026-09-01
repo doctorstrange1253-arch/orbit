@@ -1,23 +1,21 @@
 /**
  * soul/editorial/StatsStrip.jsx
  *
- * "By the numbers" — section II of the MyOrbit issue.
+ * "By the numbers" — the 4-cell strip on the MyOrbit issue.
  *
- * The strip is a 4-column grid (the "0 0 1 0" layout the user liked):
- * each cell is a stat with a big number on top and a mono label below,
- * separated from its neighbors by a hairline. The XP cell is the
- * signature: bigger, Playfair italic, with a soul-tinted gradient and
- * a soft glow. The labels themselves carry the soul's nebula gradient
- * (Pulsar cyan→teal on peer, Aurora violet→blue on mentor, Solaris
- * amber→rose on student) so the strip reads as the active soul's
- * ledger, not a dashboard.
+ * Every cell is identical in shape: a big Playfair Display italic
+ * number on top, a clean mono-caps label below, separated from its
+ * neighbors by a hairline. No soul gradient, no glow, no signature
+ * cell — the user picked the "very magazine" treatment, where the
+ * cell hairlines do the visual work. The soul tinting still lives
+ * in the greeting and the section hairlines.
  *
- * Reverted from the magazine-table version: the user wanted the grid
- * back, with the polish applied ONLY to XP and to the labels.
+ * Section header is gone (FolioHeader is a thin pt-4 spacer now);
+ * the 4 cells are the first thing the eye lands on after the
+ * hairline rule above.
  */
 
 import { useMemo } from 'react';
-import { useSoul } from '../../hooks/useSoul';
 import FolioHeader from './FolioHeader';
 
 const startOfWeekMs = () => {
@@ -50,8 +48,6 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
 
   // Four cells in a row, identical shape. Every number is set in
   // Playfair Display italic, clean white, no gradient, no glow.
-  // The user picked the "very magazine" treatment — quiet, uniform,
-  // the cell hairlines do the visual work.
   const cells = [
     { key: 'swaps',   label: 'Swaps',          value: stats.swaps   },
     { key: 'lessons', label: 'Lessons',        value: stats.lessons },
@@ -59,18 +55,9 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
     { key: 'xp',      label: 'XP',             value: stats.xp      },
   ];
 
-  // The four cells no longer use the soul gradient — that was tied
-  // to the XP-only signature, which the user dropped. Labels are
-  // clean mono uppercase, soul tinting still lives in the greeting
-  // and the section hairline.
-
   return (
     <section className="pt-2 pb-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-      <FolioHeader
-        eyebrow="The ledger"
-        title="By the numbers."
-        accent={accentFrom}
-      />
+      <FolioHeader />
 
       <div
         className="mt-7 grid grid-cols-4 gap-0"
@@ -108,9 +95,7 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
                 {c.value.toLocaleString()}
               </div>
 
-              {/* Label — clean mono uppercase, no soul gradient. The
-                  magazine feel comes from the typography, not the
-                  tint. */}
+              {/* Label — clean mono uppercase, no soul gradient. */}
               <div
                 className="font-mono uppercase"
                 style={{
