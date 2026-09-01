@@ -91,11 +91,11 @@ const CertificatePage    = lazy(() => import('./pages/CertificatePage'));
 const GameologyPage      = lazy(() => import('./pages/Gameology'));
 // V3 — Identity Selection bloom screen. Replaces the V2 3-radio role picker.
 const IdentitySelection  = lazy(() => import('./pages/IdentitySelection'));
-// V3 — Soul Homes: The Pulse (peer), The Observatory (mentor), My Universe
+// V3 — Soul Homes: MyOrbit (peer), The Observatory (mentor), My Universe
 // (student). These are the V3 routes for /peer/dashboard, /mentor/observatory,
 // /student/universe. The V2 pages (MySkills, MentorHub, MySessions) stay
 // imported and routed as deprecated aliases.
-const PulseV3            = lazy(() => import('./pages/peer/Pulse'));
+const MyOrbitV3          = lazy(() => import('./pages/peer/MyOrbit'));
 const ObservatoryV3      = lazy(() => import('./pages/mentor/Observatory'));
 const UniverseV3         = lazy(() => import('./pages/student/Universe'));
 // V3 — Skill Map. The caller's constellation + the public shareable URL.
@@ -771,7 +771,7 @@ function AppInner() {
         <Route path="/skill-map/:userId" element={<Layout><Suspense fallback={<PageLoader />}><SkillMapPublicV3 /></Suspense></Layout>} />
 
         {/* ── Peer window (/peer/*) — peer_learner (always on) ─────── */}
-        <Route path="/peer/dashboard"   element={<ProtectedRoute><Suspense fallback={<PageLoader />}><PulseV3 /></Suspense></ProtectedRoute>} />
+        <Route path="/peer/dashboard"   element={<ProtectedRoute><Suspense fallback={<PageLoader />}><MyOrbitV3 /></Suspense></ProtectedRoute>} />
         <Route path="/peer/browse"      element={<ProtectedRoute><BrowseSkills /></ProtectedRoute>} />
         <Route path="/peer/matches"     element={<ProtectedRoute><Matches /></ProtectedRoute>} />
         <Route path="/peer/connections" element={<ProtectedRoute><Connections /></ProtectedRoute>} />

@@ -5,21 +5,14 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuthStore, getCurrentWindow } from '../../store/authStore';
 import Avatar from '../common/Avatar';
 import api from '../../services/api';
-import ChatDrawer from '../chat/ChatDrawer';
-import NotificationBell from '../notifications/NotificationBell';
 import { unregisterPush } from '../../utils/pushNotify';
-import OrbitStreakBadge from '../../cosmic/OrbitStreakBadge';
-import PhotonsChip from '../../cosmic/PhotonsChip';
 import RoleSwitcher from './RoleSwitcher';
-import LevelBadge from '../cosmic/LevelBadge';
-import StreakFlame from '../cosmic/StreakFlame';
-import PactBadge from '../pact/PactBadge';
-import {
-  LogOut, Layers, Compass, Users, Map,
-  ShieldCheck, UserCircle, Menu, X, Handshake, Settings as SettingsIcon, MessageCircle, Phone, Trophy, Rocket, Music, VolumeX, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, Command
-} from 'lucide-react';
-import soundManager from '../../utils/soundManager';
+import OrbitSigil from './OrbitSigil';
 import { usePaletteStore } from '../fx/CommandPalette';
+import {
+  LogOut, Layers, Compass, Users, Map, ShieldCheck,
+  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search
+} from 'lucide-react';
 
 // Three independent nav pill lists, one per role window. The Navbar picks
 // the active list based on getCurrentWindow(location.pathname) so each
@@ -30,10 +23,6 @@ import { usePaletteStore } from '../fx/CommandPalette';
 // but appear inside the role window that lists them. Multi-role users
 // see the role-switcher chip in the right-side cluster and can jump
 // between windows.
-//
-// The `window` tag is informational — it's how the active pill is matched
-// when the user is on a shared page (since the URL doesn't contain the
-// window prefix).
 
 const NAV_PEER = [
   { name: 'Skills',       path: '/peer/dashboard',   Icon: Layers,      window: 'peer' },
@@ -72,12 +61,6 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(
     () => typeof window !== 'undefined' && window.scrollY > 64
   );
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatInitialUser, setChatInitialUser] = useState(null);
-  // Ambient-music toggle, surfaced here so it's reachable from anywhere (not
-  // buried in Settings). Mirrors the global soundManager preference.
-  const [musicOn, setMusicOn] = useState(soundManager.isMusicEnabled());
-  const toggleMusic = () => setMusicOn(soundManager.toggleMusic());
   // Remember the most recently active role window so shared pages
   // (/orbit, /leaderboard, /shop, /settings, /profile) can still show
   // a meaningful pill bar instead of going empty. Defaults to 'peer'
@@ -132,15 +115,8 @@ const Navbar = () => {
     enabled: inPeerWindow,
   });
 
-  const { data: unreadData } = useQuery({
-    queryKey: ['unread-count'],
-    queryFn: () => api.get('/messages/unread-count').then(res => res.data),
-    refetchInterval: 20000,
-  });
-
   const incomingCount = pending?.incomingCount || 0;
   const matchesCount = Array.isArray(matchesData) ? matchesData.length : (matchesData?.matches?.length || 0);
-  const unreadCount = unreadData?.count || 0;
 
   const navWithBadges = visibleNav.map(item => {
     if (item.path === '/peer/connections') return { ...item, badge: incomingCount };
@@ -217,29 +193,6 @@ const Navbar = () => {
   // Close drawer when route changes
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
-  // Listen for 'open-chat' custom event dispatched by ConnectionCard
-  useEffect(() => {
-    const handler = (e) => {
-      setChatInitialUser(e.detail);
-      setChatOpen(true);
-    };
-    window.addEventListener('open-chat', handler);
-    return () => window.removeEventListener('open-chat', handler);
-  }, []);
-
-  // Deep link from a tapped message push (FCM): /dashboard?chat=<senderId>.
-  // Open the drawer to that conversation, then strip the param so a refresh /
-  // back-nav doesn't reopen it. The drawer only needs `_id` to load messages.
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const chatId = params.get('chat');
-    if (!chatId) return;
-    setChatInitialUser({ _id: chatId });
-    setChatOpen(true);
-    params.delete('chat');
-    navigate({ pathname: location.pathname, search: params.toString() }, { replace: true });
-  }, [location.search, location.pathname, navigate]);
-
   const handleLogout = async () => {
     // Drop this device's FCM token first (needs the still-valid auth token),
     // then clear the session. No-op / instant on web.
@@ -253,10 +206,6 @@ const Navbar = () => {
       <header
         className="sticky top-0 z-40 w-full"
         style={{
-          // Add the device safe-area inset to the top padding so the nav never
-          // hides under a notch / status bar (iOS PWA + Android APK). It's 0 on
-          // normal mobile web and on Android once the status bar no longer
-          // overlays the WebView, so there's no double-spacing.
           paddingTop: `calc(${scrolled ? '5px' : '10px'} + env(safe-area-inset-top, 0px))`,
           paddingBottom: scrolled ? '5px' : '10px',
         }}
@@ -276,20 +225,22 @@ const Navbar = () => {
               </span>
             </NavLink>
 
-            {/* ── Desktop nav pills ── */}
-            <nav className="hidden xl:flex items-center gap-0.5 flex-1 justify-center" aria-label="Main navigation">
+            {/* ── Desktop nav pills ──
+                All 10 peer pills stay visible from xl+ (the breakpoint that
+                fits the whole strip). Lower widths collapse to the hamburger. */}
+            <nav className="hidden xl:flex items-center gap-0.5 flex-1 justify-center min-w-0" aria-label="Main navigation">
               {navWithBadges.map(({ name, path, Icon, badge }) => {
                 const active = isActive({ path });
                 return (
                   <NavLink key={path} to={path}
-                    className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 select-none ${
+                    className={`relative flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold tracking-wide transition-all duration-200 select-none whitespace-nowrap ${
                       active
                         ? 'text-accent bg-accent/10 border border-accent/30'
                         : 'text-text-secondary hover:text-text-primary hover:bg-surface border border-transparent'
                     }`}
                     style={{ letterSpacing: '0.02em' }}
                   >
-                    <Icon size={13} strokeWidth={active ? 2.5 : 2} />
+                    <Icon size={11} strokeWidth={active ? 2.5 : 2} />
                     {name}
                     {badge > 0 && (
                       <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full"
@@ -310,10 +261,14 @@ const Navbar = () => {
               })}
             </nav>
 
-            {/* ── Right side ── */}
+            {/* ── Right side ──
+                Per the V3 redesign: no chat icon, no noti-bell, no
+                settings icon, no sound toggle. The single OrbitSigil
+                collapses five chips (streak, level, photons, pact,
+                engagement) into one 40×40 piece of the sky. The
+                command palette, profile link, role switcher, and
+                logout remain — the things the user actually clicks. */}
             <div className="flex items-center gap-1.5 flex-shrink-0">
-              {/* Global ⌘K command palette trigger — hidden on mobile, the
-                  nav still has a hamburger that surfaces a Search entry. */}
               <button
                 type="button"
                 onClick={() => usePaletteStore.getState().openPalette()}
@@ -325,68 +280,22 @@ const Navbar = () => {
                 <span className="hidden 2xl:inline">Search</span>
                 <kbd>⌘K</kbd>
               </button>
-              {/* Orbit streak — glanceable loss-aversion cue (pulses when decaying) */}
-              <OrbitStreakBadge variant="nav" className="hidden xl:inline-flex" />
-              {/* Gameology (student-only): learning streak + level chip */}
-              {Array.isArray(user?.roles) && (user.roles.includes('peer_learner') || user.roles.includes('student')) && (
-                <>
-                  <StreakFlame compact className="hidden xl:inline-flex" />
-                  <LevelBadge compact className="hidden xl:inline-flex" />
-                </>
-              )}
-              {/* Mentor Pact tier chip (mentor-only) */}
-              {Array.isArray(user?.roles) && user.roles.includes('mentor') && (
-                <div className="hidden xl:inline-flex">
-                  <PactBadge size={20} withLabel />
-                </div>
-              )}
-              {/* Photons currency chip — live balance, tap → shop */}
-              <PhotonsChip variant="nav" className="hidden md:inline-flex" />
+
+              {/* The Sigil — the new status pill. Single element, four
+                  satellites, ambient rotation, hover tooltip, each
+                  satellite clickable. */}
+              <div className="hidden md:inline-flex items-center justify-center">
+                <OrbitSigil />
+              </div>
+
               <NavLink to="/profile" title="Profile"
                 className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all text-text-secondary hover:text-text-primary bg-surface border border-border-subtle"
               >
                 <Avatar name={user?.name} url={user?.avatar} size="xs" userId={user?._id} />
                 <span className="hidden md:block max-w-[80px] truncate">{user?.name?.split(' ')[0]}</span>
-                {/* Role chip / switcher — static for single-role users,
-                    clickable dropdown for multi-role users (only visible
-                    at xl+ so it doesn't crowd smaller widths). */}
                 <RoleSwitcher />
               </NavLink>
-              {/* Notification Bell (durable notification center) */}
-              <NotificationBell />
-              {/* Chat Button */}
-              <button
-                onClick={() => setChatOpen(true)}
-                aria-label="Messages"
-                title="Messages"
-                className="relative hidden sm:flex items-center justify-center w-8 h-8 rounded-xl text-text-muted hover:text-accent transition-all bg-surface border border-border-subtle"
-              >
-                <MessageCircle size={15} />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full"
-                    style={{ background: 'linear-gradient(135deg,#00c6ff,#0072ff)', color: '#fff', boxShadow: '0 2px 8px rgba(0,198,255,0.5)' }}
-                  >
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </button>
-              {/* Ambient music toggle — reachable from anywhere */}
-              <button
-                onClick={toggleMusic}
-                aria-label={musicOn ? 'Mute ambient music' : 'Play ambient music'}
-                aria-pressed={musicOn}
-                title={musicOn ? 'Ambient music: on' : 'Ambient music: off'}
-                className={`hidden lg:flex items-center justify-center w-8 h-8 rounded-xl transition-all bg-surface border border-border-subtle ${musicOn ? 'text-accent' : 'text-text-muted hover:text-text-primary'}`}
-              >
-                {musicOn ? <Music size={15} /> : <VolumeX size={15} />}
-              </button>
-              <NavLink to="/settings"
-                aria-label="Settings"
-                title="Settings"
-                className="hidden lg:flex items-center justify-center w-8 h-8 rounded-xl text-text-muted hover:text-text-primary transition-all bg-surface border border-border-subtle"
-              >
-                <SettingsIcon size={15} />
-              </NavLink>
+
               <button
                 onClick={handleLogout}
                 aria-label="Logout"
@@ -450,11 +359,6 @@ const Navbar = () => {
               >
                 <UserCircle size={15} /> Profile
               </NavLink>
-              <NavLink to="/settings" onClick={() => setMobileOpen(false)}
-                className={({ isActive }) => `flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive ? 'text-accent bg-accent/10 border border-accent/30' : 'text-text-secondary hover:text-text-primary bg-surface border border-border-subtle'}`}
-              >
-                <SettingsIcon size={15} /> Settings
-              </NavLink>
               <button onClick={handleLogout}
                 className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-medium text-danger/70 hover:text-danger transition-all"
                 style={{ background: 'rgba(255,75,75,0.06)', border: '1px solid rgba(255,75,75,0.15)' }}
@@ -465,28 +369,6 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Mobile Floating Chat Button */}
-      {user && (
-        <button
-          onClick={() => setChatOpen(true)}
-          aria-label="Messages"
-          className="fixed sm:hidden bottom-6 right-6 z-[60] w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform active:scale-95"
-          style={{ background: 'var(--send-button-bg)', color: '#fff', boxShadow: 'var(--send-button-shadow)' }}
-        >
-          <MessageCircle size={24} />
-          {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 flex items-center justify-center text-[12px] font-bold rounded-full bg-surface border border-border-subtle"
-              style={{ color: 'var(--text-primary)' }}
-            >
-              {unreadCount > 9 ? '9+' : unreadCount}
-            </span>
-          )}
-        </button>
-      )}
-
-      {/* Chat Drawer */}
-      <ChatDrawer isOpen={chatOpen} onClose={() => { setChatOpen(false); setChatInitialUser(null); }} initialUser={chatInitialUser} />
     </>
   );
 };
