@@ -11,9 +11,11 @@ import OrbitSigil from './OrbitSigil';
 import NotificationBell from '../notifications/NotificationBell';
 import { usePaletteStore } from '../fx/CommandPalette';
 import { useSigilState } from '../../hooks/useSigilState';
+import { useStreak } from '../../hooks/useStreak';
+import PhotonIcon from '../../cosmic/PhotonIcon';
 import {
   LogOut, Layers, Compass, Users, Map, ShieldCheck,
-  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, MessageCircle, Bell, Settings as SettingsIcon, Coins, Flame
+  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, MessageCircle, Bell, Settings as SettingsIcon, Flame
 } from 'lucide-react';
 
 // Three independent nav pill lists, one per role window. The Navbar picks
@@ -410,78 +412,75 @@ export default Navbar;
 // Status chips (Currency + Streak)
 // ────────────────────────────────────────────────────────────
 //
-// Two tiny presentational chips that surface the user's stardust balance
-// and learning streak in the navbar. They read from the same useSigilState
-// hook the OrbitSigil uses, so the numbers can never drift out of sync.
-//
-// Each chip is a <NavLink> that takes the user to the relevant surface
-// (currency → /shop, streak → /gameology) and is wrapped in a
-// usePaletteStore-like "navigate on click" — but the NavLink is enough.
-//
-// Type: monospace caps with a small colored icon. The compact 11px size
-// keeps the chip under 56px wide even with 4-digit balances, so the
-// nav bar never wraps. Hidden on screens narrower than `sm` so the
-// brand + nav still fit on phones.
-
-const ChipBase = ({ icon: Icon, value, label, accent, path, title, ariaLabel }) => (
-  <NavLink
-    to={path}
-    title={title}
-    aria-label={ariaLabel}
-    className="hidden sm:inline-flex items-center gap-1.5 px-2 py-1 rounded-lg transition-all hover:bg-surface border border-border-subtle group"
-    style={{
-      background: 'rgba(255,255,255,0.02)',
-    }}
-  >
-    <Icon
-      size={12}
-      strokeWidth={2.4}
-      style={{ color: accent, filter: `drop-shadow(0 0 4px ${accent}55)` }}
-      aria-hidden
-    />
-    <span
-      className="font-mono uppercase tracking-[0.14em] font-semibold"
-      style={{ fontSize: '0.66rem', color: 'var(--text-primary)' }}
-    >
-      {value}
-    </span>
-    {label && (
-      <span
-        className="font-mono uppercase tracking-[0.14em] font-medium hidden md:inline"
-        style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}
-      >
-        {label}
-      </span>
-    )}
-  </NavLink>
-);
+// Two small NavLinks in the right cluster of the navbar that surface
+// the user's stardust balance and learning streak. They use the SAME
+// branded components the rest of the app uses — the PhotonIcon SVG
+// (luminous core + tilted orbital ring + animated satellite) for
+// currency, and a Flame from lucide styled with the `useStreak`
+// dayKey palette (orange when the streak is alive, slate when it's
+// at risk or dead) for streak. No made-up icons, no rainbow chip
+// backgrounds — just the original Orbit look, sized for the nav.
 
 const CurrencyChip = () => {
   const { stardust } = useSigilState();
   return (
-    <ChipBase
-      icon={Coins}
-      value={stardust.toLocaleString()}
-      label="stardust"
-      accent="#22d3ee"
-      path="/shop"
-      title="Stardust balance — open the shop"
-      ariaLabel={`${stardust.toLocaleString()} stardust — open the shop`}
-    />
+    <NavLink
+      to="/shop"
+      title={`${stardust.toLocaleString()} stardust — open the shop`}
+      aria-label={`${stardust.toLocaleString()} stardust — open the shop`}
+      className="hidden sm:inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-text-secondary hover:text-text-primary transition-colors"
+    >
+      <PhotonIcon size={15} animated />
+      <span
+        className="font-mono font-semibold tabular-nums"
+        style={{ fontSize: '0.78rem', color: 'var(--text-primary)' }}
+      >
+        {stardust.toLocaleString()}
+      </span>
+    </NavLink>
   );
 };
 
 const StreakChip = () => {
-  const { streak } = useSigilState();
+  const { streak, dayKey } = useStreak();
+  const navigate = useNavigate();
+  const palette = {
+    today:     { color: '#fb923c', glow: 'drop-shadow(0 0 5px rgba(251,146,60,0.6))' },
+    yesterday: { color: '#f59e0b', glow: 'drop-shadow(0 0 4px rgba(245,158,11,0.5))' },
+    older:     { color: '#94a3b8', glow: 'none' },
+    never:     { color: '#64748b', glow: 'none' },
+  }[dayKey];
+  const isPulsing = dayKey === 'today';
   return (
-    <ChipBase
-      icon={Flame}
-      value={`${streak}d`}
-      label={streak === 1 ? 'streak' : 'streak'}
-      accent={streak > 0 ? '#fb923c' : 'rgba(255,255,255,0.35)'}
-      path="/gameology"
-      title="Learning streak — open the pulse"
-      ariaLabel={`${streak}-day learning streak — open the pulse`}
-    />
+    <button
+      type="button"
+      onClick={() => navigate('/gameology')}
+      title={
+        dayKey === 'today'     ? `${streak}-day learning streak — alive!`
+        : dayKey === 'yesterday' ? `${streak}-day streak — one lesson keeps it alive`
+        : dayKey === 'older'   ? 'Streak cooled. One lesson starts a new one.'
+        : 'Start a learning streak today.'
+      }
+      aria-label={`${streak}-day learning streak — open the pulse`}
+      className="hidden sm:inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-text-secondary hover:text-text-primary transition-colors"
+    >
+      <motion.span
+        animate={isPulsing ? { scale: [1, 1.15, 1] } : {}}
+        transition={isPulsing ? { duration: 1.6, repeat: Infinity, ease: 'easeInOut' } : {}}
+        className="inline-flex"
+      >
+        <Flame
+          size={12}
+          strokeWidth={2.4}
+          style={{ color: palette.color, filter: palette.glow }}
+        />
+      </motion.span>
+      <span
+        className="font-mono font-semibold tabular-nums"
+        style={{ fontSize: '0.78rem', color: palette.color }}
+      >
+        {streak}
+      </span>
+    </button>
   );
 };
