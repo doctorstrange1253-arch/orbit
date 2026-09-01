@@ -21,7 +21,6 @@ import Nameplate from '../cosmic/Nameplate';
 import { InfoDot, ScoreExplainerBody } from '../cosmic/scoreInfo';
 import { TRUST_TOOLTIP, TRUST_SCORE_INFO } from '../cosmic/scoreCopy';
 import LanguageMultiSelect from '../components/common/LanguageMultiSelect';
-import HolographicCard from '../components/fx/HolographicCard';
 
 const MAX_LANGUAGES = 5;
 
@@ -685,9 +684,11 @@ const Profile = () => {
  * Renders one row per role the user actually holds (peer_learner is
  * always present), marks the row matching the current window with a
  * ring + "You're here" label, and shows 1-3 role-specific stat tiles
- * for every active role. Wrapped in a HolographicCard (`rarity="rare"`,
- * `tilt`) so the panel reads as the "advanced / overview" surface the
- * Profile page is missing today.
+ * for every active role. Always renders all 3 souls (peer_learner,
+ * mentor, student) so the user can see which windows exist and which
+ * need to be enabled. Roles the user has not added are shown in a
+ * disabled state with an "Add this role" button linking to /settings.
+ * Plain surface — no 3D glass, no holographic tilt.
  *
  * Props:
  *   userRoles        string[]   normalized role list (peer_learner guaranteed)
@@ -726,7 +727,7 @@ const ActiveWindowsPanel = ({ userRoles, userRolesSet, activeWindowKey, onOpen, 
   );
 
   return (
-    <HolographicCard rarity="rare" tilt className="p-5 md:p-6">
+    <div className="p-5 md:p-6 rounded-2xl bg-surface border border-border-subtle">
       <div className="flex items-start justify-between gap-3 mb-4">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-widest text-text-muted flex items-center gap-2">
@@ -734,8 +735,8 @@ const ActiveWindowsPanel = ({ userRoles, userRolesSet, activeWindowKey, onOpen, 
           </h2>
           <p className="text-xs text-text-muted mt-1">
             {userRoles.length === 1
-              ? 'You have 1 role on Orbit.'
-              : `You have ${userRoles.length} roles on Orbit. Switch between them anytime.`}
+              ? 'You have 1 role on Orbit. Add more any time from Settings.'
+              : `You have ${userRoles.length} of 3 roles on Orbit. Switch between them anytime.`}
           </p>
         </div>
         {hereMeta && (
@@ -745,46 +746,55 @@ const ActiveWindowsPanel = ({ userRoles, userRolesSet, activeWindowKey, onOpen, 
         )}
       </div>
 
-      {/* ── Role rows ──────────────────────────────────────────────── */}
+      {/* ── Role rows (all 3 souls — disabled for ones the user doesn't have) */}
       <ul className="space-y-2.5" role="list">
-        {ACCOUNT_ROLES.filter((r) => userRolesSet.has(r)).map((role) => {
+        {ACCOUNT_ROLES.map((role) => {
           const meta = ROLE_META[role];
           const accent = ROLE_ACCENT[role];
           const Icon = ROLE_ICONS[role];
           const isHere = ROLE_TO_WINDOW[role] === activeWindowKey;
+          const isActive = userRolesSet.has(role);
           return (
             <li
               key={role}
               className={[
                 'flex items-center gap-3 p-3 rounded-xl border transition-all',
-                isHere
+                isActive && isHere
                   ? `${accent.ring} ring-2 ${accent.bg} ${accent.border}`
-                  : 'border-border-subtle bg-surface/40',
+                  : isActive
+                    ? `${accent.border} ${accent.bg}`
+                    : 'border-border-subtle bg-surface/40 opacity-60',
               ].join(' ')}
             >
               <div
                 className={[
                   'flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center border',
-                  isHere ? accent.bg : 'bg-surface',
-                  isHere ? accent.border : 'border-border-subtle',
+                  isActive && isHere ? accent.bg : 'bg-surface',
+                  isActive ? accent.border : 'border-border-subtle',
                 ].join(' ')}
               >
-                <Icon size={18} className={isHere ? accent.text : 'text-text-secondary'} />
+                <Icon size={18} className={isActive ? accent.text : 'text-text-muted'} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-sm font-semibold text-text-primary">{meta.label}</span>
-                  <span
-                    className={[
-                      'text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border',
-                      isHere
-                        ? `${accent.bg} ${accent.text} ${accent.border}`
-                        : 'bg-surface text-text-muted border-border-subtle',
-                    ].join(' ')}
-                  >
-                    Active
-                  </span>
-                  {isHere && (
+                  {isActive ? (
+                    <span
+                      className={[
+                        'text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border',
+                        isHere
+                          ? `${accent.bg} ${accent.text} ${accent.border}`
+                          : 'bg-surface text-text-muted border-border-subtle',
+                      ].join(' ')}
+                    >
+                      Active
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border border-border-subtle bg-surface text-text-muted">
+                      Not enabled
+                    </span>
+                  )}
+                  {isHere && isActive && (
                     <span className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-accent/15 text-accent border border-accent/30">
                       You&rsquo;re here
                     </span>
@@ -792,18 +802,28 @@ const ActiveWindowsPanel = ({ userRoles, userRolesSet, activeWindowKey, onOpen, 
                 </div>
                 <p className="mt-0.5 text-[11px] text-text-muted truncate">{meta.description}</p>
               </div>
-              <button
-                type="button"
-                onClick={() => onOpen?.(ROLE_HOME[role])}
-                className={[
-                  'flex-shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
-                  isHere
-                    ? 'bg-accent text-white hover:bg-accent/90'
-                    : 'bg-surface text-text-secondary hover:text-text-primary border border-border-subtle',
-                ].join(' ')}
-              >
-                Open <ArrowRight size={12} />
-              </button>
+              {isActive ? (
+                <button
+                  type="button"
+                  onClick={() => onOpen?.(ROLE_HOME[role])}
+                  className={[
+                    'flex-shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
+                    isHere
+                      ? 'bg-accent text-white hover:bg-accent/90'
+                      : 'bg-surface text-text-secondary hover:text-text-primary border border-border-subtle',
+                  ].join(' ')}
+                >
+                  Open <ArrowRight size={12} />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onOpen?.('/settings')}
+                  className="flex-shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors bg-surface text-text-muted hover:text-text-primary border border-border-subtle border-dashed"
+                >
+                  Add this role <ArrowRight size={12} />
+                </button>
+              )}
             </li>
           );
         })}
@@ -906,7 +926,7 @@ const ActiveWindowsPanel = ({ userRoles, userRolesSet, activeWindowKey, onOpen, 
           </button>
         </div>
       )}
-    </HolographicCard>
+    </div>
   );
 };
 

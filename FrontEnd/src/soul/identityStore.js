@@ -14,7 +14,7 @@
 import { create } from 'zustand';
 import { pickTransitThought } from './transitThoughts';
 
-const TRANSIT_DURATION_MS = 2500;
+const TRANSIT_DURATION_MS = 3000;
 
 export const useIdentityTransit = create((set, get) => ({
   active: false,

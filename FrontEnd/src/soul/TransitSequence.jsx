@@ -1,16 +1,25 @@
 /**
  * soul/TransitSequence.jsx — The soul-switching overlay.
  *
- * A simple, clean transition. When the user switches souls (peer ↔ mentor
- * ↔ student), the screen goes fully opaque (deep cosmic ink) for 800ms,
- * a single Orbit-voiced thought appears centered, then the overlay fades
- * out to reveal the new soul's home page.
+ * A complete, ceremonial transition. When the user switches souls
+ * (peer ↔ mentor ↔ student) the screen HARD-CUTS to a fully opaque
+ * deep-cosmic-ink background, holds at full opacity for the entire
+ * active window, then fades out cleanly to reveal the new soul's home
+ * page. A single Orbit-voiced thought appears centered partway in and
+ * stays visible for the bulk of the ceremony.
+ *
+ * The hard-cut in (no fade-in) is the key design choice — during the
+ * active period the new content is *completely hidden* behind the ink,
+ * so the user never sees the new page snap in before the ceremony.
+ * The fade-out is intentional: as the ink recedes, the new content
+ * "wakes up" — that's the page-turn reveal.
  *
  * Design constraints from the user:
  *   - The transition must be OPAQUE — content beneath must not be
  *     visible during the animation
  *   - No 3D bloom, no glowing sphere, no animated circles
  *   - Clean, quiet, editorial — like turning a magazine page
+ *   - Must feel COMPLETE — no abrupt cut, no "stuck" feeling
  *
  * Reduced-motion: a 200ms cross-fade, no thought, no sound, no haptic.
  */
@@ -64,15 +73,17 @@ const TransitSequence = () => {
             style={{ background: OVERLAY_BG }}
           />
         ) : (
-          // Full transit: fully opaque ink + centered thought.
+          // Full transit: hard-cut to fully opaque ink, hold for the
+          // entire active window, then fade out. The thought appears
+          // ~400ms in and stays visible until the overlay exits.
           <motion.div
             key="transit-full"
             aria-live="polite"
             role="status"
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
+            transition={{ duration: 0.22, ease: 'easeIn' }}
             className="fixed inset-0 z-[300] flex items-center justify-center pointer-events-none"
             style={{ background: OVERLAY_BG }}
           >
@@ -87,7 +98,7 @@ const TransitSequence = () => {
                 }}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.15 }}
+                transition={{ duration: 0.5, delay: 0.4, ease: 'easeOut' }}
               >
                 &ldquo;{thought.replace(/^"|"$/g, '')}&rdquo;
               </motion.p>
