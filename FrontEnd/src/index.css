@@ -26,6 +26,13 @@
 
   --font-sans: "Open Sans", sans-serif;
   --font-display: "Poppins", sans-serif;
+  /* V3 — editorial type system. The MyOrbit page mixes three voices:
+       --font-editorial   = Playfair Display (didone, magazine cover)
+       --font-serif       = Cormorant Garamond (book-grade, italic-loaded)
+       --font-mono        = JetBrains Mono (stardust, dot leaders, code) */
+  --font-editorial: "Playfair Display", "Times New Roman", serif;
+  --font-serif: "Cormorant Garamond", "Georgia", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   --radius-card: 20px;
   --radius-pill: 999px;

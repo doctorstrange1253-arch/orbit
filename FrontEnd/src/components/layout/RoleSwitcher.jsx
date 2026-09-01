@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore, ROLE_META, getCurrentWindow } from '../../store/authStore';
 import { useWindowSwitchStore } from '../fx/WindowSwitchOverlay';
-import { Users, GraduationCap, BookOpen, ChevronDown, Sparkles } from 'lucide-react';
+import { Users, GraduationCap, BookOpen, ChevronDown } from 'lucide-react';
 
 // Icons per role — small set, inline so we don't pull from elsewhere.
 const ROLE_ICONS = {
@@ -199,15 +199,6 @@ const RoleSwitcher = () => {
           size={10}
           strokeWidth={2.5}
           className={'transition-transform ' + (open ? 'rotate-180' : '')}
-        />
-        {/* V3 — small sparkles hint for the long-press bloom screen. Tooltip
-            explains it on hover. Visually subtle so it doesn't compete with
-            the dropdown chevron. */}
-        <Sparkles
-          size={9}
-          strokeWidth={2.5}
-          className="ml-0.5 opacity-60"
-          aria-hidden
         />
       </button>
 

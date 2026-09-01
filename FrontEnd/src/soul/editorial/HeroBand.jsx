@@ -18,6 +18,7 @@
 import { useMemo } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { useSoul } from '../../hooks/useSoul';
+import FolioHeader from './FolioHeader';
 
 const greeting = () => {
   const h = new Date().getHours();
@@ -133,35 +134,53 @@ export default function HeroBand({ events = [] }) {
 
   return (
     <section
-      className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 pt-6 pb-8"
+      className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 pt-2 pb-10"
       style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
     >
       {/* LEFT — typographic statement */}
       <div className="md:col-span-7 min-w-0">
-        <p
-          className="font-mono uppercase tracking-[0.28em]"
-          style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
-        >
-          <span style={{ color: accent }}>I.</span> The week that was.
-        </p>
+        <FolioHeader
+          folio="I"
+          eyebrow="Section one · the lede"
+          title="The week that was."
+          accent={accent}
+        />
         <h1
-          className="font-display font-bold leading-[0.96] tracking-[-0.03em] mt-3"
+          className="mt-2"
           style={{
-            fontSize: 'clamp(2.4rem, 5.6vw, 4.4rem)',
+            fontFamily: 'var(--font-editorial)',
+            fontWeight: 700,
+            fontStyle: 'normal',
+            lineHeight: 0.96,
+            letterSpacing: '-0.03em',
+            fontSize: 'clamp(2.6rem, 5.8vw, 4.6rem)',
             color: 'var(--text-primary)',
           }}
         >
-          <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{greeting()} </span>
-          {firstName}.
+          <span
+            style={{
+              color: 'var(--text-muted)',
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontWeight: 400,
+            }}
+          >
+            {greeting()}
+          </span>{' '}
+          {firstName}
+          <span style={{ color: accent, fontStyle: 'italic' }}>.</span>
         </h1>
         <div className="mt-5 max-w-[44ch] space-y-2">
           {ledeLines.map((line, i) => (
             <p
               key={i}
-              className="leading-[1.55]"
+              className="leading-[1.6]"
               style={{
-                fontSize: i === 0 ? '0.98rem' : '0.9rem',
-                color: i === 0 ? 'rgba(255,255,255,0.88)' : 'rgba(245,245,245,0.66)',
+                fontFamily: i === 0 ? 'var(--font-serif)' : 'var(--font-sans)',
+                fontSize: i === 0 ? '1.15rem' : '0.94rem',
+                color: i === 0 ? 'rgba(255,255,255,0.92)' : 'rgba(245,245,245,0.7)',
+                fontStyle: i === 0 ? 'italic' : 'normal',
+                fontWeight: i === 0 ? 400 : 400,
               }}
             >
               {line}
@@ -170,43 +189,82 @@ export default function HeroBand({ events = [] }) {
         </div>
       </div>
 
-      {/* RIGHT — featured number */}
-      <div className="md:col-span-5 md:pl-8 md:border-l md:border-white/5 flex flex-col justify-end">
+      {/* RIGHT — featured number, set like a poster credit. */}
+      <div className="md:col-span-5 md:pl-10 md:border-l flex flex-col justify-end" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
         <p
-          className="font-mono uppercase tracking-[0.28em]"
-          style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
+          className="font-mono uppercase"
+          style={{
+            fontSize: '0.66rem',
+            letterSpacing: '0.32em',
+            color: 'rgba(245,245,245,0.6)',
+            fontWeight: 600,
+          }}
         >
           Weekly XP
-        </p>
-        <div className="mt-3 flex items-baseline gap-2">
           <span
-            className="font-display font-black leading-[0.88] tracking-[-0.04em]"
+            className="ml-2"
             style={{
-              fontSize: 'clamp(3.6rem, 7.5vw, 5.4rem)',
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontSize: '0.78rem',
+              letterSpacing: '0.01em',
+              color: 'rgba(245,245,245,0.45)',
+              fontWeight: 400,
+              textTransform: 'none',
+            }}
+          >
+            earned so far
+          </span>
+        </p>
+        <div className="mt-2 flex items-baseline gap-3">
+          <span
+            style={{
+              fontFamily: 'var(--font-editorial)',
+              fontWeight: 800,
+              fontStyle: 'italic',
+              lineHeight: 0.86,
+              letterSpacing: '-0.04em',
+              fontSize: 'clamp(4.2rem, 9vw, 6.4rem)',
               background: `linear-gradient(135deg, ${accent}, ${accentTo})`,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
+              textShadow: 'none',
             }}
           >
             {xp.toLocaleString()}
           </span>
           <span
-            className="font-mono uppercase tracking-[0.18em]"
+            className="font-mono uppercase"
             style={{
-              fontSize: '0.95rem',
-              color: 'rgba(245,245,245,0.62)',
+              fontSize: '0.9rem',
+              color: 'rgba(245,245,245,0.55)',
               fontWeight: 600,
+              letterSpacing: '0.22em',
             }}
           >
             xp
           </span>
         </div>
+        {/* A small italic tag-line under the big number, like a
+            magazine cover credit. Anchors the number in time without
+            repeating "this week" for the third time on the page. */}
         <p
-          className="font-mono uppercase tracking-[0.22em] mt-2"
-          style={{ fontSize: '0.7rem', color: 'rgba(245,245,245,0.66)' }}
+          className="mt-2 italic"
+          style={{
+            fontFamily: 'var(--font-serif)',
+            fontSize: '0.96rem',
+            color: 'rgba(245,245,245,0.55)',
+            fontWeight: 400,
+          }}
         >
-          Earned so far this week
+          {xp === 0
+            ? 'A clean slate. The first point is the slowest; the rest come faster.'
+            : xp < 50
+              ? 'A modest haul. The week is young.'
+              : xp < 200
+                ? 'A working week. The kind that compounds.'
+                : 'A heavy lift. The orbits are paying off.'}
         </p>
       </div>
     </section>

@@ -20,6 +20,13 @@ function isoWeek(d) {
   return Math.ceil((((t - yearStart) / 86400000) + 1) / 7);
 }
 
+// A magazine cover-style date formatter: "Mon · 1 Sept 2026".
+const formatLongDate = (d) => {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+  return `${days[d.getDay()]} · ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+};
+
 export default function Masthead() {
   const now = new Date();
   const week = isoWeek(now);
@@ -27,7 +34,7 @@ export default function Masthead() {
 
   return (
     <div
-      className="flex items-center justify-between gap-4 py-3"
+      className="flex items-center justify-between gap-4 pt-2 pb-3"
       style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
       role="banner"
     >
@@ -38,14 +45,27 @@ export default function Masthead() {
         My Orbit
       </span>
       <span
-        className="font-mono uppercase tracking-[0.22em] hidden sm:inline"
-        style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}
+        className="hidden sm:inline"
+        style={{
+          fontFamily: 'var(--font-serif)',
+          fontStyle: 'italic',
+          fontSize: '0.92rem',
+          color: 'rgba(245,245,245,0.72)',
+          fontWeight: 400,
+          letterSpacing: '0.005em',
+        }}
       >
-        Issue {week} · Week {week} · {year}
+        {formatLongDate(now)}
+      </span>
+      <span
+        className="font-mono uppercase tracking-[0.22em] hidden md:inline"
+        style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}
+      >
+        Issue {week} · {year}
       </span>
       <span
         className="font-mono uppercase tracking-[0.22em]"
-        style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}
+        style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}
       >
         Edited by you
       </span>

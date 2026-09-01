@@ -111,6 +111,11 @@ import { SignalFlareListenerMount } from './hooks/useSignalFlareListener.jsx';
 // V3 — Cross-soul economy: the "consider teaching?" invite modal. The
 // MentorInviteWatcher (below) fetches the pending invite and renders it.
 import MentorInviteModal from './soul/economy/MentorInviteModal';
+// Global chat drawer — mounted once at app root, bridges the `open-chat`
+// window event (from the Navbar's chat button + connection/match cards)
+// into ChatDrawer's `isOpen` / `initialUser` props. The drawer is heavy
+// (~1300 lines) so we lazy-mount it here rather than in the Navbar.
+import ChatDrawerMount from './components/chat/ChatDrawerMount';
 // V3 — Moderation page (mentor's private inbox).
 const ModerationV3 = lazy(() => import('./pages/Moderation'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
@@ -679,6 +684,12 @@ function AppInner() {
       {/* V3 — Cross-soul mentor invite: renders the 2-question modal when
           the user has a pending invite (top student / top swapper). */}
       <MentorInviteWatcher />
+      {/* Global chat drawer — mounted once, listens to `open-chat` window
+          events from the Navbar's chat button and from connection/match
+          cards. The drawer's own socket listener (inside ChatDrawer) keeps
+          the unread badge in sync regardless of which window fired the
+          event. */}
+      <ChatDrawerMount />
       <ToastContainer />
       <Toaster 
         position="bottom-right" 

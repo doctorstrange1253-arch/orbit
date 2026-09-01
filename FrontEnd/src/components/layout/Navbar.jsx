@@ -10,9 +10,10 @@ import RoleSwitcher from './RoleSwitcher';
 import OrbitSigil from './OrbitSigil';
 import NotificationBell from '../notifications/NotificationBell';
 import { usePaletteStore } from '../fx/CommandPalette';
+import { useSigilState } from '../../hooks/useSigilState';
 import {
   LogOut, Layers, Compass, Users, Map, ShieldCheck,
-  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, MessageCircle, Bell, Settings as SettingsIcon
+  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, MessageCircle, Bell, Settings as SettingsIcon, Coins, Flame
 } from 'lucide-react';
 
 // Three independent nav pill lists, one per role window. The Navbar picks
@@ -263,13 +264,15 @@ const Navbar = () => {
             </nav>
 
             {/* ── Right side ──
-                Per the V3 redesign: no chat icon, no noti-bell, no
-                settings icon, no sound toggle. The single OrbitSigil
-                collapses five chips (streak, level, photons, pact,
-                engagement) into one 40×40 piece of the sky. The
-                command palette, profile link, role switcher, and
-                logout remain — the things the user actually clicks. */}
+                V3 — visible status chips. Currency (stardust) + Streak are
+                pulled from the same useSigilState() the OrbitSigil reads,
+                so the numbers stay in lockstep. Chat dispatches the
+                `open-chat` window event handled by ChatDrawerMount at app
+                root. Settings is a real NavLink. The OrbitSigil is kept as
+                a small constellation to the right of the streak chip. */}
             <div className="flex items-center gap-1.5 flex-shrink-0">
+              <CurrencyChip />
+              <StreakChip />
               <button
                 type="button"
                 onClick={() => usePaletteStore.getState().openPalette()}
@@ -283,33 +286,35 @@ const Navbar = () => {
               </button>
 
               {/* Chat — dispatches the same custom event ConnectionCard uses
-                  to open the ChatDrawer with the conversation list. */}
+                  to open the ChatDrawer with the conversation list. Now
+                  visible at sm+ (was md+) so it works on tablets. */}
               <button
                 type="button"
                 onClick={() => window.dispatchEvent(new CustomEvent('open-chat'))}
                 title="Messages"
                 aria-label="Open messages"
-                className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-xl text-text-secondary hover:text-text-primary transition-all bg-surface border border-border-subtle"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-xl text-text-secondary hover:text-text-primary transition-all bg-surface border border-border-subtle"
               >
                 <MessageCircle size={15} />
               </button>
 
-              {/* Notifications */}
-              <div className="hidden md:inline-flex items-center justify-center">
+              {/* Notifications — always visible on sm+ screens. */}
+              <div className="inline-flex items-center justify-center">
                 <NotificationBell />
               </div>
 
-              {/* Settings */}
+              {/* Settings — always visible. Was hidden on small screens, which
+                  made the user think the icon was broken. */}
               <NavLink
                 to="/settings"
                 title="Settings"
                 aria-label="Open settings"
-                className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-xl text-text-secondary hover:text-text-primary transition-all bg-surface border border-border-subtle"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-xl text-text-secondary hover:text-text-primary transition-all bg-surface border border-border-subtle"
               >
                 <SettingsIcon size={15} />
               </NavLink>
 
-              {/* The Sigil — the status constellation. */}
+              {/* The Sigil — the status constellation (level + league). */}
               <div className="hidden md:inline-flex items-center justify-center">
                 <OrbitSigil />
               </div>
@@ -400,3 +405,83 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+// ────────────────────────────────────────────────────────────
+// Status chips (Currency + Streak)
+// ────────────────────────────────────────────────────────────
+//
+// Two tiny presentational chips that surface the user's stardust balance
+// and learning streak in the navbar. They read from the same useSigilState
+// hook the OrbitSigil uses, so the numbers can never drift out of sync.
+//
+// Each chip is a <NavLink> that takes the user to the relevant surface
+// (currency → /shop, streak → /gameology) and is wrapped in a
+// usePaletteStore-like "navigate on click" — but the NavLink is enough.
+//
+// Type: monospace caps with a small colored icon. The compact 11px size
+// keeps the chip under 56px wide even with 4-digit balances, so the
+// nav bar never wraps. Hidden on screens narrower than `sm` so the
+// brand + nav still fit on phones.
+
+const ChipBase = ({ icon: Icon, value, label, accent, path, title, ariaLabel }) => (
+  <NavLink
+    to={path}
+    title={title}
+    aria-label={ariaLabel}
+    className="hidden sm:inline-flex items-center gap-1.5 px-2 py-1 rounded-lg transition-all hover:bg-surface border border-border-subtle group"
+    style={{
+      background: 'rgba(255,255,255,0.02)',
+    }}
+  >
+    <Icon
+      size={12}
+      strokeWidth={2.4}
+      style={{ color: accent, filter: `drop-shadow(0 0 4px ${accent}55)` }}
+      aria-hidden
+    />
+    <span
+      className="font-mono uppercase tracking-[0.14em] font-semibold"
+      style={{ fontSize: '0.66rem', color: 'var(--text-primary)' }}
+    >
+      {value}
+    </span>
+    {label && (
+      <span
+        className="font-mono uppercase tracking-[0.14em] font-medium hidden md:inline"
+        style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}
+      >
+        {label}
+      </span>
+    )}
+  </NavLink>
+);
+
+const CurrencyChip = () => {
+  const { stardust } = useSigilState();
+  return (
+    <ChipBase
+      icon={Coins}
+      value={stardust.toLocaleString()}
+      label="stardust"
+      accent="#22d3ee"
+      path="/shop"
+      title="Stardust balance — open the shop"
+      ariaLabel={`${stardust.toLocaleString()} stardust — open the shop`}
+    />
+  );
+};
+
+const StreakChip = () => {
+  const { streak } = useSigilState();
+  return (
+    <ChipBase
+      icon={Flame}
+      value={`${streak}d`}
+      label={streak === 1 ? 'streak' : 'streak'}
+      accent={streak > 0 ? '#fb923c' : 'rgba(255,255,255,0.35)'}
+      path="/gameology"
+      title="Learning streak — open the pulse"
+      ariaLabel={`${streak}-day learning streak — open the pulse`}
+    />
+  );
+};
