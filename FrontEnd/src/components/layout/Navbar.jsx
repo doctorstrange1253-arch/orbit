@@ -8,10 +8,11 @@ import api from '../../services/api';
 import { unregisterPush } from '../../utils/pushNotify';
 import RoleSwitcher from './RoleSwitcher';
 import OrbitSigil from './OrbitSigil';
+import NotificationBell from '../notifications/NotificationBell';
 import { usePaletteStore } from '../fx/CommandPalette';
 import {
   LogOut, Layers, Compass, Users, Map, ShieldCheck,
-  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search
+  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, MessageCircle, Bell, Settings as SettingsIcon
 } from 'lucide-react';
 
 // Three independent nav pill lists, one per role window. The Navbar picks
@@ -281,9 +282,34 @@ const Navbar = () => {
                 <kbd>⌘K</kbd>
               </button>
 
-              {/* The Sigil — the new status pill. Single element, four
-                  satellites, ambient rotation, hover tooltip, each
-                  satellite clickable. */}
+              {/* Chat — dispatches the same custom event ConnectionCard uses
+                  to open the ChatDrawer with the conversation list. */}
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent('open-chat'))}
+                title="Messages"
+                aria-label="Open messages"
+                className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-xl text-text-secondary hover:text-text-primary transition-all bg-surface border border-border-subtle"
+              >
+                <MessageCircle size={15} />
+              </button>
+
+              {/* Notifications */}
+              <div className="hidden md:inline-flex items-center justify-center">
+                <NotificationBell />
+              </div>
+
+              {/* Settings */}
+              <NavLink
+                to="/settings"
+                title="Settings"
+                aria-label="Open settings"
+                className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-xl text-text-secondary hover:text-text-primary transition-all bg-surface border border-border-subtle"
+              >
+                <SettingsIcon size={15} />
+              </NavLink>
+
+              {/* The Sigil — the status constellation. */}
               <div className="hidden md:inline-flex items-center justify-center">
                 <OrbitSigil />
               </div>
