@@ -46,7 +46,7 @@ export default function PeopleRow() {
         className="font-mono uppercase tracking-[0.28em] mb-5"
         style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
       >
-        <span style={{ color: 'var(--text-secondary, #fff)' }}>V.</span> The people who stayed.
+        The people who stayed.
       </p>
 
       {list.length === 0 ? (

@@ -80,7 +80,7 @@ export default function PullQuote() {
         className="font-mono uppercase tracking-[0.28em] mb-5"
         style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
       >
-        <span style={{ color: 'var(--text-secondary, #fff)' }}>VI.</span> The quote you earned.
+        The quote you earned.
       </p>
       <blockquote
         className="font-display italic leading-[1.15] tracking-[-0.02em] max-w-[28ch] md:max-w-[36ch]"

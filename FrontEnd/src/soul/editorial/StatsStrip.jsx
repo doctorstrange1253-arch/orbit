@@ -68,9 +68,8 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
   return (
     <section className="pt-2 pb-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <FolioHeader
-        folio="II"
-        eyebrow="Section two · the ledger"
-        title="By the numbers, this week."
+        eyebrow="The ledger"
+        title="By the numbers."
         accent={accentFrom}
       />
 
@@ -128,7 +127,9 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
 
               {/* Label — every label wears the soul gradient (uppercase,
                   mono, tracking). The XP label and the XP number share
-                  the same gradient, so the cell reads as a unit. */}
+                  the same gradient, so the cell reads as a unit.
+                  No sub-label ("this week" / "lifetime") — the user
+                  said drop them. */}
               <div
                 className="font-mono uppercase"
                 style={{
@@ -142,17 +143,6 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
                 }}
               >
                 {c.label}
-              </div>
-              <div
-                className="font-mono uppercase"
-                style={{
-                  fontSize: '0.58rem',
-                  letterSpacing: '0.22em',
-                  color: 'rgba(245,245,245,0.45)',
-                  marginTop: 2,
-                }}
-              >
-                {c.sub}
               </div>
             </div>
           );

@@ -157,7 +157,7 @@ export default function WeekStrip({ events = [] }) {
           className="font-mono uppercase tracking-[0.28em]"
           style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
         >
-          <span style={{ color: accent }}>III.</span> Day by day.
+          Day by day.
         </p>
         <p
           className="font-mono uppercase tracking-[0.22em]"

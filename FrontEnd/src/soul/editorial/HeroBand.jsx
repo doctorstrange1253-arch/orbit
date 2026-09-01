@@ -16,18 +16,33 @@
  */
 
 import { useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { useAuthStore } from '../../store/authStore';
 import { useSoul } from '../../hooks/useSoul';
 import FolioHeader from './FolioHeader';
 
+// "Formal" salutation. The previous greeting was a single word with a
+// trailing comma ('Evening,' / 'Morning,'); the user asked for a more
+// formal tone. Each time-of-day now returns the full "Good ___,"
+// phrase so the hero reads as a complete salutation, not a fragment.
 const greeting = () => {
   const h = new Date().getHours();
-  if (h < 5)  return 'Late,';
-  if (h < 12) return 'Morning,';
-  if (h < 17) return 'Afternoon,';
-  if (h < 22) return 'Evening,';
-  return 'Still up,';
+  if (h < 5)  return 'Good night,';
+  if (h < 12) return 'Good morning,';
+  if (h < 17) return 'Good afternoon,';
+  if (h < 22) return 'Good evening,';
+  return 'Good night,';
 };
+
+// Sequential word reveal — each token of the greeting fades in
+// ~80ms after the previous, with a 4px upward drift that settles.
+// Plays once on mount; no looping animation. The user wanted a
+// "halki halki formal" (slight, formal) animation, not a flashy one.
+const wordReveal = (i) => ({
+  initial: { opacity: 0, y: 4 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' },
+});
 
 const startOfWeekMs = () => {
   const d = new Date();
@@ -140,8 +155,7 @@ export default function HeroBand({ events = [] }) {
       {/* LEFT — typographic statement */}
       <div className="md:col-span-7 min-w-0">
         <FolioHeader
-          folio="I"
-          eyebrow="Section one · the lede"
+          eyebrow="The lede"
           title="The week that was."
           accent={accent}
         />
@@ -157,7 +171,12 @@ export default function HeroBand({ events = [] }) {
             color: 'var(--text-primary)',
           }}
         >
-          <span
+          {/* Greeting — formal "Good evening," prefix, the user's
+              first name, and an accent-tinted period. Each token
+              fades in sequentially (~80ms apart) so the salutation
+              appears as a deliberate reveal, not a flash. */}
+          <motion.span
+            {...wordReveal(0)}
             style={{
               color: 'var(--text-muted)',
               fontFamily: 'var(--font-serif)',
@@ -165,10 +184,23 @@ export default function HeroBand({ events = [] }) {
               fontWeight: 400,
             }}
           >
-            {greeting()}
-          </span>{' '}
-          {firstName}
-          <span style={{ color: accent, fontStyle: 'italic' }}>.</span>
+            {greeting().split(' ')[0]}
+          </motion.span>{' '}
+          <motion.span
+            {...wordReveal(1)}
+            style={{
+              color: 'var(--text-muted)',
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontWeight: 400,
+            }}
+          >
+            {greeting().split(' ')[1]}
+          </motion.span>{' '}
+          <motion.span {...wordReveal(2)} style={{ color: 'var(--text-primary)' }}>
+            {firstName}
+          </motion.span>
+          <motion.span {...wordReveal(3)} style={{ color: accent, fontStyle: 'italic' }}>.</motion.span>
         </h1>
         <div className="mt-5 max-w-[44ch] space-y-2">
           {ledeLines.map((line, i) => (

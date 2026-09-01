@@ -164,7 +164,7 @@ const MyOrbit = () => {
               className="font-mono uppercase tracking-[0.28em]"
               style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
             >
-              <span style={{ color: nebula?.from || '#22d3ee' }}>IV.</span> The skills you carry.
+              The skills you carry.
             </p>
             <button
               type="button"
