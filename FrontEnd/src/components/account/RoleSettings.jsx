@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Loader2, Check, AlertTriangle } from 'lucide-react';
+import { Users, Loader2, Check, AlertTriangle, GraduationCap, BookOpen } from 'lucide-react';
 import api from '../../services/api';
 import { useAuthStore, ACCOUNT_ROLES, ROLE_META } from '../../store/authStore';
 import { useUIStore } from '../../store/uiStore';
