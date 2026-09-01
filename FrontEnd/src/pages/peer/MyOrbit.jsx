@@ -171,19 +171,20 @@ const MyOrbit = () => {
               onClick={() => setFormOpen(true)}
               className="inline-flex items-center gap-1.5 font-mono uppercase tracking-[0.22em] transition-all duration-200"
               style={{
-                fontSize: '0.66rem',
-                color: nebula?.from || '#22d3ee',
-                background: `${nebula?.from || '#22d3ee'}14`,
-                border: `1px solid ${nebula?.from || '#22d3ee'}55`,
-                padding: '6px 12px',
-                borderRadius: 2,
-                fontWeight: 600,
+                fontSize: '0.68rem',
+                color: '#0b0a20',
+                background: `linear-gradient(135deg, ${nebula?.from || '#22d3ee'}, ${nebula?.to || '#0d9488'})`,
+                border: 'none',
+                padding: '8px 14px',
+                borderRadius: 3,
+                fontWeight: 700,
+                boxShadow: `0 4px 12px -4px ${nebula?.from || '#22d3ee'}80`,
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = `${nebula?.from || '#22d3ee'}22`; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = `${nebula?.from || '#22d3ee'}14`; }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = `0 6px 16px -4px ${nebula?.from || '#22d3ee'}A0`; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 12px -4px ${nebula?.from || '#22d3ee'}80`; }}
               aria-label="Add a new skill"
             >
-              <Plus size={12} strokeWidth={2.6} />
+              <Plus size={13} strokeWidth={2.8} />
               Add skill
             </button>
           </div>
