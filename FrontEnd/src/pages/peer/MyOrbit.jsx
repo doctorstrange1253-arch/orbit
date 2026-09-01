@@ -90,16 +90,34 @@ const MyOrbit = () => {
   // One fetch for the lede, stats strip, week strip, and (kept
   // for future use) the today timeline. 500 events covers ~12
   // weeks comfortably.
+  // The backend wraps the array in {items: [...]} — normalize at the
+  // source so downstream components can iterate freely. Also handles
+  // legacy {events}, {history}, {data} wrappers if they appear.
+  const normalizeHistory = (raw) => {
+    if (Array.isArray(raw)) return raw;
+    if (Array.isArray(raw?.items)) return raw.items;
+    if (Array.isArray(raw?.events)) return raw.events;
+    if (Array.isArray(raw?.history)) return raw.history;
+    if (Array.isArray(raw?.data)) return raw.data;
+    return [];
+  };
   const { data: history = [] } = useQuery({
     queryKey: ['gameology', 'history', 'myorbit-editorial'],
-    queryFn: () => api.get('/gameology/history?limit=500').then((r) => r.data || []),
+    queryFn: () => api.get('/gameology/history?limit=500').then((r) => normalizeHistory(r.data)),
     refetchInterval: 60_000,
   });
+  const safeHistory = Array.isArray(history) ? history : [];
 
   // My skills — drives the archive-card grid.
   const { data: skills = [], isLoading, error, refetch } = useQuery({
     queryKey: ['skills', 'my'],
-    queryFn: () => api.get('/skills/my').then((r) => r.data),
+    queryFn: () => api.get('/skills/my').then((r) => {
+      const d = r.data;
+      if (Array.isArray(d)) return d;
+      if (Array.isArray(d?.skills)) return d.skills;
+      if (Array.isArray(d?.data)) return d.data;
+      return [];
+    }),
   });
 
   const skillList = Array.isArray(skills) ? skills : [];
@@ -125,17 +143,17 @@ const MyOrbit = () => {
 
       {/* I. The week that was. (hero) */}
       <SectionBoundary name="I. The week that was">
-        <HeroBand events={history} />
+        <HeroBand events={safeHistory} />
       </SectionBoundary>
 
       {/* II. By the numbers. */}
       <SectionBoundary name="II. By the numbers">
-        <StatsStrip events={history} skillsCount={skillList.length} />
+        <StatsStrip events={safeHistory} skillsCount={skillList.length} />
       </SectionBoundary>
 
       {/* III. Day by day. */}
       <SectionBoundary name="III. Day by day">
-        <WeekStrip events={history} />
+        <WeekStrip events={safeHistory} />
       </SectionBoundary>
 
       {/* IV. The skills you carry. */}

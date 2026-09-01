@@ -38,7 +38,9 @@ function computeStats(events = [], skillsCount = 0) {
 }
 
 export default function StatsStrip({ events = [], skillsCount = 0 }) {
-  const stats = useMemo(() => computeStats(events, skillsCount), [events, skillsCount]);
+  // Hard defense: never iterate over a non-array.
+  const safeEvents = Array.isArray(events) ? events : [];
+  const stats = useMemo(() => computeStats(safeEvents, skillsCount), [safeEvents, skillsCount]);
 
   // Four columns, identical structure. The dividers are a single 1px
   // border-left on columns 2–4 so they line up regardless of the

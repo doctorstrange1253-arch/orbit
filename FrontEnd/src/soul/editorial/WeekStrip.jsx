@@ -49,7 +49,8 @@ export default function WeekStrip({ events = [] }) {
   const accent = nebula?.from || '#22d3ee';
 
   const { cells, caption } = useMemo(() => {
-    const counts = bucketByDate(events);
+    const safeEvents = Array.isArray(events) ? events : [];
+    const counts = bucketByDate(safeEvents);
     const thisWeekStart = startOfWeekMs(new Date());
 
     const cells = [];

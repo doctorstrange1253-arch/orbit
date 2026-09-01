@@ -115,14 +115,18 @@ function xpThisWeek(events = []) {
 }
 
 export default function HeroBand({ events = [] }) {
+  // Hard defense: if a future refactor passes a non-array, render the
+  // empty-state hero rather than crash on `events.filter`.
+  const safeEvents = Array.isArray(events) ? events : [];
+
   const user = useAuthStore((s) => s.user);
   const { nebula } = useSoul();
   const accent = nebula?.from || '#22d3ee';
   const accentTo = nebula?.to || '#0d9488';
 
   const firstName = (user?.name || 'you').split(' ')[0];
-  const lede = useMemo(() => buildLede(events), [events]);
-  const xp = useMemo(() => xpThisWeek(events), [events]);
+  const lede = useMemo(() => buildLede(safeEvents), [safeEvents]);
+  const xp = useMemo(() => xpThisWeek(safeEvents), [safeEvents]);
 
   // Lede may be a string (empty case) or an array (varied-cadence).
   const ledeLines = Array.isArray(lede) ? lede : [lede];
