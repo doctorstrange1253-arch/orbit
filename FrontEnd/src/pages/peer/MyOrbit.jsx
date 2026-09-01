@@ -39,6 +39,7 @@ import api from '../../services/api';
 import SkillForm from '../../components/skills/SkillForm';
 import { SkillGridSkeleton } from '../../components/skeletons';
 import ErrorState from '../../components/common/ErrorState';
+import ErrorBoundary from '../../components/common/ErrorBoundary';
 import Masthead from '../../soul/editorial/Masthead';
 import HeroBand from '../../soul/editorial/HeroBand';
 import StatsStrip from '../../soul/editorial/StatsStrip';
@@ -48,9 +49,43 @@ import PeopleRow from '../../soul/editorial/PeopleRow';
 import PullQuote from '../../soul/editorial/PullQuote';
 import EditorialFooter from '../../soul/editorial/EditorialFooter';
 
+// One section's failure must NOT take down the whole page. Each
+// editorial section is wrapped in an ErrorBoundary with a thin,
+// hairline-rule fallback so the issue reads as a missing page, not
+// a crash. The page itself remains a magazine spread.
+const SectionBoundary = ({ name, children }) => (
+  <ErrorBoundary
+    fallback={
+      <section
+        className="py-8"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+        aria-label={`${name} (unavailable)`}
+      >
+        <p
+          className="font-mono uppercase tracking-[0.28em]"
+          style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+        >
+          {name} · Unavailable this issue.
+        </p>
+      </section>
+    }
+  >
+    {children}
+  </ErrorBoundary>
+);
+
 const MyOrbit = () => {
   const { user } = useAuthStore();
-  const { nebula } = useSoul();
+  // Wrap useSoul in a try/catch so even a hook failure degrades to a
+  // default peer-soul accent rather than the full-page error boundary.
+  let soul;
+  try {
+    soul = useSoul();
+  } catch (err) {
+    // Fall through to a default soul — keeps the page readable.
+    soul = { nebula: { from: '#22d3ee', to: '#0d9488' } };
+  }
+  const { nebula } = soul;
 
   // One fetch for the lede, stats strip, week strip, and (kept
   // for future use) the today timeline. 500 events covers ~12
@@ -84,64 +119,80 @@ const MyOrbit = () => {
       </Helmet>
 
       {/* MASTHEAD */}
-      <Masthead />
+      <SectionBoundary name="Masthead">
+        <Masthead />
+      </SectionBoundary>
 
       {/* I. The week that was. (hero) */}
-      <HeroBand events={history} />
+      <SectionBoundary name="I. The week that was">
+        <HeroBand events={history} />
+      </SectionBoundary>
 
       {/* II. By the numbers. */}
-      <StatsStrip events={history} skillsCount={skillList.length} />
+      <SectionBoundary name="II. By the numbers">
+        <StatsStrip events={history} skillsCount={skillList.length} />
+      </SectionBoundary>
 
       {/* III. Day by day. */}
-      <WeekStrip events={history} />
+      <SectionBoundary name="III. Day by day">
+        <WeekStrip events={history} />
+      </SectionBoundary>
 
       {/* IV. The skills you carry. */}
-      <section className="py-8" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <div className="flex items-baseline justify-between mb-6">
-          <p
-            className="font-mono uppercase tracking-[0.28em]"
-            style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
-          >
-            IV. The skills you carry.
-          </p>
-          <button
-            type="button"
-            onClick={() => setFormOpen(true)}
-            className="inline-flex items-center gap-1.5 font-mono uppercase tracking-[0.22em] transition-opacity hover:opacity-100"
-            style={{ fontSize: '0.66rem', color: 'var(--text-muted)', opacity: 0.7 }}
-            aria-label="Add a new skill"
-          >
-            <Plus size={11} strokeWidth={2.4} />
-            Add skill
-          </button>
-        </div>
-
-        {error && <ErrorState message="Failed to load your skills." onRetry={refetch} />}
-
-        {error ? null : isLoading ? (
-          <SkillGridSkeleton count={3} />
-        ) : skillList.length === 0 ? (
-          <p
-            className="leading-[1.6] max-w-[44ch]"
-            style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}
-          >
-            You haven't archived a skill yet. The first one is the slowest; it gets easier.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
-            {skillList.map((s, i) => <SkillsPolaroid key={s._id} skill={s} index={i} />)}
+      <SectionBoundary name="IV. The skills you carry">
+        <section className="py-8" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="flex items-baseline justify-between mb-6">
+            <p
+              className="font-mono uppercase tracking-[0.28em]"
+              style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+            >
+              IV. The skills you carry.
+            </p>
+            <button
+              type="button"
+              onClick={() => setFormOpen(true)}
+              className="inline-flex items-center gap-1.5 font-mono uppercase tracking-[0.22em] transition-opacity hover:opacity-100"
+              style={{ fontSize: '0.66rem', color: 'var(--text-muted)', opacity: 0.7 }}
+              aria-label="Add a new skill"
+            >
+              <Plus size={11} strokeWidth={2.4} />
+              Add skill
+            </button>
           </div>
-        )}
-      </section>
+
+          {error && <ErrorState message="Failed to load your skills." onRetry={refetch} />}
+
+          {error ? null : isLoading ? (
+            <SkillGridSkeleton count={3} />
+          ) : skillList.length === 0 ? (
+            <p
+              className="leading-[1.6] max-w-[44ch]"
+              style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}
+            >
+              You haven't archived a skill yet. The first one is the slowest; it gets easier.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+              {skillList.map((s, i) => <SkillsPolaroid key={s._id} skill={s} index={i} />)}
+            </div>
+          )}
+        </section>
+      </SectionBoundary>
 
       {/* V. The people who stayed. */}
-      <PeopleRow />
+      <SectionBoundary name="V. The people who stayed">
+        <PeopleRow />
+      </SectionBoundary>
 
       {/* VI. The quote you earned. (optional) */}
-      <PullQuote />
+      <SectionBoundary name="VI. The quote you earned">
+        <PullQuote />
+      </SectionBoundary>
 
       {/* COLOPHON */}
-      <EditorialFooter />
+      <SectionBoundary name="Colophon">
+        <EditorialFooter />
+      </SectionBoundary>
 
       <SkillForm isOpen={formOpen} onClose={() => setFormOpen(false)} />
     </div>

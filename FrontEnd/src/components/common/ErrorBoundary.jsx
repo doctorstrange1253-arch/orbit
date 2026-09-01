@@ -26,14 +26,22 @@ class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
+      // Custom fallback (string OR element) — caller decides how to degrade.
+      if (this.props.fallback !== undefined) {
+        if (typeof this.props.fallback === 'string' || this.props.fallback === null) {
+          return this.props.fallback;
+        }
+        return this.props.fallback;
+      }
+
       if (this.props.inline) {
         return (
           <div className="flex flex-col items-center justify-center p-6 h-full text-center bg-surface border-l border-border-subtle">
             <AlertTriangle size={28} className="text-danger mb-3" />
             <p className="text-sm font-medium text-text-primary mb-1">Failed to load conversation</p>
             <p className="text-xs text-text-muted mb-4 max-w-[200px]">We encountered an error displaying this chat. Please try again.</p>
-            <button 
-              onClick={() => this.setState({ hasError: false, error: null })} 
+            <button
+              onClick={() => this.setState({ hasError: false, error: null })}
               className="text-xs font-medium text-accent hover:text-accent-dark transition-colors"
             >
               Retry
