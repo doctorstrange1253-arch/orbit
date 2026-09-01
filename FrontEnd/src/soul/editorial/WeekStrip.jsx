@@ -93,13 +93,13 @@ export default function WeekStrip({ events = [] }) {
       <div className="flex items-baseline justify-between mb-5">
         <p
           className="font-mono uppercase tracking-[0.28em]"
-          style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+          style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
         >
-          III. Day by day.
+          <span style={{ color: accent }}>III.</span> Day by day.
         </p>
         <p
           className="font-mono uppercase tracking-[0.22em]"
-          style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}
+          style={{ fontSize: '0.66rem', color: 'rgba(245,245,245,0.66)' }}
         >
           {cells.reduce((s, c) => s + c.count, 0)} this week
         </p>
@@ -135,7 +135,7 @@ export default function WeekStrip({ events = [] }) {
 
       <p
         className="mt-5 leading-[1.5]"
-        style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}
+        style={{ fontSize: '0.88rem', color: 'rgba(245,245,245,0.72)' }}
       >
         {caption}
       </p>

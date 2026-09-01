@@ -11,6 +11,7 @@
  */
 
 import { useMemo } from 'react';
+import { useSoul } from '../../hooks/useSoul';
 
 const startOfWeekMs = () => {
   const d = new Date();
@@ -38,6 +39,8 @@ function computeStats(events = [], skillsCount = 0) {
 }
 
 export default function StatsStrip({ events = [], skillsCount = 0 }) {
+  const { nebula } = useSoul();
+  const accent = nebula?.from || '#22d3ee';
   // Hard defense: never iterate over a non-array.
   const safeEvents = Array.isArray(events) ? events : [];
   const stats = useMemo(() => computeStats(safeEvents, skillsCount), [safeEvents, skillsCount]);
@@ -56,9 +59,9 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
     <section className="py-8" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <p
         className="font-mono uppercase tracking-[0.28em] mb-5"
-        style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+        style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
       >
-        II. This week, by the numbers.
+        <span style={{ color: accent }}>II.</span> This week, by the numbers.
       </p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6">
         {cols.map((c, i) => (
@@ -68,13 +71,17 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
           >
             <div
               className="font-display font-black leading-[0.92] tracking-[-0.04em]"
-              style={{ fontSize: 'clamp(2.4rem, 5vw, 3.6rem)', color: 'var(--text-primary)' }}
+              style={{
+                fontSize: 'clamp(2.4rem, 5vw, 3.6rem)',
+                color: i === 3 ? accent : 'var(--text-primary)',
+                transition: 'color 240ms',
+              }}
             >
               {c.value.toLocaleString()}
             </div>
             <div
               className="font-mono uppercase tracking-[0.22em] mt-2"
-              style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}
+              style={{ fontSize: '0.66rem', color: 'rgba(245,245,245,0.66)' }}
             >
               {c.label}
             </div>

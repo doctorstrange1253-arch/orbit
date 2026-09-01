@@ -78,9 +78,9 @@ export default function PullQuote() {
     <section className="py-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <p
         className="font-mono uppercase tracking-[0.28em] mb-5"
-        style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+        style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
       >
-        VI. The quote you earned.
+        <span style={{ color: 'var(--text-secondary, #fff)' }}>VI.</span> The quote you earned.
       </p>
       <blockquote
         className="font-display italic leading-[1.15] tracking-[-0.02em] max-w-[28ch] md:max-w-[36ch]"
@@ -93,7 +93,7 @@ export default function PullQuote() {
       </blockquote>
       <p
         className="font-mono uppercase tracking-[0.22em] mt-5"
-        style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+        style={{ fontSize: '0.7rem', color: 'rgba(245,245,245,0.66)' }}
       >
         — {featured.attribution}
       </p>

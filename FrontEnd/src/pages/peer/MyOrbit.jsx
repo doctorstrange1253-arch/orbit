@@ -162,18 +162,28 @@ const MyOrbit = () => {
           <div className="flex items-baseline justify-between mb-6">
             <p
               className="font-mono uppercase tracking-[0.28em]"
-              style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+              style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
             >
-              IV. The skills you carry.
+              <span style={{ color: nebula?.from || '#22d3ee' }}>IV.</span> The skills you carry.
             </p>
             <button
               type="button"
               onClick={() => setFormOpen(true)}
-              className="inline-flex items-center gap-1.5 font-mono uppercase tracking-[0.22em] transition-opacity hover:opacity-100"
-              style={{ fontSize: '0.66rem', color: 'var(--text-muted)', opacity: 0.7 }}
+              className="inline-flex items-center gap-1.5 font-mono uppercase tracking-[0.22em] transition-all duration-200"
+              style={{
+                fontSize: '0.66rem',
+                color: nebula?.from || '#22d3ee',
+                background: `${nebula?.from || '#22d3ee'}14`,
+                border: `1px solid ${nebula?.from || '#22d3ee'}55`,
+                padding: '6px 12px',
+                borderRadius: 2,
+                fontWeight: 600,
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = `${nebula?.from || '#22d3ee'}22`; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = `${nebula?.from || '#22d3ee'}14`; }}
               aria-label="Add a new skill"
             >
-              <Plus size={11} strokeWidth={2.4} />
+              <Plus size={12} strokeWidth={2.6} />
               Add skill
             </button>
           </div>
@@ -185,7 +195,7 @@ const MyOrbit = () => {
           ) : skillList.length === 0 ? (
             <p
               className="leading-[1.6] max-w-[44ch]"
-              style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}
+              style={{ fontSize: '0.9rem', color: 'rgba(245,245,245,0.72)' }}
             >
               You haven't archived a skill yet. The first one is the slowest; it gets easier.
             </p>

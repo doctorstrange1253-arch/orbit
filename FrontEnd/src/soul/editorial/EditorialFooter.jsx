@@ -23,13 +23,13 @@ export default function EditorialFooter() {
       >
         <p
           className="font-mono uppercase tracking-[0.22em]"
-          style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}
+          style={{ fontSize: '0.68rem', color: 'rgba(245,245,245,0.66)' }}
         >
           End of issue. Next issue: {tomorrowLabel}.
         </p>
         <p
           className="font-mono uppercase tracking-[0.22em]"
-          style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}
+          style={{ fontSize: '0.68rem', color: 'rgba(245,245,245,0.66)' }}
         >
           Orbit · An editorial of one.
         </p>

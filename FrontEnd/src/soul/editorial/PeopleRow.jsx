@@ -44,15 +44,15 @@ export default function PeopleRow() {
     <section className="py-8" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <p
         className="font-mono uppercase tracking-[0.28em] mb-5"
-        style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+        style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
       >
-        V. The people who stayed.
+        <span style={{ color: 'var(--text-secondary, #fff)' }}>V.</span> The people who stayed.
       </p>
 
       {list.length === 0 ? (
         <p
           className="leading-[1.6] max-w-[44ch]"
-          style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}
+          style={{ fontSize: '0.9rem', color: 'rgba(245,245,245,0.72)' }}
         >
           No one here yet. The first connection is the slowest; every one after is faster.
         </p>

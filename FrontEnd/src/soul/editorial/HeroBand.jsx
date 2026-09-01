@@ -140,9 +140,9 @@ export default function HeroBand({ events = [] }) {
       <div className="md:col-span-7 min-w-0">
         <p
           className="font-mono uppercase tracking-[0.28em]"
-          style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+          style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
         >
-          I. The week that was.
+          <span style={{ color: accent }}>I.</span> The week that was.
         </p>
         <h1
           className="font-display font-bold leading-[0.96] tracking-[-0.03em] mt-3"
@@ -160,8 +160,8 @@ export default function HeroBand({ events = [] }) {
               key={i}
               className="leading-[1.55]"
               style={{
-                fontSize: i === 0 ? '0.95rem' : '0.88rem',
-                color: i === 0 ? 'var(--text-secondary)' : 'var(--text-muted)',
+                fontSize: i === 0 ? '0.98rem' : '0.9rem',
+                color: i === 0 ? 'rgba(255,255,255,0.88)' : 'rgba(245,245,245,0.66)',
               }}
             >
               {line}
@@ -174,7 +174,7 @@ export default function HeroBand({ events = [] }) {
       <div className="md:col-span-5 md:pl-8 md:border-l md:border-white/5 flex flex-col justify-end">
         <p
           className="font-mono uppercase tracking-[0.28em]"
-          style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+          style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
         >
           The number
         </p>
@@ -192,7 +192,7 @@ export default function HeroBand({ events = [] }) {
         </div>
         <p
           className="font-mono uppercase tracking-[0.22em] mt-2"
-          style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
+          style={{ fontSize: '0.7rem', color: 'rgba(245,245,245,0.66)' }}
         >
           XP earned this week
         </p>
