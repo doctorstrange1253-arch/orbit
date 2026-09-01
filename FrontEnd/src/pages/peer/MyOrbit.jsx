@@ -37,6 +37,7 @@ import { useAuthStore } from '../../store/authStore';
 import { useSoul } from '../../hooks/useSoul';
 import api from '../../services/api';
 import SkillForm from '../../components/skills/SkillForm';
+import SkillCard from '../../components/skills/SkillCard';
 import { SkillGridSkeleton } from '../../components/skeletons';
 import ErrorState from '../../components/common/ErrorState';
 import ErrorBoundary from '../../components/common/ErrorBoundary';
@@ -44,7 +45,6 @@ import Masthead from '../../soul/editorial/Masthead';
 import HeroBand from '../../soul/editorial/HeroBand';
 import StatsStrip from '../../soul/editorial/StatsStrip';
 import WeekStrip from '../../soul/editorial/WeekStrip';
-import SkillsPolaroid from '../../soul/editorial/SkillsPolaroid';
 import PeopleRow from '../../soul/editorial/PeopleRow';
 import PullQuote from '../../soul/editorial/PullQuote';
 import EditorialFooter from '../../soul/editorial/EditorialFooter';
@@ -169,23 +169,11 @@ const MyOrbit = () => {
             <button
               type="button"
               onClick={() => setFormOpen(true)}
-              className="inline-flex items-center gap-1.5 font-mono uppercase tracking-[0.22em] transition-all duration-200"
-              style={{
-                fontSize: '0.68rem',
-                color: '#0b0a20',
-                background: `linear-gradient(135deg, ${nebula?.from || '#22d3ee'}, ${nebula?.to || '#0d9488'})`,
-                border: 'none',
-                padding: '8px 14px',
-                borderRadius: 3,
-                fontWeight: 700,
-                boxShadow: `0 4px 12px -4px ${nebula?.from || '#22d3ee'}80`,
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = `0 6px 16px -4px ${nebula?.from || '#22d3ee'}A0`; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 12px -4px ${nebula?.from || '#22d3ee'}80`; }}
+              className="btn-gradient flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm"
               aria-label="Add a new skill"
             >
-              <Plus size={13} strokeWidth={2.8} />
-              Add skill
+              <Plus size={16} strokeWidth={2.6} />
+              Add Skill
             </button>
           </div>
 
@@ -201,8 +189,8 @@ const MyOrbit = () => {
               You haven't archived a skill yet. The first one is the slowest; it gets easier.
             </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
-              {skillList.map((s, i) => <SkillsPolaroid key={s._id} skill={s} index={i} />)}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {skillList.map((s) => <SkillCard key={s._id} skill={s} variant="my-skills" />)}
             </div>
           )}
         </section>
