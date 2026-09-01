@@ -13,7 +13,8 @@ const mongoose = require("mongoose");
 
 const PactWeekLedgerSchema = new mongoose.Schema({
     userId:  { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
-    weekId:  { type: String, required: true, index: true }, // "YYYY-Www"
+    // weekId has its own index declared below (line 28) — don't double-declare.
+    weekId:  { type: String, required: true }, // "YYYY-Www"
     signals: {
         sessions:    { type: Number, default: 0 },
         ratingSum:   { type: Number, default: 0 },
