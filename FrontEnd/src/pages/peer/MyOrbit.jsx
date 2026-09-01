@@ -2,13 +2,17 @@
  * pages/peer/MyOrbit.jsx — the Peer Soul home (Editorial).
  *
  * A magazine-style "issue" that reads as a spread, not a dashboard.
- * Six numbered sections, each with a hairline rule above, each
- * carrying one piece of information:
+ * Six sections, separated by hairline rules. The user dropped the
+ * section eyebrows (mono-caps) and the Playfair italic section
+ * titles — the first content piece in each section is the first
+ * thing the eye lands on. The order is deliberate: greeting →
+ * skills (the "good priority" surface, with Add Skill as the
+ * section opener) → numbers → day-by-day → people → quote.
  *
  *   I.   The week that was.      (hero: name + varied-cadence lede)
- *   II.  By the numbers.         (4-col stats strip)
- *   III. Day by day.             (7-cell current-week strip)
- *   IV.  The skills you carry.   (archive-card grid)
+ *   II.  The skills you carry.   (Add Skill CTA, then archive grid)
+ *   III. By the numbers.         (4-col stats strip, uniform Playfair)
+ *   IV.  Day by day.             (7-cell current-week strip)
  *   V.   The people who stayed.  (horizontal person row)
  *   VI.  The quote you earned.   (optional pull quote, data-driven)
  *
@@ -141,31 +145,32 @@ const MyOrbit = () => {
         <Masthead />
       </SectionBoundary>
 
+      {/* The order of sections below is deliberate: greeting first,
+          then the skills grid (the user's "good priority" surface —
+          right after the lede, the Add Skill CTA is the first thing
+          the user can act on), then the numbers, the day-by-day grid,
+          the people, and finally the optional pull quote. No numbered
+          titles, no eyebrows, no Playfair italic section labels —
+          sections are separated only by hairline rules. The first
+          content piece in each section is the first thing the eye
+          lands on. */}
+
       {/* I. The week that was. (hero) */}
       <SectionBoundary name="I. The week that was">
         <HeroBand events={safeHistory} />
       </SectionBoundary>
 
-      {/* II. By the numbers. */}
-      <SectionBoundary name="II. By the numbers">
-        <StatsStrip events={safeHistory} skillsCount={skillList.length} />
-      </SectionBoundary>
-
-      {/* III. Day by day. */}
-      <SectionBoundary name="III. Day by day">
-        <WeekStrip events={safeHistory} />
-      </SectionBoundary>
-
-      {/* IV. The skills you carry. */}
-      <SectionBoundary name="IV. The skills you carry">
+      {/* II. The skills you carry. (promoted — second section, after
+          the greeting. No eyebrow; the Add Skill CTA is the first
+          thing in the section.) */}
+      <SectionBoundary name="II. The skills you carry">
         <section className="py-8" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          <div className="flex items-baseline justify-between mb-6">
-            <p
-              className="font-mono uppercase tracking-[0.28em]"
-              style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
-            >
-              The skills you carry.
-            </p>
+          {/* Add Skill — promoted to the first thing in the section.
+              No eyebrow, no section title — just the CTA above the
+              grid. The user said this needs "good priority in terms
+              of arrangement"; making the CTA the section opener is
+              the clearest signal. */}
+          <div className="mb-6">
             <button
               type="button"
               onClick={() => setFormOpen(true)}
@@ -194,6 +199,16 @@ const MyOrbit = () => {
             </div>
           )}
         </section>
+      </SectionBoundary>
+
+      {/* III. By the numbers. (the 4-cell strip, now uniform) */}
+      <SectionBoundary name="III. By the numbers">
+        <StatsStrip events={safeHistory} skillsCount={skillList.length} />
+      </SectionBoundary>
+
+      {/* IV. Day by day. (the 7-cell week strip) */}
+      <SectionBoundary name="IV. Day by day">
+        <WeekStrip events={safeHistory} />
       </SectionBoundary>
 
       {/* V. The people who stayed. */}

@@ -152,21 +152,9 @@ export default function WeekStrip({ events = [] }) {
 
   return (
     <section className="py-8" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-      <div className="flex items-baseline justify-between mb-5">
-        <p
-          className="font-mono uppercase tracking-[0.28em]"
-          style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
-        >
-          Day by day.
-        </p>
-        <p
-          className="font-mono uppercase tracking-[0.22em]"
-          style={{ fontSize: '0.66rem', color: 'rgba(245,245,245,0.66)' }}
-        >
-          {totalThisWeek} {totalThisWeek === 1 ? 'event logged' : 'events logged'} this week
-        </p>
-      </div>
-
+      {/* No eyebrow / no caption row — the user dropped all section
+          headings. The 7 day cells are the content; the hairline rule
+          above is the section break. */}
       <div className="grid grid-cols-7 gap-2 sm:gap-3">
         {cells.map((c) => {
           const isFlipped = flipped.has(c.date);

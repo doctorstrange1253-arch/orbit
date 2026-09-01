@@ -42,12 +42,9 @@ export default function PeopleRow() {
 
   return (
     <section className="py-8" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-      <p
-        className="font-mono uppercase tracking-[0.28em] mb-5"
-        style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
-      >
-        The people who stayed.
-      </p>
+      {/* No eyebrow — the user dropped all section headings. Hairline
+          rule above is the section break; the first avatar is the
+          first thing the eye lands on. */}
 
       {list.length === 0 ? (
         <p

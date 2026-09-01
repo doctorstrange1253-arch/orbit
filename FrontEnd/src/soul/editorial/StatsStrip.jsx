@@ -45,25 +45,24 @@ function computeStats(events = [], skillsCount = 0) {
 }
 
 export default function StatsStrip({ events = [], skillsCount = 0 }) {
-  const { nebula } = useSoul();
-  const accentFrom = nebula?.from || '#22d3ee';
-  const accentTo   = nebula?.to   || '#0d9488';
   const safeEvents = Array.isArray(events) ? events : [];
   const stats = useMemo(() => computeStats(safeEvents, skillsCount), [safeEvents, skillsCount]);
 
-  // Four cells in a row, identical shape. XP is the signature — it
-  // gets the gradient + glow; the other three are clean mono numerals.
+  // Four cells in a row, identical shape. Every number is set in
+  // Playfair Display italic, clean white, no gradient, no glow.
+  // The user picked the "very magazine" treatment — quiet, uniform,
+  // the cell hairlines do the visual work.
   const cells = [
-    { key: 'swaps',   label: 'Swaps',          sub: 'this week',  value: stats.swaps   },
-    { key: 'lessons', label: 'Lessons',        sub: 'this week',  value: stats.lessons },
-    { key: 'skills',  label: 'Skills carried', sub: 'lifetime',   value: stats.skills  },
-    { key: 'xp',      label: 'XP',             sub: 'this week',  value: stats.xp,     isXP: true },
+    { key: 'swaps',   label: 'Swaps',          value: stats.swaps   },
+    { key: 'lessons', label: 'Lessons',        value: stats.lessons },
+    { key: 'skills',  label: 'Skills carried', value: stats.skills  },
+    { key: 'xp',      label: 'XP',             value: stats.xp      },
   ];
 
-  // The label gradient: soul-tinted (peer = cyan→teal, mentor =
-  // violet→blue, student = amber→rose). The same gradient is reused
-  // for the XP number text-fill so the section reads as one motif.
-  const labelGradient = `linear-gradient(135deg, ${accentFrom}, ${accentTo})`;
+  // The four cells no longer use the soul gradient — that was tied
+  // to the XP-only signature, which the user dropped. Labels are
+  // clean mono uppercase, soul tinting still lives in the greeting
+  // and the section hairline.
 
   return (
     <section className="pt-2 pb-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
@@ -91,55 +90,34 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
                   : '1px solid rgba(255,255,255,0.10)',
               }}
             >
-              {/* The number — XP is Playfair italic + gradient + glow;
-                  the other three are clean mono numerals. The XP
-                  gradient is the same soul gradient as the labels. */}
+              {/* The number — uniform Playfair Display italic, clean
+                  white, no gradient, no glow. The cell hairlines do
+                  the visual work. */}
               <div
-                style={
-                  c.isXP
-                    ? {
-                        fontFamily: 'var(--font-editorial)',
-                        fontWeight: 800,
-                        fontStyle: 'italic',
-                        lineHeight: 0.9,
-                        letterSpacing: '-0.03em',
-                        fontSize: 'clamp(2.6rem, 5.2vw, 4.2rem)',
-                        background: labelGradient,
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                        textShadow: `0 0 28px ${accentFrom}55, 0 0 10px ${accentTo}40`,
-                        marginBottom: 6,
-                      }
-                    : {
-                        fontFamily: 'var(--font-mono)',
-                        fontWeight: 700,
-                        lineHeight: 1,
-                        fontSize: 'clamp(1.9rem, 3.4vw, 2.6rem)',
-                        color: 'var(--text-primary)',
-                        letterSpacing: '-0.02em',
-                        marginBottom: 8,
-                      }
-                }
+                style={{
+                  fontFamily: 'var(--font-editorial)',
+                  fontWeight: 700,
+                  fontStyle: 'italic',
+                  lineHeight: 0.9,
+                  letterSpacing: '-0.03em',
+                  fontSize: 'clamp(2.4rem, 4.6vw, 3.6rem)',
+                  color: 'var(--text-primary)',
+                  marginBottom: 6,
+                }}
               >
                 {c.value.toLocaleString()}
               </div>
 
-              {/* Label — every label wears the soul gradient (uppercase,
-                  mono, tracking). The XP label and the XP number share
-                  the same gradient, so the cell reads as a unit.
-                  No sub-label ("this week" / "lifetime") — the user
-                  said drop them. */}
+              {/* Label — clean mono uppercase, no soul gradient. The
+                  magazine feel comes from the typography, not the
+                  tint. */}
               <div
                 className="font-mono uppercase"
                 style={{
                   fontSize: '0.68rem',
                   letterSpacing: '0.22em',
                   fontWeight: 700,
-                  background: labelGradient,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
+                  color: 'rgba(245,245,245,0.72)',
                 }}
               >
                 {c.label}

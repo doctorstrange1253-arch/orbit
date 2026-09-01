@@ -76,12 +76,9 @@ export default function PullQuote() {
 
   return (
     <section className="py-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-      <p
-        className="font-mono uppercase tracking-[0.28em] mb-5"
-        style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.78)' }}
-      >
-        The quote you earned.
-      </p>
+      {/* No eyebrow — the user dropped all section headings. The
+          hairline rule above is the section break; the pull quote
+          is the first thing the eye lands on. */}
       <blockquote
         className="font-display italic leading-[1.15] tracking-[-0.02em] max-w-[28ch] md:max-w-[36ch]"
         style={{
