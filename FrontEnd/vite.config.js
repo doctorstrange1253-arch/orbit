@@ -77,6 +77,13 @@ export default defineConfig({
         // Precache the built app shell; bump the limit so the larger JS chunks
         // (map/motion) are cached for offline launch.
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+        // Force the new SW to take over the open page on the next reload —
+        // otherwise the user keeps seeing the OLD bundle until every tab
+        // closes. This is the PWA stale-bundle gotcha that bit us on the
+        // V3 editorial redesign (per the orbit-vite-pwa-stale-bundle-gotcha
+        // memory). The user just needs to reload once, not full-clear cache.
+        skipWaiting: true,
+        clientsClaim: true,
         navigateFallbackDenylist: [/^\/api/, /^\/socket\.io/],
         runtimeCaching: [
           {

@@ -74,13 +74,26 @@ const RoleSwitcher = () => {
   // Multi-role: peer_learner is always present, so 2+ roles is the threshold
   // for showing the dropdown.
   const isMultiRole = userRoles.length >= 2;
-  // The "display" role for the chip — the highest-priority non-peer role
-  // if present, else peer_learner. Mirrors the existing ROLE_CHIP_PRIORITY
-  // in Navbar so a user who is a peer+mentor sees "Mentor" on the chip.
-  const displayRole = userRoles.includes('mentor') ? 'mentor'
-    : userRoles.includes('student') ? 'student'
-    : 'peer_learner';
   const currentWindow = getCurrentWindow(location.pathname);
+
+  // The "display" role for the chip — REFLECTS THE CURRENT WINDOW so a
+  // peer+mentor user sees "Peer" while on /peer/* and "Mentor" while on
+  // /mentor/*. If the user is on a shared page (currentWindow === null),
+  // fall back to sessionStorage (last visited window). Only if BOTH are
+  // null do we fall back to the highest-priority role. This fixes the
+  // bug where a peer+mentor user always saw "Mentor" regardless of which
+  // section they were actively browsing.
+  const fallbackWindow = (() => {
+    if (currentWindow) return currentWindow;
+    if (typeof window === 'undefined') return null;
+    try { return sessionStorage.getItem('orbit-last-window'); } catch { return null; }
+  })();
+  const WINDOW_TO_ROLE = { peer: 'peer_learner', mentor: 'mentor', student: 'student' };
+  const displayRole = (fallbackWindow && WINDOW_TO_ROLE[fallbackWindow]) || (
+    userRoles.includes('mentor') ? 'mentor'
+      : userRoles.includes('student') ? 'student'
+        : 'peer_learner'
+  );
 
   // Close on outside click
   useEffect(() => {

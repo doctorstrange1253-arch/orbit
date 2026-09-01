@@ -134,6 +134,12 @@ export default function WeekStrip({ events = [] }) {
   }, [events]);
 
   const handleFlip = (key) => {
+    // Guard: future days have no events to reveal. The user shouldn't be
+    // able to flip a card for a day that hasn't happened yet — that's a
+    // diary, not a calendar of wishes. Bail silently (and visually the
+    // cell is already styled as not-today / not-interactive).
+    const cell = cells.find((c) => c.date === key);
+    if (!cell || cell.isFuture) return;
     setFlipped((prev) => {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
@@ -192,22 +198,26 @@ export default function WeekStrip({ events = [] }) {
                   type="button"
                   onClick={() => handleFlip(c.date)}
                   aria-pressed={isFlipped}
+                  disabled={c.isFuture}
                   aria-label={
-                    isFlipped
-                      ? `Hide ${formatDayHeading(c.date)}'s events`
-                      : `Show ${formatDayHeading(c.date)}'s events`
+                    c.isFuture
+                      ? `${formatDayHeading(c.date)} — a future day, not yet written`
+                      : isFlipped
+                        ? `Hide ${formatDayHeading(c.date)}'s events`
+                        : `Show ${formatDayHeading(c.date)}'s events`
                   }
-                  className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed"
                   style={{
                     background: 'transparent',
                     border: 'none',
                     padding: 0,
-                    cursor: 'pointer',
+                    cursor: c.isFuture ? 'not-allowed' : 'pointer',
                     aspectRatio: '1 / 1.05',
                     position: 'relative',
                     transformStyle: 'preserve-3d',
                     transition: 'transform 520ms cubic-bezier(0.4, 0, 0.2, 1)',
                     transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                    opacity: c.isFuture ? 0.42 : 1,
                   }}
                 >
                   {/* ─── FRONT ─── */}
