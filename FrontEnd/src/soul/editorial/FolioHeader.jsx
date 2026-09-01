@@ -47,13 +47,17 @@ export default function FolioHeader({ folio, eyebrow, title, note, accent = '#22
             fontFamily: 'var(--font-editorial)',
             fontWeight: 800,
             fontStyle: 'italic',
-            fontSize: 'clamp(3.2rem, 6.4vw, 4.6rem)',
-            lineHeight: 0.82,
+            // Mid-sized folio (was clamp(3.2rem, 6.4vw, 4.6rem) — now
+            // ~3rem max). A subtle accent-tinted glow keeps the
+            // magazine feel without the page-reading-as-a-spread
+            // loudness the user flagged.
+            fontSize: 'clamp(2.2rem, 4.4vw, 3rem)',
+            lineHeight: 0.86,
             color: accent,
             letterSpacing: '-0.04em',
             flexShrink: 0,
-            minWidth: 'clamp(56px, 8vw, 80px)',
-            textShadow: `0 0 24px ${accent}33`,
+            minWidth: 'clamp(48px, 6.4vw, 64px)',
+            textShadow: `0 0 18px ${accent}55, 0 0 6px ${accent}33`,
           }}
         >
           {folio}
