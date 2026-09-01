@@ -711,6 +711,9 @@ app.use("/api/pact", pactRoutes);
 app.use("/api/knowledge", knowledgeGraphRoutes);
 app.use("/api/flares", signalFlareRoutes);
 app.use("/api/moderation", moderationRoutes);
+// V3 — Cross-soul mentor invites: pending invite + accept/dismiss (the
+// MentorInviteModal's API surface; dismiss applies the 90-day cooldown).
+app.use("/api/mentor-invites", require("./routes/mentorInviteRoutes"));
 
 // ── Admin Command Center (hardened, hidden) ────────────────────────────────
 // Namespaced under an unguessable base; every route 404-cloaks for non-admins.

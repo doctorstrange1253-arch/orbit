@@ -108,6 +108,9 @@ import PulseCeremony from './soul/league/pulseCeremony';
 // genre the user flared for, the server emits signal-flare:responded;
 // this listener catches it and opens the PlanetMaterialization overlay.
 import { SignalFlareListenerMount } from './hooks/useSignalFlareListener.jsx';
+// V3 — Cross-soul economy: the "consider teaching?" invite modal. The
+// MentorInviteWatcher (below) fetches the pending invite and renders it.
+import MentorInviteModal from './soul/economy/MentorInviteModal';
 // V3 — Moderation page (mentor's private inbox).
 const ModerationV3 = lazy(() => import('./pages/Moderation'));
 // Marketing "stardust reveal" brand animation — reachable by URL for preview /
@@ -218,6 +221,43 @@ function RouteTours() {
   const key = ROUTE_TOURS[pathname];
   if (!key) return null;
   return <Walkthrough tourKey={key} />;
+}
+
+// V3 — Cross-soul mentor invite watcher. Fetches the signed-in user's
+// pending "consider teaching?" invite once per session and renders the
+// 2-question MentorInviteModal. Accept/dismiss both POST to
+// /mentor-invites/respond so the server records the response and (on
+// dismiss) applies the 90-day cooldown. Best-effort: any failure just
+// means no modal — never blocks the app.
+function MentorInviteWatcher() {
+  const token = useAuthStore((s) => s.token);
+  const user = useAuthStore((s) => s.user);
+  const [invite, setInvite] = useState(null);
+
+  useEffect(() => {
+    if (!token || !user?._id) return undefined;
+    let cancelled = false;
+    api.get('/mentor-invites/pending')
+      .then(({ data }) => { if (!cancelled && data?.invite) setInvite(data.invite); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [token, user?._id]);
+
+  const respond = useCallback(async (action) => {
+    if (!invite?.kind) return;
+    try {
+      await api.post('/mentor-invites/respond', { kind: invite.kind, action });
+    } catch { /* best-effort — the modal flow continues either way */ }
+  }, [invite?.kind]);
+
+  if (!invite) return null;
+  return (
+    <MentorInviteModal
+      invite={invite}
+      onDismiss={() => { setInvite(null); respond('dismissed'); }}
+      onAccept={() => respond('accepted')}
+    />
+  );
 }
 
 // Inner component so useNavigate is inside Router context
@@ -636,6 +676,9 @@ function AppInner() {
       {/* V3 — Signal Flare listener: opens PlanetMaterialization when
           a mentor publishes a course in a genre the user flared for. */}
       <SignalFlareListenerMount />
+      {/* V3 — Cross-soul mentor invite: renders the 2-question modal when
+          the user has a pending invite (top student / top swapper). */}
+      <MentorInviteWatcher />
       <ToastContainer />
       <Toaster 
         position="bottom-right" 
@@ -739,6 +782,12 @@ function AppInner() {
 
         {/* ── Mentor window (/mentor/*) — mentor ──────────────────── */}
         <Route path="/mentor/observatory" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><ObservatoryV3 /></Suspense></RoleGuard></ProtectedRoute>} />
+        {/* V3 — Mentor application. Intentionally NOT role-guarded: the
+            cross-soul invite (top student / top swapper) links non-mentors
+            here, and MentorHub renders its application machine for
+            non-mentors (hub only for approved mentors). Previously this
+            URL 404'd — every invite notification linked to a dead route. */}
+        <Route path="/mentor/apply" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><MentorHub /></Suspense></ProtectedRoute>} />
         <Route path="/mentor/hub"      element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorHub /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/mentor/sessions" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorSessions /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/mentor/earnings" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorEarnings /></Suspense></RoleGuard></ProtectedRoute>} />

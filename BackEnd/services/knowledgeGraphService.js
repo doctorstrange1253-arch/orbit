@@ -36,6 +36,8 @@
 const User = require("../models/user");
 const LessonConcept = require("../models/LessonConcept");
 const Concept = require("../models/Concept");
+const Enrollment = require("../models/Enrollment");
+const Course = require("../models/Course");
 
 // Mastery cap per concept (a single concept's score can't exceed this).
 const MASTERY_CAP = 10;
@@ -177,6 +179,105 @@ async function getConceptPath(userId) {
     } catch (err) {
         console.warn("[kg] getConceptPath failed:", err.message);
         return [];
+    }
+}
+
+// ── Skill Map (V3-E) ─────────────────────────────────────────────────────
+// Shared builder for the caller's map and the public variant.
+// Shape: { stars, edges, clusters, path, meta } — consumed by
+// ConstellationCanvas (stars/edges/meta) and SkillMap pages (path).
+async function _skillMapData(userId) {
+    const [user, enrollments] = await Promise.all([
+        User.findById(userId).select("gameology.conceptMastery").lean(),
+        Enrollment.find({ userId, completedAt: { $ne: null } }).lean(),
+    ]);
+    const mastery = user?.gameology?.conceptMastery || {};
+
+    const courseIds = enrollments.map((e) => e.courseId).filter(Boolean);
+    const courses = courseIds.length
+        ? await Course.find({ _id: { $in: courseIds } }).select("title category").lean()
+        : [];
+    const courseById = new Map(courses.map((c) => [String(c._id), c]));
+
+    // One star per completed course. size grows with lessons completed;
+    // brightness from avg quiz score (0.3–1.0), default visible.
+    const stars = enrollments
+        .map((e) => {
+            const c = courseById.get(String(e.courseId));
+            const attempts = e.quizAttempts || [];
+            const avg = attempts.length
+                ? attempts.reduce((a, q) => a + (q.score || 0), 0) / attempts.length
+                : null;
+            return {
+                courseId: String(e.courseId),
+                title: c?.title || "A course",
+                category: c?.category || "general",
+                size: Math.max(2.5, Math.min(7, 2 + (e.completedLessonIds?.length || 0) * 0.6)),
+                brightness: avg == null ? 0.55 : 0.3 + 0.7 * (avg / 100),
+                completedAt: e.completedAt,
+            };
+        })
+        .sort((a, b) => (a.completedAt?.getTime?.() || 0) - (b.completedAt?.getTime?.() || 0));
+
+    // Edges between concepts the user has actually touched.
+    const concepts = await getMyConcepts(userId, 100);
+    const touched = new Set(concepts.map((c) => c.slug));
+    const edgeSeen = new Set();
+    const edges = [];
+    for (const c of concepts) {
+        for (const rel of c.relatedSlugs || []) {
+            if (rel === c.slug || !touched.has(rel)) continue;
+            const key = [c.slug, rel].sort().join("|");
+            if (edgeSeen.has(key)) continue;
+            edgeSeen.add(key);
+            edges.push({ from: c.slug, to: rel });
+        }
+    }
+
+    const clusters = Object.values(
+        concepts.reduce((acc, c) => {
+            const k = c.category || "general";
+            (acc[k] = acc[k] || { category: k, count: 0 }).count += 1;
+            return acc;
+        }, {})
+    );
+
+    const path = await getConceptPath(userId);
+
+    return {
+        stars,
+        edges,
+        clusters,
+        path,
+        meta: { totalConceptsTouched: Object.keys(mastery).length, coursesCompleted: stars.length },
+    };
+}
+
+async function getMySkillMap(userId) {
+    try {
+        return await _skillMapData(userId);
+    } catch (err) {
+        console.warn("[kg] getMySkillMap failed:", err.message);
+        return { stars: [], edges: [], clusters: [], path: [], meta: { totalConceptsTouched: 0, coursesCompleted: 0 } };
+    }
+}
+
+// Public variant: no timestamps, no scores. 404s (via the route) when the
+// learner has completed nothing — "this skill map is dark".
+async function getPublicSkillMap(ownerId) {
+    try {
+        const data = await _skillMapData(ownerId);
+        if (!data.stars.length) return null;
+        return {
+            stars: data.stars.map(({ completedAt, ...rest }) => rest),
+            edges: data.edges,
+            clusters: data.clusters,
+            path: data.path.map(({ score, lastTouchedAt, ...rest }) => rest),
+            meta: data.meta,
+        };
+    } catch (err) {
+        console.warn("[kg] getPublicSkillMap failed:", err.message);
+        return null;
     }
 }
 

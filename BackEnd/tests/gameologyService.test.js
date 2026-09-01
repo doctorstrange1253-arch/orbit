@@ -42,18 +42,23 @@ describe("gameologyService — level curve", () => {
 });
 
 describe("gameologyService — league thresholds", () => {
-    it("buckets correctly", () => {
-        expect(leagueForWeeklyXp(0)).toBe("bronze");
-        expect(leagueForWeeklyXp(99)).toBe("bronze");
-        expect(leagueForWeeklyXp(100)).toBe("silver");
-        expect(leagueForWeeklyXp(499)).toBe("silver");
-        expect(leagueForWeeklyXp(500)).toBe("gold");
-        expect(leagueForWeeklyXp(1999)).toBe("gold");
-        expect(leagueForWeeklyXp(2000)).toBe("platinum");
-        expect(leagueForWeeklyXp(4999)).toBe("platinum");
-        expect(leagueForWeeklyXp(5000)).toBe("diamond");
-        expect(leagueForWeeklyXp(9999)).toBe("diamond");
-        expect(leagueForWeeklyXp(10000)).toBe("legend");
+    it("buckets correctly (V3 League 2.0: dust → singularity)", () => {
+        expect(leagueForWeeklyXp(0)).toBe("dust");
+        expect(leagueForWeeklyXp(99)).toBe("dust");
+        expect(leagueForWeeklyXp(100)).toBe("meteor");
+        expect(leagueForWeeklyXp(499)).toBe("meteor");
+        expect(leagueForWeeklyXp(500)).toBe("comet");
+        expect(leagueForWeeklyXp(1999)).toBe("comet");
+        expect(leagueForWeeklyXp(2000)).toBe("star");
+        expect(leagueForWeeklyXp(4999)).toBe("star");
+        expect(leagueForWeeklyXp(5000)).toBe("giant");
+        expect(leagueForWeeklyXp(9999)).toBe("giant");
+        expect(leagueForWeeklyXp(10000)).toBe("nebula");
+        expect(leagueForWeeklyXp(19999)).toBe("nebula");
+        expect(leagueForWeeklyXp(20000)).toBe("pulsar");
+        expect(leagueForWeeklyXp(49999)).toBe("pulsar");
+        expect(leagueForWeeklyXp(50000)).toBe("singularity");
+        expect(leagueForWeeklyXp(100000)).toBe("singularity");
     });
 });
 

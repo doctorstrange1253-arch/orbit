@@ -78,11 +78,16 @@ async function topStudentScan() {
                 kind: "top_student",
                 metrics: { xp: u.gameology?.xp, level: u.gameology?.level },
             });
-            await createNotification(u._id, {
+            // Bugfix: createNotification's signature is (io, userId, opts) and
+            // the deep-link must ride in `data.link` — the old call passed the
+            // userId into the io slot (the socket emit then threw and was
+            // silently swallowed) and dropped the link entirely, so the
+            // persisted notification never carried /mentor/apply.
+            await createNotification(null, u._id, {
                 type: "mentor_invite",
                 title: "You're in the top 5% of learners",
                 body: "Have you considered teaching on Orbit? It's a 2-question application.",
-                link: "/mentor/apply",
+                data: { link: "/mentor/apply" },
             });
             invited += 1;
         }
@@ -94,23 +99,66 @@ async function topStudentScan() {
 }
 
 // ── topSwapperScan ──────────────────────────────────────────────────────
-// Users with 10+ peer swaps completed in the last 90 days AND avg
-// post-swap rating >= 4.5. The Connection model has the rating data.
+// Users with 10+ peer swaps completed in the last 90 days AND an average
+// rating RECEIVED of >= 4.5.
+//
+// Bugfix note (V3-I review): the original aggregation grouped on
+// `$userId` and pushed `$rating` — but the Connection schema has NEITHER
+// field (its participants are `requester`/`receiver`; ratings live on the
+// Rating model). Every row collapsed into _id:null with zero ratings, so
+// this scan silently invited nobody, ever. It now:
+//   1. matches completed swaps on `completedAt` (the real completion stamp),
+//   2. counts each completed swap for BOTH participants,
+//   3. $lookups the avg non-hidden rating received from the Rating model.
 async function topSwapperScan() {
     try {
         const since = _90daysAgo();
         const rows = await Connection.aggregate([
-            { $match: { status: "completed", updatedAt: { $gte: since } } },
-            { $group: { _id: "$userId", count: { $sum: 1 }, ratings: { $push: "$rating" } } },
+            { $match: { status: "completed", completedAt: { $gte: since } } },
+            {
+                $project: {
+                    participants: {
+                        $filter: {
+                            input: ["$requester", "$receiver"],
+                            as: "p",
+                            cond: { $ne: [null, "$$p"] },
+                        },
+                    },
+                },
+            },
+            { $unwind: "$participants" },
+            { $group: { _id: "$participants", count: { $sum: 1 } } },
             { $match: { count: { $gte: TOP_SWAPPER_MIN } } },
+            {
+                $lookup: {
+                    from: "ratings",
+                    let: { uid: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ["$toUser", "$$uid"] },
+                                hidden: { $ne: true },
+                                createdAt: { $gte: since },
+                            },
+                        },
+                        { $group: { _id: null, avg: { $avg: "$score" }, n: { $sum: 1 } } },
+                    ],
+                    as: "ratingStats",
+                },
+            },
+            {
+                $addFields: {
+                    avgRating: { $ifNull: [{ $first: "$ratingStats.avg" }, 0] },
+                    ratingCount: { $ifNull: [{ $first: "$ratingStats.n" }, 0] },
+                },
+            },
+            { $match: { avgRating: { $gte: TOP_SWAPPER_MIN_RATING } } },
         ]);
 
         let invited = 0;
         for (const row of rows) {
-            const ratings = (row.ratings || []).filter((r) => typeof r === "number");
-            if (ratings.length === 0) continue;
-            const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
-            if (avg < TOP_SWAPPER_MIN_RATING) continue;
+            const avg = row.avgRating;
+            if (!avg || avg < TOP_SWAPPER_MIN_RATING) continue;
 
             const user = await User.findById(row._id).select("roles").lean();
             if (!user || user.roles?.includes("mentor")) continue;
@@ -121,11 +169,11 @@ async function topSwapperScan() {
                 kind: "top_swapper",
                 metrics: { swaps: row.count, avgRating: avg },
             });
-            await createNotification(row._id, {
+            await createNotification(null, row._id, {
                 type: "mentor_invite",
                 title: "You swap well. Have you considered teaching?",
                 body: `${row.count} swaps in 90 days, ${avg.toFixed(1)}★ average. We'd love to see you on the other side.`,
-                link: "/mentor/apply",
+                data: { link: "/mentor/apply" },
             });
             invited += 1;
         }
@@ -134,6 +182,21 @@ async function topSwapperScan() {
         console.warn("[cross-soul] topSwapperScan failed:", err.message);
         return { invited: 0, error: err.message };
     }
+}
+
+// ── pendingInvite ───────────────────────────────────────────────────────
+// The signed-in user's most recent pending invite (drives the frontend
+// MentorInviteModal). A dismissed invite is suppressed by its cooldown
+// window; accepted ones are no longer pending by definition.
+async function pendingInvite(userId) {
+    return MentorInvite.findOne({
+        userId,
+        status: "pending",
+        $or: [{ cooldownUntil: null }, { cooldownUntil: { $lte: new Date() } }],
+    })
+        .sort({ sentAt: -1 })
+        .select("kind metrics sentAt")
+        .lean();
 }
 
 // ── respond ─────────────────────────────────────────────────────────────
@@ -153,4 +216,4 @@ async function respond(userId, kind, action) {
     return { ok: true };
 }
 
-module.exports = { topStudentScan, topSwapperScan, respond, COOLDOWN_DAYS };
+module.exports = { topStudentScan, topSwapperScan, respond, pendingInvite, COOLDOWN_DAYS };
