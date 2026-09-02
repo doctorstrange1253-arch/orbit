@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { ChevronLeft, BookOpen, Eye, EyeOff, Save, Pencil, Trash2, Users, MessageCircle } from 'lucide-react';
+import { ChevronLeft, BookOpen, Eye, EyeOff, Save, Pencil, Trash2, Users, MessageCircle, Edit3, Crown } from 'lucide-react';
 import { courses } from '../../services/courses';
 import CommentThread from '../../components/courses/CommentThread';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
@@ -125,13 +125,25 @@ const CourseEditor = () => {
                     <div className="space-y-2">
                         {(course.lessons || []).map((l, i) => (
                             <div key={l._id} className="rounded-xl border border-border-subtle bg-surface/40 p-3 flex items-center gap-3">
-                                <span className="w-7 h-7 rounded-full bg-surface flex items-center justify-center text-xs font-black text-text-muted">{i + 1}</span>
+                                <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0 ${
+                                    l.isBoss ? 'bg-amber-500/20 text-amber-300' : 'bg-surface text-text-muted'
+                                }`}>
+                                    {l.isBoss ? <Crown className="w-3.5 h-3.5" /> : i + 1}
+                                </span>
                                 <div className="flex-1 min-w-0">
-                                    <div className="text-sm font-semibold text-text-primary truncate">{l.title}</div>
+                                    <div className="text-sm font-semibold text-text-primary truncate flex items-center gap-1.5">
+                                        {l.title}
+                                        {l.isBoss && <span className="text-[9px] font-black uppercase tracking-widest text-amber-300">Boss</span>}
+                                    </div>
                                     <div className="text-[10px] text-text-muted">
                                         {l.hasQuiz ? 'Quiz included' : 'No quiz'} · {l.isFree ? 'Free preview' : 'Gated'}
+                                        {l.promiseCopy ? ' · Level Card' : ''}
                                     </div>
                                 </div>
+                                <Link to={`/mentor/courses/${id}/lessons/${l._id}`}
+                                    className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-accent">
+                                    <Edit3 className="w-3 h-3" /> Edit
+                                </Link>
                                 <button
                                     onClick={() => updateLesson.mutate({ lessonId: l._id, body: { isFree: !l.isFree } })}
                                     className="text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-accent"
