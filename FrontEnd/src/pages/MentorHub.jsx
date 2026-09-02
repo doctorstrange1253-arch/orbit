@@ -19,8 +19,8 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-    GraduationCap, Clock, Star, IndianRupee, Calendar, Loader,
-    CheckCircle, XCircle, PauseCircle, IndianRupee as RupeeIcon, Edit3,
+    GraduationCap, Clock, Calendar, Loader,
+    XCircle, PauseCircle, IndianRupee as RupeeIcon, Edit3,
     Eye, BookOpen, MessageSquare, ArrowRight,
 } from 'lucide-react';
 import api from '../services/api';
@@ -88,6 +88,12 @@ const MentorHub = () => {
         queryFn: () => api.get('/sessions/mentor/bookings').then((r) => r.data),
         enabled: !!data?.profile && data.profile.applicationStatus === 'approved',
         staleTime: 60_000,
+        select: (raw) => {
+            const now = Date.now();
+            return (raw?.items || [])
+                .filter((b) => ["booked", "confirmed", "live"].includes(b.status) && new Date(b.scheduledAt).getTime() > now)
+                .sort((a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt));
+        },
     });
 
     const state = useMemo(() => {
@@ -99,10 +105,7 @@ const MentorHub = () => {
     const meta = STATE_META[state] || STATE_META.not_applied;
     const profile = data?.profile || null;
     const earnings = data?.earnings || { totalInr: 0, pendingInr: 0, releasedInr: 0 };
-    const bookings = bookingsData?.items || [];
-    const upcomingBookings = bookings
-        .filter((b) => ["booked", "confirmed", "live"].includes(b.status) && new Date(b.scheduledAt).getTime() > Date.now())
-        .sort((a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt));
+    const upcomingBookings = bookingsData || [];
 
     return (
         <div className="space-y-10">
@@ -161,6 +164,7 @@ const MentorHub = () => {
                     profile={profile}
                     earnings={earnings}
                     upcomingBookings={upcomingBookings}
+                    hasStudentRole={hasStudentRole}
                     onRefresh={() => {
                         qc.invalidateQueries({ queryKey: ['sessions', 'mentor', 'me'] });
                         qc.invalidateQueries({ queryKey: ['sessions', 'mentor', 'bookings'] });
@@ -260,7 +264,7 @@ const PendingView = ({ profile }) => (
     </motion.div>
 );
 
-const ApprovedView = ({ profile, earnings, upcomingBookings, onRefresh }) => (
+const ApprovedView = ({ profile, earnings, upcomingBookings, hasStudentRole, onRefresh }) => (
     <motion.div
         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
-import { tierById, nextTierId } from '../../services/pact';
+import { tierById, nextTierId, prevTierId } from '../../services/pact';
 
 /**
  * PactResultsCard — Monday morning end-of-week summary.
@@ -19,6 +19,7 @@ const PactResultsCard = ({ history, me }) => {
     const Icon = result === 'promoted' ? ArrowUp : result === 'relegated' ? ArrowDown : Minus;
     const tier = tierById(last.divisionId);
     const nextTier = tierById(nextTierId(last.divisionId));
+    const droppedTier = tierById(prevTierId(last.divisionId));
     const rank = last.rank || 0;
     const groupSize = last.groupSize || 0;
 
@@ -87,7 +88,7 @@ const PactResultsCard = ({ history, me }) => {
                         {' '}with a score of{' '}
                         <span style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>{last.score}</span>.
                         {result === 'promoted' && <> You begin the new week in <span style={{ color: nextTier.glow, fontStyle: 'normal', fontWeight: 600, fontFamily: 'var(--font-mono)', fontSize: '0.86rem', letterSpacing: '0.10em', textTransform: 'uppercase' }}>{nextTier.label}</span>.</>}
-                        {result === 'relegated' && <> You drop to <span style={{ color: nextTier.glow, fontStyle: 'normal', fontWeight: 600, fontFamily: 'var(--font-mono)', fontSize: '0.86rem', letterSpacing: '0.10em', textTransform: 'uppercase' }}>{nextTier.label}</span>. The work continues.</>}
+                        {result === 'relegated' && <> You drop to <span style={{ color: droppedTier.glow, fontStyle: 'normal', fontWeight: 600, fontFamily: 'var(--font-mono)', fontSize: '0.86rem', letterSpacing: '0.10em', textTransform: 'uppercase' }}>{droppedTier.label}</span>. The work continues.</>}
                         {result === 'held' && <> This week you stand in the same group. Steady.</>}
                     </p>
                     {(me?.pact?.steadyShieldWeeks || 0) >= 4 && result === 'held' && (

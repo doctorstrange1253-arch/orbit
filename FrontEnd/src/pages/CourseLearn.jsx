@@ -3,11 +3,10 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { ChevronLeft, Check, Award, MessageCircle, Sparkles, Loader2 } from 'lucide-react';
+import { ChevronLeft, Check, Award, MessageCircle, Sparkles } from 'lucide-react';
 import { courses } from '../services/courses';
 import { useAuthStore } from '../store/authStore';
 import LessonVideoPlayer from '../components/courses/LessonVideoPlayer';
-import QuizCard from '../components/courses/QuizCard';
 import CommentThread from '../components/courses/CommentThread';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
 // V3 — Game Engine. Level Card (pre-lesson), Attention Arc (decelerate
@@ -23,7 +22,7 @@ const CourseLearn = () => {
     const navigate = useNavigate();
     const qc = useQueryClient();
     const user = useAuthStore((s) => s.user);
-    const [quizResult, setQuizResult] = useState(null);
+    const [, setQuizResult] = useState(null);
     const [openQa, setOpenQa] = useState(false);
     // V3 — the Game Engine state machine:
     //   card (LevelCard) → video (LessonPlayer + AttentionArc) → quiz
@@ -40,6 +39,12 @@ const CourseLearn = () => {
         queryFn: () => courses.detail(id),
     });
 
+    const { data: enrollment } = useQuery({
+        queryKey: ['courses', id, 'enrollment', 'me'],
+        queryFn: () => courses.myEnrollment(id),
+        retry: false,
+    });
+
     // Pick the active lesson: from URL, or first one
     const activeLessonId = lessonId || (course?.lessons?.[0]?._id);
     const activeLesson = useMemo(
@@ -54,15 +59,16 @@ const CourseLearn = () => {
         setQuizResult(null);
     }, [activeLessonId]);
 
-    // Track completions optimistically
-    const completed = new Set(
-        (course?.lessons || []).filter((l) => l.isFree).map((l) => String(l._id))
+    const completed = useMemo(
+        () => new Set((enrollment?.completedLessonIds || []).map(String)),
+        [enrollment]
     );
 
     const complete = useMutation({
         mutationFn: (lessonIdToComplete) => courses.completeLesson(id, lessonIdToComplete),
         onSuccess: (res) => {
-            completed.add(activeLessonId);
+            qc.invalidateQueries({ queryKey: ['courses', id, 'enrollment', 'me'] });
+            qc.invalidateQueries({ queryKey: ['enrollments', 'me'] });
             // V3 — Boss lessons: show the 6s ceremony, then route.
             if (activeLesson?.isBoss) {
                 setBossConcepts(activeLesson?.conceptSlugs || []);
@@ -217,7 +223,7 @@ const CourseLearn = () => {
                                         questions={activeLesson.quiz?.questions || []}
                                         passingScore={activeLesson.isBoss ? 100 : (activeLesson.quiz?.passingScore || 70)}
                                         isBoss={!!activeLesson.isBoss}
-                                        onSubmit={({ score, passed, answers }) => {
+                                        onSubmit={({ answers }) => {
                                             // Also fire the V2 quiz endpoint so the
                                             // backend records the score + XP for the
                                             // quiz_passed event.

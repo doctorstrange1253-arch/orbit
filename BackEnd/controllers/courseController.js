@@ -42,8 +42,9 @@ const pact = require("../services/pactService");
 const { createNotification } = require("../services/notify");
 
 // ── Helpers ──────────────────────────────────────────────────────────────
-function publicShape(c, mentor) {
+function publicShape(c, mentor, opts = {}) {
     if (!c) return null;
+    const isOwner = !!opts.isOwner;
     return {
         _id: String(c._id),
         mentorId: String(c.mentorId),
@@ -65,8 +66,26 @@ function publicShape(c, mentor) {
             durationSec: l.durationSec,
             order: l.order,
             isFree: l.isFree,
+            isBoss: !!l.isBoss,
+            promiseCopy: l.promiseCopy || "",
+            whyCopy: l.whyCopy || "",
+            rememberCopy: l.rememberCopy || "",
+            bossChallenge: l.bossChallenge || "",
             hasQuiz: !!(l.quiz && l.quiz.questions && l.quiz.questions.length),
             quizQuestionCount: (l.quiz?.questions || []).length,
+            quiz: {
+                passingScore: l.quiz?.passingScore ?? 70,
+                questions: (l.quiz?.questions || []).map((q) => {
+                    const shaped = {
+                        prompt: q.prompt,
+                        options: q.options || [],
+                        explanation: q.explanation || "",
+                        coachCopy: q.coachCopy || "",
+                    };
+                    if (isOwner) shaped.correctIdx = q.correctIdx;
+                    return shaped;
+                }),
+            },
             resources: l.resources || [],
         })),
         isPublished: c.isPublished,
@@ -77,6 +96,16 @@ function publicShape(c, mentor) {
         createdAt: c.createdAt,
         updatedAt: c.updatedAt,
     };
+}
+
+const LESSON_COPY_FIELDS = ["promiseCopy", "whyCopy", "rememberCopy", "bossChallenge"];
+
+function readLessonAuthoringFields(body, target) {
+    if (typeof body.isBoss === "boolean") target.isBoss = body.isBoss;
+    for (const key of LESSON_COPY_FIELDS) {
+        if (typeof body[key] === "string") target[key] = body[key].slice(0, 1200);
+    }
+    return target;
 }
 
 async function loadMentorPublic(mentorIds) {
@@ -94,8 +123,17 @@ async function ensureOwnership(course, userId) {
 // ── Public browse ────────────────────────────────────────────────────────
 exports.listCourses = async (req, res) => {
     try {
-        const { category, level, q, sort = "newest", page = 1, limit = 24 } = req.query;
-        const filter = { isPublished: true };
+        const { category, level, q, sort = "newest", page = 1, limit = 24, mentor } = req.query;
+        const filter = {};
+        const mine = mentor === "me" && req.user?.id;
+        if (mine) {
+            filter.mentorId = req.user.id;
+        } else if (mentor) {
+            filter.mentorId = mentor;
+            filter.isPublished = true;
+        } else {
+            filter.isPublished = true;
+        }
         if (category) filter.category = category;
         if (level) filter.level = level;
         if (q) filter.$text = { $search: String(q) };
@@ -108,7 +146,7 @@ exports.listCourses = async (req, res) => {
             default:        sortSpec = { createdAt: -1 };
         }
 
-        const lim = Math.min(50, Math.max(1, parseInt(limit, 10) || 24));
+        const lim = Math.min(100, Math.max(1, parseInt(limit, 10) || 24));
         const skip = (Math.max(1, parseInt(page, 10) || 1) - 1) * lim;
 
         const [items, total] = await Promise.all([
@@ -117,7 +155,7 @@ exports.listCourses = async (req, res) => {
         ]);
         const byId = await loadMentorPublic([...new Set(items.map((c) => c.mentorId))]);
         return res.json({
-            items: items.map((c) => publicShape(c, byId.get(String(c.mentorId)))),
+            items: items.map((c) => publicShape(c, byId.get(String(c.mentorId)), { isOwner: !!mine })),
             total,
             page: parseInt(page, 10) || 1,
             limit: lim,
@@ -149,7 +187,8 @@ exports.getCourse = async (req, res) => {
             }
         }
         const mentor = await User.findById(c.mentorId).select("name avatar headline").lean();
-        return res.json(publicShape(c, mentor));
+        const isOwner = !!req.user && (await ensureOwnership(c, req.user.id));
+        return res.json(publicShape(c, mentor, { isOwner }));
     } catch (err) {
         console.error("getCourse:", err);
         res.status(500).json({ message: "Server error" });
@@ -326,7 +365,7 @@ exports.addLesson = async (req, res) => {
         if (!(await ensureOwnership(c, req.user.id))) return res.status(403).json({ message: "Not your course" });
         const body = req.body || {};
         const order = (c.lessons?.length || 0) + 1;
-        c.lessons.push({
+        c.lessons.push(readLessonAuthoringFields(body, {
             title: (body.title || "Untitled lesson").slice(0, 140),
             description: (body.description || "").slice(0, 2000),
             videoUrl: body.videoUrl || "",
@@ -336,7 +375,7 @@ exports.addLesson = async (req, res) => {
             resources: Array.isArray(body.resources) ? body.resources : [],
             quiz: body.quiz || {},
             isFree: !!body.isFree,
-        });
+        }));
         await c.save();
         const added = c.lessons[c.lessons.length - 1];
         return res.status(201).json({ _id: String(added._id), order: added.order });
@@ -360,8 +399,21 @@ exports.updateLesson = async (req, res) => {
         if (body.videoPublicId !== undefined) lesson.videoPublicId = body.videoPublicId;
         if (body.durationSec !== undefined) lesson.durationSec = Math.max(0, Number(body.durationSec) || 0);
         if (body.resources !== undefined) lesson.resources = body.resources;
-        if (body.quiz !== undefined) lesson.quiz = body.quiz;
+        if (body.quiz !== undefined) {
+            const incoming = body.quiz || {};
+            if (incoming.passingScore !== undefined) {
+                lesson.quiz.passingScore = Math.min(100, Math.max(0, Number(incoming.passingScore) || 0));
+            }
+            if (Array.isArray(incoming.questions)) {
+                const hasExisting = (lesson.quiz?.questions || []).length > 0;
+                const wouldWipe = incoming.questions.length === 0 && hasExisting;
+                if (!wouldWipe || body.clearQuiz === true) {
+                    lesson.quiz.questions = incoming.questions;
+                }
+            }
+        }
         if (body.isFree !== undefined) lesson.isFree = !!body.isFree;
+        readLessonAuthoringFields(body, lesson);
         await c.save();
         return res.json({ ok: true });
     } catch (err) {
@@ -430,6 +482,207 @@ exports.enroll = async (req, res) => {
         return res.status(201).json({ ok: true, enrollment });
     } catch (err) {
         console.error("enroll:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+exports.enrollmentsForMe = async (req, res) => {
+    try {
+        const meId = req.user.id;
+        const items = await Enrollment.find({ userId: meId })
+            .sort({ updatedAt: -1 })
+            .limit(200)
+            .lean();
+        if (!items.length) return res.json({ items: [] });
+
+        const courseIds = [...new Set(items.map((e) => String(e.courseId)))];
+        const courses = await Course.find({ _id: { $in: courseIds } })
+            .select("title subtitle thumbnail mentorId lessons isPublished priceInr category level")
+            .lean();
+        const byCourse = new Map(courses.map((c) => [String(c._id), c]));
+        const mentors = await loadMentorPublic([...new Set(courses.map((c) => c.mentorId))]);
+
+        return res.json({
+            items: items.map((e) => {
+                const c = byCourse.get(String(e.courseId));
+                const mentor = c ? mentors.get(String(c.mentorId)) : null;
+                const lessons = (c?.lessons || []).map((l) => ({
+                    _id: String(l._id),
+                    title: l.title,
+                    order: l.order,
+                    isFree: l.isFree,
+                    isBoss: !!l.isBoss,
+                }));
+                return {
+                    _id: String(e._id),
+                    courseId: c
+                        ? {
+                            _id: String(c._id),
+                            title: c.title,
+                            subtitle: c.subtitle,
+                            thumbnail: c.thumbnail,
+                            category: c.category,
+                            level: c.level,
+                            priceInr: c.priceInr,
+                            isPublished: c.isPublished,
+                            lessonsCount: lessons.length,
+                            lessons,
+                            mentor: mentor
+                                ? { _id: String(mentor._id), name: mentor.name, avatar: mentor.avatar }
+                                : null,
+                        }
+                        : null,
+                    progressPct: e.progressPct || 0,
+                    completedLessonIds: (e.completedLessonIds || []).map(String),
+                    lastLessonId: e.lastLessonId ? String(e.lastLessonId) : null,
+                    completedAt: e.completedAt || null,
+                    certificateId: e.certificateId ? String(e.certificateId) : null,
+                    enrolledAt: e.enrolledAt,
+                    updatedAt: e.updatedAt,
+                };
+            }).filter((e) => e.courseId),
+        });
+    } catch (err) {
+        console.error("enrollmentsForMe:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+exports.myEnrollmentForCourse = async (req, res) => {
+    try {
+        const e = await Enrollment.findOne({ userId: req.user.id, courseId: req.params.id }).lean();
+        if (!e) return res.status(404).json({ message: "Not enrolled" });
+        return res.json({
+            _id: String(e._id),
+            courseId: String(e.courseId),
+            progressPct: e.progressPct || 0,
+            completedLessonIds: (e.completedLessonIds || []).map(String),
+            lastLessonId: e.lastLessonId ? String(e.lastLessonId) : null,
+            completedAt: e.completedAt || null,
+            certificateId: e.certificateId ? String(e.certificateId) : null,
+            quizAttempts: e.quizAttempts || [],
+            enrolledAt: e.enrolledAt,
+            updatedAt: e.updatedAt,
+        });
+    } catch (err) {
+        console.error("myEnrollmentForCourse:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+exports.mentorLearners = async (req, res) => {
+    try {
+        const meId = req.user.id;
+        const myCourses = await Course.find({ mentorId: meId })
+            .select("title lessons")
+            .lean();
+        if (!myCourses.length) return res.json({ items: [], courses: [] });
+
+        const courseIds = myCourses.map((c) => c._id);
+        const enrollments = await Enrollment.find({ courseId: { $in: courseIds } })
+            .sort({ updatedAt: -1 })
+            .limit(2000)
+            .lean();
+        if (!enrollments.length) {
+            return res.json({
+                items: [],
+                courses: myCourses.map((c) => ({
+                    _id: String(c._id),
+                    title: c.title,
+                    lessonsCount: (c.lessons || []).length,
+                    enrolled: 0,
+                    started: 0,
+                    halfway: 0,
+                    finished: 0,
+                    dropOff: (c.lessons || []).map((l) => ({
+                        lessonId: String(l._id), title: l.title, order: l.order, stalled: 0,
+                    })),
+                })),
+            });
+        }
+
+        const userIds = [...new Set(enrollments.map((e) => String(e.userId)))];
+        const users = await User.find({ _id: { $in: userIds } }).select("name avatar").lean();
+        const byUser = new Map(users.map((u) => [String(u._id), u]));
+        const byCourse = new Map(myCourses.map((c) => [String(c._id), c]));
+
+        const learners = new Map();
+        for (const e of enrollments) {
+            const uid = String(e.userId);
+            const course = byCourse.get(String(e.courseId));
+            if (!course) continue;
+            const u = byUser.get(uid);
+            if (!learners.has(uid)) {
+                learners.set(uid, {
+                    userId: uid,
+                    name: u?.name || "Learner",
+                    avatar: u?.avatar || "",
+                    courses: [],
+                    progressSum: 0,
+                    finished: 0,
+                    lastActiveMs: 0,
+                });
+            }
+            const row = learners.get(uid);
+            row.courses.push({
+                _id: String(course._id),
+                title: course.title,
+                progressPct: e.progressPct || 0,
+                completedAt: e.completedAt || null,
+            });
+            row.progressSum += e.progressPct || 0;
+            if (e.completedAt) row.finished += 1;
+            const seen = new Date(e.updatedAt || e.enrolledAt || 0).getTime();
+            if (seen > row.lastActiveMs) row.lastActiveMs = seen;
+        }
+
+        const courseStats = myCourses.map((c) => {
+            const lessons = (c.lessons || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+            const rows = enrollments.filter((e) => String(e.courseId) === String(c._id));
+            const stalled = new Map(lessons.map((l) => [String(l._id), 0]));
+            for (const e of rows) {
+                if (e.completedAt) continue;
+                const done = new Set((e.completedLessonIds || []).map(String));
+                let furthest = null;
+                for (const l of lessons) {
+                    if (done.has(String(l._id))) furthest = String(l._id);
+                }
+                if (furthest && stalled.has(furthest)) stalled.set(furthest, stalled.get(furthest) + 1);
+            }
+            return {
+                _id: String(c._id),
+                title: c.title,
+                lessonsCount: lessons.length,
+                enrolled: rows.length,
+                started: rows.filter((e) => (e.progressPct || 0) > 0).length,
+                halfway: rows.filter((e) => (e.progressPct || 0) >= 50).length,
+                finished: rows.filter((e) => !!e.completedAt).length,
+                dropOff: lessons.map((l) => ({
+                    lessonId: String(l._id),
+                    title: l.title,
+                    order: l.order,
+                    stalled: stalled.get(String(l._id)) || 0,
+                })),
+            };
+        });
+
+        return res.json({
+            items: Array.from(learners.values())
+                .map((r) => ({
+                    userId: r.userId,
+                    name: r.name,
+                    avatar: r.avatar,
+                    courses: r.courses,
+                    courseCount: r.courses.length,
+                    avgProgressPct: r.courses.length ? Math.round(r.progressSum / r.courses.length) : 0,
+                    finished: r.finished,
+                    lastActiveMs: r.lastActiveMs,
+                }))
+                .sort((a, b) => b.lastActiveMs - a.lastActiveMs),
+            courses: courseStats,
+        });
+    } catch (err) {
+        console.error("mentorLearners:", err);
         res.status(500).json({ message: "Server error" });
     }
 };

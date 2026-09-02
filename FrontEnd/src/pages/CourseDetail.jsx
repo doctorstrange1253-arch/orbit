@@ -2,7 +2,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { ChevronDown, ChevronRight, BookOpen, PlayCircle, Lock, Star, MessageCircle, Award, Users } from 'lucide-react';
+import { ChevronDown, ChevronRight, BookOpen, PlayCircle, Star, MessageCircle, Award, Users } from 'lucide-react';
 import { useState } from 'react';
 import { courses } from '../services/courses';
 import EnrollButton from '../components/courses/EnrollButton';
@@ -157,7 +157,11 @@ const CourseDetail = () => {
                         )}
 
                         <div className="pt-3">
-                            <EnrollButton courseId={course._id} isEnrolled={false} />
+                            <EnrollButton
+                                courseId={course._id}
+                                isEnrolled={!!enrollment}
+                                lastLessonId={enrollment?.lastLessonId}
+                            />
                         </div>
                     </div>
                 </motion.div>

@@ -33,5 +33,10 @@ export function nextTierId(id) {
     if (i < 0 || i >= PACT_TIERS.length - 1) return id;
     return PACT_TIERS[i + 1].id;
 }
+export function prevTierId(id) {
+    const i = tierIndex(id);
+    if (i <= 0) return id;
+    return PACT_TIERS[i - 1].id;
+}
 
 export default pact;

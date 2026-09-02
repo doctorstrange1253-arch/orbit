@@ -35,7 +35,6 @@ import {
     MentorEyebrow,
     MentorTitle,
     MentorDeck,
-    MentorStat,
     MentorTag,
 } from '../../components/pact/MentorEditorial';
 import api from '../../services/api';
@@ -61,16 +60,16 @@ const Observatory = () => {
   const isApproved = appState === 'approved';
   const profile = mentorData?.profile;
 
-  const { data: connections = [] } = useQuery({
-    queryKey: ['connections', 'mine'],
-    queryFn: () => api.get('/connections?status=completed&limit=200').then((r) => r.data?.items || r.data || []),
+  const { data: learners } = useQuery({
+    queryKey: ['mentor', 'learners'],
+    queryFn: () => api.get('/courses/mentor/learners').then((r) => r.data),
     enabled: isApproved,
     staleTime: 60_000,
   });
 
-  const { data: courses = [] } = useQuery({
+  const { data: myCourses = [] } = useQuery({
     queryKey: ['mentor', 'courses', 'observatory'],
-    queryFn: () => api.get('/courses?mentor=me&limit=100').then((r) => r.data?.items || r.data || []),
+    queryFn: () => api.get('/courses?mentor=me&limit=100').then((r) => r.data?.items || []),
     enabled: isApproved,
     staleTime: 60_000,
   });
@@ -82,23 +81,16 @@ const Observatory = () => {
     staleTime: 60_000,
   });
 
-  const students = useMemo(() => {
-    const byId = new Map();
-    for (const c of connections) {
-      const u = c.peer || c.user || {};
-      const id = u._id || c.peerId;
-      if (!id) continue;
-      const lastActive = c.completedAt || c.updatedAt;
-      if (!byId.has(id)) {
-        byId.set(id, {
-          userId: id,
-          name: u.name || u.cosmicName || 'Learner',
-          lastActiveMs: lastActive ? new Date(lastActive).getTime() : 0,
-        });
-      }
-    }
-    return Array.from(byId.values());
-  }, [connections]);
+  const students = useMemo(
+    () => (learners?.items || []).map((l) => ({
+      userId: l.userId,
+      name: l.name,
+      avatar: l.avatar,
+      lastActiveMs: l.lastActiveMs || 0,
+      recentEventAt: l.lastActiveMs ? new Date(l.lastActiveMs).toISOString() : null,
+    })),
+    [learners]
+  );
 
   if (!isApproved) {
     const meta = STATE_META[appState] || STATE_META.not_applied;
@@ -238,6 +230,12 @@ const Observatory = () => {
         />
         <div className="mt-4 flex items-center gap-2">
           <PactBadge size={20} withLabel />
+          <span
+            className="font-mono uppercase"
+            style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}
+          >
+            {myCourses.length} course{myCourses.length === 1 ? '' : 's'}
+          </span>
         </div>
         <p
           className="mt-3 text-center max-w-md"

@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Plus, BookOpen, Pencil, Trash2, Eye, EyeOff, Users } from 'lucide-react';
-import api from '../../services/api';
 import { courses } from '../../services/courses';
 import EmptyState from '../../components/common/EmptyState';
 import {
@@ -13,8 +11,6 @@ import {
     MentorTitle,
     MentorDeck,
 } from '../../components/pact/MentorEditorial';
-import { tierById } from '../../services/pact';
-import PactBadge from '../../components/pact/PactBadge';
 
 /**
  * CourseList — mentor's own courses dashboard.
@@ -27,16 +23,11 @@ import PactBadge from '../../components/pact/PactBadge';
 const CourseList = () => {
     const navigate = useNavigate();
     const qc = useQueryClient();
-    const meId = useQuery({
-        queryKey: ['me'],
-        queryFn: () => api.get('/user/profile').then((r) => r.data),
-    });
     const { data, isLoading } = useQuery({
         queryKey: ['courses', 'list', { mine: true }],
-        queryFn: () => courses.list({ limit: 100 }),
+        queryFn: () => courses.list({ mentor: 'me', limit: 100 }),
     });
-    const all = data?.items || [];
-    const mine = all.filter((c) => String(c.mentorId) === String(meId.data?._id));
+    const mine = data?.items || [];
 
     const publish = useMutation({
         mutationFn: ({ id, action }) => action === 'publish' ? courses.publish(id) : courses.unpublish(id),

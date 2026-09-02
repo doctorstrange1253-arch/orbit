@@ -66,12 +66,17 @@ const uploadImage = multer({
 });
 
 // ── Public browse ────────────────────────────────────────────────────────
-router.get("/", c.listCourses);
+router.get("/", authOptional, c.listCourses);
 router.get("/categories", c.listCategories);
-router.get("/:id", authOptional, c.getCourse);
+router.get("/enrollments/me", auth, c.enrollmentsForMe);
 
 // ── Mentor authoring ────────────────────────────────────────────────────
 const mentor = [auth, requireRoles("mentor")];
+
+router.get("/mentor/learners", mentor, c.mentorLearners);
+
+router.get("/:id/enrollments/me", auth, c.myEnrollmentForCourse);
+router.get("/:id", authOptional, c.getCourse);
 
 router.post("/upload-video", mentor, uploadVideo.single("video"), c.uploadVideo);
 router.post("/upload-thumbnail", mentor, uploadImage.single("thumbnail"), c.uploadThumbnail);

@@ -31,7 +31,7 @@ const MediaLibrary = () => {
 
   const { data: myCourses = [], isLoading } = useQuery({
     queryKey: ['courses', 'list', 'mentor', 'media'],
-    queryFn: () => courses.list({ mentor: 'me', limit: 100 }).then((r) => r.data?.items || r.data || []),
+    queryFn: () => courses.list({ mentor: 'me', limit: 100 }).then((r) => r?.items || []),
   });
 
   useEffect(() => { queueRef.current = queue; }, [queue]);
@@ -239,6 +239,30 @@ const MediaLibrary = () => {
           </h1>
           <p className="text-text-secondary text-sm mt-1">Every video you've attached to a lesson, in one place. Drop new files to bulk-upload.</p>
         </motion.header>
+
+        {error && (
+          <div
+            className="mb-5 flex items-start gap-2"
+            style={{
+              border: '1px solid rgba(252,165,165,0.35)',
+              borderTop: '1px solid rgba(252,165,165,0.55)',
+              padding: '12px 14px',
+            }}
+            role="alert"
+          >
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: 'rgba(252,165,165,1)', marginTop: 2 }} />
+            <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(252,165,165,0.92)', fontSize: '0.95rem', flex: 1 }}>
+              {error}
+            </p>
+            <button
+              onClick={() => setError(null)}
+              className="font-mono uppercase"
+              style={{ fontSize: '0.56rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
 
         <div className="grid grid-cols-3 gap-2 mb-5">
           <StatCell label="Videos" value={stats.total} />

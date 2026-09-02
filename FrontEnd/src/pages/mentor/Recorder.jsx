@@ -56,7 +56,7 @@ const Recorder = () => {
 
   const { data: myCourses = [] } = useQuery({
     queryKey: ['courses', 'list', 'mentor'],
-    queryFn: () => courses.list({ mentor: 'me', limit: 100 }).then((r) => r.data?.items || r.data || []),
+    queryFn: () => courses.list({ mentor: 'me', limit: 100 }).then((r) => r?.items || []),
   });
 
   useEffect(() => () => {
@@ -332,11 +332,11 @@ const Recorder = () => {
                 height={H}
                 onMouseDown={(e) => beginWhiteboardStroke(e, whiteboardRef, whiteboardVisible)}
                 onMouseMove={(e) => extendWhiteboardStroke(e, whiteboardRef, whiteboardVisible)}
-                onMouseUp={() => endWhiteboardStroke()}
-                onMouseLeave={() => endWhiteboardStroke()}
+                onMouseUp={() => endWhiteboardStroke(whiteboardRef)}
+                onMouseLeave={() => endWhiteboardStroke(whiteboardRef)}
                 onTouchStart={(e) => beginWhiteboardStroke(e.touches[0], whiteboardRef, whiteboardVisible)}
                 onTouchMove={(e) => { e.preventDefault(); extendWhiteboardStroke(e.touches[0], whiteboardRef, whiteboardVisible); }}
-                onTouchEnd={() => endWhiteboardStroke()}
+                onTouchEnd={() => endWhiteboardStroke(whiteboardRef)}
                 className="absolute inset-0 w-full h-full cursor-crosshair touch-none"
                 style={{ pointerEvents: whiteboardVisible ? 'auto' : 'none' }}
               />
@@ -672,7 +672,11 @@ function extendWhiteboardStroke(e, ref, visible) {
   ctx.stroke();
   s.last = next;
 }
-function endWhiteboardStroke() {
+function endWhiteboardStroke(ref) {
+  if (!ref?.current) return;
+  const s = getStroke(ref.current);
+  s.drawing = false;
+  s.last = null;
 }
 function clearWhiteboard(ref) {
   if (!ref.current) return;

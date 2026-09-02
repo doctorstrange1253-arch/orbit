@@ -42,6 +42,8 @@ export const courses = {
 
     // Student progress
     enroll: (id) => api.post(`/courses/${id}/enroll`).then((r) => r.data),
+    myEnrollments: () => api.get('/courses/enrollments/me').then((r) => r.data?.items || []),
+    myEnrollment: (id) => api.get(`/courses/${id}/enrollments/me`).then((r) => r.data).catch(() => null),
     completeLesson: (id, lessonId) => api.post(`/courses/${id}/lessons/${lessonId}/complete`).then((r) => r.data),
     submitQuiz: (id, lessonId, answers) => api.post(`/courses/${id}/lessons/${lessonId}/quiz`, { answers }).then((r) => r.data),
 

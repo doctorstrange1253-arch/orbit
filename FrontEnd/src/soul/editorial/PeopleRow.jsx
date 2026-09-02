@@ -58,15 +58,15 @@ export default function PeopleRow() {
           className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1"
           style={{ scrollbarWidth: 'thin' }}
         >
-          {list.map((c) => {
+          {list.map((c, idx) => {
             const peer = c.peer || c.user || c.otherUser || {};
             const id = peer._id || c._id;
             const tradedSkill = c.skillOffered || c.skillWanted || c.swapSkill || 'a skill';
             return (
               <button
-                key={id || Math.random()}
+                key={id || `peer-${idx}`}
                 type="button"
-                onClick={() => id && navigate(`/peer/profile/${id}`)}
+                onClick={() => id && navigate(`/profile/${id}`)}
                 aria-label={`Open ${peer.name || 'connection'}'s profile`}
                 className="flex-shrink-0 text-left rounded-xl p-3 transition-colors duration-200"
                 style={{

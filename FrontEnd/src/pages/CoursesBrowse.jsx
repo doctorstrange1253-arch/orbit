@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { Search, Filter, BookOpen, Sparkles } from 'lucide-react';
+import { Search, BookOpen, Sparkles } from 'lucide-react';
 import { courses } from '../services/courses';
 import CourseCard from '../components/courses/CourseCard';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
@@ -107,7 +107,7 @@ const CoursesBrowse = () => {
                           user can fire a Signal Flare. If they're not
                           filtering by category, the V2 EmptyState is
                           shown alongside as a "no results" message. */}
-                      <WaitingRoom constellation="general" genre={searchParams.get('category') || 'general'} />
+                      <WaitingRoom constellation="general" genre={category || 'general'} />
                       <EmptyState
                           icon={<Sparkles className="w-8 h-8" />}
                           title="No courses match"

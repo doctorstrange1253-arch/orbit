@@ -6,19 +6,26 @@ import CometField from '../../cosmic/CometField';
  *
  * @param {ReactNode} icon        Lucide icon element (e.g. <Users size={32} />)
  * @param {string}    title       Short headline
- * @param {string}    description Explanatory sentence
+ * @param {string}    description Explanatory sentence. `body` and `message` are accepted aliases.
  * @param {string}    ctaLabel    CTA button label (optional)
  * @param {Function}  onCta       CTA click handler (optional)
+ * @param {object}    cta         `{ label, onClick }` — accepted alias for ctaLabel + onCta
  * @param {string}    accentColor Hex colour for the icon bg tint (default cyan)
  */
 const EmptyState = ({
   icon,
   title,
   description,
+  body,
+  message,
   ctaLabel,
   onCta,
+  cta,
   accentColor = '#00c6ff',
 }) => {
+  const copy = description || body || message;
+  const actionLabel = ctaLabel || cta?.label;
+  const onAction = onCta || cta?.onClick;
   const tintRgba = `${accentColor}1a`; // ~10% opacity
   const borderRgba = `${accentColor}33`; // ~20% opacity
 
@@ -52,18 +59,18 @@ const EmptyState = ({
 
       <h3 className="text-lg font-bold text-text-primary mb-2">{title}</h3>
 
-      {description && (
+      {copy && (
         <p className="text-text-muted text-sm max-w-xs mb-6 leading-relaxed">
-          {description}
+          {copy}
         </p>
       )}
 
-      {ctaLabel && onCta && (
+      {actionLabel && onAction && (
         <button
-          onClick={onCta}
+          onClick={onAction}
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all btn-gradient"
         >
-          {ctaLabel}
+          {actionLabel}
         </button>
       )}
     </motion.div>
