@@ -14,6 +14,7 @@ import PactBadge from '../components/pact/PactBadge';
 // a VideoArrival (600ms) or BossCeremony (1.2s) before navigating.
 import CourseMap from '../soul/studio/CourseMap';
 import { StageRail } from '../soul/gameEngine/StageRail';
+import TrajectoryPath from '../soul/gameEngine/TrajectoryPath';
 import VideoArrival from '../soul/studio/VideoArrival';
 import BossCeremony from '../soul/studio/BossCeremony';
 import api from '../services/api';
@@ -171,6 +172,17 @@ const CourseDetail = () => {
                 <section className="mb-6">
                     <div className="mb-4">
                         <StageRail course={course} completedLessonIds={completedLessonIds} />
+                    </div>
+                    <div className="mb-4">
+                        <TrajectoryPath
+                            course={course}
+                            completedLessonIds={completedLessonIds}
+                            onPick={(lesson) => {
+                                const rect = { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
+                                if (lesson.isBoss) setCeremony({ lesson, sourceRect: rect });
+                                else setArrival({ lesson, sourceRect: rect });
+                            }}
+                        />
                     </div>
                     <button
                         onClick={() => setOpenLessons((v) => !v)}
