@@ -711,6 +711,7 @@ app.use("/api/pact", pactRoutes);
 app.use("/api/knowledge", knowledgeGraphRoutes);
 app.use("/api/flares", signalFlareRoutes);
 app.use("/api/taxonomy", require("./routes/taxonomyRoutes"));
+app.use("/api/billing", require("./routes/billingRoutes"));
 app.use("/api/moderation", moderationRoutes);
 // V3 — Cross-soul mentor invites: pending invite + accept/dismiss (the
 // MentorInviteModal's API surface; dismiss applies the 90-day cooldown).
@@ -845,6 +846,12 @@ mongoose.connect(process.env.MONGO_URI, {
             require("./scripts/seedAchievements")()
                 .then(() => console.log("[seed] achievements seeded — you may now unset RUN_ACHIEVEMENT_SEED."))
                 .catch((e) => console.error("[seed] achievements failed:", e.message));
+        }
+
+        if (process.env.RUN_PLAN_SEED === "true") {
+            require("./scripts/seedPlans").seedPlans()
+                .then(() => console.log("[seed] plans seeded — you may now unset RUN_PLAN_SEED."))
+                .catch((e) => console.error("[seed] plans failed:", e.message));
         }
     })
     .catch(err => console.log("DB Error:", err));

@@ -103,6 +103,7 @@ const ObservatoryV3      = lazy(() => import('./pages/mentor/Observatory'));
 const UniverseV3         = lazy(() => import('./pages/student/Universe'));
 const StudentLearning    = lazy(() => import('./pages/student/Learning'));
 const StudentCertificates = lazy(() => import('./pages/student/Certificates'));
+const Pricing            = lazy(() => import('./pages/Pricing'));
 const MentorAnalytics    = lazy(() => import('./pages/mentor/Analytics'));
 const MentorStudents     = lazy(() => import('./pages/mentor/Students'));
 // V3 — Skill Map. The caller's constellation + the public shareable URL.
@@ -776,6 +777,8 @@ function AppInner() {
         <Route path="/courses/:id/learn/:lessonId"                element={<ProtectedRoute><Suspense fallback={<PageLoader />}><CourseLearn /></Suspense></ProtectedRoute>} />
         <Route path="/courses/:id/certificate/:certId"            element={<ProtectedRoute><Suspense fallback={<PageLoader />}><CertificatePage /></Suspense></ProtectedRoute>} />
         {/* Gameology — student lifetime identity dashboard (Phase F) */}
+        <Route path="/plans" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><Pricing /></Suspense></ProtectedRoute>} />
+        <Route path="/pricing" element={<Navigate to="/plans" replace />} />
         <Route path="/gameology" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><GameologyPage /></Suspense></ProtectedRoute>} />
         {/* V3 — Identity Selection bloom screen. Replaces the V2 3-radio role
             picker. The page is full-bleed (no Layout chrome) so the bloom is
