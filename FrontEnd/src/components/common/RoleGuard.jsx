@@ -1,4 +1,4 @@
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore, getLandingRoute } from '../../store/authStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShieldAlert, ArrowRight } from 'lucide-react';
 
@@ -69,10 +69,10 @@ const RoleGuard = ({ roles, allOf, children }) => {
             <ArrowRight size={15} />
           </button>
           <Link
-            to="/peer/dashboard"
+            to={getLandingRoute(have)}
             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-text-secondary border border-border-subtle bg-surface hover:text-text-primary transition-all"
           >
-            Back to dashboard
+            Back to your home
           </Link>
         </div>
       </div>

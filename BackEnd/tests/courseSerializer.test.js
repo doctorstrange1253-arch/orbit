@@ -1,13 +1,3 @@
-/**
- * courseSerializer — the Game Engine + enrollment reads that V4 Phase 0 repaired.
- *
- * Regression coverage for three defects that shipped silently:
- *   1. publicShape() dropped quiz.questions / isBoss / Level Card copy, so a
- *      student could never complete a lesson that had a quiz.
- *   2. GET /courses/enrollments/me and /courses/:id/enrollments/me did not
- *      exist, so the student home always rendered its empty state.
- *   3. updateLesson honoured an empty quiz.questions array, wiping the bank.
- */
 const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const express = require("express");
@@ -174,9 +164,10 @@ describe("GET /courses/enrollments/me", () => {
         expect(row.progressPct).toBe(50);
         expect(row.completedLessonIds).toHaveLength(1);
         expect(String(row.lastLessonId)).toBe(String(course.lessons[0]._id));
-        expect(row.courseId.title).toBe("Chord Foundations");
-        expect(row.courseId.lessonsCount).toBe(2);
-        expect(row.courseId.mentor.name).toBe(mentor.name);
+        expect(String(row.courseId)).toBe(String(course._id));
+        expect(row.course.title).toBe("Chord Foundations");
+        expect(row.course.lessonsCount).toBe(2);
+        expect(row.course.mentor.name).toBe(mentor.name);
     });
 
     it("is not shadowed by the /:id route", async () => {

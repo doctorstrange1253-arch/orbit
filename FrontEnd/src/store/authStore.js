@@ -41,12 +41,18 @@ export const ROLE_META = {
 // window's home because peer_learner is the baseline role every account
 // gets — it's the safest default. V3 — all three landing routes are the
 // V3 soul homes (Pulse / Observatory / My Universe), not the V2 dashboards.
+export const ROLE_HOME = {
+  peer_learner: '/peer/dashboard',
+  mentor: '/mentor/observatory',
+  student: '/student/universe',
+};
+
 export function getLandingRoute(roles) {
   const set = new Set(Array.isArray(roles) ? roles : ['peer_learner']);
-  if (set.has('mentor') && set.has('student')) return '/student/universe';
-  if (set.has('mentor')) return '/mentor/observatory';
-  if (set.has('student')) return '/student/universe';
-  return '/peer/dashboard';
+  if (set.has('mentor') && set.has('student')) return ROLE_HOME.student;
+  if (set.has('mentor')) return ROLE_HOME.mentor;
+  if (set.has('student')) return ROLE_HOME.student;
+  return ROLE_HOME.peer_learner;
 }
 
 // Returns 'peer' | 'mentor' | 'student' | null. The navbar uses this to
@@ -56,9 +62,12 @@ export function getLandingRoute(roles) {
 // specific nav applies. Pure function — safe to call inside render.
 export function getCurrentWindow(pathname) {
   if (!pathname || typeof pathname !== 'string') return null;
-  if (pathname.startsWith('/peer'))    return 'peer';
-  if (pathname.startsWith('/mentor'))  return 'mentor';
-  if (pathname.startsWith('/student')) return 'student';
+  if (pathname.startsWith('/peer'))      return 'peer';
+  if (pathname.startsWith('/mentor'))    return 'mentor';
+  if (pathname.startsWith('/student'))   return 'student';
+  if (pathname.startsWith('/courses'))   return 'student';
+  if (pathname.startsWith('/gameology')) return 'student';
+  if (pathname.startsWith('/skill-map')) return 'student';
   return null;
 }
 

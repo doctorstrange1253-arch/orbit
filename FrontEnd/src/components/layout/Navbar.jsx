@@ -16,7 +16,8 @@ import PhotonIcon from '../../cosmic/PhotonIcon';
 import PactBadge from '../pact/PactBadge';
 import {
   LogOut, Layers, Compass, Users, Map, ShieldCheck,
-  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, MessageCircle, Bell, Settings as SettingsIcon, Flame, Swords, Video, Film
+  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Search, MessageCircle, Settings as SettingsIcon, Flame, Swords, Video, Film,
+  Telescope, BookOpen, Award, Network, ShieldAlert, BarChart3, Users2,
 } from 'lucide-react';
 
 // Three independent nav pill lists, one per role window. The Navbar picks
@@ -43,20 +44,29 @@ const NAV_PEER = [
 ];
 
 const NAV_MENTOR = [
-  { name: 'Teach',        path: '/mentor/observatory', Icon: GraduationCap, window: 'mentor' },
+  { name: 'Observatory',  path: '/mentor/observatory', Icon: Telescope,   window: 'mentor' },
+  { name: 'Courses',      path: '/mentor/courses',   Icon: BookOpen,      window: 'mentor' },
   { name: 'Pact',         path: '/mentor/pact',      Icon: Swords,        window: 'mentor' },
+  { name: 'Students',     path: '/mentor/students',  Icon: Users2,        window: 'mentor' },
+  { name: 'Analytics',    path: '/mentor/analytics', Icon: BarChart3,     window: 'mentor' },
   { name: 'Record',       path: '/mentor/recorder',  Icon: Video,         window: 'mentor' },
   { name: 'Media',        path: '/mentor/media',     Icon: Film,          window: 'mentor' },
-  { name: 'My Sessions',  path: '/mentor/sessions',  Icon: Calendar,      window: 'mentor' },
+  { name: 'Sessions',     path: '/mentor/sessions',  Icon: Calendar,      window: 'mentor' },
   { name: 'Earnings',     path: '/mentor/earnings',  Icon: DollarSign,    window: 'mentor' },
+  { name: 'Review',       path: '/mentor/moderation', Icon: ShieldAlert,  window: 'mentor' },
   { name: 'Profile',      path: '/profile',          Icon: UserCircle,    window: 'shared' },
 ];
 
 const NAV_STUDENT = [
-  { name: 'My Sessions',  path: '/student/sessions',                Icon: Calendar, window: 'student' },
-  { name: 'Browse Mentors', path: '/student/mentors',              Icon: Compass,  window: 'student' },
-  { name: 'Bookings',     path: '/student/sessions?tab=upcoming',   Icon: Bookmark, window: 'student' },
-  { name: 'History',      path: '/student/sessions?tab=past',       Icon: History,  window: 'student' },
+  { name: 'My Universe',  path: '/student/universe',     Icon: Telescope,     window: 'student' },
+  { name: 'Courses',      path: '/courses',              Icon: BookOpen,      window: 'student' },
+  { name: 'My Learning',  path: '/student/learning',     Icon: GraduationCap, window: 'student' },
+  { name: 'Certificates', path: '/student/certificates', Icon: Award,         window: 'student' },
+  { name: 'Progress',     path: '/gameology',            Icon: Flame,         window: 'student' },
+  { name: 'Skill Map',    path: '/skill-map',            Icon: Network,       window: 'student' },
+  { name: 'Sessions',     path: '/student/sessions',     Icon: Calendar,      window: 'student' },
+  { name: 'Mentors',      path: '/student/mentors',      Icon: Compass,       window: 'student' },
+  { name: 'Leaderboard',  path: '/leaderboard',          Icon: Trophy,        window: 'shared' },
 ];
 
 const Navbar = () => {
@@ -132,14 +142,11 @@ const Navbar = () => {
     return item;
   });
 
-  // Active-pill predicate. All paths in NAV_* are unique (each window's
-  // pills are disjoint), so we only need an exact-pathname match OR a
-  // path-prefix match for routes with params. Student sub-paths that use
-  // ?tab= are matched by their query string so the Bookings/History pill
-  // lights up when the URL carries the matching tab.
   const isActive = (item) => {
     const [base, qs] = item.path.split('?');
-    if (location.pathname !== base) return false;
+    const exact = location.pathname === base;
+    const nested = location.pathname.startsWith(`${base}/`);
+    if (!exact && !nested) return false;
     if (qs) {
       const want = new URLSearchParams(qs);
       const have = new URLSearchParams(location.search);

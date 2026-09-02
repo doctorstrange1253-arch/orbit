@@ -101,6 +101,10 @@ const IdentitySelection  = lazy(() => import('./pages/IdentitySelection'));
 const MyOrbitV3          = lazy(() => import('./pages/peer/MyOrbit'));
 const ObservatoryV3      = lazy(() => import('./pages/mentor/Observatory'));
 const UniverseV3         = lazy(() => import('./pages/student/Universe'));
+const StudentLearning    = lazy(() => import('./pages/student/Learning'));
+const StudentCertificates = lazy(() => import('./pages/student/Certificates'));
+const MentorAnalytics    = lazy(() => import('./pages/mentor/Analytics'));
+const MentorStudents     = lazy(() => import('./pages/mentor/Students'));
 // V3 — Skill Map. The caller's constellation + the public shareable URL.
 const SkillMapV3         = lazy(() => import('./pages/SkillMap'));
 const SkillMapPublicV3   = lazy(() => import('./pages/SkillMapPublic'));
@@ -181,8 +185,9 @@ const LegacyRedirect = ({ to }) => {
  *  they originally requested instead of always landing on /peer/dashboard. */
 const PublicOnlyRoute = ({ children }) => {
   const token = useAuthStore((state) => state.token);
+  const roles = useAuthStore((state) => state.user?.roles);
   const location = useLocation();
-  if (token) return <Navigate to={location.state?.from?.pathname || '/peer/dashboard'} replace />;
+  if (token) return <Navigate to={location.state?.from?.pathname || getLandingRoute(roles)} replace />;
   return children;
 };
 
@@ -816,9 +821,13 @@ function AppInner() {
         <Route path="/mentor/pact" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorPactHall /></Suspense></RoleGuard></ProtectedRoute>} />
         {/* V3 — Moderation Inbox (mentor-only) */}
         <Route path="/mentor/moderation" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><ModerationV3 /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/mentor/analytics" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorAnalytics /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/mentor/students" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorStudents /></Suspense></RoleGuard></ProtectedRoute>} />
 
         {/* ── Student window (/student/*) — student ────────────────── */}
         <Route path="/student/universe"          element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><UniverseV3 /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/student/learning"          element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><StudentLearning /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/student/certificates"      element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><StudentCertificates /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/student/sessions"          element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><MySessions /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/student/mentors"           element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><Sessions /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/student/mentors/:userId"   element={<ProtectedRoute><RoleGuard roles={['student']}><Suspense fallback={<PageLoader />}><SessionDetail /></Suspense></RoleGuard></ProtectedRoute>} />
@@ -838,8 +847,6 @@ function AppInner() {
         <Route path="/session-room/:sessionId" element={<LegacyRedirect to="/student/room/:sessionId" />} />
         <Route path="/my-sessions"         element={<Navigate to="/student/universe" replace />} />
         <Route path="/teach"               element={<Navigate to="/mentor/observatory" replace />} />
-        <Route path="/signup"              element={<Navigate to="/register" replace />} />
-        <Route path="/signin"              element={<Navigate to="/login" replace />} />
 
         {/* Cosmic badge gallery — dev/QA route, reachable by URL, not in nav */}
         <Route path="/cosmic-gallery" element={<Layout><Suspense fallback={<PageLoader />}><BadgeGallery /></Suspense></Layout>} />

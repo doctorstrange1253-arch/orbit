@@ -36,10 +36,6 @@
   --font-cormorant: "Cormorant Garamond", "Georgia", serif;
   --font-playfair: "Playfair Display", "Times New Roman", serif;
 
-  /* Tailwind v4 preflight falls back to a system sans stack for any element
-     that never gets a family (and for every form control, via
-     `button,input,select,optgroup,textarea{font:inherit}`). Pin both defaults
-     so nothing in Orbit can render in an informal typeface. */
   --default-font-family: "Cormorant Garamond", "Georgia", serif;
   --default-mono-font-family: "JetBrains Mono", ui-monospace, monospace;
 
@@ -55,12 +51,6 @@
   --animate-fade-in-up: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-shimmer: shimmer 2s linear infinite;
 
-  /* ─── V3 SOUL LAYER ─── per-soul accent colours. The astronomical type
-     scale (--text-supernova / -orbit / -stardust) was removed in V4: it had
-     zero consumers app-wide and the Tailwind v4 shorthand emitted an invalid
-     font-size the browser discarded. Type roles now come from --font-editorial
-     (Playfair Display), --font-serif (Cormorant Garamond) and --font-mono
-     (JetBrains Mono) directly. */
   --color-supernova: var(--soul-accent-1, #00c6ff);
   --color-orbit: var(--text-primary);
   --color-stardust: var(--text-muted);
@@ -1188,10 +1178,6 @@ body, html {
   .font-playfair  { font-family: var(--font-editorial); }
 }
 
-/* Leaflet vendors its own Helvetica Neue stack for .leaflet-container, and it
-   ships in a separate lazy chunk (map-*.css) whose load order relative to this
-   file is not guaranteed. `html` raises specificity so the override wins
-   regardless of which stylesheet lands last. */
 html .leaflet-container,
 html .leaflet-container .leaflet-popup-content,
 html .leaflet-container .leaflet-control-attribution {

@@ -39,6 +39,7 @@ const Certificate = require("../models/Certificate");
 const User = require("../models/user");
 const gameology = require("../services/gameologyService");
 const pact = require("../services/pactService");
+const stages = require("../services/courseStages");
 const { createNotification } = require("../services/notify");
 
 // ── Helpers ──────────────────────────────────────────────────────────────
@@ -93,6 +94,8 @@ function publicShape(c, mentor, opts = {}) {
         enrollmentCount: c.enrollmentCount,
         rating: c.rating,
         tags: c.tags || [],
+        stages: stages.buildStages(c.lessons),
+        completionXp: stages.courseCompletionXp((c.lessons || []).length),
         createdAt: c.createdAt,
         updatedAt: c.updatedAt,
     };
@@ -515,7 +518,8 @@ exports.enrollmentsForMe = async (req, res) => {
                 }));
                 return {
                     _id: String(e._id),
-                    courseId: c
+                    courseId: String(e.courseId),
+                    course: c
                         ? {
                             _id: String(c._id),
                             title: c.title,
@@ -527,6 +531,8 @@ exports.enrollmentsForMe = async (req, res) => {
                             isPublished: c.isPublished,
                             lessonsCount: lessons.length,
                             lessons,
+                            stages: stages.buildStages(c.lessons),
+                            completionXp: stages.courseCompletionXp((c.lessons || []).length),
                             mentor: mentor
                                 ? { _id: String(mentor._id), name: mentor.name, avatar: mentor.avatar }
                                 : null,
@@ -540,7 +546,7 @@ exports.enrollmentsForMe = async (req, res) => {
                     enrolledAt: e.enrolledAt,
                     updatedAt: e.updatedAt,
                 };
-            }).filter((e) => e.courseId),
+            }).filter((e) => e.course),
         });
     } catch (err) {
         console.error("enrollmentsForMe:", err);
@@ -716,7 +722,7 @@ exports.completeLesson = async (req, res) => {
     try {
         const meId = req.user.id;
         const { id, lessonId } = req.params;
-        const c = await Course.findById(id).select("_id isPublished lessons mentorId").lean();
+        const c = await Course.findById(id).select("_id title isPublished lessons mentorId").lean();
         if (!c || !c.isPublished) return res.status(404).json({ message: "Course not found" });
         const lesson = (c.lessons || []).find((l) => String(l._id) === String(lessonId));
         if (!lesson) return res.status(404).json({ message: "Lesson not found" });
@@ -730,7 +736,8 @@ exports.completeLesson = async (req, res) => {
             { upsert: true, new: true, setDefaultsOnInsert: true }
         );
 
-        const wasComplete = (enrollment.completedLessonIds || []).some((lid) => String(lid) === String(lesson._id));
+        const beforeIds = (enrollment.completedLessonIds || []).map(String);
+        const wasComplete = beforeIds.some((lid) => lid === String(lesson._id));
         if (!wasComplete) {
             enrollment.completedLessonIds.push(lesson._id);
         }
@@ -776,9 +783,34 @@ exports.completeLesson = async (req, res) => {
             } catch { /* best-effort */ }
         }
 
+        const courseStages = stages.buildStages(c.lessons);
+        const clearedStages = wasComplete
+            ? []
+            : stages.stagesJustCleared(
+                courseStages,
+                beforeIds,
+                (enrollment.completedLessonIds || []).map(String),
+            );
+
+        for (const stage of clearedStages) {
+            if (stage.isFinale) continue;
+            try {
+                await gameology.awardXp(meId, "stage_cleared", {
+                    courseId: String(c._id),
+                    stage: stage.name,
+                    stageNumber: stage.number,
+                    xpOverride: stage.xpReward,
+                });
+            } catch { /* best-effort */ }
+        }
+
         // On 100% completion: course_completed XP + mint certificate
         if (justCompleted) {
-            await gameology.awardXp(meId, "course_completed", { courseId: String(c._id) });
+            await gameology.awardXp(meId, "course_completed", {
+                courseId: String(c._id),
+                videoCount: c.lessons.length,
+                xpOverride: stages.courseCompletionXp(c.lessons.length),
+            });
             // Mentor side: pact score bump for triggering a completion
             await pact.recordCourseCompletion(c.mentorId, { courseId: String(c._id) });
 
@@ -824,6 +856,15 @@ exports.completeLesson = async (req, res) => {
             progressPct: enrollment.progressPct,
             completedLessonIds: enrollment.completedLessonIds.map(String),
             justCompleted,
+            certificateId: enrollment.certificateId ? String(enrollment.certificateId) : null,
+            stagesCleared: clearedStages.map((s) => ({
+                number: s.number,
+                name: s.name,
+                blurb: s.blurb,
+                isFinale: s.isFinale,
+                xpReward: s.xpReward,
+                lessonCount: s.lessonCount,
+            })),
         });
     } catch (err) {
         console.error("completeLesson:", err);

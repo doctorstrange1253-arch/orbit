@@ -1,23 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuthStore, ROLE_META, getCurrentWindow } from '../../store/authStore';
+import { useAuthStore, ROLE_META, ROLE_HOME, getCurrentWindow } from '../../store/authStore';
 import { useWindowSwitchStore } from '../fx/WindowSwitchOverlay';
 import { Users, GraduationCap, BookOpen, ChevronDown } from 'lucide-react';
 
-// Icons per role — small set, inline so we don't pull from elsewhere.
 const ROLE_ICONS = {
   peer_learner: Users,
   mentor: GraduationCap,
   student: BookOpen,
-};
-
-// Home route per role — the dropdown navigates here when the user picks
-// a different role. Mirrors the same priorities as getLandingRoute.
-const ROLE_HOME = {
-  peer_learner: '/peer/dashboard',
-  mentor: '/mentor/hub',
-  student: '/student/sessions',
 };
 
 // Color classes per role accent. Matches the existing static role chip

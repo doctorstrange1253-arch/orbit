@@ -13,6 +13,7 @@ import PactBadge from '../components/pact/PactBadge';
 // spatial Course Map (soul/studio/CourseMap.jsx). Tapping a node fires
 // a VideoArrival (600ms) or BossCeremony (1.2s) before navigating.
 import CourseMap from '../soul/studio/CourseMap';
+import { StageRail } from '../soul/gameEngine/StageRail';
 import VideoArrival from '../soul/studio/VideoArrival';
 import BossCeremony from '../soul/studio/BossCeremony';
 import api from '../services/api';
@@ -168,6 +169,9 @@ const CourseDetail = () => {
 
                 {/* Curriculum — V3 spatial Course Map */}
                 <section className="mb-6">
+                    <div className="mb-4">
+                        <StageRail course={course} completedLessonIds={completedLessonIds} />
+                    </div>
                     <button
                         onClick={() => setOpenLessons((v) => !v)}
                         className="w-full flex items-center justify-between p-3 rounded-xl border border-border-subtle bg-surface/40 backdrop-blur-sm hover:border-accent/30"

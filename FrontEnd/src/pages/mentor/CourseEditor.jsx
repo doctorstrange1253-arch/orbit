@@ -3,17 +3,16 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { ChevronLeft, BookOpen, Eye, EyeOff, Save, Pencil, Trash2, Users, MessageCircle, Edit3, Crown } from 'lucide-react';
+import { BookOpen, Eye, EyeOff, Save, Pencil, Trash2, Users, MessageCircle, Edit3, Crown } from 'lucide-react';
 import { courses } from '../../services/courses';
 import CommentThread from '../../components/courses/CommentThread';
 import PactBadge from '../../components/pact/PactBadge';
 import {
     MentorBackLink,
-    MentorEyebrow,
     MentorTitle,
-    MentorDeck,
     MentorTag,
 } from '../../components/pact/MentorEditorial';
+import { StageRail } from '../../soul/gameEngine/StageRail';
 
 /**
  * CourseEditor — post-create management surface.
@@ -110,6 +109,9 @@ const CourseEditor = () => {
                     </span>
                 </div>
                 <MentorTitle size="lg">{course.title}</MentorTitle>
+                <div className="mt-4">
+                    <StageRail course={course} completedLessonIds={[]} />
+                </div>
                 <div className="mt-3 flex items-center gap-3 flex-wrap">
                     <Link
                         to={`/courses/${id}`}

@@ -157,9 +157,9 @@ function RankBadge({ rank }) {
 
 // ── Tab definitions ────────────────────────────────────────────────────
 const TABS = [
-  { id: 'cosmic',    label: 'Cosmic',     Icon: Trophy,   needs: 'mentor' },
+  { id: 'cosmic',    label: 'Cosmic',     Icon: Trophy,   needs: ['mentor', 'peer_learner'] },
   { id: 'gameology', label: 'Gameology',  Icon: Sparkles, needs: 'any' },
-  { id: 'pact',      label: 'Pact',       Icon: BookOpen, needs: 'mentor' },
+  { id: 'pact',      label: 'Pact',       Icon: BookOpen, needs: ['mentor'] },
 ];
 
 // ── Sub-renders for each tab ───────────────────────────────────────────
@@ -381,14 +381,12 @@ const LinkButton = ({ to, label }) => (
 export default function Leaderboard() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [tab, setTab] = useState('cosmic');
 
-  // Multi-role users might be on /student or /peer and want to peek at Pact;
-  // the Cosmic tab is the mentor default, so we pick the most relevant tab
-  // by role when the user lands on the page fresh.
   const userRoles = Array.isArray(user?.roles) ? user.roles : ['peer_learner'];
   const isMentor = userRoles.includes('mentor');
   const isPeer = userRoles.includes('peer_learner');
+
+  const [tab, setTab] = useState(() => (isMentor || isPeer ? 'cosmic' : 'gameology'));
 
   return (
     <>
@@ -410,7 +408,7 @@ export default function Leaderboard() {
         {/* Board-tab strip — single source for "which board am I on?" */}
         <div className="flex gap-1.5 mt-4 mb-3 overflow-x-auto hide-scrollbar -mx-1 px-1">
           {TABS.map((t) => {
-            const visible = t.needs === 'any' || (t.needs === 'mentor' && isMentor);
+            const visible = t.needs === 'any' || t.needs.some((r) => userRoles.includes(r));
             if (!visible) return null;
             const active = tab === t.id;
             const Icon = t.Icon;

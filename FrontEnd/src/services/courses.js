@@ -3,6 +3,38 @@ import api from './api';
 // Courses — full course surface: browse, enroll, learn, Q&A, certificate.
 // All routes are /api/courses/* (mounted in BackEnd/server.js).
 
+const DAY_MS = 86_400_000;
+
+function seenLabel(value, now) {
+    if (!value) return 'never';
+    const days = Math.floor((now - new Date(value).getTime()) / DAY_MS);
+    if (days <= 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 7) return `${days} days ago`;
+    if (days < 30) return `${Math.floor(days / 7)}w ago`;
+    return `${Math.floor(days / 30)}mo ago`;
+}
+
+function nextLessonId(row) {
+    const done = new Set(row.completedLessonIds || []);
+    const lesson = (row.course?.lessons || [])
+        .slice()
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .find((l) => !done.has(String(l._id)));
+    return lesson || null;
+}
+
+function enrichEnrollments(items) {
+    const now = Date.now();
+    return items
+        .filter((row) => row.course)
+        .map((row) => ({
+            ...row,
+            seenLabel: seenLabel(row.updatedAt, now),
+            nextLesson: row.completedAt ? null : nextLessonId(row),
+        }));
+}
+
 export const courses = {
     // Public browse
     list: (params = {}) => api.get('/courses', { params }).then((r) => r.data),
@@ -42,7 +74,7 @@ export const courses = {
 
     // Student progress
     enroll: (id) => api.post(`/courses/${id}/enroll`).then((r) => r.data),
-    myEnrollments: () => api.get('/courses/enrollments/me').then((r) => r.data?.items || []),
+    myEnrollments: () => api.get('/courses/enrollments/me').then((r) => enrichEnrollments(r.data?.items || [])),
     myEnrollment: (id) => api.get(`/courses/${id}/enrollments/me`).then((r) => r.data).catch(() => null),
     completeLesson: (id, lessonId) => api.post(`/courses/${id}/lessons/${lessonId}/complete`).then((r) => r.data),
     submitQuiz: (id, lessonId, answers) => api.post(`/courses/${id}/lessons/${lessonId}/quiz`, { answers }).then((r) => r.data),

@@ -73,9 +73,12 @@ export const SOULS = {
 // path like `/mentor/...` resolves to the mentor soul. The two are kept
 // in sync intentionally; if a new soul ever gets a URL prefix, add it here.
 export const URL_PREFIX_TO_SOUL = {
-  '/peer':    'peer',
-  '/mentor':  'mentor',
-  '/student': 'student',
+  '/peer':      'peer',
+  '/mentor':    'mentor',
+  '/student':   'student',
+  '/courses':   'student',
+  '/gameology': 'student',
+  '/skill-map': 'student',
 };
 
 // Resolve a pathname to a soul id (or null on shared pages).

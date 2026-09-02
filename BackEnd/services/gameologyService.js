@@ -45,6 +45,7 @@ const XP_VALUES = Object.freeze({
     // V3 — Boss level passed. Worth 3x a normal lesson + special
     // Boss achievement check (BOSS_FIRST / BOSS_5 / BOSS_25).
     boss_level_passed:    150,
+    stage_cleared:         50,
 });
 
 // ── Pure math helpers ────────────────────────────────────────────────────
@@ -196,11 +197,14 @@ function tickStreak(prev, today) {
  */
 async function awardXp(userId, event, metadata = {}) {
     try {
-        const xpDelta = XP_VALUES[event];
-        if (xpDelta === undefined) {
+        const base = XP_VALUES[event];
+        if (base === undefined) {
             console.warn(`[gameology] unknown event: ${event}`);
             return null;
         }
+        const xpDelta = Number.isFinite(metadata.xpOverride)
+            ? Math.max(0, Math.round(metadata.xpOverride))
+            : base;
 
         const user = await User.findById(userId).select("gameology name").lean();
         if (!user) return null;

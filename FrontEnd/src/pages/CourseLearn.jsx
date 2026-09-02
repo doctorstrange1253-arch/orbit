@@ -16,6 +16,8 @@ import LevelCard from '../components/gameEngine/LevelCard';
 import AttentionArc from '../components/gameEngine/AttentionArc';
 import CoachQuiz from '../components/gameEngine/CoachQuiz';
 import BossCeremony from '../components/gameEngine/BossCeremony';
+import StageClearOverlay from '../soul/gameEngine/StageClearOverlay';
+import { StageRail, StageChip } from '../soul/gameEngine/StageRail';
 
 const CourseLearn = () => {
     const { id, lessonId } = useParams();
@@ -29,9 +31,11 @@ const CourseLearn = () => {
     //   (CoachQuiz) → done
     // For Boss lessons: same flow, but on quiz pass → BossCeremony
     // overlay (6s) before returning to the course.
-    const [stage, setStage] = useState('card');  // 'card' | 'video' | 'quiz' | 'done' | 'boss'
+    const [stage, setStage] = useState('card');
     const [showBossCeremony, setShowBossCeremony] = useState(false);
     const [bossConcepts, setBossConcepts] = useState([]);
+    const [stageCleared, setStageCleared] = useState(null);
+    const [pendingCompletion, setPendingCompletion] = useState(null);
     const videoRef = useRef(null);
 
     const { data: course, isLoading } = useQuery({
@@ -56,6 +60,8 @@ const CourseLearn = () => {
     useEffect(() => {
         setStage('card');
         setShowBossCeremony(false);
+        setStageCleared(null);
+        setPendingCompletion(null);
         setQuizResult(null);
     }, [activeLessonId]);
 
@@ -64,23 +70,51 @@ const CourseLearn = () => {
         [enrollment]
     );
 
+    const resolveCompletion = (outcome) => {
+        setPendingCompletion(null);
+        if (outcome?.isBoss) {
+            setBossConcepts(outcome.concepts || []);
+            setShowBossCeremony(true);
+            return;
+        }
+        if (outcome?.justCompleted) {
+            navigate(`/courses/${id}/certificate/${outcome.certificateId || 'new'}`);
+            return;
+        }
+        qc.invalidateQueries({ queryKey: ['courses', 'detail', id] });
+    };
+
+    const onStageClearDone = () => {
+        const outcome = pendingCompletion;
+        setStageCleared(null);
+        resolveCompletion(outcome);
+    };
+
     const complete = useMutation({
         mutationFn: (lessonIdToComplete) => courses.completeLesson(id, lessonIdToComplete),
         onSuccess: (res) => {
             qc.invalidateQueries({ queryKey: ['courses', id, 'enrollment', 'me'] });
             qc.invalidateQueries({ queryKey: ['enrollments', 'me'] });
-            // V3 — Boss lessons: show the 6s ceremony, then route.
-            if (activeLesson?.isBoss) {
-                setBossConcepts(activeLesson?.conceptSlugs || []);
-                setShowBossCeremony(true);
-                return;
-            }
-            if (res?.justCompleted) {
-                navigate(`/courses/${id}/certificate/${res.certificateId || 'new'}`);
-            }
-            qc.invalidateQueries({ queryKey: ['courses', 'detail', id] });
             qc.invalidateQueries({ queryKey: ['gameology', 'me'] });
             qc.invalidateQueries({ queryKey: ['knowledge', 'me'] });
+
+            const cleared = (res?.stagesCleared || []).filter((s) => !s.isFinale);
+            setPendingCompletion({
+                justCompleted: !!res?.justCompleted,
+                certificateId: res?.certificateId || null,
+                isBoss: !!activeLesson?.isBoss,
+                concepts: activeLesson?.conceptSlugs || [],
+            });
+            if (cleared.length > 0) {
+                setStageCleared(cleared[0]);
+                return;
+            }
+            resolveCompletion({
+                justCompleted: !!res?.justCompleted,
+                certificateId: res?.certificateId || null,
+                isBoss: !!activeLesson?.isBoss,
+                concepts: activeLesson?.conceptSlugs || [],
+            });
         },
     });
 
@@ -128,9 +162,25 @@ const CourseLearn = () => {
                     <ChevronLeft className="w-3.5 h-3.5" /> Back to course
                 </Link>
 
+                {activeLessonId && (
+                    <div className="mb-4">
+                        <StageChip
+                            course={course}
+                            lessonId={activeLessonId}
+                            completedLessonIds={enrollment?.completedLessonIds}
+                        />
+                    </div>
+                )}
+
                 <div className="grid md:grid-cols-[280px_1fr] gap-6">
                     {/* Sidebar: lesson list */}
                     <aside className="md:sticky md:top-20 md:self-start">
+                        <div className="mb-4">
+                            <StageRail
+                                course={course}
+                                completedLessonIds={enrollment?.completedLessonIds}
+                            />
+                        </div>
                         <h2 className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-2 px-1">
                             {course.lessons?.length || 0} lessons
                         </h2>
@@ -270,9 +320,10 @@ const CourseLearn = () => {
                 </div>
             </div>
 
-            {/* V3 — Boss Ceremony (6s) after passing a Boss Level quiz.
-                Overlays the page until the student clicks Continue (or the
-                6s auto-advance has elapsed). */}
+            {stageCleared && (
+              <StageClearOverlay stage={stageCleared} onDone={onStageClearDone} />
+            )}
+
             {showBossCeremony && activeLesson?.isBoss && (
               <BossCeremony
                 lesson={activeLesson}

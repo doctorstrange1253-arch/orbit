@@ -23,9 +23,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
     Search, Sun, Moon, Volume2, VolumeX, Music, Music2,
     Compass, Home, Settings, Rocket, Trophy, ShoppingBag,
-    GraduationCap, Calendar, Wallet, Bookmark, History,
+    GraduationCap, Calendar, Wallet,
     Layers, Handshake, Users, Map, Phone, ShieldCheck,
     Sparkles, ArrowRight,
+    Telescope, BookOpen, Award, Network, ShieldAlert, BarChart3, Users2, Swords, Video, Film,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useThemeStore } from '../../store/themeStore';
@@ -78,13 +79,28 @@ const NAV_PEER = [
     { name: 'Shop',         path: '/shop',             Icon: ShoppingBag, section: 'Shared' },
 ];
 const NAV_MENTOR = [
-    { name: 'Teach',        path: '/mentor/hub',       Icon: GraduationCap, section: 'Mentor' },
-    { name: 'My Sessions',  path: '/mentor/sessions',  Icon: Calendar,      section: 'Mentor' },
+    { name: 'Observatory',  path: '/mentor/observatory', Icon: Telescope,     section: 'Mentor' },
+    { name: 'My Courses',   path: '/mentor/courses',   Icon: BookOpen,      section: 'Mentor' },
+    { name: 'New Course',   path: '/mentor/courses/new', Icon: BookOpen,    section: 'Mentor' },
+    { name: 'Pact Hall',    path: '/mentor/pact',      Icon: Swords,        section: 'Mentor' },
+    { name: 'My Students',  path: '/mentor/students',  Icon: Users2,        section: 'Mentor' },
+    { name: 'Analytics',    path: '/mentor/analytics', Icon: BarChart3,     section: 'Mentor' },
+    { name: 'Recorder',     path: '/mentor/recorder',  Icon: Video,         section: 'Mentor' },
+    { name: 'Media Library', path: '/mentor/media',    Icon: Film,          section: 'Mentor' },
+    { name: 'Mentor Sessions', path: '/mentor/sessions', Icon: Calendar,    section: 'Mentor' },
     { name: 'Earnings',     path: '/mentor/earnings',  Icon: Wallet,        section: 'Mentor' },
+    { name: 'Moderation',   path: '/mentor/moderation', Icon: ShieldAlert,  section: 'Mentor' },
+    { name: 'Mentor Hub',   path: '/mentor/hub',       Icon: GraduationCap, section: 'Mentor' },
 ];
 const NAV_STUDENT = [
-    { name: 'My Sessions',  path: '/student/sessions',                Icon: Calendar, section: 'Student' },
-    { name: 'Browse Mentors', path: '/student/mentors',              Icon: Compass,  section: 'Student' },
+    { name: 'My Universe',  path: '/student/universe',     Icon: Telescope,     section: 'Student' },
+    { name: 'Courses',      path: '/courses',              Icon: BookOpen,      section: 'Student' },
+    { name: 'My Learning',  path: '/student/learning',     Icon: GraduationCap, section: 'Student' },
+    { name: 'Certificates', path: '/student/certificates', Icon: Award,         section: 'Student' },
+    { name: 'Progress',     path: '/gameology',            Icon: Sparkles,      section: 'Student' },
+    { name: 'Skill Map',    path: '/skill-map',            Icon: Network,       section: 'Student' },
+    { name: 'My Sessions',  path: '/student/sessions',     Icon: Calendar,      section: 'Student' },
+    { name: 'Browse Mentors', path: '/student/mentors',    Icon: Compass,       section: 'Student' },
 ];
 const NAV_SHARED = [
     { name: 'Home',         path: '/',                 Icon: Home,       section: 'Shared' },

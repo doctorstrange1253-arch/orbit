@@ -11,6 +11,7 @@ import {
     MentorTitle,
     MentorDeck,
 } from '../../components/pact/MentorEditorial';
+import { stageCount, scaleLabel } from '../../soul/gameEngine/stages';
 
 /**
  * CourseList — mentor's own courses dashboard.
@@ -146,6 +147,15 @@ const CourseList = () => {
                                             <span className="inline-flex items-center gap-1">
                                                 <Users size={9} /> {c.enrollmentCount || 0}
                                             </span>
+                                        </div>
+                                        <div
+                                            className="mt-1.5 font-mono uppercase"
+                                            style={{ fontSize: '0.54rem', letterSpacing: '0.18em', fontWeight: 700, color: 'rgba(245,245,245,0.45)' }}
+                                        >
+                                            {stageCount(c.lessonsCount || c.lessons?.length || 0)} stage
+                                            {stageCount(c.lessonsCount || c.lessons?.length || 0) === 1 ? '' : 's'}
+                                            {' · '}
+                                            {scaleLabel(c.lessonsCount || c.lessons?.length || 0)}
                                         </div>
                                         <div className="mt-2">
                                             <span
