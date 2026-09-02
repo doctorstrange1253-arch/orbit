@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { ChevronLeft, Check, Award, MessageCircle, Sparkles, Loader2 } from 'lucide-react';
 import { courses } from '../services/courses';
-import LessonPlayer from '../components/courses/LessonPlayer';
+import { useAuthStore } from '../store/authStore';
+import LessonVideoPlayer from '../components/courses/LessonVideoPlayer';
 import QuizCard from '../components/courses/QuizCard';
 import CommentThread from '../components/courses/CommentThread';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
@@ -21,6 +22,7 @@ const CourseLearn = () => {
     const { id, lessonId } = useParams();
     const navigate = useNavigate();
     const qc = useQueryClient();
+    const user = useAuthStore((s) => s.user);
     const [quizResult, setQuizResult] = useState(null);
     const [openQa, setOpenQa] = useState(false);
     // V3 — the Game Engine state machine:
@@ -183,7 +185,9 @@ const CourseLearn = () => {
                         {stage !== 'card' && (
                           <>
                             <div className="relative">
-                              <LessonPlayer
+                              <LessonVideoPlayer
+                                  course={course}
+                                  isOwner={String(course?.mentorId) === String(user?._id)}
                                   lesson={activeLesson}
                                   onComplete={() => {
                                     if (activeLesson?.hasQuiz) setStage('quiz');

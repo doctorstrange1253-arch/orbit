@@ -23,11 +23,13 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loader2, RefreshCw, ShieldOff } from 'lucide-react';
-import api from '../services/api';
-import { useAuthStore } from '../store/authStore';
-import ForensicWatermark from '../soul/copyright/ForensicWatermark';
-import VisibleWatermark from '../soul/copyright/VisibleWatermark';
-import AttentionArc from '../components/gameEngine/AttentionArc';
+import api from '../../services/api';
+import { useAuthStore } from '../../store/authStore';
+import ForensicWatermark from '../../soul/copyright/ForensicWatermark';
+import VisibleWatermark from '../../soul/copyright/VisibleWatermark';
+import AttentionArc from '../gameEngine/AttentionArc';
+import { Haptic } from '../../soul/haptics';
+import { SoulSound } from '../../soul/soundLibrary';
 
 const SignedVideoPlayer = ({ lesson, onComplete, isCompleted, onSignError }) => {
   const { id, lessonId } = useParams();
@@ -71,6 +73,8 @@ const SignedVideoPlayer = ({ lesson, onComplete, isCompleted, onSignError }) => 
     setProgress(pct);
     if (!completeFiredRef.current && pct >= 90 && onComplete) {
       completeFiredRef.current = true;
+      Haptic.medium();
+      SoulSound.levelUp({ soul: 'student' });
       onComplete();
     }
   };
