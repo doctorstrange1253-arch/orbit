@@ -43,7 +43,7 @@ const NAV_PEER = [
 ];
 
 const NAV_MENTOR = [
-  { name: 'Teach',        path: '/mentor/hub',       Icon: GraduationCap, window: 'mentor' },
+  { name: 'Teach',        path: '/mentor/observatory', Icon: GraduationCap, window: 'mentor' },
   { name: 'Pact',         path: '/mentor/pact',      Icon: Swords,        window: 'mentor' },
   { name: 'Record',       path: '/mentor/recorder',  Icon: Video,         window: 'mentor' },
   { name: 'Media',        path: '/mentor/media',     Icon: Film,          window: 'mentor' },

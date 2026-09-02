@@ -10,6 +10,7 @@ export const pact = {
     history: (limit = 12) => api.get('/pact/history', { params: { limit } }).then((r) => r.data?.items || []),
     pulse: () => api.get('/pact/pulse').then((r) => r.data),
     markPulseSeen: () => api.post('/pact/pulse/seen').then((r) => r.data),
+    publicBadge: (userId) => api.get(`/pact/user/${userId}`).then((r) => r.data),
 };
 
 export const PACT_TIERS = [

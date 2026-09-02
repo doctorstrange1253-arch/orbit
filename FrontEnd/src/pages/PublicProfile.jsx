@@ -12,6 +12,7 @@ import { equippedFromUser } from '../cosmic/cosmetics';
 import { ProfileHeaderSkeleton, SkillGridSkeleton } from '../components/skeletons';
 import ErrorState from '../components/common/ErrorState';
 import CosmicProfileCard from '../cosmic/CosmicProfileCard';
+import PactBadge from '../components/pact/PactBadge';
 
 const PublicProfile = () => {
   const { userId } = useParams();
@@ -72,6 +73,9 @@ const PublicProfile = () => {
               <Nameplate plateKey={equippedFromUser(user).plateKey}><GlowName user={user} exploring>{user.name}</GlowName></Nameplate>
               {user.trustScore >= 80 && (
                 <ShieldCheck className="text-accent" size={20} title="Highly Trusted" />
+              )}
+              {(user.roles || []).includes('mentor') && (
+                <PactBadge size={20} userId={user._id} withLabel />
               )}
             </h1>
             

@@ -19,4 +19,6 @@ router.get("/history", mentor, c.getHistory);
 router.get("/pulse", mentor, c.getPulse);
 router.post("/pulse/seen", mentor, c.markPulseSeen);
 
+router.get("/user/:id", auth, c.getPublicBadge);
+
 module.exports = router;

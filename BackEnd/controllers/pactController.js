@@ -110,6 +110,28 @@ exports.getHistory = async (req, res) => {
     }
 };
 
+exports.getPublicBadge = async (req, res) => {
+    try {
+        const u = await User.findById(req.params.id)
+            .select("name avatar roles pact.divisionId pact.steadyShieldWeeks pact.highestDivisionId")
+            .lean();
+        if (!u || !(u.roles || []).includes("mentor")) {
+            return res.status(404).json({ message: "Mentor not found" });
+        }
+        return res.json({
+            userId: String(u._id),
+            name: u.name,
+            avatar: u.avatar,
+            divisionId: u.pact?.divisionId || "initiate",
+            steadyShieldWeeks: u.pact?.steadyShieldWeeks || 0,
+            highestDivisionId: u.pact?.highestDivisionId || u.pact?.divisionId || "initiate",
+        });
+    } catch (err) {
+        console.error("pact.getPublicBadge:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 exports.getPulse = async (req, res) => {
     try {
         const rank = await pact.getMyRank(req.user.id);
