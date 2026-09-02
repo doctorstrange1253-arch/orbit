@@ -16,7 +16,7 @@ import PhotonIcon from '../../cosmic/PhotonIcon';
 import PactBadge from '../pact/PactBadge';
 import {
   LogOut, Layers, Compass, Users, Map, ShieldCheck,
-  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, MessageCircle, Bell, Settings as SettingsIcon, Flame, Swords
+  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, MessageCircle, Bell, Settings as SettingsIcon, Flame, Swords, Video, Film
 } from 'lucide-react';
 
 // Three independent nav pill lists, one per role window. The Navbar picks

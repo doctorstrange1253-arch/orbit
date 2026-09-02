@@ -1,19 +1,20 @@
-import { useState, useRef, useMemo, useCallback } from 'react';
+import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import {
   ChevronLeft, Upload, Film, Trash2, Loader2, AlertTriangle, Search,
-  X, ExternalLink, Sparkles, FileVideo, Clock, BookOpen, RefreshCw, CheckCircle2, Cloud, GripVertical,
+  X, ExternalLink, Sparkles, FileVideo, BookOpen, CheckCircle2, Cloud, GripVertical,
 } from 'lucide-react';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
 import { courses } from '../../services/courses';
-import { surfaceRecipe, borderTint, tintHalo } from '../../soul/tints';
+import { surfaceRecipe, borderTint } from '../../soul/tints';
 import { Haptic } from '../../soul/haptics';
 import { SoulSound } from '../../soul/soundLibrary';
 
 const ACCEPT = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-matroska'];
+const MAX_BYTES = 500 * 1024 * 1024;
 
 const MediaLibrary = () => {
   const navigate = useNavigate();
@@ -25,11 +26,22 @@ const MediaLibrary = () => {
   const [q, setQ] = useState('');
   const [courseFilter, setCourseFilter] = useState('all');
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [error, setError] = useState(null);
+  const queueRef = useRef([]);
 
   const { data: myCourses = [], isLoading } = useQuery({
     queryKey: ['courses', 'list', 'mentor', 'media'],
     queryFn: () => courses.list({ mentor: 'me', limit: 100 }).then((r) => r.data?.items || r.data || []),
   });
+
+  useEffect(() => { queueRef.current = queue; }, [queue]);
+
+  useEffect(() => {
+    if (!confirmDelete) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setConfirmDelete(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [confirmDelete]);
 
   const items = useMemo(() => {
     const flat = [];
@@ -38,9 +50,9 @@ const MediaLibrary = () => {
         if (l.videoUrl) {
           flat.push({
             courseId: c._id,
-            courseTitle: c.title,
+            courseTitle: c.title || 'Untitled course',
             lessonId: l._id,
-            lessonTitle: l.title,
+            lessonTitle: l.title || 'Untitled lesson',
             videoUrl: l.videoUrl,
             videoPublicId: l.videoPublicId,
             durationSec: l.durationSec,
@@ -51,7 +63,7 @@ const MediaLibrary = () => {
         }
       }
     }
-    return flat.sort((a, b) => a.courseTitle.localeCompare(b.courseTitle) || a.order - b.order);
+    return flat.sort((a, b) => (a.courseTitle || '').localeCompare(b.courseTitle || '') || a.order - b.order);
   }, [myCourses]);
 
   const visible = useMemo(() => {
@@ -59,7 +71,9 @@ const MediaLibrary = () => {
     return items.filter((it) => {
       if (courseFilter !== 'all' && it.courseId !== courseFilter) return false;
       if (!ql) return true;
-      return it.lessonTitle.toLowerCase().includes(ql) || it.courseTitle.toLowerCase().includes(ql);
+      const lt = (it.lessonTitle || '').toLowerCase();
+      const ct = (it.courseTitle || '').toLowerCase();
+      return lt.includes(ql) || ct.includes(ql);
     });
   }, [items, q, courseFilter]);
 
@@ -69,21 +83,45 @@ const MediaLibrary = () => {
   );
 
   const enqueue = useCallback((files) => {
-    const next = Array.from(files)
-      .filter((f) => ACCEPT.includes(f.type) || /\.(mp4|webm|mov|mkv)$/i.test(f.name))
-      .map((f) => ({
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        file: f,
-        name: f.name,
-        sizeMB: (f.size / 1024 / 1024).toFixed(1),
-        status: 'queued',
-        progress: 0,
-        videoUrl: null,
-        durationSec: 0,
-        courseId: '',
-        lessonTitle: f.name.replace(/\.[^.]+$/, '').slice(0, 80),
-        error: null,
-      }));
+    const raw = Array.from(files);
+    const accepted = raw.filter((f) => ACCEPT.includes(f.type) || /\.(mp4|webm|mov|mkv)$/i.test(f.name));
+    const oversized = raw.filter((f) => !ACCEPT.includes(f.type) && !/\.(mp4|webm|mov|mkv)$/i.test(f.name) ? false : f.size > MAX_BYTES);
+    if (raw.length > 0 && accepted.length === 0) {
+      setError('Only .mp4, .webm, .mov, .mkv files are accepted.');
+      Haptic.denied?.() || Haptic.light();
+      return;
+    }
+    if (oversized.length > 0) {
+      setError(`${oversized.length} file${oversized.length === 1 ? '' : 's'} exceed the 500 MB limit and were skipped.`);
+    } else {
+      setError(null);
+    }
+    const seen = new Set();
+    const next = accepted
+      .filter((f) => {
+        const k = `${f.name}|${f.size}|${f.lastModified || 0}`;
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return f.size <= MAX_BYTES;
+      })
+      .map((f) => {
+        const base = f.name.replace(/\.[^.]+$/, '').slice(0, 78);
+        const truncated = f.name.replace(/\.[^.]+$/, '').length > 78;
+        return {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          file: f,
+          name: f.name,
+          sizeMB: (f.size / 1024 / 1024).toFixed(1),
+          status: 'queued',
+          progress: 0,
+          videoUrl: null,
+          videoPublicId: null,
+          durationSec: 0,
+          courseId: '',
+          lessonTitle: truncated ? `${base}…` : base,
+          error: null,
+        };
+      });
     if (next.length === 0) return;
     setQueue((q) => [...q, ...next]);
     Haptic.light();
@@ -107,25 +145,37 @@ const MediaLibrary = () => {
   const uploadAll = useMutation({
     mutationFn: async () => {
       const results = [];
-      for (const entry of queue) {
-        if (entry.status !== 'queued' || !entry.courseId) continue;
-        setQueue((q) => q.map((x) => (x.id === entry.id ? { ...x, status: 'uploading', progress: 0 } : x)));
+      for (const entry of [...queue]) {
+        const stillThere = queueRef.current.find((x) => x.id === entry.id);
+        if (!stillThere) continue;
+        if ((entry.status !== 'queued' && entry.status !== 'error') || !entry.courseId) continue;
+        let videoUrl = entry.videoUrl;
+        let videoPublicId = entry.videoPublicId;
+        let durationSec = entry.durationSec;
         try {
-          const data = await courses.uploadVideo(entry.file, (pct) => {
-            setQueue((q) => q.map((x) => (x.id === entry.id ? { ...x, progress: pct } : x)));
-          });
+          if (!videoUrl) {
+            setQueue((q) => q.map((x) => (x.id === entry.id ? { ...x, status: 'uploading', progress: 0 } : x)));
+            const data = await courses.uploadVideo(entry.file, (pct) => {
+              setQueue((q) => q.map((x) => (x.id === entry.id ? { ...x, progress: pct } : x)));
+            });
+            videoUrl = data.url;
+            videoPublicId = data.publicId;
+            durationSec = data.durationSec;
+            setQueue((q) => q.map((x) => (x.id === entry.id ? { ...x, videoUrl, videoPublicId, durationSec } : x)));
+          }
           await courses.addLesson(entry.courseId, {
             title: entry.lessonTitle,
-            videoUrl: data.url,
-            videoPublicId: data.publicId,
-            durationSec: data.durationSec,
+            videoUrl,
+            videoPublicId,
+            durationSec,
             isFree: false,
           });
-          setQueue((q) => q.map((x) => (x.id === entry.id ? { ...x, status: 'done', videoUrl: data.url, progress: 100 } : x)));
+          setQueue((q) => q.map((x) => (x.id === entry.id ? { ...x, status: 'done', progress: 100 } : x)));
           results.push({ id: entry.id, ok: true });
         } catch (e2) {
-          setQueue((q) => q.map((x) => (x.id === entry.id ? { ...x, status: 'error', error: e2?.response?.data?.message || e2?.message || 'Upload failed' } : x)));
-          results.push({ id: entry.id, ok: false });
+          const stage = videoUrl ? 'lesson' : 'upload';
+          setQueue((q) => q.map((x) => (x.id === entry.id ? { ...x, status: 'error', error: `${stage}: ${e2?.response?.data?.message || e2?.message || 'failed'}` } : x)));
+          results.push({ id: entry.id, ok: false, stage });
         }
       }
       return results;
@@ -133,9 +183,13 @@ const MediaLibrary = () => {
     onSuccess: (results) => {
       qc.invalidateQueries({ queryKey: ['courses', 'list', 'mentor', 'media'] });
       const ok = results.filter((r) => r.ok).length;
+      const partial = results.filter((r) => !r.ok && r.stage === 'lesson');
       if (ok > 0) {
         SoulSound.levelUp({ soul: 'mentor' });
         Haptic.success();
+      }
+      if (partial.length > 0) {
+        setError(`${partial.length} file${partial.length === 1 ? '' : 's'} uploaded to Cloudinary but the lesson step failed — click "Upload all" again to retry without re-uploading.`);
       }
     },
   });
@@ -240,7 +294,8 @@ const MediaLibrary = () => {
                 <div className="ml-auto flex items-center gap-2">
                   <button
                     onClick={() => setQueue([])}
-                    className="text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-rose-300"
+                    disabled={uploadAll.isPending}
+                    className="text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-rose-300 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Clear all
                   </button>
@@ -397,8 +452,9 @@ const QueueRow = ({ entry, courses: courseList, onUpdate, onRemove }) => {
 };
 
 const MediaCard = ({ item, onReattach, onDelete }) => {
-  const poster = item.videoPublicId
-    ? `https://res.cloudinary.com/${cloudNameFromUrl(item.videoUrl)}/video/upload/so_3/${item.videoPublicId}.jpg`
+  const cloudName = cloudNameFromUrl(item.videoUrl);
+  const poster = item.videoPublicId && cloudName
+    ? `https://res.cloudinary.com/${cloudName}/video/upload/so_3/${item.videoPublicId}.jpg`
     : null;
   return (
     <motion.div

@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import {
   ChevronLeft, Monitor, Camera, Mic, MicOff, Video, VideoOff,
-  Pen, Eraser, Trash2, Square, Circle as CircleIcon, Pause, Play,
-  Save, RefreshCw, AlertTriangle, Loader2, Sparkles, Eye, EyeOff, Plus,
+  Trash2, Square, Circle as CircleIcon, Pause, Play,
+  Save, RefreshCw, AlertTriangle, Loader2, Sparkles, Eye, EyeOff,
 } from 'lucide-react';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
 import { courses } from '../../services/courses';
@@ -43,14 +43,33 @@ const Recorder = () => {
   const rafIdRef = useRef(null);
   const startTsRef = useRef(0);
   const accumulatedMsRef = useRef(0);
-  const drawWhilePausedRef = useRef(null);
+  const loopingRef = useRef(false);
+  const sourcesRef = useRef(sources);
+  const cameraOnRef = useRef(true);
+  const micOnRef = useRef(true);
+  const whiteboardVisibleRef = useRef(false);
+
+  useEffect(() => { sourcesRef.current = sources; }, [sources]);
+  useEffect(() => { cameraOnRef.current = cameraOn; }, [cameraOn]);
+  useEffect(() => { micOnRef.current = micOn; }, [micOn]);
+  useEffect(() => { whiteboardVisibleRef.current = whiteboardVisible; }, [whiteboardVisible]);
 
   const { data: myCourses = [] } = useQuery({
     queryKey: ['courses', 'list', 'mentor'],
     queryFn: () => courses.list({ mentor: 'me', limit: 100 }).then((r) => r.data?.items || r.data || []),
   });
 
-  useEffect(() => () => stopAllStreams(sources, setSources), [sources]);
+  useEffect(() => () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      try { mediaRecorderRef.current.stop(); } catch (_stopErr) { void _stopErr; }
+    }
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    if (recordedUrlRef.current) URL.revokeObjectURL(recordedUrlRef.current);
+    stopAllStreams(sourcesRef.current);
+  }, []);
+
+  const recordedUrlRef = useRef(null);
+  useEffect(() => { recordedUrlRef.current = recordedUrl; }, [recordedUrl]);
 
   const requestSources = async () => {
     setError(null);
@@ -69,20 +88,28 @@ const Recorder = () => {
       setSources(next);
       if (screenVideoRef.current && next.screen) screenVideoRef.current.srcObject = next.screen;
       if (cameraVideoRef.current && next.camera) cameraVideoRef.current.srcObject = next.camera;
-      startDrawLoop(next, false, 0, false);
+      startDrawLoop();
     } catch (e) {
+      stopAllStreams(next);
       setError(e?.message || 'Could not get screen / camera / mic access.');
     }
   };
 
-  const startDrawLoop = useCallback((srcs, isRec, elapsed, whiteboardOn) => {
+  const startDrawLoop = useCallback(() => {
     if (!compositionRef.current) return;
     const canvas = compositionRef.current;
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d');
+    loopingRef.current = true;
 
     const draw = () => {
+      if (!loopingRef.current) return;
+      const srcs = sourcesRef.current;
+      const camOn = cameraOnRef.current;
+      const wbOn = whiteboardVisibleRef.current;
+      const isRec = mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording';
+
       if (srcs.screen && screenVideoRef.current && screenVideoRef.current.readyState >= 2) {
         ctx.drawImage(screenVideoRef.current, 0, 0, W, H);
       } else if (srcs.camera && cameraVideoRef.current && cameraVideoRef.current.readyState >= 2) {
@@ -92,7 +119,7 @@ const Recorder = () => {
         ctx.fillRect(0, 0, W, H);
       }
 
-      if (srcs.camera && cameraOn && cameraVideoRef.current && cameraVideoRef.current.readyState >= 2 && srcs.screen) {
+      if (srcs.camera && camOn && cameraVideoRef.current && cameraVideoRef.current.readyState >= 2 && srcs.screen) {
         const pipW = W * 0.22;
         const pipH = pipW * 9 / 16;
         const pipX = W - pipW - 24;
@@ -102,7 +129,7 @@ const Recorder = () => {
         ctx.drawImage(cameraVideoRef.current, pipX, pipY, pipW, pipH);
       }
 
-      if (whiteboardOn && whiteboardRef.current) {
+      if (wbOn && whiteboardRef.current) {
         ctx.drawImage(whiteboardRef.current, 0, 0, W, H);
       }
 
@@ -115,8 +142,9 @@ const Recorder = () => {
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 22px JetBrains Mono, ui-monospace, monospace';
         ctx.textAlign = 'left';
+        const elapsed = accumulatedMsRef.current + (Date.now() - startTsRef.current);
         ctx.fillText(formatTime(elapsed), 70, 52);
-        if (micOn) {
+        if (micOnRef.current) {
           ctx.fillStyle = '#fff';
           ctx.font = '12px JetBrains Mono, monospace';
           ctx.textAlign = 'right';
@@ -124,29 +152,21 @@ const Recorder = () => {
         }
       }
 
-      if (drawWhilePausedRef.current && !isRec) {
-        drawWhilePausedRef.current = requestAnimationFrame(draw);
-      } else if (isRec) {
-        rafIdRef.current = requestAnimationFrame(draw);
-      }
+      rafIdRef.current = requestAnimationFrame(draw);
     };
-    draw();
-  }, [cameraOn, micOn]);
+    rafIdRef.current = requestAnimationFrame(draw);
+  }, []);
 
   useEffect(() => {
     if (stage === STAGE.RECORDING) {
       const tick = () => {
-        const now = Date.now();
-        const live = now - startTsRef.current;
+        const live = Date.now() - startTsRef.current;
         setElapsedMs(accumulatedMsRef.current + live);
       };
       const id = setInterval(tick, 100);
       return () => clearInterval(id);
     }
-    if (stage === STAGE.PAUSED) {
-      const id = setInterval(() => {}, 1000);
-      return () => clearInterval(id);
-    }
+    return undefined;
   }, [stage]);
 
   const beginCountdown = () => {
@@ -159,6 +179,55 @@ const Recorder = () => {
     setCountdown(3);
   };
 
+  const actuallyStartRecording = useCallback(() => {
+    if (!compositionRef.current) return;
+    try {
+      const canvasStream = compositionRef.current.captureStream(30);
+      const audioTracks = [];
+      if (micOn && sources.mic) audioTracks.push(...sources.mic.getAudioTracks());
+      if (sources.screen) {
+        audioTracks.push(...sources.screen.getAudioTracks());
+      }
+      audioTracks.forEach((t) => canvasStream.addTrack(t));
+
+      const mime = pickMime();
+      const mr = mime
+        ? new MediaRecorder(canvasStream, { mimeType: mime, videoBitsPerSecond: 4_000_000 })
+        : new MediaRecorder(canvasStream, { videoBitsPerSecond: 4_000_000 });
+      chunksRef.current = [];
+      mr.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunksRef.current.push(e.data); };
+      mr.onerror = (e) => {
+        const msg = e?.error?.message || 'Recorder error';
+        setError(msg);
+        setStage(STAGE.IDLE);
+        loopingRef.current = false;
+        Haptic.denied?.();
+      };
+      mr.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        if (recordedUrlRef.current) URL.revokeObjectURL(recordedUrlRef.current);
+        setRecordedBlob(blob);
+        setRecordedUrl(url);
+        recordedUrlRef.current = url;
+        setStage(STAGE.REVIEW);
+      };
+      startDrawLoop();
+      mediaRecorderRef.current = mr;
+      startTsRef.current = Date.now();
+      accumulatedMsRef.current = 0;
+      setElapsedMs(0);
+      setStage(STAGE.RECORDING);
+      mr.start(1000);
+      Haptic.medium();
+    } catch (e) {
+      loopingRef.current = false;
+      setError(e?.message || 'Could not start recording (codec unsupported?).');
+      setStage(STAGE.IDLE);
+      Haptic.denied?.();
+    }
+  }, [micOn, sources, startDrawLoop]);
+
   useEffect(() => {
     if (stage !== STAGE.COUNTDOWN) return;
     if (countdown <= 0) {
@@ -167,45 +236,13 @@ const Recorder = () => {
     }
     const t = setTimeout(() => setCountdown((c) => c - 1), 1000);
     return () => clearTimeout(t);
-  }, [stage, countdown]);
-
-  const actuallyStartRecording = () => {
-    if (!compositionRef.current) return;
-    const canvasStream = compositionRef.current.captureStream(30);
-    const audioTracks = [];
-    if (micOn && sources.mic) audioTracks.push(...sources.mic.getAudioTracks());
-    if (sources.screen) {
-      const screenAudio = sources.screen.getAudioTracks();
-      audioTracks.push(...screenAudio);
-    }
-    audioTracks.forEach((t) => canvasStream.addTrack(t));
-
-    const mr = new MediaRecorder(canvasStream, { mimeType: pickMime(), videoBitsPerSecond: 4_000_000 });
-    chunksRef.current = [];
-    mr.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunksRef.current.push(e.data); };
-    mr.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: mr.mimeType });
-      const url = URL.createObjectURL(blob);
-      setRecordedBlob(blob);
-      setRecordedUrl(url);
-      setStage(STAGE.REVIEW);
-    };
-    mr.start(1000);
-    mediaRecorderRef.current = mr;
-    startTsRef.current = Date.now();
-    accumulatedMsRef.current = 0;
-    setElapsedMs(0);
-    setStage(STAGE.RECORDING);
-    startDrawLoop(sources, true, 0, whiteboardVisible);
-    Haptic.medium();
-  };
+  }, [stage, countdown, actuallyStartRecording]);
 
   const pauseRecording = () => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       mediaRecorderRef.current.pause();
       accumulatedMsRef.current += Date.now() - startTsRef.current;
       setStage(STAGE.PAUSED);
-      cancelAnimationFrame(rafIdRef.current);
       Haptic.light();
     }
   };
@@ -215,6 +252,7 @@ const Recorder = () => {
       mediaRecorderRef.current.resume();
       startTsRef.current = Date.now();
       setStage(STAGE.RECORDING);
+      startDrawLoop();
       Haptic.light();
     }
   };
@@ -223,7 +261,6 @@ const Recorder = () => {
     if (mediaRecorderRef.current && (mediaRecorderRef.current.state === 'recording' || mediaRecorderRef.current.state === 'paused')) {
       mediaRecorderRef.current.stop();
       setStage(STAGE.PROCESSING);
-      cancelAnimationFrame(rafIdRef.current);
       Haptic.heavy();
     }
   };
@@ -235,7 +272,7 @@ const Recorder = () => {
     setElapsedMs(0);
     setStage(STAGE.IDLE);
     setError(null);
-    startDrawLoop(sources, false, 0, false);
+    startDrawLoop();
   };
 
   const onSaveAsLesson = async (courseId, title, description) => {
@@ -253,8 +290,6 @@ const Recorder = () => {
     SoulSound.levelUp({ soul: 'mentor' });
     navigate(`/mentor/courses/${courseId}/lessons/${lesson._id}`);
   };
-
-  const isLive = stage === STAGE.RECORDING || stage === STAGE.PAUSED || stage === STAGE.COUNTDOWN;
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -288,8 +323,8 @@ const Recorder = () => {
         <div className="grid lg:grid-cols-[1fr_320px] gap-5">
           <div className="rounded-2xl p-3" style={{ ...surfaceRecipe('mentor'), border: borderTint({ from: '#a78bfa', to: '#3b82f6' }, 24) }}>
             <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black">
-              <video ref={screenVideoRef} autoPlay muted playsInline className="hidden" />
-              <video ref={cameraVideoRef} autoPlay muted playsInline className="hidden" />
+              <video ref={screenVideoRef} autoPlay muted playsInline style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none', left: 0, top: 0 }} />
+              <video ref={cameraVideoRef} autoPlay muted playsInline style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none', left: 0, top: 0 }} />
               <canvas ref={compositionRef} className="w-full h-full block" />
               <canvas
                 ref={whiteboardRef}
@@ -297,11 +332,11 @@ const Recorder = () => {
                 height={H}
                 onMouseDown={(e) => beginWhiteboardStroke(e, whiteboardRef, whiteboardVisible)}
                 onMouseMove={(e) => extendWhiteboardStroke(e, whiteboardRef, whiteboardVisible)}
-                onMouseUp={() => endWhiteboardStroke(whiteboardRef)}
-                onMouseLeave={() => endWhiteboardStroke(whiteboardRef)}
+                onMouseUp={() => endWhiteboardStroke()}
+                onMouseLeave={() => endWhiteboardStroke()}
                 onTouchStart={(e) => beginWhiteboardStroke(e.touches[0], whiteboardRef, whiteboardVisible)}
                 onTouchMove={(e) => { e.preventDefault(); extendWhiteboardStroke(e.touches[0], whiteboardRef, whiteboardVisible); }}
-                onTouchEnd={() => endWhiteboardStroke(whiteboardRef)}
+                onTouchEnd={() => endWhiteboardStroke()}
                 className="absolute inset-0 w-full h-full cursor-crosshair touch-none"
                 style={{ pointerEvents: whiteboardVisible ? 'auto' : 'none' }}
               />
@@ -579,7 +614,7 @@ const WhiteboardColorSwatch = ({ color, whiteboardRef }) => {
   );
 };
 
-function stopAllStreams(srcs, setSources) {
+function stopAllStreams(srcs) {
   Object.values(srcs).forEach((stream) => {
     if (stream) stream.getTracks().forEach((t) => t.stop());
   });
@@ -600,7 +635,7 @@ function pickMime() {
   return '';
 }
 
-const strokeState = { drawing: false, last: null };
+const strokeState = new WeakMap();
 
 function boardCoords(e, ref) {
   const rect = ref.current.getBoundingClientRect();
@@ -609,14 +644,22 @@ function boardCoords(e, ref) {
   return { x: (e.clientX - rect.left) * sx, y: (e.clientY - rect.top) * sy };
 }
 
+function getStroke(canvas) {
+  if (!strokeState.has(canvas)) strokeState.set(canvas, { drawing: false, last: null });
+  return strokeState.get(canvas);
+}
+
 function beginWhiteboardStroke(e, ref, visible) {
   if (!visible || !ref.current) return;
   ref.current.dataset.color = ref.current.dataset.color || '#ffffff';
-  strokeState.drawing = true;
-  strokeState.last = boardCoords(e, ref);
+  const s = getStroke(ref.current);
+  s.drawing = true;
+  s.last = boardCoords(e, ref);
 }
 function extendWhiteboardStroke(e, ref, visible) {
-  if (!visible || !ref.current || !strokeState.drawing) return;
+  if (!visible || !ref.current) return;
+  const s = getStroke(ref.current);
+  if (!s.drawing) return;
   const ctx = ref.current.getContext('2d');
   const next = boardCoords(e, ref);
   ctx.strokeStyle = ref.current.dataset.color || '#ffffff';
@@ -624,14 +667,12 @@ function extendWhiteboardStroke(e, ref, visible) {
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.beginPath();
-  ctx.moveTo(strokeState.last.x, strokeState.last.y);
+  ctx.moveTo(s.last.x, s.last.y);
   ctx.lineTo(next.x, next.y);
   ctx.stroke();
-  strokeState.last = next;
+  s.last = next;
 }
-function endWhiteboardStroke(ref) {
-  strokeState.drawing = false;
-  strokeState.last = null;
+function endWhiteboardStroke() {
 }
 function clearWhiteboard(ref) {
   if (!ref.current) return;
