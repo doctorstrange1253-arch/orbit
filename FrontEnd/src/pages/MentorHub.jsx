@@ -30,7 +30,6 @@ import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
 import MentorApplicationForm from '../components/mentor/MentorApplicationForm';
 import AvailabilityEditor from '../components/sessions/AvailabilityEditor';
 import { useAuthStore } from '../store/authStore';
-import HolographicCard from '../components/fx/HolographicCard';
 import PactPulse from '../components/pact/PactPulse';
 import RivalWatch from '../components/pact/RivalWatch';
 import PactBadge from '../components/pact/PactBadge';
@@ -118,29 +117,33 @@ const MentorHub = () => {
             <div className="relative z-10 max-w-5xl mx-auto px-4 py-10 md:py-14">
                 <Helmet><title>Teach · Orbit Sessions</title></Helmet>
 
-                {/* Hero — adapts to state. Wrapped in a HolographicCard so the
-                    cosmic-grade 'You're live' state gets a rarity-tier border
-                    and pointer-tracked sheen, signalling "this is a real
-                    achievement" to a returning mentor. */}
-                <HolographicCard
-                    rarity={state === "approved" ? "epic" : state === "submitted" ? "rare" : null}
-                    tilt={state === "approved"}
-                    className="p-6 md:p-8 mb-10"
-                >
                 <motion.header
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    className="pt-2 pb-10"
+                    style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
                 >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-4">
+                    <div className="font-mono uppercase tracking-[0.22em] text-[0.68rem] font-bold text-text-muted mb-5 flex items-center gap-2">
                         <GraduationCap className="w-3 h-3 text-accent" /> Teach on Orbit
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black mb-3 leading-tight">
-                        <span className="gradient-text">{meta.title}</span>
+                    <h1
+                        style={{
+                            fontFamily: 'var(--font-editorial)',
+                            fontStyle: 'italic',
+                            fontWeight: 700,
+                            lineHeight: 0.96,
+                            letterSpacing: '-0.03em',
+                            fontSize: 'clamp(2.6rem, 5.8vw, 4.6rem)',
+                            color: 'var(--text-primary)',
+                            marginBottom: 14,
+                        }}
+                    >
+                        {meta.title}
                     </h1>
                     <p className="text-text-secondary text-base md:text-lg max-w-2xl">{meta.sub}</p>
                     {profile && (
-                        <div className={`inline-flex items-center gap-1.5 mt-4 px-3 py-1.5 rounded-pill text-xs font-bold uppercase tracking-widest ${meta.chipClass}`}>
+                        <div className={`inline-flex items-center gap-1.5 mt-5 px-3 py-1.5 rounded-pill text-xs font-bold uppercase tracking-widest ${meta.chipClass}`}>
                             {state === "approved" && (
                                 <span
                                     className="w-2 h-2 rounded-full bg-success"
@@ -152,7 +155,6 @@ const MentorHub = () => {
                         </div>
                     )}
                 </motion.header>
-                </HolographicCard>
 
                 {/* Body — branches on state */}
                 {isLoading ? (
