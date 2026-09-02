@@ -45,6 +45,7 @@ const NAV_PEER = [
 const NAV_MENTOR = [
   { name: 'Teach',        path: '/mentor/hub',       Icon: GraduationCap, window: 'mentor' },
   { name: 'Pact',         path: '/mentor/pact',      Icon: Swords,        window: 'mentor' },
+  { name: 'Record',       path: '/mentor/recorder',  Icon: Video,         window: 'mentor' },
   { name: 'My Sessions',  path: '/mentor/sessions',  Icon: Calendar,      window: 'mentor' },
   { name: 'Earnings',     path: '/mentor/earnings',  Icon: DollarSign,    window: 'mentor' },
   { name: 'Profile',      path: '/profile',          Icon: UserCircle,    window: 'shared' },

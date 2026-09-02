@@ -83,6 +83,7 @@ const MentorCourseList   = lazy(() => import('./pages/mentor/CourseList'));
 const MentorCourseNew    = lazy(() => import('./pages/mentor/CourseBuilder'));
 const MentorCourseEdit   = lazy(() => import('./pages/mentor/CourseEditor'));
 const MentorLessonEdit   = lazy(() => import('./pages/mentor/LessonEdit'));
+const MentorRecorder     = lazy(() => import('./pages/mentor/Recorder'));
 const MentorPactHall     = lazy(() => import('./pages/mentor/PactHall'));
 const CoursesBrowse      = lazy(() => import('./pages/CoursesBrowse'));
 const CourseDetail       = lazy(() => import('./pages/CourseDetail'));
@@ -808,6 +809,7 @@ function AppInner() {
         <Route path="/mentor/courses/new"    element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorCourseNew /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/mentor/courses/:id/edit" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorCourseEdit /></Suspense></RoleGuard></ProtectedRoute>} />
         <Route path="/mentor/courses/:id/lessons/:lessonId" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorLessonEdit /></Suspense></RoleGuard></ProtectedRoute>} />
+        <Route path="/mentor/recorder" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorRecorder /></Suspense></RoleGuard></ProtectedRoute>} />
         {/* Mentor Pact Hall — the weekly mentor league page */}
         <Route path="/mentor/pact" element={<ProtectedRoute><RoleGuard roles={['mentor']}><Suspense fallback={<PageLoader />}><MentorPactHall /></Suspense></RoleGuard></ProtectedRoute>} />
         {/* V3 — Moderation Inbox (mentor-only) */}
