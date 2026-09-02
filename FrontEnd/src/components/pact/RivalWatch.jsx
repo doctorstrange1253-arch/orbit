@@ -1,8 +1,8 @@
 import { usePactRivals, usePactMe } from '../../hooks/usePact';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { tierById } from '../../services/pact';
 import { Eye } from 'lucide-react';
+import PactDivisionIcons from './PactDivisionIcons';
 
 /**
  * RivalWatch — the 2-above / 2-below widget.
@@ -50,7 +50,9 @@ const RivalWatch = () => {
                                     <div className="text-xs font-bold text-text-primary truncate">
                                         {isMe ? 'You' : r.name}
                                     </div>
-                                    <div className="text-[10px] text-text-muted">{tierById(r.divisionId || me.pact?.divisionId).label}</div>
+                                    <div className="mt-0.5">
+                                        <PactDivisionIcons tierId={r.divisionId || me.pact?.divisionId} size={7} />
+                                    </div>
                                 </div>
                                 <div className="text-xs font-bold tabular-nums text-text-primary">{r.weekScore || 0}</div>
                             </Link>

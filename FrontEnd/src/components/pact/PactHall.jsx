@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { tierById } from '../../services/pact';
 import { Crown, ArrowUp, ArrowDown } from 'lucide-react';
+import PactDivisionIcons from './PactDivisionIcons';
 
 /**
  * PactHall — the leaderboard table.
@@ -55,8 +56,8 @@ const PactHall = () => {
                             )}
                             <div className="flex-1 min-w-0">
                                 <div className="text-sm font-semibold text-text-primary truncate flex items-center gap-2">
-                                    {isMe ? 'You' : (u.name || 'Mentor')}
-                                    <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: tier.glow }}>{tier.label}</span>
+                                    <span>{isMe ? 'You' : (u.name || 'Mentor')}</span>
+                                    <PactDivisionIcons tierId={u.pact?.divisionId} size={8} />
                                 </div>
                                 <div className="text-[10px] text-text-muted">
                                     {isPromotion ? <span className="text-emerald-300 inline-flex items-center gap-0.5"><ArrowUp className="w-3 h-3" /> Promotion zone</span>

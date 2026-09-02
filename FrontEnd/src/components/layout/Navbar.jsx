@@ -13,9 +13,10 @@ import { usePaletteStore } from '../fx/CommandPalette';
 import { useSigilState } from '../../hooks/useSigilState';
 import { useStreak } from '../../hooks/useStreak';
 import PhotonIcon from '../../cosmic/PhotonIcon';
+import PactBadge from '../pact/PactBadge';
 import {
   LogOut, Layers, Compass, Users, Map, ShieldCheck,
-  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, MessageCircle, Bell, Settings as SettingsIcon, Flame
+  UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Bookmark, History, Search, MessageCircle, Bell, Settings as SettingsIcon, Flame, Swords
 } from 'lucide-react';
 
 // Three independent nav pill lists, one per role window. The Navbar picks
@@ -43,6 +44,7 @@ const NAV_PEER = [
 
 const NAV_MENTOR = [
   { name: 'Teach',        path: '/mentor/hub',       Icon: GraduationCap, window: 'mentor' },
+  { name: 'Pact',         path: '/mentor/pact',      Icon: Swords,        window: 'mentor' },
   { name: 'My Sessions',  path: '/mentor/sessions',  Icon: Calendar,      window: 'mentor' },
   { name: 'Earnings',     path: '/mentor/earnings',  Icon: DollarSign,    window: 'mentor' },
   { name: 'Profile',      path: '/profile',          Icon: UserCircle,    window: 'shared' },
@@ -326,6 +328,9 @@ const Navbar = () => {
               >
                 <Avatar name={user?.name} url={user?.avatar} size="xs" userId={user?._id} />
                 <span className="hidden md:block max-w-[80px] truncate">{user?.name?.split(' ')[0]}</span>
+                {activeWindow === 'mentor' && (
+                  <PactBadge size={14} withShield={false} />
+                )}
                 <RoleSwitcher />
               </NavLink>
 

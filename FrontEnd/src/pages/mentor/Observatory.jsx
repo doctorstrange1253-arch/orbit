@@ -22,7 +22,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { Telescope, GraduationCap, ExternalLink, CheckCircle, Clock } from 'lucide-react';
+import { Telescope, GraduationCap, ExternalLink, CheckCircle, Clock, Swords } from 'lucide-react';
 import { useSoul } from '../../hooks/useSoul';
 import { surfaceRecipe, borderTint, tintHalo } from '../../soul/tints';
 import StarMap from '../../soul/observatory/StarMap';
@@ -31,6 +31,7 @@ import ObservatoryEmpty from '../../soul/observatory/ObservatoryEmpty';
 import PactBadge from '../../components/pact/PactBadge';
 import PactPulse from '../../components/pact/PactPulse';
 import RivalWatch from '../../components/pact/RivalWatch';
+import PactHallTable from '../../components/pact/PactHall';
 import api from '../../services/api';
 
 const STATE_META = {
@@ -224,6 +225,36 @@ const Observatory = () => {
           <StarMap students={students} width={1200} height={520} />
         </motion.div>
       )}
+
+      {/* WEEKLY PACT HALL — leaderboard lives at the mentor's home */}
+      <motion.section
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="rounded-2xl p-5 md:p-6"
+        style={{ ...surfaceRecipe('mentor'), border: borderTint(nebula, 18) }}
+      >
+        <div className="flex items-end justify-between gap-3 mb-4 flex-wrap">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-text-muted">
+              <Swords size={11} style={{ color: accent }} /> Weekly Pact
+            </div>
+            <h2
+              className="text-xl md:text-2xl font-display font-medium mt-1.5"
+              style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-primary)' }}
+            >
+              Your group this week.
+            </h2>
+          </div>
+          <Link
+            to="/mentor/pact"
+            className="text-[11px] text-text-muted hover:text-text-primary inline-flex items-center gap-1 transition-colors"
+          >
+            Full Pact Hall <ExternalLink size={10} />
+          </Link>
+        </div>
+        <PactHallTable />
+      </motion.section>
 
       {/* Pact Pulse + Rival Watch — the V2 widgets, kept intact */}
       <div className="grid md:grid-cols-[1fr_auto] gap-4">

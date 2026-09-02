@@ -2,7 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, ShieldAlert, Flame, X } from 'lucide-react';
 import { useState } from 'react';
-import { usePactPulse, useMarkPactPulseSeen } from '../../hooks/usePact';
+import { usePactPulse, useMarkPactPulseSeen, usePactMe } from '../../hooks/usePact';
+import PactDivisionIcons from './PactDivisionIcons';
 
 /**
  * PactPulse — the Wednesday mid-week message widget.
@@ -27,6 +28,7 @@ const ACCENT = {
 
 const PactPulse = () => {
     const { data, isLoading } = usePactPulse();
+    const { data: me } = usePactMe();
     const markSeen = useMarkPactPulseSeen();
     const qc = useQueryClient();
     const [hidden, setHidden] = useState(false);
@@ -59,8 +61,11 @@ const PactPulse = () => {
                         <Icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <div className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">
-                            Pact Pulse · {tone}
+                        <div className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1 flex items-center gap-1.5">
+                            <span>Pact Pulse · {tone}</span>
+                            {me?.pact?.divisionId && (
+                                <PactDivisionIcons tierId={me.pact.divisionId} size={7} />
+                            )}
                         </div>
                         <p className="text-sm leading-relaxed">{data.message}</p>
                         {data.rank && (

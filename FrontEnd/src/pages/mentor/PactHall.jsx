@@ -9,6 +9,7 @@ import PactResultsCard from '../../components/pact/PactResultsCard';
 import { usePactMe, usePactHistory } from '../../hooks/usePact';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
 import PactBadge from '../../components/pact/PactBadge';
+import PactDivisionIcons from '../../components/pact/PactDivisionIcons';
 
 /**
  * PactHall (page) — mentor's weekly leaderboard view.
@@ -87,7 +88,9 @@ const PactHallPage = () => {
                                     {history.slice(0, 8).map((h, i) => (
                                         <li key={i} className="flex items-center gap-3 p-3 text-xs">
                                             <span className="font-mono text-text-muted w-24">{h.weekId}</span>
-                                            <span className="font-bold capitalize text-text-primary w-24">{h.divisionId}</span>
+                                            <span className="w-32">
+                                                <PactDivisionIcons tierId={h.divisionId} size={8} />
+                                            </span>
                                             <span className="text-text-muted">rank {h.rank}/{h.groupSize}</span>
                                             <span className="ml-auto font-bold tabular-nums">{h.score}</span>
                                             <span className={`ml-2 px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-widest ${
