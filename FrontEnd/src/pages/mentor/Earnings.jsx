@@ -1,20 +1,10 @@
 /**
  * Earnings.jsx — Mentor window → /mentor/earnings.
  *
- * Reads GET /api/sessions/mentor/me which returns:
- *   { profile: MentorProfile, earnings: { totalInr, pendingInr, releasedInr } }
- *
- * Three surfaces:
- *   1. Hero summary card — lifetime / pending / released totals, payout
- *      multiplier, and a "this month" stat when sessions exist.
- *   2. Recent bookings ledger — same data as /mentor/sessions, but rendered
- *      with a money-forward lens (rateInr / mentorPayoutInr columns).
- *   3. Empty / not-approved states — when the user has no MentorProfile yet
- *      (or it's not approved) we point them at /mentor/hub instead of
- *      leaving the page blank.
- *
- * Themed to match the rest of the Sessions surface: FuturisticBackdrop,
- * glass-card-glow panels, gradient-text title, semantic token colors.
+ * V3 — fully editorial. The masthead is set in Playfair Display
+ * italic; every panel drops HolographicCard and glass-card-glow
+ * for a 1px-hairline treatment. The earnings ledger is a typeset
+ * table with mono caps for column headers and tabular numerals.
  */
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -23,23 +13,28 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import {
     IndianRupee, TrendingUp, Wallet, Clock, AlertCircle,
-    Calendar, Video, ArrowRight, ListChecks,
+    Calendar, Video, ArrowRight,
 } from 'lucide-react';
 import api from '../../services/api';
 import ErrorState from '../../components/common/ErrorState';
 import EmptyState from '../../components/common/EmptyState';
-import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
-import HolographicCard from '../../components/fx/HolographicCard';
+import {
+    MentorEyebrow,
+    MentorTitle,
+    MentorDeck,
+    MentorStat,
+    MentorTag,
+} from '../../components/pact/MentorEditorial';
 
-const STATUS_PILL = {
-    pending_payment: "bg-warning/10 text-warning border border-warning/30",
-    booked:          "bg-info/10 text-info border border-info/30",
-    confirmed:       "bg-success/10 text-success border border-success/30",
-    live:            "bg-danger/10 text-danger border border-danger/30",
-    completed:       "bg-surface text-text-secondary border border-border-subtle",
-    cancelled:       "bg-surface text-text-muted border border-border-subtle",
-    no_show:         "bg-warning/10 text-warning border border-warning/30",
-    disputed:        "bg-danger/10 text-danger border border-danger/30",
+const STATUS_TONE = {
+    pending_payment: 'warning',
+    booked:          'accent',
+    confirmed:       'success',
+    live:            'danger',
+    completed:       'neutral',
+    cancelled:       'neutral',
+    no_show:         'warning',
+    disputed:        'danger',
 };
 
 const formatInr = (n) => {
@@ -54,10 +49,6 @@ const Earnings = () => {
         staleTime: 30_000,
     });
 
-    // Recent completed sessions for the ledger section. We only need a
-    // small slice (most recent 8 completed bookings) — the full list lives
-    // at /mentor/sessions. The Earnings page is the money-forward view of
-    // the same data.
     const { data: bookings = [] } = useQuery({
         queryKey: ['sessions', 'mentor', 'bookings'],
         queryFn: () => api.get('/sessions/mentor/bookings').then((r) => r.data?.items || []),
@@ -81,16 +72,19 @@ const Earnings = () => {
             .slice(0, 8);
     }, [bookings]);
 
-    // Empty / not-approved state. The Earnings page is only meaningful once
-    // the user is an approved mentor; otherwise we redirect them to the
-    // hub where they can apply.
     if (isLoading) {
         return (
-            <div className="relative min-h-screen overflow-hidden">
-                <FuturisticBackdrop />
-                <div className="relative z-10 max-w-3xl mx-auto px-4 py-10 md:py-14 space-y-4">
-                    <div className="glass-card-glow p-6 h-32 skeleton rounded-2xl" />
-                    <div className="glass-card-glow p-6 h-48 skeleton rounded-2xl" />
+            <div className="max-w-3xl mx-auto px-4 py-10 space-y-4">
+                <div className="py-12 text-center">
+                    <span
+                        style={{
+                            fontFamily: 'var(--font-serif)',
+                            fontStyle: 'italic',
+                            color: 'rgba(245,245,245,0.55)',
+                        }}
+                    >
+                        Reading the ledger.
+                    </span>
                 </div>
             </div>
         );
@@ -98,11 +92,8 @@ const Earnings = () => {
 
     if (error) {
         return (
-            <div className="relative min-h-screen overflow-hidden">
-                <FuturisticBackdrop />
-                <div className="relative z-10 max-w-3xl mx-auto px-4 py-10 md:py-14">
-                    <ErrorState message="Couldn't load your earnings" onRetry={refetch} />
-                </div>
+            <div className="max-w-3xl mx-auto px-4 py-10">
+                <ErrorState message="Couldn't load your earnings" onRetry={refetch} />
             </div>
         );
     }
@@ -113,191 +104,288 @@ const Earnings = () => {
     const isPending = profile && profile.applicationStatus !== 'approved';
 
     return (
-        <div className="relative min-h-screen overflow-hidden">
-            <FuturisticBackdrop />
+        <div className="max-w-3xl mx-auto px-4 py-10 space-y-10">
+            <Helmet><title>Earnings · Orbit Mentor</title></Helmet>
 
-            <div className="relative z-10 max-w-3xl mx-auto px-4 py-10 md:py-14">
-                <Helmet><title>Earnings · Orbit Mentor</title></Helmet>
-
-                <motion.header
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="mb-6"
-                >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-3">
-                        <Wallet className="w-3 h-3 text-accent" /> Mentor earnings
-                    </div>
-                    <h1 className="text-3xl md:text-4xl font-black mb-2">
-                        <span className="gradient-text">What you've earned.</span>
-                    </h1>
-                    <p className="text-text-secondary text-sm">
+            <motion.header
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+                <div className="flex items-center gap-2 mb-3">
+                    <Wallet size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
+                    <MentorEyebrow>Mentor · The Ledger</MentorEyebrow>
+                </div>
+                <MentorTitle size="xl">What you have earned</MentorTitle>
+                <div className="mt-2 max-w-2xl">
+                    <MentorDeck>
                         Paid out after each session completes. Pending clears within 24 hours.
-                    </p>
-                </motion.header>
+                    </MentorDeck>
+                </div>
+            </motion.header>
 
-                {!profile || isPending ? (
+            {!profile || isPending ? (
+                <motion.section
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="text-center"
+                    style={{
+                        border: '1px solid rgba(255,255,255,0.10)',
+                        borderTop: '1px solid rgba(255,255,255,0.20)',
+                        padding: '36px 24px',
+                    }}
+                >
+                    <AlertCircle size={28} className="mx-auto" style={{ color: 'rgba(245,245,245,0.40)' }} />
+                    <h2
+                        className="mt-3"
+                        style={{
+                            fontFamily: 'var(--font-editorial)',
+                            fontStyle: 'italic',
+                            fontWeight: 700,
+                            fontSize: '1.6rem',
+                            color: 'var(--text-primary)',
+                        }}
+                    >
+                        No earnings yet
+                    </h2>
+                    <p
+                        className="mt-2 text-sm max-w-md mx-auto"
+                        style={{
+                            fontFamily: 'var(--font-serif)',
+                            fontStyle: 'italic',
+                            color: 'rgba(245,245,245,0.65)',
+                            fontSize: '1.02rem',
+                            lineHeight: 1.5,
+                        }}
+                    >
+                        {isPending
+                            ? "Your mentor application is still being reviewed. Earnings show up here once you are approved."
+                            : "Apply to become a mentor to start earning from 1-on-1 video sessions."}
+                    </p>
+                    <Link
+                        to="/mentor/hub"
+                        className="inline-flex items-center gap-2 mt-6 font-mono uppercase"
+                        style={{
+                            fontSize: '0.66rem',
+                            letterSpacing: '0.22em',
+                            fontWeight: 700,
+                            color: 'var(--text-primary)',
+                            textDecoration: 'none',
+                            borderBottom: '1px solid rgba(255,255,255,0.30)',
+                            paddingBottom: 4,
+                        }}
+                    >
+                        Go to Mentor Hub <ArrowRight size={11} />
+                    </Link>
+                </motion.section>
+            ) : (
+                <>
                     <motion.section
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4 }}
-                        className="glass-card-glow p-6 md:p-8 text-center"
                     >
-                        <AlertCircle className="w-10 h-10 text-text-muted mx-auto mb-3" />
-                        <h2 className="text-xl font-bold mb-2">No earnings yet</h2>
-                        <p className="text-sm text-text-secondary mb-5">
-                            {isPending
-                                ? "Your mentor application is still being reviewed. Earnings show up here once you're approved."
-                                : "Apply to become a mentor to start earning from 1-on-1 video sessions."}
-                        </p>
-                        <Link
-                            to="/mentor/hub"
-                            className="inline-flex items-center gap-2 btn-gradient px-5 py-2.5 rounded-lg text-sm font-semibold"
+                        <div className="mb-3">
+                            <MentorEyebrow>I · The Totals</MentorEyebrow>
+                        </div>
+                        <div
+                            className="grid grid-cols-1 md:grid-cols-3"
+                            style={{ border: '1px solid rgba(255,255,255,0.10)' }}
                         >
-                            Go to Mentor Hub <ArrowRight className="w-4 h-4" />
-                        </Link>
-                    </motion.section>
-                ) : (
-                    <>
-                        {/* ── Summary card ──────────────────────────────────────── */}
-                        <HolographicCard
-                            rarity="epic"
-                            tilt
-                            className="p-5 md:p-6 mb-5"
-                        >
-                        <motion.section
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4 }}
-                        >
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <StatTile
+                            <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}>
+                                <MentorStat
                                     label="Lifetime"
-                                    value={formatInr(earnings.totalInr)}
-                                    Icon={TrendingUp}
-                                    tone="text-success"
+                                    value={`₹${formatInr(earnings.totalInr)}`}
+                                    tone="success"
                                 />
-                                <StatTile
+                            </div>
+                            <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}>
+                                <MentorStat
                                     label="Pending payout"
-                                    value={formatInr(earnings.pendingInr)}
-                                    Icon={Clock}
-                                    tone="text-warning"
+                                    value={`₹${formatInr(earnings.pendingInr)}`}
+                                    tone="warning"
                                 />
-                                <StatTile
+                            </div>
+                            <div>
+                                <MentorStat
                                     label="This month"
-                                    value={formatInr(thisMonth)}
-                                    Icon={IndianRupee}
-                                    tone="text-accent"
+                                    value={`₹${formatInr(thisMonth)}`}
+                                    tone="accent"
                                 />
                             </div>
-                            {profile.payoutMultiplier && profile.payoutMultiplier !== 1 && (
-                                <div className="mt-4 pt-4 border-t border-border-subtle text-xs text-text-muted flex items-center gap-2">
-                                    <ListChecks className="w-3.5 h-3.5" />
-                                    Payout multiplier: <span className="font-semibold text-text-primary">{(profile.payoutMultiplier * 100).toFixed(0)}%</span>
-                                </div>
-                            )}
-                        </motion.section>
-                        </HolographicCard>
-
-                        {/* ── Released split ───────────────────────────────────── */}
-                        <motion.section
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.05 }}
-                            className="glass-card-glow p-5 md:p-6 mb-5"
-                        >
-                            <div className="flex items-center justify-between mb-3">
-                                <h2 className="text-sm font-semibold uppercase tracking-widest text-text-muted">
-                                    Released vs pending
-                                </h2>
-                                <span className="text-xs text-text-muted">Lifetime totals</span>
+                        </div>
+                        {profile.payoutMultiplier && profile.payoutMultiplier !== 1 && (
+                            <div
+                                className="mt-4 pt-4 flex items-center gap-2 font-mono uppercase"
+                                style={{
+                                    fontSize: '0.62rem',
+                                    letterSpacing: '0.20em',
+                                    fontWeight: 700,
+                                    color: 'rgba(245,245,245,0.55)',
+                                    borderTop: '1px solid rgba(255,255,255,0.08)',
+                                }}
+                            >
+                                <span>Payout multiplier</span>
+                                <span
+                                    style={{
+                                        fontFamily: 'var(--font-editorial)',
+                                        fontStyle: 'italic',
+                                        fontSize: '1.2rem',
+                                        color: 'var(--text-primary)',
+                                        letterSpacing: '-0.01em',
+                                    }}
+                                >
+                                    {(profile.payoutMultiplier * 100).toFixed(0)}%
+                                </span>
                             </div>
-                            <div className="h-3 rounded-full bg-surface overflow-hidden flex">
+                        )}
+                    </motion.section>
+
+                    <motion.section
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.05 }}
+                    >
+                        <div className="mb-3">
+                            <MentorEyebrow>II · Released vs Pending</MentorEyebrow>
+                        </div>
+                        <div
+                            style={{
+                                border: '1px solid rgba(255,255,255,0.10)',
+                                padding: '20px 22px',
+                            }}
+                        >
+                            <div className="h-3 overflow-hidden flex" style={{ background: 'rgba(255,255,255,0.06)' }}>
                                 {(() => {
                                     const total = Math.max(1, earnings.totalInr);
                                     const releasedPct = (earnings.releasedInr / total) * 100;
                                     return (
                                         <>
                                             <div
-                                                className="bg-success h-full transition-all"
-                                                style={{ width: `${releasedPct}%` }}
+                                                className="h-full transition-all"
+                                                style={{
+                                                    width: `${releasedPct}%`,
+                                                    background: 'rgba(110,231,183,1)',
+                                                }}
                                             />
                                             <div
-                                                className="bg-warning h-full transition-all"
-                                                style={{ width: `${100 - releasedPct}%` }}
+                                                className="h-full transition-all"
+                                                style={{
+                                                    width: `${100 - releasedPct}%`,
+                                                    background: 'rgba(251,191,36,1)',
+                                                }}
                                             />
                                         </>
                                     );
                                 })()}
                             </div>
-                            <div className="flex items-center justify-between mt-3 text-xs">
-                                <div className="flex items-center gap-1.5 text-text-secondary">
-                                    <span className="w-2 h-2 rounded-full bg-success" />
+                            <div className="flex items-center justify-between mt-3 font-mono uppercase" style={{ fontSize: '0.60rem', letterSpacing: '0.20em', fontWeight: 700 }}>
+                                <div className="flex items-center gap-2" style={{ color: 'rgba(110,231,183,1)' }}>
+                                    <span className="w-2 h-2 rounded-full" style={{ background: 'rgba(110,231,183,1)' }} />
                                     Released · ₹{formatInr(earnings.releasedInr)}
                                 </div>
-                                <div className="flex items-center gap-1.5 text-text-secondary">
+                                <div className="flex items-center gap-2" style={{ color: 'rgba(251,191,36,1)' }}>
                                     Pending · ₹{formatInr(earnings.pendingInr)}
-                                    <span className="w-2 h-2 rounded-full bg-warning" />
+                                    <span className="w-2 h-2 rounded-full" style={{ background: 'rgba(251,191,36,1)' }} />
                                 </div>
                             </div>
-                        </motion.section>
+                        </div>
+                    </motion.section>
 
-                        {/* ── Recent completed bookings ledger ─────────────────── */}
-                        <motion.section
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.1 }}
-                            className="glass-card-glow p-5 md:p-6"
-                        >
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-sm font-semibold uppercase tracking-widest text-text-muted">
-                                    Recent payouts
-                                </h2>
-                                <Link
-                                    to="/mentor/sessions"
-                                    className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline"
-                                >
-                                    All sessions <ArrowRight className="w-3 h-3" />
-                                </Link>
+                    <motion.section
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.1 }}
+                    >
+                        <div className="flex items-end justify-between mb-3 gap-3 flex-wrap">
+                            <div>
+                                <MentorEyebrow>III · Recent Payouts</MentorEyebrow>
+                                <div className="mt-1.5">
+                                    <MentorTitle size="md">Completed sessions</MentorTitle>
+                                </div>
                             </div>
-                            {recent.length === 0 ? (
+                            <Link
+                                to="/mentor/sessions"
+                                className="font-mono uppercase inline-flex items-center gap-1.5"
+                                style={{
+                                    fontSize: '0.60rem',
+                                    letterSpacing: '0.22em',
+                                    fontWeight: 700,
+                                    color: 'rgba(245,245,245,0.45)',
+                                    textDecoration: 'none',
+                                    borderBottom: '1px solid rgba(255,255,255,0.20)',
+                                    paddingBottom: 3,
+                                }}
+                            >
+                                All sessions <ArrowRight size={9} />
+                            </Link>
+                        </div>
+                        {recent.length === 0 ? (
+                            <div
+                                style={{
+                                    border: '1px solid rgba(255,255,255,0.10)',
+                                    padding: '20px 22px',
+                                }}
+                            >
                                 <EmptyState
                                     icon={<Calendar className="w-8 h-8" />}
                                     title="No completed sessions yet"
                                     message="Once a student finishes a session with you, the payout will appear here."
                                 />
-                            ) : (
-                                <ul className="space-y-2.5">
+                            </div>
+                        ) : (
+                            <div
+                                style={{
+                                    border: '1px solid rgba(255,255,255,0.10)',
+                                    padding: '0 22px',
+                                }}
+                            >
+                                <ul>
                                     {recent.map((s) => {
-                                        const pillClass = STATUS_PILL[s.status] || STATUS_PILL.completed;
+                                        const tone = STATUS_TONE[s.status] || 'neutral';
                                         return (
                                             <li
                                                 key={s._id}
-                                                className="flex items-center gap-3 p-3 rounded-lg bg-surface/40 border border-border-subtle"
+                                                className="flex items-center gap-3 py-3"
+                                                style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
                                             >
                                                 <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2 text-[10px] text-text-muted mb-0.5">
-                                                        <span className={`px-2 py-0.5 rounded-pill text-[9px] uppercase tracking-widest font-bold ${pillClass}`}>
-                                                            {s.status.replace("_", " ")}
-                                                        </span>
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <MentorTag tone={tone}>{s.status.replace("_", " ")}</MentorTag>
                                                     </div>
-                                                    <div className="font-semibold text-sm text-text-primary truncate">
+                                                    <div
+                                                        className="font-semibold truncate"
+                                                        style={{
+                                                            fontFamily: 'var(--font-serif)',
+                                                            fontStyle: 'italic',
+                                                            fontSize: '1.05rem',
+                                                            color: 'var(--text-primary)',
+                                                        }}
+                                                    >
                                                         {s.student?.name || "Student"}
                                                     </div>
-                                                    <div className="text-[11px] text-text-secondary flex items-center gap-2 mt-0.5">
-                                                        <Calendar className="w-3 h-3" />
-                                                        {new Date(s.scheduledAt).toLocaleDateString()}
-                                                        <span className="text-text-muted">·</span>
-                                                        <Video className="w-3 h-3" />
-                                                        {s.durationMin} min
+                                                    <div
+                                                        className="font-mono mt-0.5 flex items-center gap-2"
+                                                        style={{ fontSize: '0.78rem', color: 'rgba(245,245,245,0.55)' }}
+                                                    >
+                                                        <span>{new Date(s.scheduledAt).toLocaleDateString()}</span>
+                                                        <span style={{ color: 'rgba(245,245,245,0.30)' }}>·</span>
+                                                        <span>{s.durationMin} min</span>
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
-                                                    <div className="text-sm font-bold text-success flex items-center justify-end gap-0.5">
-                                                        <IndianRupee className="w-3 h-3" />
+                                                    <div
+                                                        className="font-mono tabular-nums flex items-center justify-end gap-0.5"
+                                                        style={{ fontSize: '1.05rem', fontWeight: 700, color: 'rgba(110,231,183,1)' }}
+                                                    >
+                                                        <IndianRupee size={12} />
                                                         {formatInr(s.mentorPayoutInr)}
                                                     </div>
-                                                    <div className="text-[10px] text-text-muted">
+                                                    <div
+                                                        className="font-mono mt-0.5"
+                                                        style={{ fontSize: '0.72rem', color: 'rgba(245,245,245,0.45)' }}
+                                                    >
                                                         of ₹{formatInr(s.totalInr)}
                                                     </div>
                                                 </div>
@@ -305,28 +393,13 @@ const Earnings = () => {
                                         );
                                     })}
                                 </ul>
-                            )}
-                        </motion.section>
-                    </>
-                )}
-            </div>
+                            </div>
+                        )}
+                    </motion.section>
+                </>
+            )}
         </div>
     );
 };
-
-const StatTile = ({ label, value, Icon, tone }) => (
-    <div className="rounded-xl border border-border-subtle bg-surface/40 p-4">
-        <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-text-muted">
-                {label}
-            </span>
-            {Icon && <Icon className={`w-4 h-4 ${tone || 'text-text-secondary'}`} />}
-        </div>
-        <div className="text-2xl font-black text-text-primary flex items-center gap-0.5">
-            <IndianRupee className="w-4 h-4" />
-            {value}
-        </div>
-    </div>
-);
 
 export default Earnings;

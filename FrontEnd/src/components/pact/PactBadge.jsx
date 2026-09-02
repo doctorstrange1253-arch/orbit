@@ -1,7 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
 import pact, { tierById } from '../../services/pact';
 
+/**
+ * PactBadge — the 6-tier covenant mark.
+ *
+ * A small insignia with a tier-specific glyph and color. The label
+ * is set in mono caps (not a colored chip); the glyph is a 24×24
+ * stroke-only mark that reads like a seal, not a sticker. The
+ * shield ring (Steady Shield, 4+ held weeks) is a 1.5px hairline
+ * ring that rotates slowly — the only motion on the component.
+ *
+ * Three lookup modes:
+ *   - tier prop wins (caller knows the tier)
+ *   - userId prop  → /pact/user/:id (public-by-id)
+ *   - neither      → /pact/me (caller's own)
+ */
 const PactBadge = ({ size = 28, userId, tier: tierProp, steadyShieldWeeks = 0, withLabel = false, withShield = true }) => {
     const useCaller = !userId && !tierProp;
 
@@ -36,53 +49,75 @@ const PactBadge = ({ size = 28, userId, tier: tierProp, steadyShieldWeeks = 0, w
 
     const tier = tierById(tierId);
     const showShield = withShield && (steadyWeeks || 0) >= 4;
+    const glyphSize = Math.round(size * 0.62);
+    const ringSize = size;
 
     return (
-        <span className="inline-flex items-center gap-1.5" title={`Pact: ${tier.label}${showShield ? ` · Steady Shield (${steadyWeeks}w)` : ''}`}>
-            <motion.span
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: 'spring', stiffness: 200, damping: 18 }}
-                className="relative inline-flex items-center justify-center"
-                style={{ width: size, height: size }}
+        <span
+            className="inline-flex items-center gap-1.5"
+            title={`Pact: ${tier.label}${showShield ? ` · Steady Shield (${steadyWeeks}w)` : ''}`}
+        >
+            <span
+                className="relative inline-flex items-center justify-center flex-shrink-0"
+                style={{ width: ringSize, height: ringSize }}
             >
                 {showShield && (
-                    <motion.span
+                    <span
                         aria-hidden
                         className="absolute inset-0 rounded-full"
                         style={{
-                            border: `1.5px solid ${tier.glow}`,
-                            boxShadow: `0 0 ${size / 2}px ${tier.glow}55`,
+                            border: `1px solid ${tier.glow}`,
+                            animation: 'pact-shield-rotate 12s linear infinite',
                         }}
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                     />
                 )}
                 <span
                     className="relative inline-flex items-center justify-center rounded-full"
                     style={{
-                        width: size * 0.7,
-                        height: size * 0.7,
-                        background: `radial-gradient(circle, ${tier.glow}33, ${tier.glow}11)`,
-                        boxShadow: `0 0 ${size * 0.4}px ${tier.glow}88`,
+                        width: size * 0.78,
+                        height: size * 0.78,
+                        background: `${tier.glow}14`,
+                        border: `1px solid ${tier.glow}55`,
                     }}
                 >
-                    <PactGlyph tier={tier} size={size * 0.5} />
+                    <PactGlyph tier={tier} size={glyphSize} />
                 </span>
-            </motion.span>
-            {withLabel && <span className="text-[11px] font-black uppercase tracking-widest" style={{ color: tier.glow }}>{tier.label}</span>}
+            </span>
+            {withLabel && (
+                <span
+                    className="font-mono uppercase"
+                    style={{
+                        fontSize: '0.62rem',
+                        letterSpacing: '0.20em',
+                        fontWeight: 700,
+                        color: tier.glow,
+                    }}
+                >
+                    {tier.label}
+                </span>
+            )}
+            <style>{`@keyframes pact-shield-rotate { to { transform: rotate(360deg); } }`}</style>
         </span>
     );
 };
 
 const PactGlyph = ({ tier, size = 18 }) => {
     const stroke = tier.glow;
-    const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke, strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' };
+    const common = {
+        width: size,
+        height: size,
+        viewBox: '0 0 24 24',
+        fill: 'none',
+        stroke,
+        strokeWidth: 1.4,
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
+    };
     switch (tier.id) {
         case 'initiate':
-            return <svg {...common}><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="9" opacity="0.4" /></svg>;
+            return <svg {...common}><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="9" opacity="0.45" /></svg>;
         case 'adept':
-            return <svg {...common}><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="7" /><circle cx="12" cy="12" r="11" opacity="0.4" /></svg>;
+            return <svg {...common}><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="7" /><circle cx="12" cy="12" r="11" opacity="0.45" /></svg>;
         case 'mentor':
             return <svg {...common}><path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" /></svg>;
         case 'sage':

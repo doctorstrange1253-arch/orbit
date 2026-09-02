@@ -1,29 +1,32 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, ShieldAlert, Flame, X } from 'lucide-react';
+import { X, ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import { useState } from 'react';
 import { usePactPulse, useMarkPactPulseSeen, usePactMe } from '../../hooks/usePact';
-import PactDivisionIcons from './PactDivisionIcons';
 
 /**
  * PactPulse — the Wednesday mid-week message widget.
  *
- * Tone branches the headline + accent color:
- *   encourage  → flame icon, accent green, "you can promote"
- *   steady     → heart icon, accent blue, "hold the line"
- *   caution    → shield icon, accent amber, "stay sharp"
+ * The pulse is read as a private dispatch from the Pact, not a
+ * gamified notification. Eyebrow in mono caps, body in Cormorant
+ * italic, and the rank in tabular numerals. The widget has a single
+ * 1px hairline border, no gradient, no glow.
  *
- * Dismissible per-week via the /pact/pulse/seen endpoint.
+ *   encourage  → "you can promote"  (green tone, up arrow)
+ *   steady     → "hold the line"    (neutral, dash)
+ *   caution    → "stay sharp"       (amber tone, down arrow)
+ *
+ * Dismissible per-week via /pact/pulse/seen.
  */
-const ICONS = {
-    encourage: Flame,
-    steady: Heart,
-    caution: ShieldAlert,
+const ARROW = {
+  encourage: ArrowUp,
+  steady:    Minus,
+  caution:   ArrowDown,
 };
-const ACCENT = {
-    encourage: 'from-emerald-500/20 to-cyan-500/10 border-emerald-400/30 text-emerald-100',
-    steady:    'from-indigo-500/20 to-blue-500/10 border-indigo-400/30 text-indigo-100',
-    caution:   'from-amber-500/20 to-rose-500/10 border-amber-400/30 text-amber-100',
+const TONE = {
+  encourage: { color: 'rgba(110,231,183,1)', ruleColor: 'rgba(110,231,183,0.45)', label: 'Promote' },
+  steady:    { color: 'rgba(245,245,245,0.85)', ruleColor: 'rgba(255,255,255,0.30)', label: 'Hold' },
+  caution:   { color: 'rgba(251,191,36,1)', ruleColor: 'rgba(251,191,36,0.45)', label: 'Steady' },
 };
 
 const PactPulse = () => {
@@ -37,7 +40,8 @@ const PactPulse = () => {
     if (data.seen || hidden) return null;
 
     const tone = data.tone || 'steady';
-    const Icon = ICONS[tone] || Heart;
+    const Arrow = ARROW[tone] || Minus;
+    const palette = TONE[tone] || TONE.steady;
 
     const dismiss = async () => {
         setHidden(true);
@@ -51,31 +55,70 @@ const PactPulse = () => {
     return (
         <AnimatePresence>
             <motion.div
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                className={`relative overflow-hidden rounded-2xl border bg-gradient-to-br ${ACCENT[tone]} p-4`}
+                exit={{ opacity: 0, y: -6 }}
+                className="relative"
+                style={{
+                    background: 'transparent',
+                    border: '1px solid rgba(255,255,255,0.10)',
+                    borderTop: `1px solid ${palette.ruleColor}`,
+                    padding: '14px 16px',
+                }}
             >
                 <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-full bg-surface/40 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-4 h-4" />
-                    </div>
+                    <Arrow
+                        style={{ width: 18, height: 18, color: palette.color, flexShrink: 0, marginTop: 2 }}
+                    />
                     <div className="flex-1 min-w-0">
-                        <div className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1 flex items-center gap-1.5">
-                            <span>Pact Pulse · {tone}</span>
-                            {me?.pact?.divisionId && (
-                                <PactDivisionIcons tierId={me.pact.divisionId} size={7} />
-                            )}
+                        <div
+                            className="font-mono uppercase mb-1.5"
+                            style={{ fontSize: '0.60rem', letterSpacing: '0.22em', fontWeight: 700, color: palette.color }}
+                        >
+                            The Pact Pulse · {palette.label}
                         </div>
-                        <p className="text-sm leading-relaxed">{data.message}</p>
+                        <p
+                            style={{
+                                fontFamily: 'var(--font-serif)',
+                                fontStyle: 'italic',
+                                fontSize: '1.02rem',
+                                lineHeight: 1.4,
+                                color: 'rgba(245,245,245,0.85)',
+                                margin: 0,
+                            }}
+                        >
+                            {data.message}
+                        </p>
                         {data.rank && (
-                            <div className="mt-2 text-[11px] opacity-80">
-                                Rank {data.rank.rank}/{data.rank.groupSize} · {data.rank.daysLeftInWeek}d left in week
+                            <div
+                                className="font-mono uppercase mt-2.5 pt-2.5 flex items-center gap-3"
+                                style={{
+                                    fontSize: '0.58rem',
+                                    letterSpacing: '0.20em',
+                                    fontWeight: 700,
+                                    color: 'rgba(245,245,245,0.55)',
+                                    borderTop: '1px solid rgba(255,255,255,0.08)',
+                                }}
+                            >
+                                <span>Rank {String(data.rank.rank).padStart(2, '0')}/{data.rank.groupSize}</span>
+                                <span aria-hidden>·</span>
+                                <span>{data.rank.daysLeftInWeek}d left</span>
+                                {me?.pact?.weekScore != null && (
+                                    <>
+                                        <span aria-hidden>·</span>
+                                        <span>Score {me.pact.weekScore}</span>
+                                    </>
+                                )}
                             </div>
                         )}
                     </div>
-                    <button onClick={dismiss} className="p-1 rounded-full hover:bg-black/10" aria-label="Dismiss">
-                        <X className="w-3.5 h-3.5" />
+                    <button
+                        onClick={dismiss}
+                        className="p-1 -mt-1 -mr-1"
+                        aria-label="Dismiss"
+                        style={{ color: 'rgba(245,245,245,0.40)' }}
+                    >
+                        <X style={{ width: 14, height: 14 }} />
                     </button>
                 </div>
             </motion.div>

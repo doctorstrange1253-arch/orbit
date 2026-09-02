@@ -6,20 +6,13 @@ import { Helmet } from 'react-helmet-async';
 import { Plus, Save, ChevronLeft, Upload, Video, X, ChevronDown, ChevronRight, Trash2, Sparkles, Loader2 } from 'lucide-react';
 import { courses } from '../../services/courses';
 import { proposeLevel, isStubProposal } from '../../services/ai';
-import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
-import HolographicCard from '../../components/fx/HolographicCard';
+import {
+    MentorBackLink,
+    MentorEyebrow,
+    MentorTitle,
+    MentorTag,
+} from '../../components/pact/MentorEditorial';
 
-/**
- * CourseBuilder — mentor course authoring (create + edit share the form).
- *
- * 5-step wizard (Basics → Thumbnail → Lessons → Quiz → Review). For MVP
- * the "quiz" is per-lesson (added in LessonEditor) so this collapses to
- * 4 visible steps. Uses useReducer for a clean form state.
- *
- * Uploads go straight through the /upload-video + /upload-thumbnail routes
- * (Cloudinary multer-storage), then the resulting {url, publicId} is stored
- * on the lesson / course doc via the create + addLesson flow.
- */
 const blankLesson = () => ({
     _tempId: `tmp_${Math.random().toString(36).slice(2, 8)}`,
     title: '',
@@ -93,9 +86,6 @@ const CourseBuilder = () => {
         mutationFn: (body) => courses.create(body),
         onSuccess: async (res) => {
             const id = res._id;
-            // Add lessons (the create call accepts lessons inline, but for
-            // clarity we re-add individually so the server-side addLesson
-            // path handles videoUrl persistence + ordering).
             for (const l of state.lessons) {
                 if (!l.title) continue;
                 await courses.addLesson(id, {
@@ -126,164 +116,272 @@ const CourseBuilder = () => {
     const canNext = step === 0 ? state.title.trim().length > 0 : true;
 
     return (
-        <div className="relative min-h-screen overflow-hidden">
-            <FuturisticBackdrop />
-            <div className="relative z-10 max-w-3xl mx-auto px-4 py-10">
-                <Helmet><title>New course · Orbit Mentor</title></Helmet>
+        <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
+            <Helmet><title>New course · Orbit Mentor</title></Helmet>
 
-                <button onClick={() => navigate(-1)} className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-text-primary mb-3">
-                    <ChevronLeft className="w-3.5 h-3.5" /> Back
-                </button>
+            <div>
+                <MentorBackLink to="/mentor/courses">My courses</MentorBackLink>
+            </div>
 
-                <h1 className="text-2xl md:text-3xl font-black text-text-primary mb-2">Create a course</h1>
+            <motion.header
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+                <MentorEyebrow>Mentor · New course</MentorEyebrow>
+                <div className="mt-2">
+                    <MentorTitle size="xl">Begin a new course</MentorTitle>
+                </div>
+            </motion.header>
 
-                {/* Stepper */}
-                <ol className="flex items-center gap-2 mb-6 text-[10px] font-black uppercase tracking-widest text-text-muted">
-                    {STEPS.map((s, i) => (
+            <ol className="flex items-center gap-2 mb-2 flex-wrap">
+                {STEPS.map((s, i) => {
+                    const active = i === step;
+                    const done = i < step;
+                    return (
                         <li key={s} className="flex items-center gap-2">
                             <button
                                 onClick={() => setStep(i)}
-                                className={`px-2 py-1 rounded-pill ${i === step ? 'bg-accent/15 text-accent border border-accent/30' : i < step ? 'text-emerald-300' : ''}`}
+                                className="font-mono uppercase"
+                                style={{
+                                    fontSize: '0.60rem',
+                                    letterSpacing: '0.22em',
+                                    fontWeight: 700,
+                                    color: active ? 'var(--text-primary)' : done ? 'rgba(110,231,183,1)' : 'rgba(245,245,245,0.50)',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    borderBottom: active ? '1px solid var(--text-primary)' : '1px solid transparent',
+                                    padding: '6px 0',
+                                    cursor: 'pointer',
+                                }}
                             >
-                                {i + 1}. {s}
+                                {String(i + 1).padStart(2, '0')} · {s}
                             </button>
-                            {i < STEPS.length - 1 && <span>→</span>}
+                            {i < STEPS.length - 1 && (
+                                <span style={{ color: 'rgba(245,245,245,0.30)', fontSize: '0.7rem' }}>→</span>
+                            )}
                         </li>
-                    ))}
-                </ol>
+                    );
+                })}
+            </ol>
 
-                <HolographicCard className="p-5">
-                    {step === 0 && (
-                        <div className="space-y-3">
-                            <Field label="Title">
-                                <input value={state.title} onChange={(e) => dispatch({ type: 'SET', key: 'title', value: e.target.value })}
-                                    className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-text-primary" />
+            <div style={{ border: '1px solid rgba(255,255,255,0.10)', padding: '20px 22px' }}>
+                {step === 0 && (
+                    <div className="space-y-3">
+                        <Field label="Title">
+                            <input value={state.title} onChange={(e) => dispatch({ type: 'SET', key: 'title', value: e.target.value })} className="w-full px-3 py-2" style={inputStyle} />
+                        </Field>
+                        <Field label="Subtitle (one-liner)">
+                            <input value={state.subtitle} onChange={(e) => dispatch({ type: 'SET', key: 'subtitle', value: e.target.value })} className="w-full px-3 py-2" style={inputStyle} />
+                        </Field>
+                        <Field label="Description">
+                            <textarea rows={4} value={state.description} onChange={(e) => dispatch({ type: 'SET', key: 'description', value: e.target.value })} className="w-full px-3 py-2" style={inputStyle} />
+                        </Field>
+                        <div className="grid sm:grid-cols-3 gap-3">
+                            <Field label="Category">
+                                <input value={state.category} onChange={(e) => dispatch({ type: 'SET', key: 'category', value: e.target.value })} className="w-full px-3 py-2" style={inputStyle} />
                             </Field>
-                            <Field label="Subtitle (one-liner)">
-                                <input value={state.subtitle} onChange={(e) => dispatch({ type: 'SET', key: 'subtitle', value: e.target.value })}
-                                    className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-text-primary" />
+                            <Field label="Level">
+                                <select value={state.level} onChange={(e) => dispatch({ type: 'SET', key: 'level', value: e.target.value })} className="w-full px-3 py-2" style={inputStyle}>
+                                    <option value="beginner">Beginner</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                </select>
                             </Field>
-                            <Field label="Description">
-                                <textarea rows={4} value={state.description} onChange={(e) => dispatch({ type: 'SET', key: 'description', value: e.target.value })}
-                                    className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-text-primary" />
+                            <Field label="Price (₹)">
+                                <input type="number" min={0} value={state.priceInr} onChange={(e) => dispatch({ type: 'SET', key: 'priceInr', value: Math.max(0, Number(e.target.value) || 0) })} className="w-full px-3 py-2" style={inputStyle} />
                             </Field>
-                            <div className="grid sm:grid-cols-3 gap-3">
-                                <Field label="Category">
-                                    <input value={state.category} onChange={(e) => dispatch({ type: 'SET', key: 'category', value: e.target.value })}
-                                        className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-text-primary" />
-                                </Field>
-                                <Field label="Level">
-                                    <select value={state.level} onChange={(e) => dispatch({ type: 'SET', key: 'level', value: e.target.value })}
-                                        className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-text-primary">
-                                        <option value="beginner">Beginner</option>
-                                        <option value="intermediate">Intermediate</option>
-                                        <option value="advanced">Advanced</option>
-                                    </select>
-                                </Field>
-                                <Field label="Price (₹)">
-                                    <input type="number" min={0} value={state.priceInr} onChange={(e) => dispatch({ type: 'SET', key: 'priceInr', value: Math.max(0, Number(e.target.value) || 0) })}
-                                        className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-text-primary" />
-                                </Field>
-                            </div>
                         </div>
-                    )}
+                    </div>
+                )}
 
-                    {step === 1 && (
+                {step === 1 && (
+                    <div>
+                        <Field label="Thumbnail">
+                            <ThumbnailDrop value={state.thumbnail} onChange={uploadThumb} />
+                        </Field>
+                    </div>
+                )}
+
+                {step === 2 && (
+                    <div className="space-y-3">
+                        {state.lessons.map((l, i) => (
+                            <LessonEditor
+                                key={l._tempId}
+                                lesson={l}
+                                index={i}
+                                open={openLessons.has(l._tempId)}
+                                courseTitle={state.title}
+                                onToggle={() => {
+                                    const next = new Set(openLessons);
+                                    next.has(l._tempId) ? next.delete(l._tempId) : next.add(l._tempId);
+                                    setOpenLessons(next);
+                                }}
+                                onUpdate={(patch) => dispatch({ type: 'UPDATE_LESSON', id: l._tempId, patch })}
+                                onRemove={() => dispatch({ type: 'REMOVE_LESSON', id: l._tempId })}
+                                onAddQuestion={() => dispatch({ type: 'ADD_QUESTION', lessonId: l._tempId })}
+                                onUpdateQuestion={(qIdx, patch) => dispatch({ type: 'UPDATE_QUESTION', lessonId: l._tempId, qIdx, patch })}
+                                onRemoveQuestion={(qIdx) => dispatch({ type: 'REMOVE_QUESTION', lessonId: l._tempId, qIdx })}
+                                onUploadVideo={(file, onProgress) => uploadVideo(file, l._tempId, onProgress)}
+                            />
+                        ))}
+                        <button
+                            onClick={() => { dispatch({ type: 'ADD_LESSON' }); }}
+                            className="inline-flex items-center gap-2 font-mono uppercase"
+                            style={{
+                                fontSize: '0.62rem',
+                                letterSpacing: '0.22em',
+                                fontWeight: 700,
+                                color: 'var(--text-primary)',
+                                background: 'transparent',
+                                border: '1px solid rgba(255,255,255,0.30)',
+                                padding: '8px 12px',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <Plus size={11} /> Add lesson
+                        </button>
+                    </div>
+                )}
+
+                {step === 3 && (
+                    <div className="space-y-3">
                         <div>
-                            <Field label="Thumbnail">
-                                <ThumbnailDrop value={state.thumbnail} onChange={uploadThumb} />
-                            </Field>
-                        </div>
-                    )}
-
-                    {step === 2 && (
-                        <div className="space-y-3">
-                            {state.lessons.map((l, i) => (
-                                <LessonEditor
-                                    key={l._tempId}
-                                    lesson={l}
-                                    index={i}
-                                    open={openLessons.has(l._tempId)}
-                                    courseTitle={state.title}
-                                    onToggle={() => {
-                                        const next = new Set(openLessons);
-                                        next.has(l._tempId) ? next.delete(l._tempId) : next.add(l._tempId);
-                                        setOpenLessons(next);
-                                    }}
-                                    onUpdate={(patch) => dispatch({ type: 'UPDATE_LESSON', id: l._tempId, patch })}
-                                    onRemove={() => dispatch({ type: 'REMOVE_LESSON', id: l._tempId })}
-                                    onAddQuestion={() => dispatch({ type: 'ADD_QUESTION', lessonId: l._tempId })}
-                                    onUpdateQuestion={(qIdx, patch) => dispatch({ type: 'UPDATE_QUESTION', lessonId: l._tempId, qIdx, patch })}
-                                    onRemoveQuestion={(qIdx) => dispatch({ type: 'REMOVE_QUESTION', lessonId: l._tempId, qIdx })}
-                                    onUploadVideo={(file, onProgress) => uploadVideo(file, l._tempId, onProgress)}
-                                />
-                            ))}
-                            <button
-                                onClick={() => { dispatch({ type: 'ADD_LESSON' }); }}
-                                className="inline-flex items-center gap-2 px-3 py-2 rounded-pill bg-surface/40 border border-border-subtle text-sm font-bold uppercase tracking-widest text-text-secondary hover:border-accent/40"
+                            <h3
+                                style={{
+                                    fontFamily: 'var(--font-editorial)',
+                                    fontStyle: 'italic',
+                                    fontWeight: 700,
+                                    fontSize: '1.6rem',
+                                    lineHeight: 1.1,
+                                    color: 'var(--text-primary)',
+                                }}
                             >
-                                <Plus className="w-4 h-4" /> Add lesson
-                            </button>
-                        </div>
-                    )}
-
-                    {step === 3 && (
-                        <div className="space-y-3">
-                            <h3 className="text-lg font-bold text-text-primary">{state.title}</h3>
-                            {state.subtitle && <p className="text-sm text-text-secondary">{state.subtitle}</p>}
-                            <div className="text-xs text-text-muted">{state.lessons.length} lesson{state.lessons.length === 1 ? '' : 's'} · {state.category} · {state.level}</div>
-                            {state.thumbnail?.url && <img src={state.thumbnail.url} alt="" className="rounded-lg w-full max-w-sm" />}
-                            <div className="text-sm text-text-secondary">
-                                Click <strong>Save draft</strong> to create the course. You can add more lessons and publish from the editor.
+                                {state.title}
+                            </h3>
+                            {state.subtitle && (
+                                <p
+                                    className="mt-1.5"
+                                    style={{
+                                        fontFamily: 'var(--font-serif)',
+                                        fontStyle: 'italic',
+                                        color: 'rgba(245,245,245,0.65)',
+                                    }}
+                                >
+                                    {state.subtitle}
+                                </p>
+                            )}
+                            <div
+                                className="mt-2 font-mono uppercase"
+                                style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}
+                            >
+                                {state.lessons.length} lesson{state.lessons.length === 1 ? '' : 's'} · {state.category} · {state.level}
                             </div>
                         </div>
-                    )}
-                </HolographicCard>
+                        {state.thumbnail?.url && (
+                            <img src={state.thumbnail.url} alt="" style={{ width: '100%', maxWidth: 360, height: 'auto', border: '1px solid rgba(255,255,255,0.10)' }} />
+                        )}
+                        <p
+                            style={{
+                                fontFamily: 'var(--font-serif)',
+                                fontStyle: 'italic',
+                                color: 'rgba(245,245,245,0.55)',
+                            }}
+                        >
+                            Save the draft to create the course. You can add more lessons and publish from the editor.
+                        </p>
+                    </div>
+                )}
+            </div>
 
-                <div className="mt-5 flex items-center justify-between">
+            <div className="flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.10)', paddingTop: 16 }}>
+                <button
+                    onClick={() => setStep((s) => Math.max(0, s - 1))}
+                    disabled={step === 0}
+                    className="font-mono uppercase"
+                    style={{
+                        fontSize: '0.62rem',
+                        letterSpacing: '0.22em',
+                        fontWeight: 700,
+                        color: 'rgba(245,245,245,0.55)',
+                        background: 'transparent',
+                        border: '1px solid rgba(255,255,255,0.15)',
+                        padding: '8px 12px',
+                        cursor: 'pointer',
+                        opacity: step === 0 ? 0.4 : 1,
+                    }}
+                >
+                    Back
+                </button>
+                {step < STEPS.length - 1 ? (
                     <button
-                        onClick={() => setStep((s) => Math.max(0, s - 1))}
-                        disabled={step === 0}
-                        className="px-4 py-2 rounded-pill bg-surface/40 border border-border-subtle text-sm font-bold uppercase tracking-widest text-text-secondary disabled:opacity-50"
+                        onClick={() => setStep((s) => s + 1)}
+                        disabled={!canNext}
+                        className="font-mono uppercase"
+                        style={{
+                            fontSize: '0.62rem',
+                            letterSpacing: '0.22em',
+                            fontWeight: 700,
+                            color: 'var(--text-primary)',
+                            background: 'transparent',
+                            border: '1px solid rgba(255,255,255,0.30)',
+                            padding: '8px 14px',
+                            cursor: 'pointer',
+                            opacity: canNext ? 1 : 0.4,
+                        }}
                     >
-                        Back
+                        Next
                     </button>
-                    {step < STEPS.length - 1 ? (
-                        <button
-                            onClick={() => setStep((s) => s + 1)}
-                            disabled={!canNext}
-                            className="px-5 py-2 rounded-pill bg-gradient-to-r from-indigo-500 to-cyan-500 text-white text-sm font-bold uppercase tracking-widest disabled:opacity-50"
-                        >
-                            Next
-                        </button>
-                    ) : (
-                        <button
-                            onClick={() => create.mutate({
-                                title: state.title,
-                                subtitle: state.subtitle,
-                                description: state.description,
-                                category: state.category,
-                                level: state.level,
-                                language: state.language,
-                                priceInr: state.priceInr,
-                                thumbnail: state.thumbnail,
-                                tags: state.tags,
-                            })}
-                            disabled={create.isPending}
-                            className="inline-flex items-center gap-2 px-5 py-2 rounded-pill bg-gradient-to-r from-indigo-500 to-cyan-500 text-white text-sm font-bold uppercase tracking-widest disabled:opacity-50"
-                        >
-                            <Save className="w-4 h-4" /> {create.isPending ? 'Saving…' : 'Save draft'}
-                        </button>
-                    )}
-                </div>
+                ) : (
+                    <button
+                        onClick={() => create.mutate({
+                            title: state.title,
+                            subtitle: state.subtitle,
+                            description: state.description,
+                            category: state.category,
+                            level: state.level,
+                            language: state.language,
+                            priceInr: state.priceInr,
+                            thumbnail: state.thumbnail,
+                            tags: state.tags,
+                        })}
+                        disabled={create.isPending}
+                        className="inline-flex items-center gap-2 font-mono uppercase"
+                        style={{
+                            fontSize: '0.62rem',
+                            letterSpacing: '0.22em',
+                            fontWeight: 700,
+                            color: 'var(--text-primary)',
+                            background: 'transparent',
+                            border: '1px solid rgba(255,255,255,0.30)',
+                            padding: '8px 14px',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <Save size={11} /> {create.isPending ? 'Saving…' : 'Save draft'}
+                    </button>
+                )}
             </div>
         </div>
     );
 };
 
+const inputStyle = {
+    background: 'rgba(255,255,255,0.04)',
+    border: '1px solid rgba(255,255,255,0.10)',
+    color: 'var(--text-primary)',
+    borderRadius: 8,
+    fontSize: '0.95rem',
+};
+
 const Field = ({ label, children }) => (
     <label className="block">
-        <span className="block text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">{label}</span>
+        <span
+            className="block font-mono uppercase mb-1.5"
+            style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}
+        >
+            {label}
+        </span>
         {children}
     </label>
 );
@@ -298,11 +396,29 @@ const ThumbnailDrop = ({ value, onChange }) => {
     };
     return (
         <div className="flex items-center gap-3">
-            <div className="w-32 h-20 rounded-lg overflow-hidden bg-gradient-to-br from-indigo-900/60 to-cyan-900/40 border border-border-subtle flex items-center justify-center">
-                {value?.url ? <img src={value.url} alt="" className="w-full h-full object-cover" /> : <span className="text-[10px] text-text-muted">No image</span>}
+            <div
+                className="flex items-center justify-center"
+                style={{
+                    width: 144, height: 90,
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.10)',
+                }}
+            >
+                {value?.url ? <img src={value.url} alt="" className="w-full h-full object-cover" /> : <span style={{ fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(245,245,245,0.45)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>No image</span>}
             </div>
-            <label className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill bg-accent/15 text-accent border border-accent/30 text-xs font-bold uppercase tracking-widest cursor-pointer hover:bg-accent/25">
-                <Upload className="w-3.5 h-3.5" /> {uploading ? 'Uploading…' : 'Upload'}
+            <label
+                className="inline-flex items-center gap-1.5 font-mono uppercase cursor-pointer"
+                style={{
+                    fontSize: '0.62rem',
+                    letterSpacing: '0.22em',
+                    fontWeight: 700,
+                    color: 'var(--text-primary)',
+                    background: 'transparent',
+                    border: '1px solid rgba(255,255,255,0.30)',
+                    padding: '8px 12px',
+                }}
+            >
+                <Upload size={11} /> {uploading ? 'Uploading…' : 'Upload'}
                 <input type="file" accept="image/*" className="hidden" onChange={handle} disabled={uploading} />
             </label>
         </div>
@@ -324,9 +440,6 @@ const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAdd
         } finally { setUploading(0); }
     };
 
-    // V3 — AI suggest. Calls /api/ai/level-proposal. The backend is
-    // gated by ENABLE_AI_COURSE_PROPOSAL; when off, the response is a
-    // templated stub the mentor can use as a starting point.
     const handleAiSuggest = async () => {
         if (aiBusy) return;
         setAiBusy(true);
@@ -360,84 +473,140 @@ const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAdd
     };
 
     return (
-        <div className="rounded-xl border border-border-subtle bg-surface/30">
-            <button onClick={onToggle} className="w-full flex items-center justify-between p-3 text-left">
+        <div style={{ border: '1px solid rgba(255,255,255,0.10)' }}>
+            <button onClick={onToggle} className="w-full flex items-center justify-between p-3 text-left" style={{ background: 'transparent', border: 'none' }}>
                 <div className="flex items-center gap-2">
-                    {open ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                    <span className="text-sm font-bold text-text-primary">Lesson {index + 1}{lesson.title ? ` — ${lesson.title}` : ''}</span>
+                    {open ? <ChevronDown size={14} style={{ color: 'rgba(245,245,245,0.55)' }} /> : <ChevronRight size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />}
+                    <span
+                        className="font-mono uppercase"
+                        style={{ fontSize: '0.62rem', letterSpacing: '0.20em', fontWeight: 700, color: 'var(--text-primary)' }}
+                    >
+                        Lesson {String(index + 1).padStart(2, '0')}
+                        {lesson.title ? ` — ${lesson.title}` : ''}
+                    </span>
                 </div>
-                <span onClick={(e) => { e.stopPropagation(); onRemove(); }} className="text-text-muted hover:text-rose-300">
-                    <Trash2 className="w-3.5 h-3.5" />
+                <span
+                    onClick={(e) => { e.stopPropagation(); onRemove(); }}
+                    style={{ color: 'rgba(252,165,165,0.70)', cursor: 'pointer', padding: 4 }}
+                >
+                    <Trash2 size={12} />
                 </span>
             </button>
             {open && (
-                <div className="px-3 pb-3 space-y-2 border-t border-border-subtle/40">
-                    <Field label="Title">
-                        <input value={lesson.title} onChange={(e) => onUpdate({ title: e.target.value })}
-                            className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-sm text-text-primary" />
-                    </Field>
-                    <Field label="Description">
-                        <textarea rows={2} value={lesson.description} onChange={(e) => onUpdate({ description: e.target.value })}
-                            className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-sm text-text-primary" />
-                    </Field>
+                <div className="px-3 pb-3 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                    <div className="pt-2">
+                        <Field label="Title">
+                            <input value={lesson.title} onChange={(e) => onUpdate({ title: e.target.value })}
+                                className="w-full px-2.5 py-1.5" style={{ ...inputStyle, fontSize: '0.92rem' }} />
+                        </Field>
+                        <div className="mt-2">
+                            <Field label="Description">
+                                <textarea rows={2} value={lesson.description} onChange={(e) => onUpdate({ description: e.target.value })}
+                                    className="w-full px-2.5 py-1.5" style={{ ...inputStyle, fontSize: '0.92rem' }} />
+                            </Field>
+                        </div>
+                    </div>
 
-                    {/* V3 — AI suggest button (gated by ENABLE_AI_COURSE_PROPOSAL
-                        on the server). When clicked, it drafts a promise copy +
-                        3 quiz questions + 1 boss challenge from the lesson's
-                        title + description. The mentor accepts, edits, or
-                        dismisses. */}
-                    <div className="flex items-center justify-between pt-1">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">AI helper</span>
+                    <div className="flex items-center justify-between pt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                        <span
+                            className="font-mono uppercase"
+                            style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}
+                        >
+                            AI helper
+                        </span>
                         <button
                             type="button"
                             onClick={handleAiSuggest}
                             disabled={aiBusy || !lesson.title}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-accent/10 text-accent border border-accent/30 text-[10px] font-bold uppercase tracking-widest hover:bg-accent/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="inline-flex items-center gap-1.5 font-mono uppercase"
+                            style={{
+                                fontSize: '0.58rem',
+                                letterSpacing: '0.20em',
+                                fontWeight: 700,
+                                color: aiBusy || !lesson.title ? 'rgba(245,245,245,0.30)' : 'var(--text-primary)',
+                                background: 'transparent',
+                                border: '1px solid rgba(255,255,255,0.20)',
+                                padding: '6px 10px',
+                                cursor: aiBusy || !lesson.title ? 'not-allowed' : 'pointer',
+                            }}
                         >
-                            {aiBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                            {aiBusy ? <Loader2 size={9} className="animate-spin" /> : <Sparkles size={9} />}
                             {aiBusy ? 'Drafting' : 'Suggest lesson'}
                         </button>
                     </div>
                     {aiError && (
-                        <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-2 text-xs text-rose-200">
+                        <div style={{ border: '1px solid rgba(252,165,165,0.30)', background: 'rgba(252,165,165,0.06)', padding: '8px 10px', color: 'rgba(252,165,165,0.85)', fontSize: '0.78rem' }}>
                             {aiError}
                         </div>
                     )}
                     {aiProposal && (
-                        <div className="rounded-lg border border-accent/30 bg-accent/5 p-3 space-y-2 text-xs">
+                        <div className="space-y-2" style={{ border: '1px solid rgba(255,255,255,0.20)', padding: '10px 12px' }}>
                             <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-accent">
+                                <span
+                                    className="font-mono uppercase"
+                                    style={{ fontSize: '0.56rem', letterSpacing: '0.20em', fontWeight: 700, color: 'var(--text-primary)' }}
+                                >
                                     {isStubProposal(aiProposal) ? 'Suggested (template)' : 'AI suggested'}
                                 </span>
-                                <div className="flex items-center gap-1">
-                                    <button onClick={() => setAiProposal(null)} className="text-text-muted hover:text-text-primary">Dismiss</button>
-                                    <button onClick={applyAiProposal} className="text-accent hover:underline font-bold">Apply</button>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => setAiProposal(null)}
+                                        className="font-mono uppercase"
+                                        style={{ fontSize: '0.56rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                                    >
+                                        Dismiss
+                                    </button>
+                                    <button
+                                        onClick={applyAiProposal}
+                                        className="font-mono uppercase"
+                                        style={{ fontSize: '0.56rem', letterSpacing: '0.20em', fontWeight: 700, color: 'var(--text-primary)', background: 'transparent', borderBottom: '1px solid var(--text-primary)', cursor: 'pointer', paddingBottom: 2 }}
+                                    >
+                                        Apply
+                                    </button>
                                 </div>
                             </div>
                             {aiProposal.promiseCopy && (
                                 <div>
-                                    <div className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Promise</div>
-                                    <div className="text-text-primary">{aiProposal.promiseCopy}</div>
+                                    <div
+                                        className="font-mono uppercase"
+                                        style={{ fontSize: '0.50rem', letterSpacing: '0.18em', fontWeight: 700, color: 'rgba(245,245,245,0.55)', marginBottom: 2 }}
+                                    >
+                                        Promise
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', fontSize: '0.86rem' }}>{aiProposal.promiseCopy}</div>
                                 </div>
                             )}
                             {aiProposal.whyCopy && (
                                 <div>
-                                    <div className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Why it matters</div>
-                                    <div className="text-text-secondary">{aiProposal.whyCopy}</div>
+                                    <div
+                                        className="font-mono uppercase"
+                                        style={{ fontSize: '0.50rem', letterSpacing: '0.18em', fontWeight: 700, color: 'rgba(245,245,245,0.55)', marginBottom: 2 }}
+                                    >
+                                        Why it matters
+                                    </div>
+                                    <div style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.75)', fontSize: '0.92rem' }}>{aiProposal.whyCopy}</div>
                                 </div>
                             )}
                             {aiProposal.rememberCopy && (
                                 <div>
-                                    <div className="text-[9px] font-bold uppercase tracking-widest text-text-muted">One thing to remember</div>
-                                    <div className="text-text-secondary">{aiProposal.rememberCopy}</div>
+                                    <div
+                                        className="font-mono uppercase"
+                                        style={{ fontSize: '0.50rem', letterSpacing: '0.18em', fontWeight: 700, color: 'rgba(245,245,245,0.55)', marginBottom: 2 }}
+                                    >
+                                        One thing to remember
+                                    </div>
+                                    <div style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.75)', fontSize: '0.92rem' }}>{aiProposal.rememberCopy}</div>
                                 </div>
                             )}
                             {Array.isArray(aiProposal.quizQuestions) && aiProposal.quizQuestions.length > 0 && (
                                 <div>
-                                    <div className="text-[9px] font-bold uppercase tracking-widest text-text-muted">
+                                    <div
+                                        className="font-mono uppercase"
+                                        style={{ fontSize: '0.50rem', letterSpacing: '0.18em', fontWeight: 700, color: 'rgba(245,245,245,0.55)', marginBottom: 2 }}
+                                    >
                                         {aiProposal.quizQuestions.length} quiz question{aiProposal.quizQuestions.length > 1 ? 's' : ''}
                                     </div>
-                                    <ol className="list-decimal pl-4 text-text-secondary space-y-0.5">
+                                    <ol className="list-decimal pl-4" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.75)', fontSize: '0.86rem' }}>
                                         {aiProposal.quizQuestions.slice(0, 3).map((q, i) => (
                                             <li key={i} className="line-clamp-1">{q.prompt || `Question ${i + 1}`}</li>
                                         ))}
@@ -446,60 +615,112 @@ const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAdd
                             )}
                             {aiProposal.bossChallenge && (
                                 <div>
-                                    <div className="text-[9px] font-bold uppercase tracking-widest text-amber-300">Boss challenge</div>
-                                    <div className="text-text-secondary">{aiProposal.bossChallenge}</div>
+                                    <div
+                                        className="font-mono uppercase"
+                                        style={{ fontSize: '0.50rem', letterSpacing: '0.18em', fontWeight: 700, color: 'rgba(251,191,36,1)', marginBottom: 2 }}
+                                    >
+                                        Boss challenge
+                                    </div>
+                                    <div style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.75)', fontSize: '0.92rem' }}>{aiProposal.bossChallenge}</div>
                                 </div>
                             )}
                         </div>
                     )}
 
-                    <Field label="Video">
-                        <div className="flex items-center gap-3">
-                            <div className="flex-1 text-xs text-text-muted truncate">
-                                {lesson.videoUrl ? `✓ ${lesson.videoUrl}` : 'No video uploaded'}
+                    <div>
+                        <Field label="Video">
+                            <div className="flex items-center gap-3">
+                                <div
+                                    className="flex-1 truncate"
+                                    style={{ fontSize: '0.78rem', color: lesson.videoUrl ? 'rgba(245,245,245,0.75)' : 'rgba(245,245,245,0.45)' }}
+                                >
+                                    {lesson.videoUrl ? `✓ Uploaded` : 'No video uploaded'}
+                                </div>
+                                <label
+                                    className="inline-flex items-center gap-1.5 font-mono uppercase cursor-pointer"
+                                    style={{
+                                        fontSize: '0.58rem',
+                                        letterSpacing: '0.20em',
+                                        fontWeight: 700,
+                                        color: 'var(--text-primary)',
+                                        background: 'transparent',
+                                        border: '1px solid rgba(255,255,255,0.20)',
+                                        padding: '6px 10px',
+                                    }}
+                                >
+                                    <Video size={9} /> {uploading > 0 ? `${uploading}%` : 'Upload'}
+                                    <input type="file" accept="video/*" className="hidden" onChange={handleVideo} disabled={uploading > 0} />
+                                </label>
                             </div>
-                            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-accent/15 text-accent border border-accent/30 text-xs font-bold uppercase tracking-widest cursor-pointer hover:bg-accent/25">
-                                <Video className="w-3.5 h-3.5" /> {uploading > 0 ? `${uploading}%` : 'Upload'}
-                                <input type="file" accept="video/*" className="hidden" onChange={handleVideo} disabled={uploading > 0} />
-                            </label>
-                        </div>
-                    </Field>
-                    <label className="flex items-center gap-2 text-xs text-text-secondary">
+                        </Field>
+                    </div>
+                    <label className="flex items-center gap-2" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'rgba(245,245,245,0.65)' }}>
                         <input type="checkbox" checked={!!lesson.isFree} onChange={(e) => onUpdate({ isFree: e.target.checked })} />
                         Free preview (anyone can watch)
                     </label>
 
-                    {/* Quiz */}
-                    <div className="pt-2 border-t border-border-subtle/40">
+                    <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Quiz</span>
-                            <button onClick={onAddQuestion} className="inline-flex items-center gap-1 text-[11px] text-accent hover:text-text-primary">
-                                <Plus className="w-3 h-3" /> Add question
+                            <span
+                                className="font-mono uppercase"
+                                style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}
+                            >
+                                Quiz
+                            </span>
+                            <button
+                                onClick={onAddQuestion}
+                                className="inline-flex items-center gap-1 font-mono uppercase"
+                                style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'var(--text-primary)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                            >
+                                <Plus size={9} /> Add question
                             </button>
                         </div>
                         {(lesson.quiz?.questions || []).map((q, qi) => (
-                            <div key={qi} className="rounded-lg border border-border-subtle/60 bg-surface/20 p-2 mb-2">
+                            <div key={qi} className="mb-2" style={{ border: '1px solid rgba(255,255,255,0.08)', padding: '8px 10px' }}>
                                 <div className="flex items-center justify-between mb-1">
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Q{qi + 1}</span>
-                                    <button onClick={() => onRemoveQuestion(qi)} className="text-text-muted hover:text-rose-300"><X className="w-3 h-3" /></button>
+                                    <span
+                                        className="font-mono uppercase"
+                                        style={{ fontSize: '0.56rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}
+                                    >
+                                        Q{qi + 1}
+                                    </span>
+                                    <button
+                                        onClick={() => onRemoveQuestion(qi)}
+                                        style={{ background: 'transparent', border: 'none', color: 'rgba(252,165,165,0.70)', cursor: 'pointer', padding: 2 }}
+                                    >
+                                        <X size={10} />
+                                    </button>
                                 </div>
-                                <input value={q.prompt} onChange={(e) => onUpdateQuestion(qi, { prompt: e.target.value })}
+                                <input
+                                    value={q.prompt}
+                                    onChange={(e) => onUpdateQuestion(qi, { prompt: e.target.value })}
                                     placeholder="Question prompt"
-                                    className="w-full px-2 py-1.5 rounded bg-bg/50 border border-border-subtle text-sm text-text-primary mb-1" />
+                                    className="w-full px-2 py-1 mb-1"
+                                    style={{ ...inputStyle, fontSize: '0.86rem' }}
+                                />
                                 {(q.options || []).map((opt, oi) => (
                                     <div key={oi} className="flex items-center gap-1.5 mb-1">
                                         <input type="radio" name={`q-${qi}`} checked={q.correctIdx === oi} onChange={() => onUpdateQuestion(qi, { correctIdx: oi })} />
-                                        <input value={opt} onChange={(e) => {
-                                            const options = q.options.slice();
-                                            options[oi] = e.target.value;
-                                            onUpdateQuestion(qi, { options });
-                                        }} placeholder={`Option ${oi + 1}`}
-                                            className="flex-1 px-2 py-1 rounded bg-bg/50 border border-border-subtle text-sm text-text-primary" />
+                                        <input
+                                            value={opt}
+                                            onChange={(e) => {
+                                                const options = q.options.slice();
+                                                options[oi] = e.target.value;
+                                                onUpdateQuestion(qi, { options });
+                                            }}
+                                            placeholder={`Option ${oi + 1}`}
+                                            className="flex-1 px-2 py-1"
+                                            style={{ ...inputStyle, fontSize: '0.86rem' }}
+                                        />
                                     </div>
                                 ))}
-                                <input value={q.explanation} onChange={(e) => onUpdateQuestion(qi, { explanation: e.target.value })}
+                                <input
+                                    value={q.explanation}
+                                    onChange={(e) => onUpdateQuestion(qi, { explanation: e.target.value })}
                                     placeholder="Explanation (optional)"
-                                    className="w-full px-2 py-1 rounded bg-bg/50 border border-border-subtle text-xs text-text-primary" />
+                                    className="w-full px-2 py-1"
+                                    style={{ ...inputStyle, fontSize: '0.78rem' }}
+                                />
                             </div>
                         ))}
                     </div>

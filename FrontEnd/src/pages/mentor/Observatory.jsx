@@ -1,20 +1,19 @@
 /**
  * pages/mentor/Observatory.jsx — The Mentor Soul Home (V3).
  *
- * Replaces V2's `MentorHub.jsx` as the V3 `/mentor/observatory` route.
- * The page is composed of three layers:
+ * The page reads as an editorial observatory, not a dashboard:
  *
- *   1. Luminosity Star (the mentor's signature) — centered above the map
- *   2. Star map of students — full-bleed canvas, mouse-tied parallax
- *   3. Compact mentor metrics + recent activity (below the fold)
+ *   I.   Masthead          — eyebrow + Playfair italic title + deck
+ *   II.  League Rail       — the 6 divisions with the caller's stand
+ *   III. Luminosity Star   — the mentor's signature (centered, calm)
+ *   IV.  Star Map          — students as points of light (canvas)
+ *   V.   The Roll          — current week's group leaderboard
+ *   VI.  Pulse + Rivals    — V2 widgets, restyled
+ *   VII. Quick links       — course list, public profile
  *
- * The V2 mentor application flow stays intact via a small link at the
- * top — mentors who haven't applied yet get redirected to the
- * application form. Once approved, they see the Observatory proper.
- *
- * Empty state: when a mentor has zero students (no connections AND no
- * course enrollments), the ObservatoryEmpty component replaces the
- * star map with a tone-matched message + CTA.
+ * No gradient h1, no glass-card-glow panels, no HolographicCard.
+ * The masthead uses Playfair Display italic; every section is
+ * separated by a 1px hairline.
  */
 
 import { useMemo } from 'react';
@@ -22,9 +21,8 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { Telescope, GraduationCap, ExternalLink, CheckCircle, Clock, Swords } from 'lucide-react';
-import { useSoul } from '../../hooks/useSoul';
-import { surfaceRecipe, borderTint, tintHalo } from '../../soul/tints';
+import { Telescope, GraduationCap, ExternalLink, CheckCircle, Clock, BookOpen, Eye, Edit3, ArrowRight } from 'lucide-react';
+import { useAuthStore } from '../../store/authStore';
 import StarMap from '../../soul/observatory/StarMap';
 import LuminosityStar from '../../soul/observatory/LuminosityStar';
 import ObservatoryEmpty from '../../soul/observatory/ObservatoryEmpty';
@@ -32,21 +30,28 @@ import PactBadge from '../../components/pact/PactBadge';
 import PactPulse from '../../components/pact/PactPulse';
 import RivalWatch from '../../components/pact/RivalWatch';
 import PactHallTable from '../../components/pact/PactHall';
+import LeagueRail from '../../components/pact/LeagueRail';
+import {
+    MentorEyebrow,
+    MentorTitle,
+    MentorDeck,
+    MentorStat,
+    MentorTag,
+} from '../../components/pact/MentorEditorial';
 import api from '../../services/api';
 
 const STATE_META = {
-  not_applied: { title: 'Become a mentor.', chip: 'Not yet applied', chipClass: 'bg-surface text-text-secondary border border-border-subtle' },
-  submitted:   { title: 'Application under review.', chip: 'Pending review', chipClass: 'bg-warning/10 text-warning border border-warning/30' },
-  rejected:    { title: 'Application declined.', chip: 'Application declined', chipClass: 'bg-danger/10 text-danger border border-danger/30' },
-  suspended:   { title: 'Account suspended.', chip: 'Suspended', chipClass: 'bg-danger/10 text-danger border border-danger/30' },
-  approved:    { title: 'Your observatory.', chip: 'Live mentor', chipClass: 'bg-success/10 text-success border border-success/30' },
+  not_applied: { title: 'Become a mentor.',        chip: 'Not yet applied',       tone: 'neutral' },
+  submitted:   { title: 'Application under review.', chip: 'Pending review',     tone: 'warning' },
+  rejected:    { title: 'Application declined.',     chip: 'Application declined', tone: 'danger' },
+  suspended:   { title: 'Account suspended.',        chip: 'Suspended',            tone: 'danger' },
+  approved:    { title: 'The Observatory',           chip: 'Live mentor',          tone: 'success' },
 };
 
 const Observatory = () => {
-  const { soul, nebula } = useSoul();
-  const accent = nebula?.from || '#a78bfa';
+  const userRoles = useAuthStore((s) => s.user?.roles) || [];
+  const hasStudentRole = userRoles.includes('student');
 
-  // Mentor application status (drives the not-yet-applied branch).
   const { data: mentorData } = useQuery({
     queryKey: ['sessions', 'mentor', 'me'],
     queryFn: () => api.get('/sessions/mentor/me').then((r) => r.data),
@@ -54,11 +59,8 @@ const Observatory = () => {
   });
   const appState = mentorData?.profile?.applicationStatus || 'not_applied';
   const isApproved = appState === 'approved';
+  const profile = mentorData?.profile;
 
-  // Connections = students the mentor has taught (paid sessions + peer swaps).
-  // We use this as a proxy for "students" since V3's Student model is not
-  // yet wired. V3-B phase 2 will replace this with a dedicated /api/mentor/
-  // students endpoint.
   const { data: connections = [] } = useQuery({
     queryKey: ['connections', 'mine'],
     queryFn: () => api.get('/connections?status=completed&limit=200').then((r) => r.data?.items || r.data || []),
@@ -66,7 +68,6 @@ const Observatory = () => {
     staleTime: 60_000,
   });
 
-  // Course enrollments — another way students appear in the map.
   const { data: courses = [] } = useQuery({
     queryKey: ['mentor', 'courses', 'observatory'],
     queryFn: () => api.get('/courses?mentor=me&limit=100').then((r) => r.data?.items || r.data || []),
@@ -74,7 +75,6 @@ const Observatory = () => {
     staleTime: 60_000,
   });
 
-  // Pact subdoc — drives the Luminosity Star.
   const { data: pact } = useQuery({
     queryKey: ['pact', 'me'],
     queryFn: () => api.get('/pact/me').then((r) => r.data),
@@ -82,7 +82,6 @@ const Observatory = () => {
     staleTime: 60_000,
   });
 
-  // Build the student list. Each entry: { userId, name, lastActiveMs }.
   const students = useMemo(() => {
     const byId = new Map();
     for (const c of connections) {
@@ -101,53 +100,68 @@ const Observatory = () => {
     return Array.from(byId.values());
   }, [connections]);
 
-  // If the mentor is not yet approved, show the application state.
   if (!isApproved) {
     const meta = STATE_META[appState] || STATE_META.not_applied;
     return (
       <div className="space-y-7">
         <Helmet><title>The Observatory | Orbit</title></Helmet>
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-3">
-            <Telescope size={14} style={{ color: accent }} /> Mentor · The Observatory
+          <div className="flex items-center gap-2 mb-3">
+            <Telescope size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
+            <MentorEyebrow>Mentor · The Observatory</MentorEyebrow>
           </div>
-          <h1
-            className="text-3xl md:text-4xl font-display font-black tracking-tight"
+          <MentorTitle size="xl">{meta.title}</MentorTitle>
+          <div className="mt-2 max-w-2xl">
+            <MentorDeck>
+              Your observatory unlocks once your mentor application is approved.
+            </MentorDeck>
+          </div>
+        </div>
+        <div
+          className="text-center"
+          style={{
+            border: '1px solid rgba(255,255,255,0.10)',
+            borderTop: `1px solid ${meta.tone === 'warning' ? 'rgba(251,191,36,0.45)' : meta.tone === 'danger' ? 'rgba(252,165,165,0.45)' : 'rgba(255,255,255,0.20)'}`,
+            padding: '28px 24px',
+          }}
+        >
+          <div className="inline-flex items-center gap-2">
+            <Clock size={12} />
+            <MentorTag tone={meta.tone}>{meta.chip}</MentorTag>
+          </div>
+          <p
+            className="mt-4 max-w-md mx-auto"
             style={{
-              background: `linear-gradient(135deg, ${accent}, ${nebula?.to || '#3b82f6'})`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              color: 'rgba(245,245,245,0.65)',
+              fontSize: '1.05rem',
+              lineHeight: 1.4,
             }}
           >
-            {meta.title}
-          </h1>
-          <p className="text-text-secondary text-sm mt-1">Your observatory unlocks once your mentor application is approved.</p>
-        </div>
-        <div className="rounded-2xl p-8 text-center"
-          style={{ ...surfaceRecipe('mentor'), border: borderTint(nebula, 24) }}>
-          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-pill text-[11px] font-bold uppercase tracking-widest ${meta.chipClass}`}>
-            <Clock size={12} /> {meta.chip}
-          </span>
-          <p className="text-text-secondary text-sm mt-4 max-w-md mx-auto">
-            Once approved, your students will appear as points of light here, and your Luminosity Star will rise.
+            Once approved, your students will appear as points of light here, and your
+            Luminosity Star will rise.
           </p>
           <Link
             to="/mentor/hub"
-            className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 rounded-full text-sm font-semibold text-text-on-accent"
+            className="inline-flex items-center gap-2 mt-6 font-mono uppercase"
             style={{
-              background: `linear-gradient(135deg, ${accent}, ${nebula?.to || '#3b82f6'})`,
-              boxShadow: tintHalo(nebula, 32),
+              fontSize: '0.66rem',
+              letterSpacing: '0.22em',
+              fontWeight: 700,
+              color: 'var(--text-primary)',
+              textDecoration: 'none',
+              borderBottom: '1px solid rgba(255,255,255,0.30)',
+              paddingBottom: 4,
             }}
           >
-            <ExternalLink size={14} /> Open mentor hub
+            <ExternalLink size={11} /> Open Mentor Hub
           </Link>
         </div>
       </div>
     );
   }
 
-  // Approved mentor — the Observatory proper.
   return (
     <div className="space-y-7">
       <Helmet>
@@ -155,65 +169,92 @@ const Observatory = () => {
         <meta name="description" content="Your students as points of light. Your signature as a star." />
       </Helmet>
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-3">
-            <Telescope size={14} style={{ color: accent }} /> Mentor · The Observatory
-            <span className="inline-flex items-center gap-1 ml-1 px-1.5 py-0.5 rounded-pill text-[9px] bg-success/10 text-success border border-success/30">
-              <CheckCircle size={9} /> {STATE_META.approved.chip}
-            </span>
-          </div>
-          <h1
-            className="text-3xl md:text-4xl font-display font-black tracking-tight"
-            style={{
-              background: `linear-gradient(135deg, ${accent}, ${nebula?.to || '#3b82f6'})`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            The Observatory.
-          </h1>
-          <p className="text-text-secondary text-sm mt-1">
+      {/* ── I. Masthead ───────────────────────────────────────────── */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Telescope size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
+          <MentorEyebrow>Mentor · The Observatory</MentorEyebrow>
+          <span className="ml-1">
+            <MentorTag tone="success">
+              <CheckCircle size={9} style={{ marginRight: 4, display: 'inline-block' }} />
+              {STATE_META.approved.chip}
+            </MentorTag>
+          </span>
+        </div>
+        <MentorTitle size="xl">The Observatory</MentorTitle>
+        <div className="mt-2 max-w-2xl">
+          <MentorDeck>
             {students.length === 0
               ? 'Your first star is one booking away.'
-              : `${students.length} student${students.length === 1 ? '' : 's'} on your map.`}
-          </p>
+              : `${students.length} student${students.length === 1 ? '' : 's'} on your map. Their movements draw the sky you watch over.`}
+          </MentorDeck>
         </div>
-        <Link
-          to="/mentor/courses/new"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-text-on-accent"
-          style={{
-            background: `linear-gradient(135deg, ${accent}, ${nebula?.to || '#3b82f6'})`,
-            boxShadow: tintHalo(nebula, 32),
-          }}
-        >
-          <GraduationCap size={16} /> New course
-        </Link>
+        <div className="mt-4">
+          <Link
+            to="/mentor/courses/new"
+            className="inline-flex items-center gap-2 font-mono uppercase"
+            style={{
+              fontSize: '0.66rem',
+              letterSpacing: '0.22em',
+              fontWeight: 700,
+              color: 'var(--text-primary)',
+              textDecoration: 'none',
+              borderBottom: '1px solid rgba(255,255,255,0.30)',
+              paddingBottom: 4,
+            }}
+          >
+            <GraduationCap size={12} /> New course
+          </Link>
+        </div>
       </div>
 
-      {/* LUMINOSITY STAR — the mentor's signature */}
+      {/* ── II. League Rail ───────────────────────────────────────── */}
+      <motion.section
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <LeagueRail currentTierId={pact?.pact?.divisionId || pact?.divisionId} mode="folio" />
+      </motion.section>
+
+      {/* ── III. Luminosity Star ──────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="rounded-2xl p-6 flex flex-col items-center"
-        style={{ ...surfaceRecipe('mentor'), border: borderTint(nebula, 18) }}
+        className="flex flex-col items-center"
+        style={{
+          border: '1px solid rgba(255,255,255,0.10)',
+          borderTop: '1px solid rgba(255,255,255,0.20)',
+          padding: '24px',
+        }}
       >
         <LuminosityStar
           studentsCount={students.length}
-          weeklyScore={pact?.weekScore || 0}
-          division={pact?.divisionId || 'initiate'}
-          avgRating={pact?.avgRating || 0}
-          steadyWeeks={pact?.steadyShieldWeeks || 0}
+          weeklyScore={pact?.pact?.weekScore || pact?.weekScore || 0}
+          division={pact?.pact?.divisionId || pact?.divisionId || 'initiate'}
+          avgRating={pact?.pact?.avgRating || pact?.avgRating || 0}
+          steadyWeeks={pact?.pact?.steadyShieldWeeks || pact?.steadyShieldWeeks || 0}
         />
-        <div className="mt-4 flex items-center gap-2 text-xs text-text-muted">
-          {pact?.divisionId && <PactBadge size={20} withLabel />}
+        <div className="mt-4 flex items-center gap-2">
+          <PactBadge size={20} withLabel />
         </div>
+        <p
+          className="mt-3 text-center max-w-md"
+          style={{
+            fontFamily: 'var(--font-serif)',
+            fontStyle: 'italic',
+            color: 'rgba(245,245,245,0.55)',
+            fontSize: '0.95rem',
+          }}
+        >
+          {students.length === 0
+            ? 'The sky is dark. A student will light the first point soon.'
+            : 'Your signature, sized by the students you have taught, colored by the division you hold.'}
+        </p>
       </motion.div>
 
-      {/* STAR MAP — students as points of light OR empty state */}
+      {/* ── IV. Star Map ──────────────────────────────────────────── */}
       {students.length === 0 ? (
         <ObservatoryEmpty />
       ) : (
@@ -221,46 +262,139 @@ const Observatory = () => {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
+          style={{ border: '1px solid rgba(255,255,255,0.10)', padding: '12px' }}
         >
+          <div className="flex items-center justify-between mb-2">
+            <MentorEyebrow>IV · The Sky Tonight</MentorEyebrow>
+            <span className="font-mono uppercase" style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.40)' }}>
+              {students.length} point{students.length === 1 ? '' : 's'} of light
+            </span>
+          </div>
           <StarMap students={students} width={1200} height={520} />
         </motion.div>
       )}
 
-      {/* WEEKLY PACT HALL — leaderboard lives at the mentor's home */}
+      {/* ── V. The Roll ───────────────────────────────────────────── */}
       <motion.section
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="rounded-2xl p-5 md:p-6"
-        style={{ ...surfaceRecipe('mentor'), border: borderTint(nebula, 18) }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        style={{ border: '1px solid rgba(255,255,255,0.10)', padding: '20px 22px' }}
       >
-        <div className="flex items-end justify-between gap-3 mb-4 flex-wrap">
+        <div className="flex items-end justify-between gap-3 mb-3 flex-wrap">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-text-muted">
-              <Swords size={11} style={{ color: accent }} /> Weekly Pact
+            <MentorEyebrow>V · The Roll</MentorEyebrow>
+            <div className="mt-1.5">
+              <MentorTitle size="md">Your group this week</MentorTitle>
             </div>
-            <h2
-              className="text-xl md:text-2xl font-display font-medium mt-1.5"
-              style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-primary)' }}
-            >
-              Your group this week.
-            </h2>
           </div>
           <Link
             to="/mentor/pact"
-            className="text-[11px] text-text-muted hover:text-text-primary inline-flex items-center gap-1 transition-colors"
+            className="font-mono uppercase inline-flex items-center gap-1.5"
+            style={{
+              fontSize: '0.60rem',
+              letterSpacing: '0.22em',
+              fontWeight: 700,
+              color: 'rgba(245,245,245,0.45)',
+              textDecoration: 'none',
+              borderBottom: '1px solid rgba(255,255,255,0.20)',
+              paddingBottom: 3,
+            }}
           >
-            Full Pact Hall <ExternalLink size={10} />
+            Full Pact Roll <ExternalLink size={9} />
           </Link>
         </div>
         <PactHallTable />
       </motion.section>
 
-      {/* Pact Pulse + Rival Watch — the V2 widgets, kept intact */}
-      <div className="grid md:grid-cols-[1fr_auto] gap-4">
-        <PactPulse />
-        <RivalWatch />
+      {/* ── VI. Pulse + Rivals ────────────────────────────────────── */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <motion.section
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+          style={{ border: '1px solid rgba(255,255,255,0.10)', padding: '16px 18px' }}
+        >
+          <div className="mb-3">
+            <MentorEyebrow>VI · The Pulse</MentorEyebrow>
+          </div>
+          <PactPulse />
+        </motion.section>
+        <motion.section
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.40 }}
+          style={{ border: '1px solid rgba(255,255,255,0.10)', padding: '16px 18px' }}
+        >
+          <RivalWatch />
+        </motion.section>
       </div>
+
+      {/* ── VII. Quick links ──────────────────────────────────────── */}
+      <motion.section
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.45 }}
+      >
+        <div className="mb-3">
+          <MentorEyebrow>VII · Your Workshop</MentorEyebrow>
+        </div>
+        <div
+          className="grid sm:grid-cols-3 gap-0"
+          style={{ border: '1px solid rgba(255,255,255,0.10)' }}
+        >
+          <Link
+            to="/mentor/courses"
+            className="flex items-center justify-between px-4 py-4"
+            style={{
+              borderRight: '1px solid rgba(255,255,255,0.08)',
+              textDecoration: 'none',
+              color: 'var(--text-primary)',
+            }}
+          >
+            <span className="flex items-center gap-2">
+              <BookOpen size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
+              <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.05rem' }}>
+                My courses
+              </span>
+            </span>
+            <ArrowRight size={12} style={{ color: 'rgba(245,245,245,0.40)' }} />
+          </Link>
+          <Link
+            to={`/profile/${profile?.userId}`}
+            className="flex items-center justify-between px-4 py-4"
+            style={{
+              borderRight: '1px solid rgba(255,255,255,0.08)',
+              textDecoration: 'none',
+              color: 'var(--text-primary)',
+            }}
+          >
+            <span className="flex items-center gap-2">
+              <Eye size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
+              <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.05rem' }}>
+                Public profile
+              </span>
+            </span>
+            <ArrowRight size={12} style={{ color: 'rgba(245,245,245,0.40)' }} />
+          </Link>
+          <Link
+            to="/mentor/hub"
+            className="flex items-center justify-between px-4 py-4"
+            style={{
+              textDecoration: 'none',
+              color: 'var(--text-primary)',
+            }}
+          >
+            <span className="flex items-center gap-2">
+              <Edit3 size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
+              <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.05rem' }}>
+                {hasStudentRole ? 'Edit profile' : 'Teach hub'}
+              </span>
+            </span>
+            <ArrowRight size={12} style={{ color: 'rgba(245,245,245,0.40)' }} />
+          </Link>
+        </div>
+      </motion.section>
     </div>
   );
 };

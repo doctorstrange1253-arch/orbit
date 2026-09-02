@@ -1,5 +1,5 @@
 /**
- * MentorHub.jsx — mentor-side dashboard at /teach.
+ * MentorHub.jsx — mentor-side dashboard at /mentor/hub.
  *
  * Single page, 5 application states driven by GET /api/sessions/mentor/me:
  *
@@ -9,78 +9,72 @@
  *   rejected    → Rejection reason + re-apply form pre-filled from prior.
  *   suspended   → Suspension reason + appeal instructions.
  *
- * Themed like the rest of the Sessions surface: FuturisticBackdrop,
- * glass-card-glow panels, gradient-text title, btn-gradient primary CTAs,
- * semantic status tokens for the 5 state colors.
+ * V3 — fully editorial. The masthead uses Playfair Display italic.
+ * The state panels drop glass-card-glow and HolographicCard for a
+ * 1px-hairline treatment that reads like a private-club roster.
  */
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-    GraduationCap, Sparkles, Clock, Star, IndianRupee, Calendar, Loader,
+    GraduationCap, Clock, Star, IndianRupee, Calendar, Loader,
     CheckCircle, XCircle, PauseCircle, IndianRupee as RupeeIcon, Edit3,
     Eye, BookOpen, MessageSquare, ArrowRight,
 } from 'lucide-react';
 import api from '../services/api';
 import ErrorState from '../components/common/ErrorState';
 import EmptyState from '../components/common/EmptyState';
-import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
 import MentorApplicationForm from '../components/mentor/MentorApplicationForm';
 import AvailabilityEditor from '../components/sessions/AvailabilityEditor';
 import { useAuthStore } from '../store/authStore';
 import PactPulse from '../components/pact/PactPulse';
 import RivalWatch from '../components/pact/RivalWatch';
 import PactBadge from '../components/pact/PactBadge';
+import {
+    MentorEyebrow,
+    MentorTitle,
+    MentorDeck,
+    MentorStat,
+    MentorTag,
+} from '../components/pact/MentorEditorial';
 
-// State-level visual config. Each state has a title, a tinted chip color, an
-// icon, and copy for the hero. Colors use the semantic tokens so the state
-// reads correctly in both themes.
 const STATE_META = {
     not_applied: {
         title: "Become a mentor.",
         sub: "Earn from your expertise. Set your own hours, your own rate.",
         chip: "Not yet applied",
-        chipClass: "bg-surface text-text-secondary border border-border-subtle",
-        Icon: GraduationCap,
+        tone: "neutral",
     },
     submitted: {
         title: "Application under review.",
         sub: "Our team usually reviews within 24–48 hours. We'll ping you here.",
         chip: "Pending review",
-        chipClass: "bg-warning/10 text-warning border border-warning/30",
-        Icon: Clock,
+        tone: "warning",
     },
     approved: {
         title: "You're live.",
         sub: "Students can book you right now. Your earnings update after each session completes.",
         chip: "Live mentor",
-        chipClass: "bg-success/10 text-success border border-success/30",
-        Icon: CheckCircle,
+        tone: "success",
     },
     rejected: {
         title: "Not approved this time.",
         sub: "Update your application based on the feedback below and re-submit.",
         chip: "Application declined",
-        chipClass: "bg-danger/10 text-danger border border-danger/30",
-        Icon: XCircle,
+        tone: "danger",
     },
     suspended: {
         title: "Account suspended.",
         sub: "Reach out to the team to appeal and get back online.",
         chip: "Suspended",
-        chipClass: "bg-danger/10 text-danger border border-danger/30",
-        Icon: PauseCircle,
+        tone: "danger",
     },
 };
 
 const MentorHub = () => {
     const qc = useQueryClient();
-    // Some users are both mentor + student on the same account (e.g. they
-    // teach React and book sessions for Public Speaking). The /my-sessions
-    // quick-link is only valid for those users — pure mentors get a scroll
-    // anchor to the upcoming-sessions section on this same page instead.
     const userRoles = useAuthStore((s) => s.user?.roles) || [];
     const hasStudentRole = userRoles.includes('student');
     const { data, isLoading, error, refetch } = useQuery({
@@ -111,83 +105,98 @@ const MentorHub = () => {
         .sort((a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt));
 
     return (
-        <div className="aurora-stage relative min-h-screen overflow-hidden">
-            <FuturisticBackdrop />
+        <div className="space-y-10">
+            <Helmet><title>Teach · Orbit</title></Helmet>
 
-            <div className="relative z-10 max-w-5xl mx-auto px-4 py-10 md:py-14">
-                <Helmet><title>Teach · Orbit Sessions</title></Helmet>
-
-                <motion.header
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    className="pt-2 pb-10"
-                    style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
-                >
-                    <div className="font-mono uppercase tracking-[0.22em] text-[0.68rem] font-bold text-text-muted mb-5 flex items-center gap-2">
-                        <GraduationCap className="w-3 h-3 text-accent" /> Teach on Orbit
-                    </div>
-                    <h1
-                        style={{
-                            fontFamily: 'var(--font-editorial)',
-                            fontStyle: 'italic',
-                            fontWeight: 700,
-                            lineHeight: 0.96,
-                            letterSpacing: '-0.03em',
-                            fontSize: 'clamp(2.6rem, 5.8vw, 4.6rem)',
-                            color: 'var(--text-primary)',
-                            marginBottom: 14,
-                        }}
-                    >
-                        {meta.title}
-                    </h1>
-                    <p className="text-text-secondary text-base md:text-lg max-w-2xl">{meta.sub}</p>
-                    {profile && (
-                        <div className={`inline-flex items-center gap-1.5 mt-5 px-3 py-1.5 rounded-pill text-xs font-bold uppercase tracking-widest ${meta.chipClass}`}>
+            <motion.header
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+                <div className="flex items-center gap-2 mb-3">
+                    <GraduationCap size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
+                    <MentorEyebrow>Teach on Orbit</MentorEyebrow>
+                </div>
+                <MentorTitle size="xl">{meta.title}</MentorTitle>
+                <div className="mt-2 max-w-2xl">
+                    <MentorDeck>{meta.sub}</MentorDeck>
+                </div>
+                {profile && (
+                    <div className="mt-5">
+                        <MentorTag tone={meta.tone}>
                             {state === "approved" && (
                                 <span
-                                    className="w-2 h-2 rounded-full bg-success"
-                                    style={{ boxShadow: '0 0 6px var(--success)' }}
+                                    className="rounded-full"
+                                    style={{
+                                        width: 6,
+                                        height: 6,
+                                        background: 'var(--success)',
+                                        display: 'inline-block',
+                                        marginRight: 6,
+                                        boxShadow: '0 0 6px var(--success)',
+                                    }}
                                 />
                             )}
-                            <meta.Icon className="w-3.5 h-3.5" />
                             {meta.chip}
-                        </div>
-                    )}
-                </motion.header>
-
-                {/* Body — branches on state */}
-                {isLoading ? (
-                    <div className="glass-card-glow p-6 text-text-secondary flex items-center gap-2">
-                        <Loader className="w-4 h-4 animate-spin" /> Loading your mentor profile…
+                        </MentorTag>
                     </div>
-                ) : error ? (
-                    <ErrorState message="Couldn't load your mentor profile" onRetry={refetch} />
-                ) : state === "not_applied" ? (
-                    <NotAppliedView />
-                ) : state === "submitted" ? (
-                    <PendingView profile={profile} />
-                ) : state === "approved" ? (
-                    <ApprovedView
-                        profile={profile}
-                        earnings={earnings}
-                        upcomingBookings={upcomingBookings}
-                        onRefresh={() => {
-                            qc.invalidateQueries({ queryKey: ['sessions', 'mentor', 'me'] });
-                            qc.invalidateQueries({ queryKey: ['sessions', 'mentor', 'bookings'] });
-                        }}
-                    />
-                ) : state === "rejected" ? (
-                    <RejectedView profile={profile} />
-                ) : state === "suspended" ? (
-                    <SuspendedView profile={profile} />
-                ) : null}
-            </div>
+                )}
+            </motion.header>
+
+            {isLoading ? (
+                <div className="py-12 text-center">
+                    <Loader className="w-4 h-4 inline-block animate-spin mr-2" />
+                    <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.55)' }}>
+                        Reading your mentor profile.
+                    </span>
+                </div>
+            ) : error ? (
+                <ErrorState message="Couldn't load your mentor profile" onRetry={refetch} />
+            ) : state === "not_applied" ? (
+                <NotAppliedView />
+            ) : state === "submitted" ? (
+                <PendingView profile={profile} />
+            ) : state === "approved" ? (
+                <ApprovedView
+                    profile={profile}
+                    earnings={earnings}
+                    upcomingBookings={upcomingBookings}
+                    onRefresh={() => {
+                        qc.invalidateQueries({ queryKey: ['sessions', 'mentor', 'me'] });
+                        qc.invalidateQueries({ queryKey: ['sessions', 'mentor', 'bookings'] });
+                    }}
+                />
+            ) : state === "rejected" ? (
+                <RejectedView profile={profile} />
+            ) : state === "suspended" ? (
+                <SuspendedView profile={profile} />
+            ) : null}
         </div>
     );
 };
 
 // ── State views ────────────────────────────────────────────────────────────
+
+const Panel = ({ tone = 'neutral', children, className = '', style = {} }) => {
+    const topColor =
+        tone === 'warning' ? 'rgba(251,191,36,0.45)' :
+        tone === 'danger'  ? 'rgba(252,165,165,0.45)' :
+        tone === 'success' ? 'rgba(110,231,183,0.45)' :
+        'rgba(255,255,255,0.20)';
+    return (
+        <div
+            className={className}
+            style={{
+                border: '1px solid rgba(255,255,255,0.10)',
+                borderTop: `1px solid ${topColor}`,
+                padding: '20px 22px',
+                ...style,
+            }}
+        >
+            {children}
+        </div>
+    );
+};
 
 const NotAppliedView = () => (
     <motion.div
@@ -195,16 +204,25 @@ const NotAppliedView = () => (
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="grid lg:grid-cols-[1fr,1fr] gap-6"
     >
-        <div className="glass-card-glow p-6 space-y-4">
-            <h2 className="text-xl font-bold text-text-primary">Why mentor on Orbit?</h2>
-            <ul className="space-y-3 text-sm text-text-secondary">
-                <Bullet icon={<RupeeIcon className="w-4 h-4 text-accent" />} title="Keep 85% of every session" body="Payout multiplier jumps to 90% after 4.8★ across 20+ ratings." />
-                <Bullet icon={<Calendar className="w-4 h-4 text-accent" />} title="You set your own hours" body="Tune a weekly availability grid in UTC. No minimums, no quotas." />
-                <Bullet icon={<Sparkles className="w-4 h-4 text-accent" />} title="Escrow is handled for you" body="Razorpay holds the money; you get paid automatically on session completion." />
-                <Bullet icon={<MessageSquare className="w-4 h-4 text-accent" />} title="Built-in messaging" body="Chat with students before the session using the same inbox you already use." />
+        <Panel>
+            <MentorEyebrow>I · Why Mentor</MentorEyebrow>
+            <div className="mt-2.5">
+                <MentorTitle size="md">A quiet practice</MentorTitle>
+            </div>
+            <ul className="mt-5 space-y-4">
+                <Bullet Icon={RupeeIcon} title="Keep 85% of every session" body="The payout multiplier rises to 90% once you have held a 4.8★ across 20+ ratings." />
+                <Bullet Icon={Calendar} title="You set your own hours" body="Tune a weekly availability grid in UTC. No minimums, no quotas." />
+                <Bullet Icon={Edit3} title="Escrow is handled for you" body="Razorpay holds the money; you are paid automatically on session completion." />
+                <Bullet Icon={MessageSquare} title="Built-in messaging" body="Chat with students before the session using the same inbox you already use." />
             </ul>
-        </div>
-        <MentorApplicationForm />
+        </Panel>
+        <Panel>
+            <MentorEyebrow>II · Apply</MentorEyebrow>
+            <div className="mt-2.5 mb-4">
+                <MentorTitle size="md">Tell us about your work</MentorTitle>
+            </div>
+            <MentorApplicationForm />
+        </Panel>
     </motion.div>
 );
 
@@ -212,23 +230,33 @@ const PendingView = ({ profile }) => (
     <motion.div
         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-4"
+        className="space-y-6"
     >
-        <div className="glass-card-glow p-6 space-y-3">
-            <div className="flex items-center gap-2 text-warning">
-                <Clock className="w-4 h-4" />
-                <h2 className="font-bold text-text-primary">What you submitted</h2>
+        <Panel tone="warning">
+            <div className="flex items-center gap-2 mb-3">
+                <Clock size={12} style={{ color: 'rgba(251,191,36,1)' }} />
+                <MentorEyebrow>I · What You Submitted</MentorEyebrow>
             </div>
             <ReadOnlySummary profile={profile} />
-            <p className="text-xs text-text-muted pt-2">
-                Need to update something? Re-submitting will move your application back to the
-                top of the review queue.
+            <p
+                className="mt-4 pt-4"
+                style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontStyle: 'italic',
+                    color: 'rgba(245,245,245,0.55)',
+                    fontSize: '0.95rem',
+                    borderTop: '1px solid rgba(255,255,255,0.08)',
+                }}
+            >
+                Need to update something? Re-submitting will move your application back to the top of the review queue.
             </p>
-        </div>
-        <div className="glass-card-glow p-6">
-            <h3 className="text-sm font-bold text-text-primary mb-3">Edit your application</h3>
+        </Panel>
+        <Panel>
+            <div className="mb-3">
+                <MentorEyebrow>II · Edit Your Application</MentorEyebrow>
+            </div>
             <MentorApplicationForm initial={profile} />
-        </div>
+        </Panel>
     </motion.div>
 );
 
@@ -236,96 +264,171 @@ const ApprovedView = ({ profile, earnings, upcomingBookings, onRefresh }) => (
     <motion.div
         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-6"
+        className="space-y-8"
     >
         {/* Stats row */}
-        <div className="grid sm:grid-cols-3 gap-3">
-            <Stat label="Lifetime earnings" value={`₹${earnings.totalInr}`} sub={`Pending ₹${earnings.pendingInr} · Released ₹${earnings.releasedInr}`} Icon={RupeeIcon} />
-            <Stat label="Rating" value={(profile.rating?.average || 0).toFixed(1)} sub={`${profile.rating?.count || 0} reviews`} Icon={Star} />
-            <Stat label="Payout multiplier" value={`${Math.round((profile.payoutMultiplier || 0.85) * 100)}%`} sub={profile.ratingCutEligibleSince ? "Top tier unlocked" : "Top tier @ 4.8★ / 20+ ratings"} Icon={Sparkles} />
-        </div>
-
-        {/* Mentor Pact row — weekly league + pulse + rivals. The Pact Badge
-            here shows the caller's own tier (uses /pact/me under the hood). */}
-        <div className="grid md:grid-cols-[auto_1fr_1fr] gap-3 items-stretch">
-            <Link to="/mentor/pact" className="glass-card-glow p-4 flex items-center gap-3 hover:border-accent/40">
-                <PactBadge size={36} withLabel />
-                <div className="min-w-0">
-                    <div className="text-[10px] font-black uppercase tracking-widest text-text-muted">Weekly Pact</div>
-                    <div className="text-sm font-bold text-text-primary">Your standing</div>
+        <div>
+            <div className="mb-3">
+                <MentorEyebrow>I · The Standing</MentorEyebrow>
+            </div>
+            <div
+                className="grid sm:grid-cols-3 gap-0"
+                style={{ border: '1px solid rgba(255,255,255,0.10)' }}
+            >
+                <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}>
+                    <MentorStat
+                        label="Lifetime earnings"
+                        value={`₹${earnings.totalInr || 0}`}
+                        hint={`Pending ₹${earnings.pendingInr || 0} · Released ₹${earnings.releasedInr || 0}`}
+                    />
                 </div>
-                <ArrowRight className="w-4 h-4 text-text-muted ml-auto" />
-            </Link>
-            <PactPulse />
-            <RivalWatch />
+                <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}>
+                    <MentorStat
+                        label="Rating"
+                        value={(profile.rating?.average || 0).toFixed(1)}
+                        hint={`${profile.rating?.count || 0} reviews`}
+                    />
+                </div>
+                <div>
+                    <MentorStat
+                        label="Payout multiplier"
+                        value={`${Math.round((profile.payoutMultiplier || 0.85) * 100)}%`}
+                        hint={profile.ratingCutEligibleSince ? "Top tier unlocked" : "Top tier @ 4.8★ / 20+ ratings"}
+                    />
+                </div>
+            </div>
         </div>
 
-        {/* Quick links — only show "All bookings" if the user also holds the
-            student role. /my-sessions is the student-side view; mentors who
-            don't also pay for sessions get a separate Upcoming/Past list
-            rendered further down this page, not /my-sessions. */}
-        <div className="grid sm:grid-cols-3 gap-3">
-            <Link to={`/profile/${profile.userId}`} className="nav-tab-glass p-4 flex items-center justify-between hover:border-accent/40">
-                <span className="flex items-center gap-2 text-sm font-semibold text-text-primary"><Eye className="w-4 h-4 text-accent" /> Public profile</span>
-                <ArrowRight className="w-4 h-4 text-text-muted" />
-            </Link>
-            <a href="#edit-profile" className="nav-tab-glass p-4 flex items-center justify-between hover:border-accent/40">
-                <span className="flex items-center gap-2 text-sm font-semibold text-text-primary"><Edit3 className="w-4 h-4 text-accent" /> Edit profile</span>
-                <ArrowRight className="w-4 h-4 text-text-muted" />
-            </a>
-            {hasStudentRole ? (
-              <Link to="/student/sessions" className="nav-tab-glass p-4 flex items-center justify-between hover:border-accent/40">
-                  <span className="flex items-center gap-2 text-sm font-semibold text-text-primary"><BookOpen className="w-4 h-4 text-accent" /> All bookings</span>
-                  <ArrowRight className="w-4 h-4 text-text-muted" />
-              </Link>
-            ) : (
-              <a href="#upcoming" className="nav-tab-glass p-4 flex items-center justify-between hover:border-accent/40">
-                  <span className="flex items-center gap-2 text-sm font-semibold text-text-primary"><BookOpen className="w-4 h-4 text-accent" /> Upcoming sessions</span>
-                  <ArrowRight className="w-4 h-4 text-text-muted" />
-              </a>
-            )}
+        {/* Pact row */}
+        <div>
+            <div className="mb-3">
+                <MentorEyebrow>II · The Pact</MentorEyebrow>
+            </div>
+            <div className="grid md:grid-cols-[auto_1fr_1fr] gap-0" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>
+                <Link
+                    to="/mentor/pact"
+                    className="flex items-center gap-3 p-4"
+                    style={{
+                        borderRight: '1px solid rgba(255,255,255,0.08)',
+                        textDecoration: 'none',
+                        color: 'var(--text-primary)',
+                    }}
+                >
+                    <PactBadge size={36} withLabel />
+                    <div className="min-w-0">
+                        <div className="font-mono uppercase" style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}>
+                            Weekly Pact
+                        </div>
+                        <div style={{ fontFamily: 'var(--font-editorial)', fontStyle: 'italic', fontSize: '1.05rem', color: 'var(--text-primary)' }}>
+                            Your standing
+                        </div>
+                    </div>
+                    <ArrowRight size={14} style={{ color: 'rgba(245,245,245,0.40)', marginLeft: 'auto' }} />
+                </Link>
+                <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)', padding: '14px 16px' }}>
+                    <PactPulse />
+                </div>
+                <div style={{ padding: '14px 16px' }}>
+                    <RivalWatch />
+                </div>
+            </div>
+        </div>
+
+        {/* Quick links */}
+        <div>
+            <div className="mb-3">
+                <MentorEyebrow>III · Quick Links</MentorEyebrow>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-0" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>
+                <QuickLink to={`/profile/${profile.userId}`} Icon={Eye} label="Public profile" />
+                <a href="#edit-profile" className="block" style={{ borderLeft: '1px solid rgba(255,255,255,0.08)', textDecoration: 'none', color: 'var(--text-primary)' }}>
+                    <QuickLinkBody Icon={Edit3} label="Edit profile" />
+                </a>
+                {hasStudentRole ? (
+                    <Link to="/student/sessions" className="block" style={{ borderLeft: '1px solid rgba(255,255,255,0.08)', textDecoration: 'none', color: 'var(--text-primary)' }}>
+                        <QuickLinkBody Icon={BookOpen} label="All bookings" />
+                    </Link>
+                ) : (
+                    <a href="#upcoming" className="block" style={{ borderLeft: '1px solid rgba(255,255,255,0.08)', textDecoration: 'none', color: 'var(--text-primary)' }}>
+                        <QuickLinkBody Icon={BookOpen} label="Upcoming sessions" />
+                    </a>
+                )}
+            </div>
         </div>
 
         {/* Upcoming bookings */}
-        <div className="glass-card-glow p-6">
-            <h3 className="text-sm font-bold text-text-primary mb-3">Upcoming sessions</h3>
-            {upcomingBookings.length === 0 ? (
-                <EmptyState
-                    icon={<Calendar className="w-8 h-8" />}
-                    title="No upcoming sessions"
-                    message="When a student books a slot, it'll show up here."
-                />
-            ) : (
-                <ul className="space-y-2">
-                    {upcomingBookings.map((b) => (
-                        <li key={b._id} className="flex items-center gap-3 text-sm p-3 rounded-xl nav-tab-glass">
-                            <div className="w-9 h-9 rounded-full bg-surface border border-border-subtle flex items-center justify-center font-bold text-text-primary">
-                                {b.student?.name?.[0] || "S"}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="font-semibold text-text-primary truncate">{b.student?.name || "Student"}</div>
-                                <div className="text-xs text-text-muted">
-                                    {new Date(b.scheduledAt).toLocaleString()} · {b.durationMin} min
+        <div>
+            <div className="mb-3">
+                <MentorEyebrow>IV · Upcoming Sessions</MentorEyebrow>
+            </div>
+            <Panel>
+                {upcomingBookings.length === 0 ? (
+                    <EmptyState
+                        icon={<Calendar className="w-8 h-8" />}
+                        title="No upcoming sessions"
+                        message="When a student books a slot, it will appear here."
+                    />
+                ) : (
+                    <ul className="space-y-0">
+                        {upcomingBookings.map((b) => (
+                            <li
+                                key={b._id}
+                                className="flex items-center gap-3 py-3"
+                                style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+                            >
+                                <div
+                                    className="w-9 h-9 rounded-full flex items-center justify-center font-bold flex-shrink-0"
+                                    style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--text-primary)' }}
+                                >
+                                    {b.student?.name?.[0] || "S"}
                                 </div>
-                            </div>
-                            <div className="text-xs px-2 py-0.5 rounded-pill bg-info/10 text-info border border-info/30">
-                                {b.status}
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            )}
+                                <div className="flex-1 min-w-0">
+                                    <div className="font-semibold text-text-primary truncate" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.02rem' }}>
+                                        {b.student?.name || "Student"}
+                                    </div>
+                                    <div className="text-[11px] text-text-muted font-mono" style={{ letterSpacing: '0.06em' }}>
+                                        {new Date(b.scheduledAt).toLocaleString()} · {b.durationMin} min
+                                    </div>
+                                </div>
+                                <MentorTag tone="neutral">{b.status}</MentorTag>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </Panel>
         </div>
 
         {/* Editable profile + availability */}
-        <div id="edit-profile" className="grid lg:grid-cols-2 gap-4">
-            <MentorApplicationForm initial={profile} />
-            <div className="space-y-4">
-                <AvailabilityEditor value={profile.availability} onSaved={onRefresh} />
-                <div className="glass-card-glow p-4 text-xs text-text-muted leading-relaxed">
-                    <strong className="text-text-primary">Heads up:</strong> your public profile
-                    uses the <em>headline, bio, hourly rate, skills, and timezone</em> above.
-                    Changes propagate to /sessions within a minute.
+        <div id="edit-profile">
+            <div className="mb-3">
+                <MentorEyebrow>V · Your Workshop</MentorEyebrow>
+            </div>
+            <div className="grid lg:grid-cols-2 gap-6">
+                <Panel>
+                    <div className="mb-3">
+                        <MentorEyebrow>Profile</MentorEyebrow>
+                    </div>
+                    <MentorApplicationForm initial={profile} />
+                </Panel>
+                <div className="space-y-4">
+                    <Panel>
+                        <div className="mb-3">
+                            <MentorEyebrow>Availability</MentorEyebrow>
+                        </div>
+                        <AvailabilityEditor value={profile.availability} onSaved={onRefresh} />
+                    </Panel>
+                    <p
+                        className="px-1"
+                        style={{
+                            fontFamily: 'var(--font-serif)',
+                            fontStyle: 'italic',
+                            color: 'rgba(245,245,245,0.55)',
+                            fontSize: '0.95rem',
+                            lineHeight: 1.4,
+                        }}
+                    >
+                        Your public profile uses the <strong style={{ color: 'var(--text-primary)' }}>headline, bio, hourly rate, skills, and timezone</strong> above. Changes propagate to /sessions within a minute.
+                    </p>
                 </div>
             </div>
         </div>
@@ -336,21 +439,34 @@ const RejectedView = ({ profile }) => (
     <motion.div
         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-4"
+        className="space-y-6"
     >
-        <div className="glass-card-glow p-6 space-y-3 border-danger/30">
-            <div className="flex items-center gap-2 text-danger">
-                <XCircle className="w-4 h-4" />
-                <h2 className="font-bold text-text-primary">Why we declined</h2>
+        <Panel tone="danger">
+            <div className="flex items-center gap-2 mb-3">
+                <XCircle size={12} style={{ color: 'rgba(252,165,165,1)' }} />
+                <MentorEyebrow>I · Why We Declined</MentorEyebrow>
             </div>
-            <p className="text-sm text-text-primary bg-danger/5 border border-danger/20 rounded-lg p-3">
+            <p
+                className="mt-2"
+                style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontStyle: 'italic',
+                    color: 'rgba(245,245,245,0.85)',
+                    fontSize: '1.05rem',
+                    lineHeight: 1.5,
+                    borderTop: '1px solid rgba(252,165,165,0.30)',
+                    paddingTop: 12,
+                }}
+            >
                 {profile.rejectionReason || "No reason was provided. Reach out to the team for details."}
             </p>
-        </div>
-        <div className="glass-card-glow p-6">
-            <h3 className="text-sm font-bold text-text-primary mb-3">Update and re-submit</h3>
+        </Panel>
+        <Panel>
+            <div className="mb-3">
+                <MentorEyebrow>II · Update and Re-submit</MentorEyebrow>
+            </div>
             <MentorApplicationForm initial={profile} />
-        </div>
+        </Panel>
     </motion.div>
 );
 
@@ -358,47 +474,88 @@ const SuspendedView = ({ profile }) => (
     <motion.div
         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-4"
+        className="space-y-6"
     >
-        <div className="glass-card-glow p-6 space-y-3 border-danger/30">
-            <div className="flex items-center gap-2 text-danger">
-                <PauseCircle className="w-4 h-4" />
-                <h2 className="font-bold text-text-primary">Why your account was suspended</h2>
+        <Panel tone="danger">
+            <div className="flex items-center gap-2 mb-3">
+                <PauseCircle size={12} style={{ color: 'rgba(252,165,165,1)' }} />
+                <MentorEyebrow>I · Why Your Account Was Suspended</MentorEyebrow>
             </div>
-            <p className="text-sm text-text-primary bg-danger/5 border border-danger/20 rounded-lg p-3">
+            <p
+                className="mt-2"
+                style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontStyle: 'italic',
+                    color: 'rgba(245,245,245,0.85)',
+                    fontSize: '1.05rem',
+                    lineHeight: 1.5,
+                    borderTop: '1px solid rgba(252,165,165,0.30)',
+                    paddingTop: 12,
+                }}
+            >
                 {profile.suspensionReason || "Reach out to support to learn more."}
             </p>
-        </div>
-        <div className="glass-card-glow p-6 space-y-3">
-            <h3 className="text-sm font-bold text-text-primary">How to appeal</h3>
-            <p className="text-sm text-text-secondary">
-                Email <span className="text-accent">support@orbit.dev</span> with your account
+        </Panel>
+        <Panel>
+            <div className="mb-3">
+                <MentorEyebrow>II · How to Appeal</MentorEyebrow>
+            </div>
+            <p
+                className="text-sm"
+                style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontStyle: 'italic',
+                    color: 'rgba(245,245,245,0.70)',
+                    fontSize: '1.02rem',
+                    lineHeight: 1.5,
+                }}
+            >
+                Email <span style={{ color: 'var(--text-primary)', fontStyle: 'normal', fontFamily: 'var(--font-mono)', fontSize: '0.92rem' }}>support@orbit.dev</span> with your account
                 email and a brief explanation. We usually respond within 2 business days.
                 Your public profile is hidden from the Sessions page while suspended; existing
                 bookings are honored.
             </p>
             <a
                 href="mailto:support@orbit.dev"
-                className="inline-block btn-gradient px-5 py-2.5 rounded-xl text-sm"
+                className="inline-flex items-center gap-2 mt-5 font-mono uppercase"
+                style={{
+                    fontSize: '0.66rem',
+                    letterSpacing: '0.22em',
+                    fontWeight: 700,
+                    color: 'var(--text-primary)',
+                    textDecoration: 'none',
+                    borderBottom: '1px solid rgba(255,255,255,0.30)',
+                    paddingBottom: 4,
+                }}
             >
                 Contact support
             </a>
-        </div>
+        </Panel>
     </motion.div>
 );
 
 // ── Shared bits ────────────────────────────────────────────────────────────
 
 const ReadOnlySummary = ({ profile }) => (
-    <div className="grid sm:grid-cols-2 gap-3 text-sm">
+    <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4 mt-3">
         <Field label="Headline" value={profile.headline || "—"} />
         <Field label="Hourly rate" value={`₹${profile.hourlyRateInr || 0}/hr`} />
         <Field label="Timezone" value={profile.timezone || "—"} />
         <Field label="Skills" value={(profile.skills || []).join(", ") || "—"} />
         {profile.bio && (
             <div className="sm:col-span-2">
-                <div className="text-[10px] uppercase tracking-widest text-text-muted mb-1">Bio</div>
-                <p className="text-sm text-text-primary whitespace-pre-wrap leading-relaxed">{profile.bio}</p>
+                <div
+                    className="font-mono uppercase mb-1"
+                    style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}
+                >
+                    Bio
+                </div>
+                <p
+                    className="text-sm whitespace-pre-wrap leading-relaxed"
+                    style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.85)', fontSize: '1.02rem' }}
+                >
+                    {profile.bio}
+                </p>
             </div>
         )}
     </div>
@@ -406,32 +563,64 @@ const ReadOnlySummary = ({ profile }) => (
 
 const Field = ({ label, value }) => (
     <div>
-        <div className="text-[10px] uppercase tracking-widest text-text-muted mb-1">{label}</div>
-        <div className="text-sm text-text-primary">{value}</div>
-    </div>
-);
-
-const Stat = ({ label, value, sub, Icon }) => (
-    <div className="glass-card-glow p-4">
-        <div className="flex items-center gap-2 text-text-muted text-xs uppercase tracking-widest font-semibold mb-2">
-            <Icon className="w-3.5 h-3.5 text-accent" />
+        <div
+            className="font-mono uppercase mb-1"
+            style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}
+        >
             {label}
         </div>
-        <div className="text-2xl font-black gradient-text">{value}</div>
-        {sub && <div className="text-xs text-text-muted mt-1">{sub}</div>}
+        <div
+            style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-primary)', fontSize: '1.02rem' }}
+        >
+            {value}
+        </div>
     </div>
 );
 
-const Bullet = ({ icon, title, body }) => (
+const Bullet = ({ Icon, title, body }) => (
     <li className="flex items-start gap-3">
-        <div className="w-8 h-8 rounded-xl bg-surface border border-border-subtle flex items-center justify-center flex-shrink-0">
-            {icon}
+        <div
+            className="w-8 h-8 flex items-center justify-center flex-shrink-0"
+            style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--text-primary)' }}
+        >
+            <Icon size={14} />
         </div>
         <div>
-            <div className="text-sm font-semibold text-text-primary">{title}</div>
-            <div className="text-xs text-text-secondary leading-relaxed">{body}</div>
+            <div
+                style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.05rem', color: 'var(--text-primary)', fontWeight: 600 }}
+            >
+                {title}
+            </div>
+            <div
+                className="text-xs leading-relaxed mt-0.5"
+                style={{ fontFamily: 'var(--font-serif)', color: 'rgba(245,245,245,0.65)', fontSize: '0.95rem' }}
+            >
+                {body}
+            </div>
         </div>
     </li>
+);
+
+const QuickLink = ({ to, Icon, label }) => (
+    <Link
+        to={to}
+        className="flex items-center justify-between p-4"
+        style={{ textDecoration: 'none', color: 'var(--text-primary)' }}
+    >
+        <QuickLinkBody Icon={Icon} label={label} />
+    </Link>
+);
+
+const QuickLinkBody = ({ Icon, label }) => (
+    <>
+        <span className="flex items-center gap-2">
+            <Icon size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
+            <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.05rem' }}>
+                {label}
+            </span>
+        </span>
+        <ArrowRight size={12} style={{ color: 'rgba(245,245,245,0.40)' }} />
+    </>
 );
 
 export default MentorHub;
