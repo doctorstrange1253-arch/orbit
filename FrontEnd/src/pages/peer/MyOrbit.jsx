@@ -37,14 +37,12 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { Plus } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
-import { useSoul } from '../../hooks/useSoul';
 import api from '../../services/api';
 import SkillForm from '../../components/skills/SkillForm';
 import SkillCard from '../../components/skills/SkillCard';
 import { SkillGridSkeleton } from '../../components/skeletons';
 import ErrorState from '../../components/common/ErrorState';
-import ErrorBoundary from '../../components/common/ErrorBoundary';
+import SectionBoundary from '../../soul/editorial/SectionBoundary';
 import Masthead from '../../soul/editorial/Masthead';
 import HeroBand from '../../soul/editorial/HeroBand';
 import StatsStrip from '../../soul/editorial/StatsStrip';
@@ -53,44 +51,7 @@ import PeopleRow from '../../soul/editorial/PeopleRow';
 import PullQuote from '../../soul/editorial/PullQuote';
 import EditorialFooter from '../../soul/editorial/EditorialFooter';
 
-// One section's failure must NOT take down the whole page. Each
-// editorial section is wrapped in an ErrorBoundary with a thin,
-// hairline-rule fallback so the issue reads as a missing page, not
-// a crash. The page itself remains a magazine spread.
-const SectionBoundary = ({ name, children }) => (
-  <ErrorBoundary
-    fallback={
-      <section
-        className="py-8"
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
-        aria-label={`${name} (unavailable)`}
-      >
-        <p
-          className="font-mono uppercase tracking-[0.28em]"
-          style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
-        >
-          {name} · Unavailable this issue.
-        </p>
-      </section>
-    }
-  >
-    {children}
-  </ErrorBoundary>
-);
-
 const MyOrbit = () => {
-  const { user } = useAuthStore();
-  // Wrap useSoul in a try/catch so even a hook failure degrades to a
-  // default peer-soul accent rather than the full-page error boundary.
-  let soul;
-  try {
-    soul = useSoul();
-  } catch (err) {
-    // Fall through to a default soul — keeps the page readable.
-    soul = { nebula: { from: '#22d3ee', to: '#0d9488' } };
-  }
-  const { nebula } = soul;
-
   // One fetch for the lede, stats strip, week strip, and (kept
   // for future use) the today timeline. 500 events covers ~12
   // weeks comfortably.
