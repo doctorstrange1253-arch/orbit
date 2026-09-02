@@ -67,6 +67,7 @@ function publicShape(c, mentor, opts = {}) {
             durationSec: l.durationSec,
             order: l.order,
             isFree: l.isFree,
+            isIntro: !!l.isIntro,
             isBoss: !!l.isBoss,
             promiseCopy: l.promiseCopy || "",
             whyCopy: l.whyCopy || "",
@@ -105,6 +106,10 @@ const LESSON_COPY_FIELDS = ["promiseCopy", "whyCopy", "rememberCopy", "bossChall
 
 function readLessonAuthoringFields(body, target) {
     if (typeof body.isBoss === "boolean") target.isBoss = body.isBoss;
+    if (typeof body.isIntro === "boolean") {
+        target.isIntro = body.isIntro;
+        if (body.isIntro) target.isFree = true;
+    }
     for (const key of LESSON_COPY_FIELDS) {
         if (typeof body[key] === "string") target[key] = body[key].slice(0, 1200);
     }
@@ -272,6 +277,22 @@ exports.publishCourse = async (req, res) => {
         const withVideo = (c.lessons || []).filter((l) => l.videoUrl).length;
         if (withVideo < 1) return res.status(409).json({ message: "Add at least one lesson with a video before publishing" });
         const wasAlreadyPublished = !!c.isPublished;
+
+        let intro = (c.lessons || []).find((l) => l.isIntro && l.videoUrl);
+        if (!intro && wasAlreadyPublished) {
+            intro = (c.lessons || [])
+                .filter((l) => l.videoUrl)
+                .sort((a, b) => (a.order || 0) - (b.order || 0))[0];
+            if (intro) intro.isIntro = true;
+        }
+        if (!intro) {
+            return res.status(409).json({
+                message: "Add an introduction video before publishing. Mark one lesson as the introduction — students watch it free to judge your teaching before they subscribe.",
+                code: "INTRO_REQUIRED",
+            });
+        }
+        if (!intro.isFree) intro.isFree = true;
+
         c.isPublished = true;
         c.publishedAt = c.publishedAt || new Date();
         await c.save();
@@ -284,26 +305,20 @@ exports.publishCourse = async (req, res) => {
         if (!wasAlreadyPublished) {
             try {
                 const flares = require("../services/signalFlareService");
-                const responderIds = await flares.markResponded(
-                    c.constellation || "general",
-                    c.category || "general",
-                    c._id
-                );
-                if (responderIds.length > 0) {
-                    const io = req.app.get("io");
-                    if (io) {
-                        for (const uid of responderIds) {
-                            io.to(`user_${uid}`).emit("signal-flare:responded", {
-                                courseId: String(c._id),
-                                courseTitle: c.title,
-                                constellation: c.constellation || "general",
-                                genre: c.category || "general",
-                            });
-                        }
+                const io = req.app.get("io");
+                const { userIds } = await flares.onCoursePublished(io, c);
+                if (io) {
+                    for (const uid of userIds) {
+                        io.to(`user_${uid}`).emit("signal-flare:responded", {
+                            courseId: String(c._id),
+                            courseTitle: c.title,
+                            constellation: c.constellation || "general",
+                            genre: c.category || "general",
+                        });
                     }
                 }
             } catch (e) {
-                console.warn("[courses] flare markResponded failed:", e.message);
+                console.warn("[courses] flare response failed:", e.message);
             }
         }
 

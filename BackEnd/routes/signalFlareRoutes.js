@@ -19,10 +19,8 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const SignalFlare = require("../models/SignalFlare");
-const { fireFlare, getCount, getQueue } = require("../services/signalFlareService");
+const { fireFlare, getCount, getQueue, onFlareSent, openFields, THRESHOLD } = require("../services/signalFlareService");
 
-// Fire a flare. Idempotent per (userId, constellation, genre): the
-// second call returns the existing flare.
 router.post("/", auth, async (req, res) => {
     try {
         const { constellation, genre } = req.body || {};
@@ -31,10 +29,20 @@ router.post("/", auth, async (req, res) => {
         }
         const flare = await fireFlare(req.user._id, { constellation, genre });
         const count = await getCount(constellation, genre);
-        return res.json({ flare, count });
+        const demand = await onFlareSent(req.app.get("io"), String(genre).toLowerCase().trim());
+        return res.json({ flare, count, threshold: THRESHOLD, demand });
     } catch (e) {
         console.error("[flares] POST failed:", e);
         return res.status(500).json({ message: "Failed to send flare" });
+    }
+});
+
+router.get("/open-fields", async (req, res) => {
+    try {
+        const limit = Math.min(40, parseInt(req.query.limit, 10) || 12);
+        return res.json({ items: await openFields(limit), threshold: THRESHOLD });
+    } catch (e) {
+        return res.status(500).json({ message: "Failed to read open fields" });
     }
 });
 

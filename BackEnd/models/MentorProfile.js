@@ -29,7 +29,10 @@ const mentorProfileSchema = new mongoose.Schema({
     // ── Public profile ─────────────────────────────────────────────────────
     headline:    { type: String, default: "", maxlength: 120 },
     bio:         { type: String, default: "", maxlength: 2000 },
-    skills:      [{ type: mongoose.Schema.Types.ObjectId, ref: "Skill" }],
+    skills:      [{ type: String, trim: true, maxlength: 60 }],
+    topics:      [{ type: String, trim: true, index: true }],
+    genres:      [{ type: String, trim: true, index: true }],
+    constellations: [{ type: String, trim: true, index: true }],
 
     // ── Pricing (INR) ──────────────────────────────────────────────────────
     hourlyRateInr: { type: Number, required: true, min: 0 },
@@ -58,11 +61,25 @@ const mentorProfileSchema = new mongoose.Schema({
     },
     ratingCutEligibleSince: { type: Date, default: null },
 
+    honours: {
+        count:      { type: Number, default: 0 },
+        photons:    { type: Number, default: 0 },
+        beacon:     { type: Number, default: 0 },
+        comet:      { type: Number, default: 0 },
+        supernova:  { type: Number, default: 0 },
+        lastAt:     { type: Date, default: null },
+    },
+
+    lastFlareNotifiedAt: { type: Date, default: null },
+
     // ── Lifecycle ─────────────────────────────────────────────────────────
     status: { type: String, enum: ["active", "paused"], default: "active" },
 }, { timestamps: true });
 
 mentorProfileSchema.index({ applicationStatus: 1, status: 1 });
 mentorProfileSchema.index({ "rating.average": -1 });
+mentorProfileSchema.index({ topics: 1, applicationStatus: 1 });
+mentorProfileSchema.index({ genres: 1, applicationStatus: 1 });
+mentorProfileSchema.index({ "honours.count": -1 });
 
 module.exports = mongoose.models.MentorProfile || mongoose.model("MentorProfile", mentorProfileSchema);

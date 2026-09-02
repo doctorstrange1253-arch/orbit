@@ -53,6 +53,7 @@ const LessonSchema = new mongoose.Schema({
     resources:    { type: [ResourceSchema], default: [] },
     quiz:         { type: QuizSchema, default: () => ({}) },
     isFree:       { type: Boolean, default: false }, // free preview even if course is paid
+    isIntro:      { type: Boolean, default: false }, // the 0th video — always free, always ungated
     // V3 — Game Engine fields. The Level Card reads these as the
     // 2-3s pre-lesson card (promise / why / one thing). Boss levels
     // use isBoss + bossChallenge for the dramatic entry. The AI

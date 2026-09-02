@@ -1,47 +1,64 @@
 import { useEffect, useRef, useState } from 'react';
-import { Play, Pause, Volume2, VolumeX, Maximize, Check, Loader2 } from 'lucide-react';
-// V3 — haptic + sound on lesson completion (the "in-the-body" moment).
+import { Play, Pause, Volume2, VolumeX, Maximize, Check, Loader2, RotateCcw } from 'lucide-react';
 import { Haptic } from '../../soul/haptics';
 import { SoulSound } from '../../soul/soundLibrary';
 
-/**
- * LessonPlayer — frosted video player wrapper.
- *
- * Reuses the same controls idiom across courses / previews / teasers.
- * Emits `onComplete` when the video reaches 90% (so a slow loader at the
- * end doesn't punish the learner for Cloudinary's buffer flush).
- *
- * The Cloudinary URL pattern `https://res.cloudinary.com/.../video/upload/...`
- * plays directly in <video> with no extra setup. We mark complete via the
- * parent's completeLesson() call, not from inside this component.
- *
- * V3 — completion fires Haptic.medium + SoulSound.levelUp so the moment
- * lands in the body, not just on the screen.
- */
+const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+const RATE_KEY = 'orbit-lesson-rate';
+
+const MONO_MICRO = {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.56rem',
+    letterSpacing: '0.16em',
+    fontWeight: 700,
+    textTransform: 'uppercase',
+};
+
+function readStoredRate() {
+    if (typeof window === 'undefined') return 1;
+    const raw = Number(window.localStorage.getItem(RATE_KEY));
+    return SPEEDS.includes(raw) ? raw : 1;
+}
+
+function fmt(sec) {
+    if (!Number.isFinite(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${String(s).padStart(2, '0')}`;
+}
+
 const LessonPlayer = ({ lesson, onComplete, isCompleted, isMarkingComplete }) => {
     const videoRef = useRef(null);
     const [playing, setPlaying] = useState(false);
     const [muted, setMuted] = useState(false);
     const [progress, setProgress] = useState(0);
     const [error, setError] = useState(null);
+    const [rate, setRate] = useState(readStoredRate);
+    const [rateOpen, setRateOpen] = useState(false);
+    const [clock, setClock] = useState({ at: 0, total: 0 });
     const completeFiredRef = useRef(false);
 
     useEffect(() => {
-        // Reset completion-fired flag when the lesson changes
         completeFiredRef.current = false;
         setProgress(0);
         setError(null);
+        setClock({ at: 0, total: 0 });
     }, [lesson?._id]);
+
+    useEffect(() => {
+        const v = videoRef.current;
+        if (v) v.playbackRate = rate;
+        if (typeof window !== 'undefined') window.localStorage.setItem(RATE_KEY, String(rate));
+    }, [rate, lesson?._id]);
 
     const handleTimeUpdate = () => {
         const v = videoRef.current;
         if (!v || !v.duration) return;
         const pct = (v.currentTime / v.duration) * 100;
         setProgress(pct);
+        setClock({ at: v.currentTime, total: v.duration });
         if (!completeFiredRef.current && pct >= 90 && onComplete) {
             completeFiredRef.current = true;
-            // V3 — the lesson-complete confirmation: haptic first (instant),
-            // then the rising chord (levelUp reads the soul's voice).
             Haptic.medium();
             SoulSound.levelUp({ soul: 'student' });
             onComplete();
@@ -67,6 +84,12 @@ const LessonPlayer = ({ lesson, onComplete, isCompleted, isMarkingComplete }) =>
         if (v?.requestFullscreen) v.requestFullscreen().catch(() => {});
     };
 
+    const nudge = (delta) => {
+        const v = videoRef.current;
+        if (!v || !v.duration) return;
+        v.currentTime = Math.max(0, Math.min(v.duration, v.currentTime + delta));
+    };
+
     const seek = (e) => {
         const v = videoRef.current;
         if (!v || !v.duration) return;
@@ -74,6 +97,20 @@ const LessonPlayer = ({ lesson, onComplete, isCompleted, isMarkingComplete }) =>
         const pct = (e.clientX - rect.left) / rect.width;
         v.currentTime = Math.max(0, Math.min(v.duration, pct * v.duration));
     };
+
+    useEffect(() => {
+        const onKey = (e) => {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+            if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+            if (e.key === 'ArrowLeft') nudge(-5);
+            if (e.key === 'ArrowRight') nudge(5);
+            if (e.key === '[') setRate((r) => SPEEDS[Math.max(0, SPEEDS.indexOf(r) - 1)]);
+            if (e.key === ']') setRate((r) => SPEEDS[Math.min(SPEEDS.length - 1, SPEEDS.indexOf(r) + 1)]);
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, []);
+
 
     if (!lesson?.videoUrl) {
         return (
@@ -115,9 +152,64 @@ const LessonPlayer = ({ lesson, onComplete, isCompleted, isMarkingComplete }) =>
                     <button onClick={togglePlay} className="p-1.5 rounded-full hover:bg-accent/15 text-text-primary" aria-label={playing ? 'Pause' : 'Play'}>
                         {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                     </button>
+                    <button onClick={() => nudge(-10)} className="p-1.5 rounded-full hover:bg-accent/15 text-text-secondary" aria-label="Back 10 seconds">
+                        <RotateCcw className="w-4 h-4" />
+                    </button>
                     <button onClick={toggleMute} className="p-1.5 rounded-full hover:bg-accent/15 text-text-secondary" aria-label={muted ? 'Unmute' : 'Mute'}>
                         {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                     </button>
+
+                    <span style={{ ...MONO_MICRO, color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
+                        {fmt(clock.at)} / {fmt(clock.total)}
+                    </span>
+
+                    <div className="relative">
+                        <button
+                            onClick={() => setRateOpen((v) => !v)}
+                            aria-label={`Playback speed ${rate}x`}
+                            aria-expanded={rateOpen}
+                            className="px-2 py-1"
+                            style={{
+                                ...MONO_MICRO,
+                                color: rate === 1 ? 'var(--text-secondary)' : 'var(--text-primary)',
+                                background: 'transparent',
+                                border: `1px solid ${rate === 1 ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.36)'}`,
+                                cursor: 'pointer',
+                                fontVariantNumeric: 'tabular-nums',
+                            }}
+                        >
+                            {rate}&times;
+                        </button>
+                        {rateOpen && (
+                            <div
+                                className="absolute bottom-full mb-2 left-0 z-20"
+                                style={{ background: 'rgba(8,10,18,0.97)', border: '1px solid rgba(255,255,255,0.14)', minWidth: 72 }}
+                                role="listbox"
+                            >
+                                {SPEEDS.map((s) => (
+                                    <button
+                                        key={s}
+                                        role="option"
+                                        aria-selected={s === rate}
+                                        onClick={() => { setRate(s); setRateOpen(false); }}
+                                        className="block w-full text-left px-3 py-1.5"
+                                        style={{
+                                            ...MONO_MICRO,
+                                            color: s === rate ? 'var(--text-primary)' : 'var(--text-secondary)',
+                                            background: 'transparent',
+                                            border: 'none',
+                                            borderBottom: '1px solid rgba(255,255,255,0.06)',
+                                            cursor: 'pointer',
+                                            fontVariantNumeric: 'tabular-nums',
+                                        }}
+                                    >
+                                        {s}&times;{s === 1 ? ' · normal' : ''}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                     <div className="ml-auto flex items-center gap-2">
                         {isCompleted ? (
                             <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-emerald-300">

@@ -710,6 +710,7 @@ app.use("/api/gameology", gameologyRoutes);
 app.use("/api/pact", pactRoutes);
 app.use("/api/knowledge", knowledgeGraphRoutes);
 app.use("/api/flares", signalFlareRoutes);
+app.use("/api/taxonomy", require("./routes/taxonomyRoutes"));
 app.use("/api/moderation", moderationRoutes);
 // V3 — Cross-soul mentor invites: pending invite + accept/dismiss (the
 // MentorInviteModal's API surface; dismiss applies the 90-day cooldown).
