@@ -24,15 +24,17 @@
   --color-text-muted: var(--text-muted);
   --color-text-on-accent: var(--text-on-accent);
 
-  --font-sans: "Open Sans", sans-serif;
-  --font-display: "Poppins", sans-serif;
-  /* V3 — editorial type system. The MyOrbit page mixes three voices:
+  --font-sans: "Cormorant Garamond", "Georgia", serif;
+  --font-display: "Playfair Display", "Times New Roman", serif;
+  /* V3 — editorial type system. The MyOrbit + mentor pages mix three voices:
        --font-editorial   = Playfair Display (didone, magazine cover)
        --font-serif       = Cormorant Garamond (book-grade, italic-loaded)
        --font-mono        = JetBrains Mono (stardust, dot leaders, code) */
   --font-editorial: "Playfair Display", "Times New Roman", serif;
   --font-serif: "Cormorant Garamond", "Georgia", serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-cormorant: "Cormorant Garamond", "Georgia", serif;
+  --font-playfair: "Playfair Display", "Times New Roman", serif;
 
   --radius-card: 20px;
   --radius-pill: 999px;
@@ -55,25 +57,30 @@
   --color-orbit: var(--text-primary);
   --color-stardust: var(--text-muted);
 
-  --text-supernova: 700 clamp(2.5rem, 6vw, 4.5rem) / 0.95 'Space Grotesk', 'Poppins', system-ui;
+  --text-supernova: 700 clamp(2.5rem, 6vw, 4.5rem) / 0.95 'Playfair Display', 'Times New Roman', serif;
   --text-supernova--line-height: 0.95;
   --text-supernova--font-weight: 700;
+  --text-supernova--font-family: 'Playfair Display', 'Times New Roman', serif;
 
-  --text-orbit: 400 clamp(1rem, 1.2vw, 1.125rem) / 1.55 'Inter', 'Open Sans', system-ui;
+  --text-orbit: 400 clamp(1rem, 1.2vw, 1.125rem) / 1.55 'Cormorant Garamond', 'Georgia', serif;
   --text-orbit--line-height: 1.55;
+  --text-orbit--font-family: 'Cormorant Garamond', 'Georgia', serif;
 
-  --text-orbit-bold: 700 clamp(1rem, 1.2vw, 1.125rem) / 1.4 'Inter', 'Open Sans', system-ui;
+  --text-orbit-bold: 700 clamp(1rem, 1.2vw, 1.125rem) / 1.4 'Cormorant Garamond', 'Georgia', serif;
   --text-orbit-bold--line-height: 1.4;
   --text-orbit-bold--font-weight: 700;
+  --text-orbit-bold--font-family: 'Cormorant Garamond', 'Georgia', serif;
 
   --text-stardust: 500 0.75rem / 1.3 'JetBrains Mono', ui-monospace, monospace;
   --text-stardust--line-height: 1.3;
   --text-stardust--font-weight: 500;
+  --text-stardust--font-family: 'JetBrains Mono', ui-monospace, monospace;
 
   --text-stardust-eyebrow: 700 0.6875rem / 1.0 'JetBrains Mono', ui-monospace, monospace;
   --text-stardust-eyebrow--line-height: 1.0;
   --text-stardust-eyebrow--font-weight: 700;
   --text-stardust-eyebrow--letter-spacing: 0.18em;
+  --text-stardust-eyebrow--font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
 /* ─── BASE ─── */
@@ -290,8 +297,17 @@
 
   body {
     @apply bg-background text-text-primary font-sans overflow-x-hidden;
+    font-family: var(--font-serif);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-editorial);
+  }
+
+  code, kbd, samp, pre {
+    font-family: var(--font-mono);
   }
 
   ::selection {
@@ -1181,7 +1197,13 @@ body, html {
 }
 .animate-typing-bounce {
   animation: typing-bounce 1.4s infinite ease-in-out both;
-}@layer utilities { .text-gradient-fix { -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; } }
+}@layer utilities {
+  .text-gradient-fix { -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .font-editorial { font-family: var(--font-editorial); }
+  .font-cormorant { font-family: var(--font-serif); }
+  .font-playfair  { font-family: var(--font-editorial); }
+}
 
 /* ─── MAGNETIC CURSOR ───────────────────────────────────────────────────
  * Hides the OS cursor on devices that can support our custom one
