@@ -955,7 +955,7 @@ const RoleStatsBlock = ({ accent, title, tiles }) => (
             </span>
             {Icon && <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${tone || 'text-text-secondary'}`} />}
           </div>
-          <div className={`text-lg font-black ${tone || 'text-text-primary'} truncate`}>{value}</div>
+          <div className={`text-lg font-bold ${tone || 'text-text-primary'} truncate`}>{value}</div>
         </div>
       ))}
     </div>

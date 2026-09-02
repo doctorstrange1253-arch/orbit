@@ -61,7 +61,7 @@ export default function MissionLog() {
         <Link to="/orbit" className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-slate-200">
           <ArrowLeft size={16} /> Orbit
         </Link>
-        <h1 className="ml-1 text-xl font-black text-white">Mission Log</h1>
+        <h1 className="ml-1 text-xl font-bold text-white">Mission Log</h1>
       </div>
       <p className="text-xs text-slate-400 -mt-2">Every weekly mission with its status and rewards, plus your full Photon history.</p>
 
@@ -109,7 +109,7 @@ export default function MissionLog() {
           <div className="text-xs uppercase tracking-wide text-slate-400 flex items-center gap-1">
             <TrendingUp size={13} className="text-emerald-400" /> Earned
           </div>
-          <div className="mt-1 text-2xl font-black text-emerald-300 tabular-nums flex items-center gap-1">
+          <div className="mt-1 text-2xl font-bold text-emerald-300 tabular-nums flex items-center gap-1">
             <PhotonIcon size={18} animated={false} /> {summary.earned ?? 0}
           </div>
         </div>
@@ -117,7 +117,7 @@ export default function MissionLog() {
           <div className="text-xs uppercase tracking-wide text-slate-400 flex items-center gap-1">
             <TrendingDown size={13} className="text-rose-400" /> Spent
           </div>
-          <div className="mt-1 text-2xl font-black text-rose-300 tabular-nums flex items-center gap-1">
+          <div className="mt-1 text-2xl font-bold text-rose-300 tabular-nums flex items-center gap-1">
             <PhotonIcon size={18} animated={false} /> {summary.spent ?? 0}
           </div>
         </div>

@@ -57,11 +57,11 @@ const BossNode = ({ lesson, isCompleted, isLocked, onPick }) => {
         {isLocked ? (
           <Lock size={18} className="text-text-muted" />
         ) : isCompleted ? (
-          <span className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-200">Done</span>
+          <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-amber-200">Done</span>
         ) : (
           <div className="flex items-center gap-1.5">
             <Crown size={18} style={{ color: accent }} />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: accent }}>Boss</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: accent }}>Boss</span>
           </div>
         )}
 

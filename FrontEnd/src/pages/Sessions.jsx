@@ -66,7 +66,7 @@ const Sessions = () => {
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-4">
                             <Sparkles className="w-3 h-3 text-accent" /> Orbit Sessions
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black mb-3 leading-tight">
+                        <h1 className="text-4xl md:text-5xl font-bold mb-3 leading-tight">
                             <span className="gradient-text">1-on-1 with the best.</span>
                         </h1>
                         <p className="text-text-secondary text-base md:text-lg max-w-xl">

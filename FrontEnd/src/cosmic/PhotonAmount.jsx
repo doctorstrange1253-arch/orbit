@@ -53,7 +53,7 @@ export default function PhotonAmount({ value = 0, className = '' }) {
         {delta && (
           <motion.span
             key={delta.id}
-            className="pointer-events-none absolute left-1/2 top-0 whitespace-nowrap text-[10px] font-black"
+            className="pointer-events-none absolute left-1/2 top-0 whitespace-nowrap text-[10px] font-bold"
             style={{ color: delta.amount > 0 ? '#34d399' : '#fb7185' }}
             initial={{ y: 0, x: '-50%', opacity: 0 }}
             animate={{ y: -16, opacity: [0, 1, 0] }}

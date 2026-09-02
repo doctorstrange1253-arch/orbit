@@ -277,7 +277,7 @@ export default function HoloBay() {
     );
     return (
       <button onClick={() => onBuy(item.key)} disabled={busy || !item.affordable}
-        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-black ${item.affordable ? 'text-slate-900' : 'cursor-not-allowed bg-white/5 text-slate-500'}`}
+        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${item.affordable ? 'text-slate-900' : 'cursor-not-allowed bg-white/5 text-slate-500'}`}
         style={item.affordable ? { background: 'linear-gradient(90deg,#38bdf8,#8b5cf6,#ec4899)' } : undefined}>
         {item.affordable ? <PhotonIcon size={12} animated={false} /> : <Lock size={11} />} {(item.price ?? item.cost).toLocaleString()}
       </button>
@@ -316,12 +316,12 @@ export default function HoloBay() {
       <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
         <div className="flex items-center gap-3">
           <Link to="/shop" className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-white"><ArrowLeft size={15} /> Store</Link>
-          <h1 className="brand-gradient-text ml-1 text-2xl font-black tracking-tight sm:text-3xl">
+          <h1 className="brand-gradient-text ml-1 text-2xl font-bold tracking-tight sm:text-3xl">
             Holo-Bay
           </h1>
           <div className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1.5 ring-1 ring-violet-400/40">
             <PhotonIcon size={15} />
-            <PhotonAmount value={data.photons ?? data.stardust ?? 0} className="text-sm font-black text-violet-100" />
+            <PhotonAmount value={data.photons ?? data.stardust ?? 0} className="text-sm font-bold text-violet-100" />
           </div>
         </div>
         <p className="mt-1.5 text-sm text-slate-400">Try any look on a live hologram of your profile. Nothing is spent until you Buy or Equip.</p>
@@ -329,7 +329,7 @@ export default function HoloBay() {
         {/* stage controls — play with a random look, or snap back to reality */}
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <button onClick={shuffleLook}
-            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-black text-slate-900"
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-slate-900"
             style={{ background: 'linear-gradient(90deg,#38bdf8,#8b5cf6,#ec4899)' }}>
             <Shuffle size={13} /> Quantum Shuffle
           </button>
@@ -382,7 +382,7 @@ export default function HoloBay() {
                   {decoKey && <span className={decoClassFor(decoKey)} aria-hidden="true" />}
                   <PhotonIcon size={34} />
                 </div>
-                <div className="mt-3 text-lg font-black">
+                <div className="mt-3 text-lg font-bold">
                   <Nameplate plateKey={plateKey}><GlowName cosmeticGlowKey={glowKey}>{authName}</GlowName></Nameplate>
                 </div>
                 <div className="mt-0.5 text-[11px] text-slate-400">This is exactly how others see you</div>

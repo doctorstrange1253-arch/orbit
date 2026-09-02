@@ -149,7 +149,7 @@ function drawShape(ctx, obj) {
 
 function drawText(ctx, obj) {
   ctx.fillStyle = obj.color;
-  ctx.font = `${obj.size}px "Open Sans", system-ui, sans-serif`;
+  ctx.font = `${obj.size}px "Cormorant Garamond", Georgia, serif`;
   ctx.textBaseline = 'top';
   const lines = String(obj.text || '').split('\n');
   lines.forEach((ln, i) => ctx.fillText(ln, obj.x, obj.y + i * obj.size * 1.3));
@@ -163,7 +163,7 @@ function drawSticky(ctx, obj) {
   roundRect(ctx, obj.x, obj.y, obj.w, obj.h, 8); ctx.fill();
   ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
   ctx.fillStyle = '#1a1a2e';
-  ctx.font = '15px "Open Sans", system-ui, sans-serif';
+  ctx.font = '15px "Cormorant Garamond", Georgia, serif';
   ctx.textBaseline = 'top';
   wrapText(ctx, String(obj.text || ''), obj.x + 12, obj.y + 12, obj.w - 24, 20);
 }

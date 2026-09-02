@@ -298,8 +298,9 @@ const Landing = () => {
             <br className="hidden sm:block" />
             <span
               style={{
-                fontFamily: "'Poppins', sans-serif",
-                fontWeight: 800,
+                fontFamily: 'var(--font-editorial)',
+                fontStyle: 'italic',
+                fontWeight: 900,
                 background: 'linear-gradient(135deg, #00c6ff 0%, #a855f7 35%, #ff0076 65%, #ffb800 100%)',
                 backgroundSize: '200% auto',
                 WebkitBackgroundClip: 'text',
@@ -509,8 +510,9 @@ const Landing = () => {
               Built for{' '}
               <span
                 style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontWeight: 800,
+                  fontFamily: 'var(--font-editorial)',
+                  fontStyle: 'italic',
+                  fontWeight: 900,
                   background: 'linear-gradient(90deg, #00c6ff, #ff0076)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',

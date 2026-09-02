@@ -146,14 +146,14 @@ function StoreCard({ item, onBuy, onEquip, busy }) {
         <RarityBadge rkey={item.rarity} />
         {/* This week's rotating deal — genuinely discounted at purchase time */}
         {item.dealPct > 0 && !item.owned && (
-          <span className="inline-flex items-center rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-black text-rose-300 ring-1 ring-rose-400/40">
+          <span className="inline-flex items-center rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-bold text-rose-300 ring-1 ring-rose-400/40">
             −{item.dealPct}%
           </span>
         )}
         {/* Seasonal / limited-window items (admin sets availableTo) get urgency */}
         {item.availableTo && !item.owned && (
           <span
-            className="inline-flex items-center text-[10px] font-black uppercase tracking-wide text-amber-300"
+            className="inline-flex items-center text-[10px] font-bold uppercase tracking-wide text-amber-300"
             title={`Available until ${new Date(item.availableTo).toLocaleDateString()}`}
           >
             Limited
@@ -187,7 +187,7 @@ function StoreCard({ item, onBuy, onEquip, busy }) {
           <button
             onClick={() => onBuy(item.key)}
             disabled={busy || !item.affordable}
-            className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-black transition
+            className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold transition
               ${item.affordable
                 ? 'text-slate-900 hover:brightness-110'
                 : 'cursor-not-allowed bg-white/5 text-slate-500'}`}
@@ -304,7 +304,7 @@ export default function Shop() {
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
             <PhotonIcon size={26} />
-            <h1 className="brand-gradient-text text-2xl font-black tracking-tight sm:text-3xl">
+            <h1 className="brand-gradient-text text-2xl font-bold tracking-tight sm:text-3xl">
               Nebula Store
             </h1>
           </div>
@@ -319,7 +319,7 @@ export default function Shop() {
             <div className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1.5 ring-1 ring-violet-400/40 backdrop-blur"
                  style={{ boxShadow: '0 0 16px rgba(139,92,246,.25)' }}>
               <PhotonIcon size={16} />
-              <PhotonAmount value={data?.photons ?? data?.stardust ?? 0} className="text-sm font-black text-violet-100" />
+              <PhotonAmount value={data?.photons ?? data?.stardust ?? 0} className="text-sm font-bold text-violet-100" />
               <span className="text-[11px] font-semibold text-slate-400">Photons</span>
             </div>
           </div>
@@ -343,17 +343,17 @@ export default function Shop() {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="inline-flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-amber-300">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-amber-300">
                     <SparkIcon size={12} /> {featured.dealPct > 0 ? 'Deal of the week' : 'Featured'}
                   </span>
                   {featured.dealPct > 0 && (
-                    <span className="inline-flex items-center rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-black text-rose-300 ring-1 ring-rose-400/40">
+                    <span className="inline-flex items-center rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-bold text-rose-300 ring-1 ring-rose-400/40">
                       −{featured.dealPct}%
                     </span>
                   )}
                   <RarityBadge rkey={featured.rarity} />
                 </div>
-                <div className="mt-1 truncate text-lg font-black text-white">{featured.name}</div>
+                <div className="mt-1 truncate text-lg font-bold text-white">{featured.name}</div>
                 <div className="truncate text-xs text-slate-300">{featured.hint}</div>
               </div>
               <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:flex-col sm:items-end">
@@ -361,7 +361,7 @@ export default function Shop() {
                   <div className="flex items-center gap-1 tabular-nums">
                     {[['d', cd.d], ['h', cd.h], ['m', cd.m], ['s', cd.s]].map(([u, v]) => (
                       <span key={u} className="rounded-md bg-black/40 px-2 py-1 text-center">
-                        <span className="block text-sm font-black text-white">{String(v).padStart(2, '0')}</span>
+                        <span className="block text-sm font-bold text-white">{String(v).padStart(2, '0')}</span>
                         <span className="block text-[9px] uppercase text-slate-400">{u}</span>
                       </span>
                     ))}
@@ -374,7 +374,7 @@ export default function Shop() {
                   <button
                     onClick={() => onBuy(featured.key)}
                     disabled={busy || !featured.affordable}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-black ${featured.affordable ? 'text-slate-900' : 'cursor-not-allowed bg-white/5 text-slate-500'}`}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold ${featured.affordable ? 'text-slate-900' : 'cursor-not-allowed bg-white/5 text-slate-500'}`}
                     style={featured.affordable ? { background: 'linear-gradient(90deg,#38bdf8,#8b5cf6,#ec4899)' } : undefined}
                   >
                     {featured.affordable ? <PhotonIcon size={13} animated={false} /> : <Lock size={12} />}

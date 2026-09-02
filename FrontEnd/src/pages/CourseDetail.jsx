@@ -118,8 +118,8 @@ const CourseDetail = () => {
                         )}
                     </div>
                     <div className="space-y-3">
-                        <div className="text-[10px] font-black uppercase tracking-widest text-accent">{course.category}</div>
-                        <h1 className="text-2xl md:text-3xl font-black text-text-primary">{course.title}</h1>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-accent">{course.category}</div>
+                        <h1 className="text-2xl md:text-3xl font-bold text-text-primary">{course.title}</h1>
                         {course.subtitle && <p className="text-text-secondary text-sm">{course.subtitle}</p>}
                         {course.description && <p className="text-text-secondary text-sm leading-relaxed whitespace-pre-line">{course.description}</p>}
 
@@ -141,7 +141,7 @@ const CourseDetail = () => {
                                 {course.mentor.avatar ? (
                                     <img src={course.mentor.avatar} alt="" className="w-10 h-10 rounded-full object-cover" />
                                 ) : (
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-indigo-500 flex items-center justify-center text-sm font-black text-white">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-indigo-500 flex items-center justify-center text-sm font-bold text-white">
                                         {course.mentor.name?.[0]?.toUpperCase() || 'M'}
                                     </div>
                                 )}

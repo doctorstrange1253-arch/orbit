@@ -29,7 +29,7 @@ const LevelBadge = ({ size = 44, compact = false }) => {
     if (compact) {
         return (
             <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full border border-indigo-400/30 bg-surface/60 backdrop-blur-sm">
-                <span className="text-[10px] font-black uppercase tracking-widest text-indigo-300">L</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-300">L</span>
                 <span className="text-xs font-bold tabular-nums text-indigo-200">{level}</span>
             </div>
         );
@@ -65,8 +65,8 @@ const LevelBadge = ({ size = 44, compact = false }) => {
                 </defs>
             </svg>
             <div className="relative flex flex-col items-center justify-center leading-none">
-                <span className="text-[8px] font-black uppercase tracking-widest text-indigo-300">L</span>
-                <span className="text-base font-black tabular-nums text-text-primary">{level}</span>
+                <span className="text-[8px] font-bold uppercase tracking-widest text-indigo-300">L</span>
+                <span className="text-base font-bold tabular-nums text-text-primary">{level}</span>
             </div>
         </div>
     );

@@ -124,14 +124,14 @@ const CommentRow = ({ c, isCourseMentor, isAuthor, onUpvote, onMarkAnswer, onPin
             {c.user?.avatar ? (
                 <img src={c.user.avatar} alt="" className={`${compact ? 'w-5 h-5' : 'w-6 h-6'} rounded-full object-cover`} />
             ) : (
-                <div className={`${compact ? 'w-5 h-5' : 'w-6 h-6'} rounded-full bg-gradient-to-br from-fuchsia-500 to-indigo-500 flex items-center justify-center text-[10px] font-black text-white`}>
+                <div className={`${compact ? 'w-5 h-5' : 'w-6 h-6'} rounded-full bg-gradient-to-br from-fuchsia-500 to-indigo-500 flex items-center justify-center text-[10px] font-bold text-white`}>
                     {c.user?.name?.[0]?.toUpperCase() || '?'}
                 </div>
             )}
             <span className="text-xs font-bold text-text-primary">{c.user?.name || 'User'}</span>
             <span className="text-[10px] text-text-muted">· {formatRelative(c.createdAt)}</span>
-            {c.isAnswer && <span className="inline-flex items-center gap-0.5 text-[10px] font-black uppercase tracking-widest text-emerald-300"><CheckCircle2 className="w-3 h-3" /> Answer</span>}
-            {c.isPinned && !c.isAnswer && <span className="inline-flex items-center gap-0.5 text-[10px] font-black uppercase tracking-widest text-amber-300"><Pin className="w-3 h-3" /> Pinned</span>}
+            {c.isAnswer && <span className="inline-flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-widest text-emerald-300"><CheckCircle2 className="w-3 h-3" /> Answer</span>}
+            {c.isPinned && !c.isAnswer && <span className="inline-flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-widest text-amber-300"><Pin className="w-3 h-3" /> Pinned</span>}
         </div>
         <p className={`text-sm text-text-secondary whitespace-pre-wrap ${compact ? '' : 'leading-relaxed'}`}>{c.text}</p>
         <div className="flex items-center gap-1 mt-1.5">

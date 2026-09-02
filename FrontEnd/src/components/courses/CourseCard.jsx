@@ -33,18 +33,18 @@ const CourseCard = ({ course }) => {
                                 <BookOpen className="w-10 h-10 text-text-muted/60" />
                             </div>
                         )}
-                        <div className="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-black/50 text-white backdrop-blur-sm">
+                        <div className="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-black/50 text-white backdrop-blur-sm">
                             <PlayCircle className="w-3 h-3" /> {lessonsCount} lessons
                         </div>
                         {!isFree && (
-                            <div className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-black/60 text-amber-200 backdrop-blur-sm">
+                            <div className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-black/60 text-amber-200 backdrop-blur-sm">
                                 <Lock className="w-3 h-3" /> ₹{course.priceInr}
                             </div>
                         )}
                     </div>
 
                     <div className="p-4 flex-1 flex flex-col gap-2">
-                        <div className="text-[10px] font-black uppercase tracking-widest text-accent">
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-accent">
                             {course.category}
                         </div>
                         <h3 className="text-base font-bold text-text-primary line-clamp-2">
@@ -63,7 +63,7 @@ const CourseCard = ({ course }) => {
                                         className="w-6 h-6 rounded-full object-cover"
                                     />
                                 ) : (
-                                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-fuchsia-500 to-indigo-500 flex items-center justify-center text-[10px] font-black text-white">
+                                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-fuchsia-500 to-indigo-500 flex items-center justify-center text-[10px] font-bold text-white">
                                         {course.mentor?.name?.[0]?.toUpperCase() || 'M'}
                                     </div>
                                 )}

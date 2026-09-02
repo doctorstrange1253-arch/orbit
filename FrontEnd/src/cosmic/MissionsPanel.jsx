@@ -161,7 +161,7 @@ export default function MissionsPanel({ missions = [] }) {
         <Target size={18} className="text-amber-300" />
         <h2 className="text-base font-bold text-white">Weekly Missions</h2>
         {readyCount > 0 && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-emerald-300 ring-1 ring-emerald-400/40">
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-300 ring-1 ring-emerald-400/40">
             <Check size={10} /> {readyCount} ready to claim
           </span>
         )}

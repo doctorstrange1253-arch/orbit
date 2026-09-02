@@ -77,12 +77,12 @@ const CertificateView = ({ certificate, course, mentor, learner }) => {
                     </svg>
 
                     <div className="relative h-full flex flex-col items-center justify-center text-center p-8">
-                        <div className="text-[10px] font-black uppercase tracking-[0.4em] text-amber-200/80">Orbit</div>
-                        <h1 className="mt-2 text-3xl md:text-4xl font-black text-amber-50 tracking-wider">CERTIFICATE</h1>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.4em] text-amber-200/80">Orbit</div>
+                        <h1 className="mt-2 text-3xl md:text-4xl font-bold text-amber-50 tracking-wider">CERTIFICATE</h1>
                         <div className="mt-1 text-sm italic text-amber-100/80">of completion</div>
 
                         <div className="mt-6 text-xs text-amber-100/70">This certifies that</div>
-                        <div className="mt-2 text-2xl md:text-3xl font-black text-amber-50">{learner?.name || 'Learner'}</div>
+                        <div className="mt-2 text-2xl md:text-3xl font-bold text-amber-50">{learner?.name || 'Learner'}</div>
                         <div className="mt-4 text-xs text-amber-100/70">has completed the course</div>
                         <div className="mt-2 text-xl md:text-2xl font-bold text-amber-50 max-w-md">{course?.title || 'Course'}</div>
 

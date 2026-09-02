@@ -19,7 +19,7 @@
   inset: 0;
   background: var(--ss-bg);
   color: var(--ss-text);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   overflow: auto;
   z-index: 5000;
 }

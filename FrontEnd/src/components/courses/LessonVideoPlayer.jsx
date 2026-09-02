@@ -12,7 +12,7 @@ const LessonVideoPlayer = ({ course, isOwner, ...rest }) => {
     <div className="relative">
       <SignedVideoPlayer {...rest} />
       <div
-        className="absolute top-2 right-2 z-20 inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[9px] font-black uppercase tracking-widest bg-surface/85 border border-border-subtle text-text-secondary backdrop-blur-sm"
+        className="absolute top-2 right-2 z-20 inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[9px] font-bold uppercase tracking-widest bg-surface/85 border border-border-subtle text-text-secondary backdrop-blur-sm"
         title="Signed URL · forensic + visible watermark · 5-min TTL"
       >
         <ShieldCheck size={10} className="text-success" /> Protected

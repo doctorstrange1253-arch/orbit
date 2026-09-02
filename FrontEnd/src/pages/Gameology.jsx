@@ -74,7 +74,7 @@ const Gameology = () => {
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-3">
                             <Sparkles className="w-3 h-3 text-accent" /> Lifetime identity
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-black mb-1">
+                        <h1 className="text-3xl md:text-4xl font-bold mb-1">
                             <span className="gradient-text">Gameology.</span>
                         </h1>
                         <p className="text-text-secondary text-sm">Every lesson, quiz, session, and swap — your cosmic learning log.</p>
@@ -92,13 +92,13 @@ const Gameology = () => {
                         <div className="flex items-center gap-3">
                             <LevelBadge size={80} />
                             <div>
-                                <div className="text-[10px] font-black uppercase tracking-widest text-text-muted">Level</div>
-                                <div className="text-3xl font-black text-text-primary tabular-nums">{level}</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Level</div>
+                                <div className="text-3xl font-bold text-text-primary tabular-nums">{level}</div>
                                 <div className="text-[11px] text-text-secondary">{xp.toLocaleString()} XP total</div>
                             </div>
                         </div>
                         <div>
-                            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">
+                            <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">
                                 <span>Progress to level {level + 1}</span>
                                 <span className="tabular-nums text-accent">{Math.round(pct * 100)}%</span>
                             </div>
@@ -134,7 +134,7 @@ const Gameology = () => {
                                   color: '#0f172a',
                                 }}
                               >
-                                  <span className="text-[10px] font-black uppercase tracking-widest">
+                                  <span className="text-[10px] font-bold uppercase tracking-widest">
                                       {(TIERS[leagueId] || { label: leagueId }).label} · {weeklyXp} this week
                                   </span>
                               </div>
@@ -172,7 +172,7 @@ const Gameology = () => {
                                         <div className="text-xs font-bold text-text-primary line-clamp-1">{a.title}</div>
                                         <div className="text-[10px] text-text-muted line-clamp-2 mt-0.5">{a.description}</div>
                                         {a.unlocked && a.xpReward > 0 && (
-                                            <div className="mt-1 text-[9px] font-black uppercase tracking-widest text-accent">+{a.xpReward} XP</div>
+                                            <div className="mt-1 text-[9px] font-bold uppercase tracking-widest text-accent">+{a.xpReward} XP</div>
                                         )}
                                         {!a.unlocked && (
                                             <div className="absolute top-1 right-1 text-text-muted">
@@ -217,7 +217,7 @@ const Gameology = () => {
                                                 {h.createdAt ? new Date(h.createdAt).toLocaleString() : ''}
                                             </div>
                                         </div>
-                                        <div className="text-sm font-black tabular-nums text-emerald-300">+{h.xpAwarded} XP</div>
+                                        <div className="text-sm font-bold tabular-nums text-emerald-300">+{h.xpAwarded} XP</div>
                                     </li>
                                 );
                             })}
@@ -231,8 +231,8 @@ const Gameology = () => {
 
 const Stat = ({ label, value }) => (
     <div>
-        <div className="text-[10px] font-black uppercase tracking-widest text-text-muted">{label}</div>
-        <div className="text-base font-black tabular-nums text-text-primary">{value}</div>
+        <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{label}</div>
+        <div className="text-base font-bold tabular-nums text-text-primary">{value}</div>
     </div>
 );
 

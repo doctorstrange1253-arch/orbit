@@ -76,13 +76,13 @@ const LeagueTable = ({ defaultLeague = null, limit = 50 }) => {
                         transition={{ type: 'spring', stiffness: 360, damping: 30 }}
                         className="flex items-center gap-3 py-2.5"
                     >
-                        <span className="w-6 text-right text-xs font-black tabular-nums text-text-muted">
+                        <span className="w-6 text-right text-xs font-bold tabular-nums text-text-muted">
                             {i + 1}
                         </span>
                         {u.avatar ? (
                             <img src={u.avatar} alt="" className="w-8 h-8 rounded-full object-cover" />
                         ) : (
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-xs font-black text-bg">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-xs font-bold text-bg">
                                 {u.name?.[0]?.toUpperCase() || '?'}
                             </div>
                         )}
@@ -92,7 +92,7 @@ const LeagueTable = ({ defaultLeague = null, limit = 50 }) => {
                                 Level {u.level} · {u.xp?.toLocaleString?.() || u.xp} XP
                             </div>
                         </div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-text-secondary">
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">
                             {u.leagueId}
                         </div>
                     </motion.li>

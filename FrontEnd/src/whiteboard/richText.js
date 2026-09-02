@@ -23,7 +23,7 @@ export function renderCode(source) {
   const lines = String(source).replace(/\t/g, '  ').split('\n');
   const fontPx = 15, lh = 22, padX = 14, gutter = 42, padY = 12;
   const measure = document.createElement('canvas').getContext('2d');
-  measure.font = `${fontPx}px "Fira Code", Consolas, monospace`;
+  measure.font = `${fontPx}px "JetBrains Mono", ui-monospace, monospace`;
   let maxW = 0;
   for (const ln of lines) maxW = Math.max(maxW, measure.measureText(ln).width);
   const w = Math.ceil(gutter + padX + maxW + padX);
@@ -37,7 +37,7 @@ export function renderCode(source) {
   ctx.fillStyle = '#0b0e1f'; roundRectPath(ctx, 0, 0, w, h, 10); ctx.fill();
   ctx.strokeStyle = 'rgba(124,58,237,0.4)'; ctx.lineWidth = 1; ctx.stroke();
   ctx.fillStyle = 'rgba(124,58,237,0.08)'; ctx.fillRect(0, 0, gutter, h);
-  ctx.font = `${fontPx}px "Fira Code", Consolas, monospace`;
+  ctx.font = `${fontPx}px "JetBrains Mono", ui-monospace, monospace`;
   ctx.textBaseline = 'top';
   lines.forEach((ln, i) => {
     const y = padY + i * lh;

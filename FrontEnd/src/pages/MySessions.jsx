@@ -78,7 +78,7 @@ const MySessions = () => {
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-3">
                         <ListChecks className="w-3 h-3 text-accent" /> My Sessions
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-black mb-2">
+                    <h1 className="text-3xl md:text-4xl font-bold mb-2">
                         <span className="gradient-text">Your session log.</span>
                     </h1>
                     <p className="text-text-secondary text-sm">

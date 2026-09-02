@@ -64,7 +64,7 @@ function StreakRing({ current, next, ringColor }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <Flame size={20} style={{ color: ringColor }} />
-        <span className="text-3xl font-black text-white tabular-nums leading-none mt-1">{current}</span>
+        <span className="text-3xl font-bold text-white tabular-nums leading-none mt-1">{current}</span>
         <span className="text-[11px] uppercase tracking-wide text-slate-400">day orbit</span>
       </div>
     </div>
@@ -117,7 +117,7 @@ export default function Orbit() {
 
       <div className="flex items-center gap-2">
         <Rocket size={22} className="text-amber-300" />
-        <h1 className="text-xl font-black text-white">Orbit</h1>
+        <h1 className="text-xl font-bold text-white">Orbit</h1>
       </div>
 
       {/* Hero: streak ring + state + countdown */}
@@ -168,7 +168,7 @@ export default function Orbit() {
           <PhotonIcon size={26} />
           <div>
             <div className="text-xs uppercase tracking-wide text-slate-400">Photons</div>
-            <div className="text-2xl font-black text-white tabular-nums">{photons}</div>
+            <div className="text-2xl font-bold text-white tabular-nums">{photons}</div>
           </div>
         </section>
 
@@ -177,7 +177,7 @@ export default function Orbit() {
             <Shield size={26} className="text-sky-300" />
             <div className="flex-1">
               <div className="text-xs uppercase tracking-wide text-slate-400">Gravity Assist</div>
-              <div className="text-2xl font-black text-white tabular-nums">
+              <div className="text-2xl font-bold text-white tabular-nums">
                 {freeze.tokens}<span className="text-sm text-slate-500">/{freeze.cap}</span>
               </div>
             </div>

@@ -64,17 +64,17 @@ const ModerationInbox = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
           <div>
             <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Pending</div>
-            <div className="text-2xl font-black tabular-nums text-text-primary mt-1">{items.length}</div>
+            <div className="text-2xl font-bold tabular-nums text-text-primary mt-1">{items.length}</div>
           </div>
           <div>
             <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">False-positive rate (30d)</div>
-            <div className="text-2xl font-black tabular-nums mt-1" style={{ color: ratePct > 50 ? '#fbbf24' : ratePct > 30 ? '#fbbf24' : '#34d399' }}>
+            <div className="text-2xl font-bold tabular-nums mt-1" style={{ color: ratePct > 50 ? '#fbbf24' : ratePct > 30 ? '#fbbf24' : '#34d399' }}>
               {fpRate?.total > 0 ? `${ratePct}%` : '—'}
             </div>
           </div>
           <div>
             <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Reviewed (30d)</div>
-            <div className="text-2xl font-black tabular-nums text-text-primary mt-1">{fpRate?.total || 0}</div>
+            <div className="text-2xl font-bold tabular-nums text-text-primary mt-1">{fpRate?.total || 0}</div>
           </div>
         </div>
         {ratePct > 50 && (

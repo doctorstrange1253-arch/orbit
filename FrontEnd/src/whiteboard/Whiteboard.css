@@ -30,7 +30,7 @@
 }
 
 .wb-top { top: calc(12px + env(safe-area-inset-top, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 14px; }
-.wb-title { color: var(--text-secondary, rgba(255,255,255,.7)); font-size: 13px; font-weight: 600; font-family: "Poppins", sans-serif; }
+.wb-title { color: var(--text-secondary, rgba(255,255,255,.7)); font-size: 13px; font-weight: 600; font-family: "JetBrains Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.18em; }
 
 .wb-top-right { top: calc(12px + env(safe-area-inset-top, 0px)); right: calc(12px + env(safe-area-inset-right, 0px)); display: flex; align-items: center; gap: 4px; padding: 6px; border-radius: 14px; }
 .wb-sep { width: 1px; height: 22px; background: var(--border-subtle, rgba(255,255,255,.12)); margin: 0 3px; }
@@ -116,14 +116,14 @@
 .wb-chat-input button { width: 36px; height: 36px; border: none; border-radius: 50%; background: linear-gradient(135deg, var(--accent-1), var(--accent-3)); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
 /* inline text editor */
-.wb-text-edit { position: absolute; z-index: 7; min-width: 60px; min-height: 30px; padding: 2px 4px; background: rgba(0,0,0,.25); border: 1px dashed var(--accent-1, #00c6ff); border-radius: 4px; font-family: "Open Sans", sans-serif; line-height: 1.3; resize: both; outline: none; overflow: hidden; }
+.wb-text-edit { position: absolute; z-index: 7; min-width: 60px; min-height: 30px; padding: 2px 4px; background: rgba(0,0,0,.25); border: 1px dashed var(--accent-1, #00c6ff); border-radius: 4px; font-family: "Cormorant Garamond", Georgia, serif; line-height: 1.3; resize: both; outline: none; overflow: hidden; }
 
 /* modal */
 .wb-modal-backdrop { position: absolute; inset: 0; z-index: 9; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; }
 .wb-modal { width: min(520px, 92vw); padding: 20px; border-radius: 18px; background: var(--surface, #15102b); border: 1px solid var(--border-subtle); box-shadow: 0 20px 60px rgba(0,0,0,.6); }
-.wb-modal h3 { color: var(--text-primary); font-family: "Poppins", sans-serif; font-size: 17px; margin: 0 0 4px; }
+.wb-modal h3 { color: var(--text-primary); font-family: "Playfair Display", Georgia, serif; font-style: italic; font-size: 17px; margin: 0 0 4px; }
 .wb-modal-hint { color: var(--text-muted); font-size: 12px; margin: 0 0 12px; }
-.wb-modal textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-app); color: var(--text-primary); font-family: "Fira Code", monospace; font-size: 14px; outline: none; resize: vertical; }
+.wb-modal textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-app); color: var(--text-primary); font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; outline: none; resize: vertical; }
 .wb-modal textarea:focus { border-color: var(--border-glow); }
 .wb-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
 .wb-modal-actions button { padding: 9px 18px; border-radius: 10px; border: 1px solid var(--border-subtle); background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; }

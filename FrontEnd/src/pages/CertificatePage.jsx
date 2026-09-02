@@ -23,7 +23,7 @@ const CertificatePage = () => {
                 <FuturisticBackdrop />
                 <div className="relative z-10 max-w-4xl mx-auto p-12">
                     <Helmet><title>Certificate · Orbit</title></Helmet>
-                    <h1 className="text-2xl font-black text-text-primary mb-2">Certificate not ready yet</h1>
+                    <h1 className="text-2xl font-bold text-text-primary mb-2">Certificate not ready yet</h1>
                     <p className="text-text-secondary mb-4">Finish every lesson in the course to unlock your certificate.</p>
                     <Link to={`/courses/${id}/learn`} className="inline-flex items-center gap-1 px-4 py-2 rounded-pill bg-accent/15 text-accent border border-accent/30 text-sm font-bold uppercase tracking-widest">
                         <Sparkles className="w-4 h-4" /> Continue learning

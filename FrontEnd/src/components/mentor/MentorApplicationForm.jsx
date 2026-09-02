@@ -127,7 +127,7 @@ const MentorApplicationForm = ({ initial = {} }) => {
                         <div>
                             <div className="flex items-baseline justify-between mb-1.5">
                                 <span className="text-xs font-semibold uppercase tracking-widest text-text-muted">Hourly rate (₹)</span>
-                                <span className="text-xl font-black gradient-text">₹{Number(hourlyRateInr).toLocaleString('en-IN')}</span>
+                                <span className="text-xl font-bold gradient-text">₹{Number(hourlyRateInr).toLocaleString('en-IN')}</span>
                             </div>
                             <input
                                 type="range"
@@ -308,7 +308,7 @@ const ProgressBar = ({ value, tone = 'ok' }) => (
 const MiniStat = ({ label, value, sub }) => (
     <div className="rounded-lg border border-border-subtle bg-surface/30 p-2.5">
         <div className="text-[10px] uppercase tracking-widest text-text-muted">{label}</div>
-        <div className="text-sm font-black text-text-primary mt-0.5">{value}</div>
+        <div className="text-sm font-bold text-text-primary mt-0.5">{value}</div>
         {sub && <div className="text-[10px] text-text-muted mt-0.5">{sub}</div>}
     </div>
 );
@@ -326,7 +326,7 @@ const PublicPreview = ({ headline, bio, hourlyRateInr, timezone, skills }) => (
                 </div>
             </div>
             <div className="text-right flex-shrink-0">
-                <div className="text-lg font-black gradient-text">₹{hourlyRateInr.toLocaleString('en-IN')}</div>
+                <div className="text-lg font-bold gradient-text">₹{hourlyRateInr.toLocaleString('en-IN')}</div>
                 <div className="text-[10px] uppercase tracking-widest text-text-muted">per hour</div>
             </div>
         </div>

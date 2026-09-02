@@ -131,7 +131,7 @@ export default function Walkthrough({ tourKey }) {
               )}
               <button
                 onClick={next}
-                className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-xs font-black text-slate-900"
+                className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-xs font-bold text-slate-900"
                 style={BRAND_BTN}
               >
                 {last ? (<><Check size={13} /> Done</>) : (<>Next <ArrowRight size={13} /></>)}

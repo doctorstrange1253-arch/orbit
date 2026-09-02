@@ -319,7 +319,7 @@ const MediaLibrary = () => {
                   <button
                     onClick={() => setQueue([])}
                     disabled={uploadAll.isPending}
-                    className="text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-rose-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="text-[10px] font-bold uppercase tracking-widest text-text-muted hover:text-rose-300 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Clear all
                   </button>
@@ -405,8 +405,8 @@ const MediaLibrary = () => {
 
 const StatCell = ({ label, value }) => (
   <div className="rounded-xl border border-border-subtle bg-surface/30 px-3 py-2.5 text-center">
-    <div className="text-2xl font-black text-text-primary" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>{value}</div>
-    <div className="text-[10px] font-black uppercase tracking-widest text-text-muted">{label}</div>
+    <div className="text-2xl font-bold text-text-primary" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>{value}</div>
+    <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{label}</div>
   </div>
 );
 
@@ -502,12 +502,12 @@ const MediaCard = ({ item, onReattach, onDelete }) => {
           </div>
         )}
         {item.isBoss && (
-          <div className="absolute top-2 left-2 inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/90 text-amber-950 text-[9px] font-black uppercase tracking-widest">
+          <div className="absolute top-2 left-2 inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/90 text-amber-950 text-[9px] font-bold uppercase tracking-widest">
             <Sparkles className="w-2.5 h-2.5" /> Boss
           </div>
         )}
         {item.isFree && !item.isBoss && (
-          <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-emerald-500/90 text-emerald-950 text-[9px] font-black uppercase tracking-widest">
+          <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-emerald-500/90 text-emerald-950 text-[9px] font-bold uppercase tracking-widest">
             Free
           </div>
         )}
@@ -516,26 +516,26 @@ const MediaCard = ({ item, onReattach, onDelete }) => {
           className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
           title="Edit lesson"
         >
-          <span className="px-3 py-1.5 rounded-pill bg-black/70 text-white text-[10px] font-black uppercase tracking-widest backdrop-blur-sm">
+          <span className="px-3 py-1.5 rounded-pill bg-black/70 text-white text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
             Open in editor
           </span>
         </button>
       </div>
       <div className="p-3">
-        <div className="text-[10px] font-black uppercase tracking-widest text-text-muted flex items-center gap-1 mb-1">
+        <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted flex items-center gap-1 mb-1">
           <BookOpen className="w-3 h-3" /> {item.courseTitle}
         </div>
         <div className="text-sm font-semibold text-text-primary line-clamp-2 mb-2">{item.lessonTitle}</div>
         <div className="flex items-center gap-1.5">
           <button
             onClick={onReattach}
-            className="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1 rounded-pill bg-accent/15 text-accent border border-accent/30 text-[10px] font-black uppercase tracking-widest"
+            className="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1 rounded-pill bg-accent/15 text-accent border border-accent/30 text-[10px] font-bold uppercase tracking-widest"
           >
             <ExternalLink className="w-3 h-3" /> Edit
           </button>
           <button
             onClick={onDelete}
-            className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-pill bg-rose-500/10 text-rose-300 border border-rose-500/30 text-[10px] font-black uppercase tracking-widest"
+            className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-pill bg-rose-500/10 text-rose-300 border border-rose-500/30 text-[10px] font-bold uppercase tracking-widest"
             title="Delete lesson (and unlink video)"
           >
             <Trash2 className="w-3 h-3" />

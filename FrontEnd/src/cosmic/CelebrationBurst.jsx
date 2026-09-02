@@ -89,7 +89,7 @@ export default function CelebrationBurst({ rarity, itemName, onDone }) {
         transition={{ duration: 1.35, times: [0, 0.2, 0.75, 1], ease: 'easeOut' }}
       >
         <span
-          className="font-black uppercase tracking-[0.22em]"
+          className="font-bold uppercase tracking-[0.22em]"
           style={{
             fontSize: big ? 22 : 15,
             color: stampColor,

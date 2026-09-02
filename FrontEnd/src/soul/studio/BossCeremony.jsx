@@ -105,7 +105,7 @@ const BossCeremony = ({ lesson, onDone, onCancel }) => {
       >
         <div className="flex items-center gap-2 mb-3">
           <Crown size={20} style={{ color: '#fbbf24' }} />
-          <div className="text-[11px] font-black uppercase tracking-[0.5em] text-amber-200">
+          <div className="text-[11px] font-bold uppercase tracking-[0.5em] text-amber-200">
             Boss Level
           </div>
           <Crown size={20} style={{ color: '#fbbf24' }} />

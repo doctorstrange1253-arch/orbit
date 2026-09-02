@@ -26,7 +26,7 @@ const makeIcon = (color, initials) => L.divIcon({
   className: '',
   html: `<div style="position:relative;width:40px;height:52px;">
     <div style="position:absolute;top:0;left:0;width:40px;height:40px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2.5px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.45);"></div>
-    <div style="position:absolute;top:5px;left:5px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Outfit,sans-serif;font-size:11px;font-weight:700;color:#fff;background:${color};">${initials}</div>
+    <div style="position:absolute;top:5px;left:5px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;color:#fff;background:${color};">${initials}</div>
   </div>`,
   iconSize: [40, 52], iconAnchor: [20, 52], popupAnchor: [0, -50],
 });
@@ -35,7 +35,7 @@ const youIcon = L.divIcon({
   className: '',
   html: `<div style="position:relative;width:44px;height:58px;">
     <div style="position:absolute;top:0;left:0;width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(135deg,#00c6ff,#7c3aed);border:3px solid #fff;box-shadow:0 0 16px rgba(0,198,255,0.6),0 3px 10px rgba(0,0,0,0.4);"></div>
-    <div style="position:absolute;top:6px;left:6px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Outfit,sans-serif;font-size:10px;font-weight:800;color:#fff;background:linear-gradient(135deg,#00c6ff,#7c3aed);">YOU</div>
+    <div style="position:absolute;top:6px;left:6px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:0.08em;color:#fff;background:linear-gradient(135deg,#00c6ff,#7c3aed);">YOU</div>
   </div>`,
   iconSize: [44, 58], iconAnchor: [22, 58], popupAnchor: [0, -56],
 });
@@ -241,7 +241,7 @@ const NearbyMap = () => {
                 return (
                   <Marker key={s._id} position={pos} icon={makeIcon(color, initials)}>
                     <Popup>
-                      <div style={{ fontFamily: 'Outfit,sans-serif', minWidth: 180, padding: 4 }}>
+                      <div style={{ fontFamily: 'var(--font-serif)', minWidth: 180, padding: 4 }}>
                         <strong style={{ fontSize: 14, color: '#111' }}>{s.user.name}</strong>
                         <div style={{ fontSize: 12, color: '#666', margin: '4px 0' }}>
                           Offers: <strong>{s.skillOffered}</strong><br />

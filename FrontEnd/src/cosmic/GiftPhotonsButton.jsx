@@ -108,7 +108,7 @@ export default function GiftPhotonsButton({ toUser }) {
                         key={amt}
                         disabled={blocked}
                         onClick={() => send(amt)}
-                        className={`rounded-xl px-2 py-2 text-sm font-black tabular-nums transition
+                        className={`rounded-xl px-2 py-2 text-sm font-bold tabular-nums transition
                           ${blocked
                             ? 'cursor-not-allowed bg-surface text-text-muted opacity-60'
                             : 'bg-purple/10 text-purple hover:bg-purple/20 ring-1 ring-purple/30'}`}

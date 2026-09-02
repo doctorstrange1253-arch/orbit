@@ -61,7 +61,7 @@ const LevelCard = ({ lesson, onBegin }) => {
         }}
       >
         {isBoss && (
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-pill text-[10px] font-black uppercase tracking-[0.3em] text-amber-200 bg-amber-500/15 border border-amber-500/30 mb-3">
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-pill text-[10px] font-bold uppercase tracking-[0.3em] text-amber-200 bg-amber-500/15 border border-amber-500/30 mb-3">
             <Sparkles size={10} /> Boss
           </div>
         )}

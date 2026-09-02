@@ -352,7 +352,7 @@ const Recorder = () => {
                     className="absolute inset-0 flex items-center justify-center pointer-events-none"
                     style={{ background: 'rgba(0,0,0,0.4)' }}
                   >
-                    <div className="text-[160px] font-black text-white leading-none" style={{ fontFamily: 'var(--font-serif)', textShadow: '0 4px 32px rgba(0,0,0,0.6)' }}>
+                    <div className="text-[160px] font-bold text-white leading-none" style={{ fontFamily: 'var(--font-serif)', textShadow: '0 4px 32px rgba(0,0,0,0.6)' }}>
                       {countdown}
                     </div>
                   </motion.div>
@@ -396,7 +396,7 @@ const Recorder = () => {
 
           <div className="space-y-3">
             <div className="rounded-2xl p-4" style={{ ...surfaceRecipe('mentor'), border: borderTint({ from: '#a78bfa', to: '#3b82f6' }, 24) }}>
-              <div className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-2">Source</div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-2">Source</div>
               <div className="grid grid-cols-3 gap-1.5 mb-3">
                 {[
                   { id: 'screen+cam', label: 'Screen + Cam', Icon: Monitor },
@@ -448,8 +448,8 @@ const Recorder = () => {
             </div>
 
             <div className="rounded-2xl p-4" style={{ ...surfaceRecipe('mentor'), border: borderTint({ from: '#a78bfa', to: '#3b82f6' }, 24) }}>
-              <div className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-2">Controls</div>
-              <div className="font-mono text-3xl font-black tabular-nums text-text-primary text-center my-2">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-2">Controls</div>
+              <div className="font-mono text-3xl font-bold tabular-nums text-text-primary text-center my-2">
                 {formatTime(elapsedMs)}
               </div>
               <div className="flex flex-col gap-2">
@@ -588,13 +588,13 @@ const ToggleRow = ({ Icon, label, on, onToggle }) => (
   <button onClick={onToggle} className="w-full flex items-center gap-2 p-2 rounded-lg bg-surface/30 border border-border-subtle text-left">
     <Icon className={`w-3.5 h-3.5 ${on ? 'text-emerald-300' : 'text-text-muted'}`} />
     <span className="text-xs font-bold flex-1">{label}</span>
-    <span className={`text-[10px] font-black uppercase tracking-widest ${on ? 'text-emerald-300' : 'text-text-muted'}`}>{on ? 'on' : 'off'}</span>
+    <span className={`text-[10px] font-bold uppercase tracking-widest ${on ? 'text-emerald-300' : 'text-text-muted'}`}>{on ? 'on' : 'off'}</span>
   </button>
 );
 
 const Field = ({ label, children }) => (
   <label className="block mb-2">
-    <span className="block text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">{label}</span>
+    <span className="block text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">{label}</span>
     {children}
   </label>
 );

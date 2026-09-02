@@ -131,7 +131,7 @@ function Podium({ entries, meId, onOpen }) {
                 borderBottom: 'none',
               }}
             >
-              <span className="text-sm font-black tabular-nums" style={{ color: solid }}>#{rank}</span>
+              <span className="text-sm font-bold tabular-nums" style={{ color: solid }}>#{rank}</span>
             </div>
           </motion.button>
         );
@@ -373,7 +373,7 @@ const PactBoard = ({ navigate }) => (
 );
 
 const LinkButton = ({ to, label }) => (
-    <button onClick={() => window.location.assign(to)} className="text-[11px] font-black uppercase tracking-widest text-accent hover:text-text-primary">
+    <button onClick={() => window.location.assign(to)} className="text-[11px] font-bold uppercase tracking-widest text-accent hover:text-text-primary">
         {label}
     </button>
 );

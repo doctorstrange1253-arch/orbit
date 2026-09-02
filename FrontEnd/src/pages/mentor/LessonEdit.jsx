@@ -166,10 +166,10 @@ const LessonEdit = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-5"
                 >
-                    <div className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">
                         {course?.isPublished ? 'Published' : 'Draft'} · Lesson
                     </div>
-                    <h1 className="text-2xl md:text-3xl font-black text-text-primary line-clamp-2">{form.title || 'Untitled lesson'}</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold text-text-primary line-clamp-2">{form.title || 'Untitled lesson'}</h1>
                 </motion.header>
 
                 {lessonReview && (
@@ -209,7 +209,7 @@ const LessonEdit = () => {
                     <div className="pt-2 border-t border-border-subtle/40">
                         <div className="flex items-center justify-between mb-2">
                             <div>
-                                <div className="text-[10px] font-black uppercase tracking-widest text-text-muted">Level Card</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Level Card</div>
                                 <div className="text-[10px] text-text-muted mt-0.5">The 3-line card the student sees for 2-3s before the video starts.</div>
                             </div>
                             <button
@@ -228,7 +228,7 @@ const LessonEdit = () => {
                         {aiProposal && (
                             <div className="rounded-lg border border-accent/30 bg-accent/5 p-3 space-y-2 text-xs mb-3">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-accent">
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-accent">
                                         {isStubProposal(aiProposal) ? 'Suggested (template)' : 'AI suggested'}
                                     </span>
                                     <div className="flex items-center gap-1">
@@ -261,7 +261,7 @@ const LessonEdit = () => {
                     <div className="pt-2 border-t border-border-subtle/40">
                         <div className="flex items-center justify-between mb-2">
                             <div>
-                                <div className="text-[10px] font-black uppercase tracking-widest text-text-muted">Quiz</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Quiz</div>
                                 {form.isBoss && (
                                     <div className="text-[10px] text-amber-300/80 mt-0.5">Boss Lessons need 5+ questions · 100% to pass</div>
                                 )}
@@ -271,7 +271,7 @@ const LessonEdit = () => {
                             </button>
                         </div>
                         <div className="flex items-center gap-3 mb-3">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Passing score</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Passing score</span>
                             <input
                                 type="number" min={50} max={100} step={5}
                                 value={form.quiz?.passingScore || 70}
@@ -327,7 +327,7 @@ const LessonEdit = () => {
 const Field = ({ label, hint, children }) => (
     <label className="block">
         <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">{label}</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{label}</span>
             {hint && <span className="text-[10px] text-text-muted">{hint}</span>}
         </div>
         {children}

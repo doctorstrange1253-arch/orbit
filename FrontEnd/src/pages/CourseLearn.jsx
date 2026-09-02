@@ -131,7 +131,7 @@ const CourseLearn = () => {
                 <div className="grid md:grid-cols-[280px_1fr] gap-6">
                     {/* Sidebar: lesson list */}
                     <aside className="md:sticky md:top-20 md:self-start">
-                        <h2 className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-2 px-1">
+                        <h2 className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-2 px-1">
                             {course.lessons?.length || 0} lessons
                         </h2>
                         <ol className="rounded-xl border border-border-subtle bg-surface/40 backdrop-blur-sm divide-y divide-border-subtle/40 overflow-hidden">
@@ -144,7 +144,7 @@ const CourseLearn = () => {
                                             onClick={() => navigate(`/courses/${id}/learn/${l._id}`)}
                                             className={`w-full flex items-start gap-2 p-3 text-left hover:bg-accent/5 ${isActive ? 'bg-accent/10' : ''}`}
                                         >
-                                            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black flex-shrink-0 ${
+                                            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
                                                 isDone ? 'bg-emerald-500/20 text-emerald-300' : isActive ? 'bg-accent/20 text-accent' : 'bg-surface text-text-muted'
                                             }`}>
                                                 {isDone ? <Check className="w-3 h-3" /> : i + 1}
@@ -166,7 +166,7 @@ const CourseLearn = () => {
                             key={activeLessonId}
                             initial={{ opacity: 0, y: 6 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="text-xl md:text-2xl font-black text-text-primary mb-1"
+                            className="text-xl md:text-2xl font-bold text-text-primary mb-1"
                         >
                             {activeLesson?.title || 'Pick a lesson'}
                         </motion.h1>

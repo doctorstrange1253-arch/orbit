@@ -37,7 +37,7 @@ export default function OrbitDashboardWidget() {
     >
       <div className="flex items-center gap-2">
         <Flame size={22} style={{ color: accent }} />
-        <span className="text-2xl font-black text-white tabular-nums">{streak.current}</span>
+        <span className="text-2xl font-bold text-white tabular-nums">{streak.current}</span>
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-semibold" style={{ color: accent }}>{st.text}</div>

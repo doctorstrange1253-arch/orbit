@@ -89,7 +89,7 @@ export default function PhotonsChip({ variant = 'nav', className = '' }) {
           aria-label="Earn more Photons — go to missions"
           title="Earn Photons by completing missions"
           onClick={(e) => { e.stopPropagation(); openMissions(); }}
-          className="ml-0.5 grid place-items-center rounded-full text-slate-900 font-black leading-none"
+          className="ml-0.5 grid place-items-center rounded-full text-slate-900 font-bold leading-none"
           style={{ width: 16, height: 16, fontSize: 12, background: 'linear-gradient(135deg,#38bdf8,#ec4899)' }}
         >+</span>
       </motion.button>
