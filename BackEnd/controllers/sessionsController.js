@@ -16,6 +16,7 @@ const SessionPackage = require("../models/SessionPackage");
 const payment = require("../services/payment");
 const sessionService = require("../services/sessionService");
 const mentorPayouts = require("../services/mentorPayouts");
+const honoursService = require("../services/honours");
 const { createNotification } = require("../services/notify");
 const { track: analytics } = require("../services/orbitAnalytics");
 
@@ -31,6 +32,7 @@ function shapeMentor(p, user) {
         skills: (p.skills || []).map(String),
         hourlyRateInr: p.hourlyRateInr,
         rating: p.rating,
+        honours: honoursService.shapeHonours(p.honours),
         timezone: p.timezone,
         payoutMultiplier: p.payoutMultiplier,
     };

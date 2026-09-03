@@ -12,8 +12,10 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Star, IndianRupee, Globe, Sparkles } from 'lucide-react';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
+import { useSigilState } from '../hooks/useSigilState';
 import ErrorState from '../components/common/ErrorState';
 import BookingModal from '../components/sessions/BookingModal';
+import HonoursStrip from '../components/mentor/HonoursStrip';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
 import { SkillCardSkeleton } from '../components/skeletons';
 
@@ -21,6 +23,7 @@ const SessionDetail = () => {
     const { userId } = useParams();
     const navigate = useNavigate();
     const me = useAuthStore((s) => s.user);
+    const { stardust } = useSigilState();
     const [bookOpen, setBookOpen] = useState(false);
 
     const { data: mentor, isLoading, error } = useQuery({
@@ -137,6 +140,10 @@ const SessionDetail = () => {
                             </div>
                         </div>
                     )}
+
+                    <div className="mt-8">
+                        <HonoursStrip mentor={mentor} balance={stardust} canGive={!isMe} />
+                    </div>
 
                     <div className="mt-8">
                         <button

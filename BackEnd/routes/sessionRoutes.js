@@ -18,6 +18,7 @@ const auth = require("../middleware/auth");
 const { requireAdmin } = require("../middleware/adminAuth");
 const { requireRoles } = require("../middleware/requireRoles");
 const C = require("../controllers/sessionsController");
+const H = require("../controllers/honoursController");
 
 const router = express.Router();
 
@@ -35,6 +36,14 @@ router.post("/mentor/apply", C.applyAsMentor);
 // *view* (otherwise students couldn't browse the marketplace).
 router.get("/mentors", C.listMentors);
 router.get("/mentors/:userId", C.getMentor);
+
+// Honours — a student spends Photons to mark a mentor publicly. Deliberately
+// separate from `rating`: an honour is recognition, a rating is a score, and
+// keeping them apart is what stops ratings being bought. One per mentor per
+// student per UTC day, enforced by a unique index.
+router.get("/honours/tiers", H.catalogue);
+router.get("/mentors/:userId/honours", H.list);
+router.post("/mentors/:userId/honours", H.send);
 
 // Mentor self-service: only callers with the 'mentor' role can read their
 // own profile / earnings / bookings. The 'mentor' role is granted in

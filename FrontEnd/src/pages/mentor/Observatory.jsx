@@ -31,6 +31,7 @@ import PactPulse from '../../components/pact/PactPulse';
 import RivalWatch from '../../components/pact/RivalWatch';
 import PactHallTable from '../../components/pact/PactHall';
 import LeagueRail from '../../components/pact/LeagueRail';
+import HonoursStrip from '../../components/mentor/HonoursStrip';
 import {
     MentorEyebrow,
     MentorTitle,
@@ -252,8 +253,17 @@ const Observatory = () => {
         </p>
       </motion.div>
 
-      {/* ── IV. Star Map ──────────────────────────────────────────── */}
-      {students.length === 0 ? (
+      {profile?.userId && (
+        <motion.section
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+        >
+          <HonoursStrip mentor={profile} canGive={false} />
+        </motion.section>
+      )}
+
+      {/* ── IV. Star Map ──────────────────────────────────────────── */}      {students.length === 0 ? (
         <ObservatoryEmpty />
       ) : (
         <motion.div

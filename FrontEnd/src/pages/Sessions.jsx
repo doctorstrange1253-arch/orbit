@@ -16,13 +16,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import {
-    Search, Star, IndianRupee, Filter, ListChecks, Sparkles, Globe, Zap, ChevronRight,
+    Search, Star, IndianRupee, Filter, ListChecks, Sparkles, Globe, Zap, ChevronRight, Award,
 } from 'lucide-react';
 import api from '../services/api';
 import ErrorState from '../components/common/ErrorState';
 import EmptyState from '../components/common/EmptyState';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
-import { SkillCardSkeleton } from '../components/skeletons';
 
 const Sessions = () => {
     const [search, setSearch] = useState('');
@@ -55,6 +54,7 @@ const Sessions = () => {
             <FuturisticBackdrop />
 
             <div className="relative z-10 max-w-6xl mx-auto px-4 py-10 md:py-14">
+                <Helmet><title>Browse mentors · Orbit</title></Helmet>
                 {/* Hero */}
                 <motion.header
                     initial={{ opacity: 0, y: 12 }}
@@ -245,6 +245,15 @@ const MentorCard = ({ mentor }) => {
                     {mentor.timezone && (
                         <span className="inline-flex items-center gap-1 text-xs text-text-muted">
                             <Globe className="w-3 h-3" />{mentor.timezone}
+                        </span>
+                    )}
+                    {(mentor.honours?.count || 0) > 0 && (
+                        <span
+                            className="inline-flex items-center gap-1"
+                            style={{ fontFamily: 'var(--font-mono)', fontSize: '0.56rem', letterSpacing: '0.16em', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent)' }}
+                            title={`${mentor.honours.count} honour${mentor.honours.count === 1 ? '' : 's'} from students`}
+                        >
+                            <Award className="w-3 h-3" />{mentor.honours.count}
                         </span>
                     )}
                 </div>
