@@ -4,6 +4,7 @@ const auth    = require("../middleware/auth");
 
 const { getMyOrbit, claimMission, rerollMission, buyFreeze, setPrefs, getLedger, giftPhotons, claimDailyQuest } = require("../controllers/orbitController");
 const binaryStar = require("../controllers/binaryStarController");
+const duel = require("../controllers/duelController");
 const { getMyLeague } = require("../controllers/leagueController");
 const shop = require("../controllers/shopController");
 
@@ -41,6 +42,14 @@ router.get("/binary-stars", auth, binaryStar.getMine);
 router.post("/binary-stars/invite", auth, binaryStar.invite);
 router.post("/binary-stars/:id/respond", auth, binaryStar.respond);
 router.post("/binary-stars/:id/dissolve", auth, binaryStar.dissolve);
+
+// ── Weekly duel (head-to-head, Tier 2) ──────────────────────────────────────
+// One duel per ISO week against a peer you have swapped with. Both sides score
+// from the same actions the League counts, so a duel adds stakes without adding
+// a new grind. Settles lazily on read at the week rollover — no cron.
+router.get("/duels/me", auth, duel.mine);
+router.post("/duels", auth, duel.challenge);
+router.post("/duels/:id/respond", auth, duel.respond);
 
 // Weekly League — the viewer's division + live group standings (protected).
 router.get("/league", auth, getMyLeague);

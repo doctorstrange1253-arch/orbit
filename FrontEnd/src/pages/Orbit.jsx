@@ -15,6 +15,7 @@ import PhotonIcon from '../cosmic/PhotonIcon';
 import MissionsPanel from '../cosmic/MissionsPanel';
 import ConstellationsPanel from '../cosmic/BinaryStarsPanel';
 import LeaguePanel from '../cosmic/LeaguePanel';
+import DuelPanel from '../cosmic/DuelPanel';
 import SignalLegend from '../cosmic/SignalLegend';
 import CosmicLoader from '../cosmic/CosmicLoader';
 import ErrorState from '../components/common/ErrorState';
@@ -210,6 +211,9 @@ export default function Orbit() {
 
         {/* Constellations — co-op Binary Star streaks */}
         <ConstellationsPanel />
+
+        {/* Weekly duel — one head-to-head a week against a swap partner */}
+        <DuelPanel />
       </>}
 
       {/* Milestone ladder */}

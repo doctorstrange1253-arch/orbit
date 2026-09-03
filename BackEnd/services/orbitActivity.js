@@ -234,6 +234,15 @@ async function recordOrbitAction(io, userId, metric, opts = {}) {
 
         await User.updateOne({ _id: userId }, { $set: { orbit } });
 
+        // Weekly duel — the same points the League would grant, scored on the
+        // duel document so a duel is simply "who earned more this week". Kept
+        // off the tier-2 gate so a duel still moves for a user outside the
+        // Leagues cohort. Best-effort: a duel never blocks the action.
+        const duelPoints = Math.round(league.xpFor(metric) * amount * xpFactor + (res.milestone ? league.XP_MILESTONE : 0));
+        if (duelPoints > 0) {
+            require("./duelScoring").addDuelPoints(userId, duelPoints, isoWeekId(now)).catch(() => {});
+        }
+
         // 3) Notifications (best-effort, after persistence).
         if (res.milestone) {
             createNotification(io, userId, {
