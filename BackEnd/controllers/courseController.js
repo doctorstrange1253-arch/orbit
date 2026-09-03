@@ -89,6 +89,7 @@ function publicShape(c, mentor, opts = {}) {
                 }),
             },
             resources: l.resources || [],
+            cuts: (l.cuts || []).map((c) => ({ fromSec: c.fromSec, toSec: c.toSec })),
         })),
         isPublished: c.isPublished,
         publishedAt: c.publishedAt,
@@ -104,6 +105,21 @@ function publicShape(c, mentor, opts = {}) {
 
 const LESSON_COPY_FIELDS = ["promiseCopy", "whyCopy", "rememberCopy", "bossChallenge"];
 
+function sanitizeCuts(input) {
+    if (!Array.isArray(input)) return null;
+    const ranges = input
+        .map((c) => ({ fromSec: Number(c?.fromSec), toSec: Number(c?.toSec) }))
+        .filter((c) => Number.isFinite(c.fromSec) && Number.isFinite(c.toSec) && c.fromSec >= 0 && c.toSec - c.fromSec > 0.05)
+        .sort((a, b) => a.fromSec - b.fromSec);
+    const merged = [];
+    for (const r of ranges) {
+        const last = merged[merged.length - 1];
+        if (last && r.fromSec <= last.toSec + 0.05) last.toSec = Math.max(last.toSec, r.toSec);
+        else merged.push({ fromSec: r.fromSec, toSec: r.toSec });
+    }
+    return merged.slice(0, 50);
+}
+
 function readLessonAuthoringFields(body, target) {
     if (typeof body.isBoss === "boolean") target.isBoss = body.isBoss;
     if (typeof body.isIntro === "boolean") {
@@ -112,6 +128,10 @@ function readLessonAuthoringFields(body, target) {
     }
     for (const key of LESSON_COPY_FIELDS) {
         if (typeof body[key] === "string") target[key] = body[key].slice(0, 1200);
+    }
+    if (body.cuts !== undefined) {
+        const cuts = sanitizeCuts(body.cuts);
+        if (cuts) target.cuts = cuts;
     }
     return target;
 }

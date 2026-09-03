@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, Check, Loader2, RotateCcw } from 'lucide-react';
 import { Haptic } from '../../soul/haptics';
 import { SoulSound } from '../../soul/soundLibrary';
+import { normalizeCuts, cutTotal, skipTarget, toEffective, fromEffective } from '../../studio/cuts';
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 const RATE_KEY = 'orbit-lesson-rate';
@@ -38,6 +39,10 @@ const LessonPlayer = ({ lesson, onComplete, isCompleted, isMarkingComplete }) =>
     const [clock, setClock] = useState({ at: 0, total: 0 });
     const completeFiredRef = useRef(false);
 
+    const cuts = useMemo(() => normalizeCuts(lesson?.cuts), [lesson?.cuts]);
+    const cutsRef = useRef(cuts);
+    useEffect(() => { cutsRef.current = cuts; }, [cuts]);
+
     useEffect(() => {
         completeFiredRef.current = false;
         setProgress(0);
@@ -54,9 +59,16 @@ const LessonPlayer = ({ lesson, onComplete, isCompleted, isMarkingComplete }) =>
     const handleTimeUpdate = () => {
         const v = videoRef.current;
         if (!v || !v.duration) return;
-        const pct = (v.currentTime / v.duration) * 100;
+        const jump = skipTarget(cutsRef.current, v.currentTime);
+        if (jump !== null) {
+            v.currentTime = Math.min(v.duration, jump);
+            return;
+        }
+        const total = Math.max(0.001, v.duration - cutTotal(cutsRef.current));
+        const at = Math.min(total, toEffective(cutsRef.current, v.currentTime));
+        const pct = (at / total) * 100;
         setProgress(pct);
-        setClock({ at: v.currentTime, total: v.duration });
+        setClock({ at, total });
         if (!completeFiredRef.current && pct >= 90 && onComplete) {
             completeFiredRef.current = true;
             Haptic.medium();
@@ -87,15 +99,18 @@ const LessonPlayer = ({ lesson, onComplete, isCompleted, isMarkingComplete }) =>
     const nudge = (delta) => {
         const v = videoRef.current;
         if (!v || !v.duration) return;
-        v.currentTime = Math.max(0, Math.min(v.duration, v.currentTime + delta));
+        const total = Math.max(0, v.duration - cutTotal(cutsRef.current));
+        const at = Math.min(total, Math.max(0, toEffective(cutsRef.current, v.currentTime) + delta));
+        v.currentTime = Math.min(v.duration, fromEffective(cutsRef.current, at));
     };
 
     const seek = (e) => {
         const v = videoRef.current;
         if (!v || !v.duration) return;
         const rect = e.currentTarget.getBoundingClientRect();
-        const pct = (e.clientX - rect.left) / rect.width;
-        v.currentTime = Math.max(0, Math.min(v.duration, pct * v.duration));
+        const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        const total = Math.max(0, v.duration - cutTotal(cutsRef.current));
+        v.currentTime = Math.min(v.duration, fromEffective(cutsRef.current, pct * total));
     };
 
     useEffect(() => {

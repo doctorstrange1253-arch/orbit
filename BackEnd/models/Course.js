@@ -43,6 +43,11 @@ const QuizSchema = new mongoose.Schema({
     questions:    { type: [QuestionSchema], default: [] },
 }, { _id: false });
 
+const CutSchema = new mongoose.Schema({
+    fromSec: { type: Number, required: true, min: 0 },
+    toSec:   { type: Number, required: true, min: 0 },
+}, { _id: false });
+
 const LessonSchema = new mongoose.Schema({
     title:        { type: String, required: true, trim: true, maxlength: 140 },
     description:  { type: String, default: "", maxlength: 2000 },
@@ -68,6 +73,10 @@ const LessonSchema = new mongoose.Schema({
     // attach concepts in the CourseEditor; the AI suggest button also
     // suggests 1-3 concept slugs from the lesson's title/description.
     conceptSlugs:      { type: [String], default: [] },
+    // Ranges the player skips, in lesson-relative seconds. Written by the
+    // Recorder's "retake the last 20 seconds": the flubbed take stays in the
+    // uploaded file, and the student never sees it.
+    cuts:              { type: [CutSchema], default: [] },
 }, { _id: true });
 
 const CourseSchema = new mongoose.Schema({

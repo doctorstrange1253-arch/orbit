@@ -1,22 +1,38 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import {
   ChevronLeft, Monitor, Camera, Mic, MicOff, Video, VideoOff,
-  Trash2, Square, Circle as CircleIcon, Pause, Play,
-  Save, RefreshCw, AlertTriangle, Loader2, Sparkles, Eye, EyeOff,
+  Trash2, Square, Circle as CircleIcon, Pause, Play, Bookmark,
+  Scissors, AlertTriangle, Loader2, Eye, EyeOff, X, Columns2, User, PictureInPicture2,
 } from 'lucide-react';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
+import Teleprompter from '../../components/mentor/Teleprompter';
+import RecorderReview from '../../components/mentor/RecorderReview';
 import { courses } from '../../services/courses';
-import { surfaceRecipe, borderTint, tintHalo } from '../../soul/tints';
 import { Haptic } from '../../soul/haptics';
 import { SoulSound } from '../../soul/soundLibrary';
+import { LAYOUTS, LAYOUT_LABEL, LAYOUT_TRANSITION_MS, resolveLayout, blendLayouts, drawCover, buildScript } from '../../studio/recorderStage';
+import { addCut, cutTotal } from '../../studio/cuts';
 
 const STAGE = { IDLE: 'idle', COUNTDOWN: 'countdown', RECORDING: 'recording', PAUSED: 'paused', PROCESSING: 'processing', REVIEW: 'review' };
 const W = 1280, H = 720;
+const RETAKE_SECONDS = 20;
 const PENCIL_COLORS = ['#ffffff', '#fbbf24', '#22d3ee', '#a78bfa', '#f43f5e', '#34d399'];
+
+const MICRO = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: '0.56rem',
+  letterSpacing: '0.16em',
+  fontWeight: 700,
+  textTransform: 'uppercase',
+};
+
+const LAYOUT_ICON = { solo: User, screen: Monitor, split: Columns2, spotlight: PictureInPicture2 };
+
+const HAIRLINE = '1px solid rgba(255,255,255,0.12)';
 
 const Recorder = () => {
   const navigate = useNavigate();
@@ -29,74 +45,91 @@ const Recorder = () => {
   const [micOn, setMicOn] = useState(true);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [whiteboardVisible, setWhiteboardVisible] = useState(false);
-  const [recordedBlob, setRecordedBlob] = useState(null);
-  const [recordedUrl, setRecordedUrl] = useState(null);
+  const [layout, setLayout] = useState('spotlight');
+  const [parts, setParts] = useState([]);
+  const [marks, setMarks] = useState([]);
+  const [cuts, setCuts] = useState([]);
+  const [notice, setNotice] = useState(null);
   const [error, setError] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [progress, setProgress] = useState({ index: 0, total: 0, pct: 0 });
+  const [prompterOpen, setPrompterOpen] = useState(false);
+  const [tpCourseId, setTpCourseId] = useState('');
+  const [tpLessonId, setTpLessonId] = useState('');
+  const [script, setScript] = useState('');
 
   const screenVideoRef = useRef(null);
   const cameraVideoRef = useRef(null);
   const compositionRef = useRef(null);
   const whiteboardRef = useRef(null);
   const mediaRecorderRef = useRef(null);
+  const captureStreamRef = useRef(null);
   const chunksRef = useRef([]);
   const rafIdRef = useRef(null);
   const startTsRef = useRef(0);
   const accumulatedMsRef = useRef(0);
+  const partStartMsRef = useRef(0);
+  const partSeqRef = useRef(0);
+  const partsRef = useRef([]);
+  const cutsRef = useRef([]);
+  const finalizeRef = useRef(true);
+  const resumeAfterCycleRef = useRef(false);
   const loopingRef = useRef(false);
   const sourcesRef = useRef(sources);
   const cameraOnRef = useRef(true);
   const micOnRef = useRef(true);
   const whiteboardVisibleRef = useRef(false);
+  const layoutRef = useRef({ from: 'spotlight', to: 'spotlight', at: 0 });
+  const stageRef = useRef(STAGE.IDLE);
+  const noticeTimerRef = useRef(null);
 
   useEffect(() => { sourcesRef.current = sources; }, [sources]);
   useEffect(() => { cameraOnRef.current = cameraOn; }, [cameraOn]);
-  useEffect(() => { micOnRef.current = micOn; }, [micOn]);
+  useEffect(() => { stageRef.current = stage; }, [stage]);
   useEffect(() => { whiteboardVisibleRef.current = whiteboardVisible; }, [whiteboardVisible]);
+  useEffect(() => {
+    micOnRef.current = micOn;
+    sourcesRef.current.mic?.getAudioTracks().forEach((t) => { t.enabled = micOn; });
+  }, [micOn]);
+
+  const flash = useCallback((message) => {
+    setNotice(message);
+    if (noticeTimerRef.current) clearTimeout(noticeTimerRef.current);
+    noticeTimerRef.current = setTimeout(() => setNotice(null), 2600);
+  }, []);
 
   const { data: myCourses = [] } = useQuery({
     queryKey: ['courses', 'list', 'mentor'],
     queryFn: () => courses.list({ mentor: 'me', limit: 100 }).then((r) => r?.items || []),
   });
 
+  const { data: tpCourse } = useQuery({
+    queryKey: ['courses', 'detail', tpCourseId],
+    queryFn: () => courses.detail(tpCourseId),
+    enabled: !!tpCourseId,
+  });
+
+  const tpLessons = useMemo(() => (tpCourse?.lessons || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0)), [tpCourse]);
+
+  const pickPrompterLesson = (lessonId) => {
+    setTpLessonId(lessonId);
+    const lesson = tpLessons.find((l) => String(l._id) === lessonId);
+    if (lesson) setScript(buildScript(lesson));
+  };
+
   useEffect(() => () => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       try { mediaRecorderRef.current.stop(); } catch (_stopErr) { void _stopErr; }
     }
     if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-    if (recordedUrlRef.current) URL.revokeObjectURL(recordedUrlRef.current);
+    if (noticeTimerRef.current) clearTimeout(noticeTimerRef.current);
+    partsRef.current.forEach((p) => URL.revokeObjectURL(p.url));
+    loopingRef.current = false;
     stopAllStreams(sourcesRef.current);
   }, []);
 
-  const recordedUrlRef = useRef(null);
-  useEffect(() => { recordedUrlRef.current = recordedUrl; }, [recordedUrl]);
-
-  const requestSources = async () => {
-    setError(null);
-    const next = { screen: null, camera: null, mic: null };
-    try {
-      if (mode === 'screen+cam' || mode === 'screen-only') {
-        const screen = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: true });
-        next.screen = screen;
-      }
-      if (mode === 'screen+cam' || mode === 'camera-only') {
-        const cam = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 180 }, audio: false });
-        next.camera = cam;
-      }
-      const mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true }, video: false });
-      next.mic = mic;
-      setSources(next);
-      if (screenVideoRef.current && next.screen) screenVideoRef.current.srcObject = next.screen;
-      if (cameraVideoRef.current && next.camera) cameraVideoRef.current.srcObject = next.camera;
-      startDrawLoop();
-    } catch (e) {
-      stopAllStreams(next);
-      setError(e?.message || 'Could not get screen / camera / mic access.');
-    }
-  };
-
   const startDrawLoop = useCallback(() => {
-    if (!compositionRef.current) return;
+    if (!compositionRef.current || loopingRef.current) return;
     const canvas = compositionRef.current;
     canvas.width = W;
     canvas.height = H;
@@ -106,68 +139,135 @@ const Recorder = () => {
     const draw = () => {
       if (!loopingRef.current) return;
       const srcs = sourcesRef.current;
-      const camOn = cameraOnRef.current;
-      const wbOn = whiteboardVisibleRef.current;
-      const isRec = mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording';
+      const hasScreen = !!srcs.screen;
+      const hasCamera = !!srcs.camera && cameraOnRef.current;
+      const L = layoutRef.current;
+      const p = L.at ? Math.min(1, (Date.now() - L.at) / LAYOUT_TRANSITION_MS) : 1;
+      const rects = blendLayouts(
+        resolveLayout(L.from, { hasScreen, hasCamera }),
+        resolveLayout(L.to, { hasScreen, hasCamera }),
+        p,
+      );
 
-      if (srcs.screen && screenVideoRef.current && screenVideoRef.current.readyState >= 2) {
-        ctx.drawImage(screenVideoRef.current, 0, 0, W, H);
-      } else if (srcs.camera && cameraVideoRef.current && cameraVideoRef.current.readyState >= 2) {
-        ctx.drawImage(cameraVideoRef.current, 0, 0, W, H);
-      } else {
-        ctx.fillStyle = '#0a0a14';
-        ctx.fillRect(0, 0, W, H);
-      }
-
-      if (srcs.camera && camOn && cameraVideoRef.current && cameraVideoRef.current.readyState >= 2 && srcs.screen) {
-        const pipW = W * 0.22;
-        const pipH = pipW * 9 / 16;
-        const pipX = W - pipW - 24;
-        const pipY = H - pipH - 24;
-        ctx.fillStyle = 'rgba(0,0,0,0.6)';
-        ctx.fillRect(pipX - 4, pipY - 4, pipW + 8, pipH + 8);
-        ctx.drawImage(cameraVideoRef.current, pipX, pipY, pipW, pipH);
-      }
-
-      if (wbOn && whiteboardRef.current) {
-        ctx.drawImage(whiteboardRef.current, 0, 0, W, H);
-      }
-
-      if (isRec) {
-        const pulse = (Date.now() / 500) % 1 > 0.5 ? 0.95 : 0.5;
-        ctx.fillStyle = `rgba(255, 60, 60, ${pulse})`;
-        ctx.beginPath();
-        ctx.arc(44, 44, 12, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 22px JetBrains Mono, ui-monospace, monospace';
-        ctx.textAlign = 'left';
-        const elapsed = accumulatedMsRef.current + (Date.now() - startTsRef.current);
-        ctx.fillText(formatTime(elapsed), 70, 52);
-        if (micOnRef.current) {
-          ctx.fillStyle = '#fff';
-          ctx.font = '12px JetBrains Mono, monospace';
-          ctx.textAlign = 'right';
-          ctx.fillText('MIC', W - 16, H - 16);
-        }
-      }
+      ctx.fillStyle = '#07070f';
+      ctx.fillRect(0, 0, W, H);
+      drawCover(ctx, screenVideoRef.current, rects.screen, W, H);
+      if (hasCamera) drawCover(ctx, cameraVideoRef.current, rects.camera, W, H);
+      if (whiteboardVisibleRef.current && whiteboardRef.current) ctx.drawImage(whiteboardRef.current, 0, 0, W, H);
 
       rafIdRef.current = requestAnimationFrame(draw);
     };
     rafIdRef.current = requestAnimationFrame(draw);
   }, []);
 
-  useEffect(() => {
-    if (stage === STAGE.RECORDING) {
-      const tick = () => {
-        const live = Date.now() - startTsRef.current;
-        setElapsedMs(accumulatedMsRef.current + live);
-      };
-      const id = setInterval(tick, 100);
-      return () => clearInterval(id);
+  const requestSources = async () => {
+    setError(null);
+    const next = { screen: null, camera: null, mic: null };
+    try {
+      if (mode === 'screen+cam' || mode === 'screen-only') {
+        next.screen = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: true });
+      }
+      if (mode === 'screen+cam' || mode === 'camera-only') {
+        next.camera = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: false });
+      }
+      next.mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true }, video: false });
+      next.mic.getAudioTracks().forEach((t) => { t.enabled = micOnRef.current; });
+      sourcesRef.current = next;
+      setSources(next);
+      if (screenVideoRef.current && next.screen) screenVideoRef.current.srcObject = next.screen;
+      if (cameraVideoRef.current && next.camera) cameraVideoRef.current.srcObject = next.camera;
+      const initial = next.screen ? (next.camera ? 'spotlight' : 'screen') : 'solo';
+      layoutRef.current = { from: initial, to: initial, at: 0 };
+      setLayout(initial);
+      startDrawLoop();
+    } catch (e) {
+      stopAllStreams(next);
+      setError(e?.message || 'Could not get screen / camera / mic access.');
     }
-    return undefined;
+  };
+
+  const elapsedNow = useCallback(() => {
+    const mr = mediaRecorderRef.current;
+    const live = mr && mr.state === 'recording' ? Date.now() - startTsRef.current : 0;
+    return accumulatedMsRef.current + live;
+  }, []);
+
+  useEffect(() => {
+    if (stage !== STAGE.RECORDING) return undefined;
+    const id = setInterval(() => setElapsedMs(accumulatedMsRef.current + (Date.now() - startTsRef.current)), 100);
+    return () => clearInterval(id);
   }, [stage]);
+
+  const collectPart = useCallback((mr) => {
+    const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'video/webm' });
+    chunksRef.current = [];
+    if (!blob.size) return;
+    partSeqRef.current += 1;
+    const at = elapsedNow();
+    const part = {
+      id: `part-${partSeqRef.current}`,
+      blob,
+      url: URL.createObjectURL(blob),
+      durationMs: Math.max(0, at - partStartMsRef.current),
+      cuts: cutsRef.current,
+      title: '',
+    };
+    partsRef.current = [...partsRef.current, part];
+    setParts(partsRef.current);
+    cutsRef.current = [];
+    setCuts([]);
+    partStartMsRef.current = at;
+  }, [elapsedNow]);
+
+  const collectPartRef = useRef(collectPart);
+  useEffect(() => { collectPartRef.current = collectPart; }, [collectPart]);
+  const beginPartRef = useRef(null);
+
+  const ensureCaptureStream = useCallback(() => {
+    if (captureStreamRef.current) return captureStreamRef.current;
+    if (!compositionRef.current) return null;
+    const stream = compositionRef.current.captureStream(30);
+    const srcs = sourcesRef.current;
+    const audio = [
+      ...(srcs.mic ? srcs.mic.getAudioTracks() : []),
+      ...(srcs.screen ? srcs.screen.getAudioTracks() : []),
+    ];
+    audio.forEach((t) => stream.addTrack(t));
+    captureStreamRef.current = stream;
+    return stream;
+  }, []);
+
+  const beginPart = useCallback(() => {
+    const stream = ensureCaptureStream();
+    if (!stream) return;
+    const mime = pickMime();
+    const mr = mime
+      ? new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 4_000_000 })
+      : new MediaRecorder(stream, { videoBitsPerSecond: 4_000_000 });
+    chunksRef.current = [];
+    mr.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunksRef.current.push(e.data); };
+    mr.onerror = (e) => {
+      setError(e?.error?.message || 'Recorder error');
+      setStage(STAGE.IDLE);
+      Haptic.denied?.();
+    };
+    mr.onstop = () => {
+      collectPartRef.current(mr);
+      if (finalizeRef.current) {
+        setStage(partsRef.current.length ? STAGE.REVIEW : STAGE.IDLE);
+        return;
+      }
+      beginPartRef.current?.();
+      if (resumeAfterCycleRef.current) {
+        resumeAfterCycleRef.current = false;
+        try { mediaRecorderRef.current?.pause(); } catch (_pauseErr) { void _pauseErr; }
+      }
+    };
+    mediaRecorderRef.current = mr;
+    mr.start(1000);
+  }, [ensureCaptureStream]);
+
+  useEffect(() => { beginPartRef.current = beginPart; }, [beginPart]);
 
   const beginCountdown = () => {
     if (!sources.screen && !sources.camera) {
@@ -182,114 +282,188 @@ const Recorder = () => {
   const actuallyStartRecording = useCallback(() => {
     if (!compositionRef.current) return;
     try {
-      const canvasStream = compositionRef.current.captureStream(30);
-      const audioTracks = [];
-      if (micOn && sources.mic) audioTracks.push(...sources.mic.getAudioTracks());
-      if (sources.screen) {
-        audioTracks.push(...sources.screen.getAudioTracks());
-      }
-      audioTracks.forEach((t) => canvasStream.addTrack(t));
-
-      const mime = pickMime();
-      const mr = mime
-        ? new MediaRecorder(canvasStream, { mimeType: mime, videoBitsPerSecond: 4_000_000 })
-        : new MediaRecorder(canvasStream, { videoBitsPerSecond: 4_000_000 });
-      chunksRef.current = [];
-      mr.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunksRef.current.push(e.data); };
-      mr.onerror = (e) => {
-        const msg = e?.error?.message || 'Recorder error';
-        setError(msg);
-        setStage(STAGE.IDLE);
-        loopingRef.current = false;
-        Haptic.denied?.();
-      };
-      mr.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'video/webm' });
-        const url = URL.createObjectURL(blob);
-        if (recordedUrlRef.current) URL.revokeObjectURL(recordedUrlRef.current);
-        setRecordedBlob(blob);
-        setRecordedUrl(url);
-        recordedUrlRef.current = url;
-        setStage(STAGE.REVIEW);
-      };
       startDrawLoop();
-      mediaRecorderRef.current = mr;
+      finalizeRef.current = false;
       startTsRef.current = Date.now();
       accumulatedMsRef.current = 0;
+      partStartMsRef.current = 0;
+      partSeqRef.current = 0;
+      partsRef.current = [];
+      cutsRef.current = [];
+      setParts([]);
+      setCuts([]);
+      setMarks([]);
       setElapsedMs(0);
       setStage(STAGE.RECORDING);
-      mr.start(1000);
+      beginPart();
       Haptic.medium();
     } catch (e) {
-      loopingRef.current = false;
       setError(e?.message || 'Could not start recording (codec unsupported?).');
       setStage(STAGE.IDLE);
       Haptic.denied?.();
     }
-  }, [micOn, sources, startDrawLoop]);
+  }, [beginPart, startDrawLoop]);
 
   useEffect(() => {
-    if (stage !== STAGE.COUNTDOWN) return;
+    if (stage !== STAGE.COUNTDOWN) return undefined;
     if (countdown <= 0) {
       actuallyStartRecording();
-      return;
+      return undefined;
     }
     const t = setTimeout(() => setCountdown((c) => c - 1), 1000);
     return () => clearTimeout(t);
   }, [stage, countdown, actuallyStartRecording]);
 
-  const pauseRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-      mediaRecorderRef.current.pause();
+  const pauseRecording = useCallback(() => {
+    const mr = mediaRecorderRef.current;
+    if (mr && mr.state === 'recording') {
+      mr.pause();
       accumulatedMsRef.current += Date.now() - startTsRef.current;
+      setElapsedMs(accumulatedMsRef.current);
       setStage(STAGE.PAUSED);
       Haptic.light();
     }
-  };
+  }, []);
 
-  const resumeRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'paused') {
-      mediaRecorderRef.current.resume();
+  const resumeRecording = useCallback(() => {
+    const mr = mediaRecorderRef.current;
+    if (mr && mr.state === 'paused') {
+      mr.resume();
       startTsRef.current = Date.now();
       setStage(STAGE.RECORDING);
-      startDrawLoop();
       Haptic.light();
     }
-  };
+  }, []);
 
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && (mediaRecorderRef.current.state === 'recording' || mediaRecorderRef.current.state === 'paused')) {
-      mediaRecorderRef.current.stop();
+  const stopRecording = useCallback(() => {
+    const mr = mediaRecorderRef.current;
+    if (mr && (mr.state === 'recording' || mr.state === 'paused')) {
+      accumulatedMsRef.current = elapsedNow();
+      finalizeRef.current = true;
+      mr.stop();
       setStage(STAGE.PROCESSING);
       Haptic.heavy();
     }
+  }, [elapsedNow]);
+
+  const markChapter = useCallback(() => {
+    const mr = mediaRecorderRef.current;
+    if (!mr || (mr.state !== 'recording' && mr.state !== 'paused')) return;
+    const boundary = elapsedNow();
+    if (boundary - partStartMsRef.current < 1000) {
+      flash('A chapter needs at least a second in it.');
+      return;
+    }
+    if (mr.state === 'recording') {
+      accumulatedMsRef.current = boundary;
+      startTsRef.current = Date.now();
+    }
+    resumeAfterCycleRef.current = mr.state === 'paused';
+    finalizeRef.current = false;
+    setMarks((m) => [...m, boundary]);
+    mr.stop();
+    Haptic.medium();
+    SoulSound.pageFlip?.();
+    flash(`Chapter ${partsRef.current.length + 1} closed — keep going.`);
+  }, [elapsedNow, flash]);
+
+  const retakeLast = useCallback(() => {
+    const mr = mediaRecorderRef.current;
+    if (!mr || (mr.state !== 'recording' && mr.state !== 'paused')) return;
+    const partMs = elapsedNow() - partStartMsRef.current;
+    if (partMs < 1200) {
+      flash('Nothing to retake yet.');
+      return;
+    }
+    const to = partMs / 1000;
+    const from = Math.max(0, to - RETAKE_SECONDS);
+    cutsRef.current = addCut(cutsRef.current, from, to);
+    setCuts(cutsRef.current);
+    Haptic.heavy();
+    flash(`Cut the last ${Math.round(to - from)}s — say it again from where you were.`);
+  }, [elapsedNow, flash]);
+
+  const dropCut = (index) => {
+    cutsRef.current = cutsRef.current.filter((_, i) => i !== index);
+    setCuts(cutsRef.current);
   };
 
+  const changeLayout = useCallback((next) => {
+    if (!LAYOUTS.includes(next)) return;
+    const cur = layoutRef.current;
+    if (cur.to === next) return;
+    layoutRef.current = { from: cur.to, to: next, at: Date.now() };
+    setLayout(next);
+    Haptic.light();
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      const el = e.target;
+      if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement || el?.isContentEditable) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const live = stageRef.current === STAGE.RECORDING || stageRef.current === STAGE.PAUSED;
+      if (e.key >= '1' && e.key <= '4') { changeLayout(LAYOUTS[Number(e.key) - 1]); return; }
+      const k = e.key.toLowerCase();
+      if (k === 'm' && live) { markChapter(); return; }
+      if (k === 'r' && live) { retakeLast(); return; }
+      if (k === 't') { setPrompterOpen((v) => !v); return; }
+      if (k === 'b') { setWhiteboardVisible((v) => !v); return; }
+      if (e.key === ' ' && live) {
+        e.preventDefault();
+        if (stageRef.current === STAGE.RECORDING) pauseRecording();
+        else resumeRecording();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [changeLayout, markChapter, retakeLast, pauseRecording, resumeRecording]);
+
   const reset = () => {
-    if (recordedUrl) URL.revokeObjectURL(recordedUrl);
-    setRecordedBlob(null);
-    setRecordedUrl(null);
+    partsRef.current.forEach((p) => URL.revokeObjectURL(p.url));
+    partsRef.current = [];
+    cutsRef.current = [];
+    setParts([]);
+    setCuts([]);
+    setMarks([]);
     setElapsedMs(0);
+    setProgress({ index: 0, total: 0, pct: 0 });
     setStage(STAGE.IDLE);
     setError(null);
     startDrawLoop();
   };
 
-  const onSaveAsLesson = async (courseId, title, description) => {
-    if (!recordedBlob) return;
-    const file = new File([recordedBlob], `recording-${Date.now()}.webm`, { type: recordedBlob.type });
-    const data = await courses.uploadVideo(file, (pct) => setUploadProgress(pct));
-    const lesson = await courses.addLesson(courseId, {
-      title: title || 'New lesson',
-      description: description || '',
-      videoUrl: data.url,
-      videoPublicId: data.publicId,
-      durationSec: data.durationSec,
-    });
-    qc.invalidateQueries({ queryKey: ['courses', 'list'] });
-    SoulSound.levelUp({ soul: 'mentor' });
-    navigate(`/mentor/courses/${courseId}/lessons/${lesson._id}`);
+  const onSaveParts = async (courseId, items) => {
+    setSaving(true);
+    try {
+      let firstLessonId = null;
+      for (let i = 0; i < items.length; i += 1) {
+        const part = items[i];
+        setProgress({ index: i, total: items.length, pct: 0 });
+        const file = new File([part.blob], `orbit-recording-${i + 1}.webm`, { type: part.blob.type || 'video/webm' });
+        const data = await courses.uploadVideo(file, (pct) => setProgress({ index: i, total: items.length, pct }));
+        const lesson = await courses.addLesson(courseId, {
+          title: part.title,
+          description: part.description,
+          videoUrl: data.url,
+          videoPublicId: data.publicId,
+          durationSec: Math.round(data.durationSec || part.durationMs / 1000),
+          cuts: part.cuts || [],
+        });
+        if (!firstLessonId) firstLessonId = lesson._id;
+      }
+      qc.invalidateQueries({ queryKey: ['courses', 'list'] });
+      qc.invalidateQueries({ queryKey: ['courses', 'detail', courseId] });
+      SoulSound.levelUp({ soul: 'mentor' });
+      navigate(`/mentor/courses/${courseId}/lessons/${firstLessonId}`);
+    } finally {
+      setSaving(false);
+    }
   };
+
+  const live = stage === STAGE.RECORDING || stage === STAGE.PAUSED;
+  const partElapsedMs = Math.max(0, elapsedMs - (marks[marks.length - 1] || 0));
+  const hasSource = !!sources.screen || !!sources.camera;
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -297,32 +471,30 @@ const Recorder = () => {
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
         <Helmet><title>Recorder · Orbit Mentor</title></Helmet>
 
-        <Link to="/mentor/courses" className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-text-primary mb-3">
+        <Link to="/mentor/courses" className="inline-flex items-center gap-1 mb-4" style={{ ...MICRO, color: 'var(--text-muted)' }}>
           <ChevronLeft className="w-3.5 h-3.5" /> My courses
         </Link>
 
-        <motion.header initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-3">
-            <Video className="w-3.5 h-3.5 text-accent" /> Studio
-          </div>
-          <h1
-            className="text-2xl md:text-3xl font-medium"
-            style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-primary)' }}
-          >
-            Orbit Recorder.
+        <motion.header initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+          <div style={{ ...MICRO, color: 'var(--text-muted)' }}>The studio</div>
+          <h1 className="text-2xl md:text-3xl mt-1.5" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-primary)' }}>
+            Orbit Recorder
           </h1>
-          <p className="text-text-secondary text-sm mt-1">Screen + camera + whiteboard, composed in the browser, saved as a lesson.</p>
+          <p className="text-sm mt-1.5 max-w-xl" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-secondary)' }}>
+            Screen, camera and whiteboard composed in the browser. Mark chapters as you talk and each one saves as its own lesson.
+          </p>
+          <div className="h-px w-full mt-5" style={{ background: 'rgba(255,255,255,0.12)' }} />
         </motion.header>
 
         {error && (
-          <div className="mb-4 rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-sm text-rose-200 inline-flex items-center gap-2">
+          <div className="mb-4 px-3 py-2 inline-flex items-center gap-2 text-sm" style={{ border: '1px solid rgba(244,63,94,0.4)', color: '#fecdd3' }}>
             <AlertTriangle className="w-4 h-4" /> {error}
           </div>
         )}
 
-        <div className="grid lg:grid-cols-[1fr_320px] gap-5">
-          <div className="rounded-2xl p-3" style={{ ...surfaceRecipe('mentor'), border: borderTint({ from: '#a78bfa', to: '#3b82f6' }, 24) }}>
-            <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black">
+        <div className="grid lg:grid-cols-[1fr_300px] gap-6">
+          <div>
+            <div className="relative w-full aspect-video overflow-hidden bg-black" style={{ border: HAIRLINE }}>
               <video ref={screenVideoRef} autoPlay muted playsInline style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none', left: 0, top: 0 }} />
               <video ref={cameraVideoRef} autoPlay muted playsInline style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none', left: 0, top: 0 }} />
               <canvas ref={compositionRef} className="w-full h-full block" />
@@ -341,6 +513,43 @@ const Recorder = () => {
                 style={{ pointerEvents: whiteboardVisible ? 'auto' : 'none' }}
               />
 
+              {live && (
+                <div className="absolute top-3 left-3 flex items-center gap-2 px-2 py-1" style={{ background: 'rgba(6,8,16,0.78)' }}>
+                  <motion.span
+                    animate={{ opacity: stage === STAGE.RECORDING ? [1, 0.25, 1] : 0.4 }}
+                    transition={{ duration: 1.4, repeat: Infinity }}
+                    className="w-2 h-2 rounded-full"
+                    style={{ background: '#f43f5e' }}
+                  />
+                  <span style={{ ...MICRO, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>
+                    {stage === STAGE.PAUSED ? 'Paused' : 'Rec'} {formatTime(elapsedMs)}
+                  </span>
+                  {!micOn && <MicOff className="w-3 h-3" style={{ color: '#fda4af' }} />}
+                </div>
+              )}
+
+              {live && (
+                <div className="absolute top-3 right-3 px-2 py-1" style={{ background: 'rgba(6,8,16,0.78)' }}>
+                  <span style={{ ...MICRO, color: '#fff' }}>{LAYOUT_LABEL[layout]}</span>
+                </div>
+              )}
+
+              {prompterOpen && <Teleprompter text={script} onClose={() => setPrompterOpen(false)} />}
+
+              <AnimatePresence>
+                {notice && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute left-1/2 -translate-x-1/2 bottom-4 px-3 py-1.5 z-30"
+                    style={{ background: 'rgba(6,8,16,0.92)', border: HAIRLINE }}
+                  >
+                    <span style={{ ...MICRO, color: 'var(--text-primary)' }}>{notice}</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               <AnimatePresence>
                 {stage === STAGE.COUNTDOWN && (
                   <motion.div
@@ -349,66 +558,98 @@ const Recorder = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 1.4 }}
                     transition={{ duration: 0.4 }}
-                    className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                    style={{ background: 'rgba(0,0,0,0.4)' }}
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
+                    style={{ background: 'rgba(0,0,0,0.42)' }}
                   >
-                    <div className="text-[160px] font-bold text-white leading-none" style={{ fontFamily: 'var(--font-serif)', textShadow: '0 4px 32px rgba(0,0,0,0.6)' }}>
+                    <div className="leading-none" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontWeight: 500, fontSize: 150, color: '#fff' }}>
                       {countdown}
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {stage === STAGE.IDLE && !sources.screen && !sources.camera && (
+              {stage === STAGE.IDLE && !hasSource && (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
-                    <Monitor className="w-10 h-10 text-text-muted mx-auto mb-2" />
-                    <div className="text-text-secondary text-sm">Pick a mode on the right to grant access.</div>
+                    <Monitor className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+                    <div className="text-sm" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-secondary)' }}>
+                      Pick a source on the right to grant access.
+                    </div>
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="mt-3 flex items-center gap-2 flex-wrap">
+            <div className="mt-4 flex items-center gap-1 flex-wrap">
+              {LAYOUTS.map((id, i) => {
+                const Icon = LAYOUT_ICON[id];
+                const active = layout === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => changeLayout(id)}
+                    title={`${LAYOUT_LABEL[id]} — press ${i + 1}`}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5"
+                    style={{
+                      ...MICRO,
+                      color: active ? 'var(--text-primary)' : 'var(--text-muted)',
+                      background: 'transparent',
+                      border: `1px solid ${active ? 'rgba(255,255,255,0.36)' : 'rgba(255,255,255,0.12)'}`,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <Icon className="w-3.5 h-3.5" /> {LAYOUT_LABEL[id]}
+                    <span style={{ opacity: 0.5 }}>{i + 1}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-3 flex items-center gap-3 flex-wrap">
               <button
                 onClick={() => setWhiteboardVisible((v) => !v)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[11px] font-bold uppercase tracking-widest border ${
-                  whiteboardVisible ? 'bg-accent/15 text-accent border-accent/40' : 'bg-surface/40 text-text-muted border-border-subtle'
-                }`}
+                className="inline-flex items-center gap-1.5"
+                style={{ ...MICRO, color: whiteboardVisible ? 'var(--accent)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}
               >
-                {whiteboardVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                Whiteboard
+                {whiteboardVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />} Whiteboard
+                <span style={{ opacity: 0.5 }}>B</span>
               </button>
-              <div className="flex items-center gap-1 ml-2">
+              <div className="flex items-center gap-1">
                 {PENCIL_COLORS.map((c) => (
                   <WhiteboardColorSwatch key={c} color={c} whiteboardRef={whiteboardRef} />
                 ))}
               </div>
               <button
                 onClick={() => clearWhiteboard(whiteboardRef)}
-                className="ml-auto inline-flex items-center gap-1 text-[10px] text-text-muted hover:text-rose-300 uppercase tracking-widest font-bold"
-                title="Clear whiteboard"
+                className="inline-flex items-center gap-1 ml-auto"
+                style={{ ...MICRO, color: 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}
               >
                 <Trash2 className="w-3 h-3" /> Clear
               </button>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <div className="rounded-2xl p-4" style={{ ...surfaceRecipe('mentor'), border: borderTint({ from: '#a78bfa', to: '#3b82f6' }, 24) }}>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-2">Source</div>
-              <div className="grid grid-cols-3 gap-1.5 mb-3">
+          <div className="space-y-6">
+            <section>
+              <SectionLabel>Source</SectionLabel>
+              <div className="grid grid-cols-3 gap-1 mb-3">
                 {[
-                  { id: 'screen+cam', label: 'Screen + Cam', Icon: Monitor },
-                  { id: 'screen-only', label: 'Screen only', Icon: Monitor },
-                  { id: 'camera-only', label: 'Camera only', Icon: Camera },
+                  { id: 'screen+cam', label: 'Both', Icon: Monitor },
+                  { id: 'screen-only', label: 'Screen', Icon: Monitor },
+                  { id: 'camera-only', label: 'Camera', Icon: Camera },
                 ].map((m) => (
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`flex flex-col items-center gap-1 p-2 rounded-lg text-[10px] font-bold uppercase tracking-widest border ${
-                      mode === m.id ? 'bg-accent/15 text-accent border-accent/40' : 'bg-surface/40 text-text-muted border-border-subtle'
-                    }`}
+                    disabled={live}
+                    className="flex flex-col items-center gap-1 py-2 disabled:opacity-40"
+                    style={{
+                      ...MICRO,
+                      color: mode === m.id ? 'var(--text-primary)' : 'var(--text-muted)',
+                      background: 'transparent',
+                      border: `1px solid ${mode === m.id ? 'rgba(255,255,255,0.36)' : 'rgba(255,255,255,0.12)'}`,
+                      cursor: live ? 'not-allowed' : 'pointer',
+                    }}
                   >
                     <m.Icon className="w-3.5 h-3.5" />
                     {m.label}
@@ -418,90 +659,145 @@ const Recorder = () => {
               {stage === STAGE.IDLE && (
                 <button
                   onClick={requestSources}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-pill text-sm font-bold uppercase tracking-widest text-text-on-accent"
-                  style={{ background: 'linear-gradient(135deg, #a78bfa, #3b82f6)' }}
+                  className="w-full inline-flex items-center justify-center gap-2 py-2.5"
+                  style={{ ...MICRO, color: 'var(--text-primary)', background: 'transparent', border: '1px solid rgba(255,255,255,0.36)', cursor: 'pointer' }}
                 >
-                  <Monitor className="w-4 h-4" /> Grant access
+                  <Monitor className="w-3.5 h-3.5" /> {hasSource ? 'Re-pick source' : 'Grant access'}
                 </button>
               )}
-
-              {(sources.camera || sources.screen) && (
-                <div className="mt-3 space-y-2">
-                  {sources.camera && (
-                    <ToggleRow
-                      Icon={cameraOn ? Video : VideoOff}
-                      label="Camera"
-                      on={cameraOn}
-                      onToggle={() => setCameraOn((v) => !v)}
-                    />
-                  )}
-                  {sources.mic && (
-                    <ToggleRow
-                      Icon={micOn ? Mic : MicOff}
-                      label="Microphone"
-                      on={micOn}
-                      onToggle={() => setMicOn((v) => !v)}
-                    />
-                  )}
+              {hasSource && (
+                <div className="mt-3 space-y-1.5">
+                  {sources.camera && <ToggleRow Icon={cameraOn ? Video : VideoOff} label="Camera" on={cameraOn} onToggle={() => setCameraOn((v) => !v)} />}
+                  {sources.mic && <ToggleRow Icon={micOn ? Mic : MicOff} label="Microphone" on={micOn} onToggle={() => setMicOn((v) => !v)} />}
                 </div>
               )}
-            </div>
+            </section>
 
-            <div className="rounded-2xl p-4" style={{ ...surfaceRecipe('mentor'), border: borderTint({ from: '#a78bfa', to: '#3b82f6' }, 24) }}>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-2">Controls</div>
-              <div className="font-mono text-3xl font-bold tabular-nums text-text-primary text-center my-2">
+            <section>
+              <SectionLabel>Controls</SectionLabel>
+              <div className="text-center my-3" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 34, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
                 {formatTime(elapsedMs)}
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1.5">
                 {stage === STAGE.IDLE && (
-                  <button
-                    onClick={beginCountdown}
-                    disabled={!sources.screen && !sources.camera}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-pill text-sm font-bold uppercase tracking-widest text-text-on-accent disabled:opacity-40 disabled:cursor-not-allowed"
-                    style={{ background: 'linear-gradient(135deg, #f43f5e, #fbbf24)', boxShadow: tintHalo({ from: '#f43f5e', to: '#fbbf24' }, 24) }}
-                  >
-                    <CircleIcon className="w-4 h-4 fill-current" /> Start
-                  </button>
+                  <StudioButton onClick={beginCountdown} disabled={!hasSource} tone="danger">
+                    <CircleIcon className="w-3.5 h-3.5 fill-current" /> Start recording
+                  </StudioButton>
                 )}
                 {stage === STAGE.RECORDING && (
-                  <>
-                    <button onClick={pauseRecording} className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-pill bg-surface/40 border border-border-subtle text-sm font-bold uppercase tracking-widest text-text-primary">
-                      <Pause className="w-4 h-4" /> Pause
-                    </button>
-                    <button onClick={stopRecording} className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-pill bg-rose-500/20 border border-rose-500/40 text-sm font-bold uppercase tracking-widest text-rose-200">
-                      <Square className="w-4 h-4 fill-current" /> Stop
-                    </button>
-                  </>
+                  <StudioButton onClick={pauseRecording}><Pause className="w-3.5 h-3.5" /> Pause <Key>space</Key></StudioButton>
                 )}
                 {stage === STAGE.PAUSED && (
+                  <StudioButton onClick={resumeRecording} tone="go"><Play className="w-3.5 h-3.5" /> Resume <Key>space</Key></StudioButton>
+                )}
+                {live && (
                   <>
-                    <button onClick={resumeRecording} className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-pill bg-emerald-500/20 border border-emerald-500/40 text-sm font-bold uppercase tracking-widest text-emerald-200">
-                      <Play className="w-4 h-4" /> Resume
-                    </button>
-                    <button onClick={stopRecording} className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-pill bg-rose-500/20 border border-rose-500/40 text-sm font-bold uppercase tracking-widest text-rose-200">
-                      <Square className="w-4 h-4 fill-current" /> Stop
-                    </button>
+                    <StudioButton onClick={markChapter}><Bookmark className="w-3.5 h-3.5" /> Mark chapter <Key>M</Key></StudioButton>
+                    <StudioButton onClick={retakeLast}><Scissors className="w-3.5 h-3.5" /> Retake last {RETAKE_SECONDS}s <Key>R</Key></StudioButton>
+                    <StudioButton onClick={stopRecording} tone="danger"><Square className="w-3.5 h-3.5 fill-current" /> Stop</StudioButton>
                   </>
                 )}
                 {stage === STAGE.PROCESSING && (
-                  <div className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-pill bg-surface/40 border border-border-subtle text-sm font-bold uppercase tracking-widest text-text-secondary">
-                    <Loader2 className="w-4 h-4 animate-spin" /> Processing…
+                  <div className="inline-flex items-center justify-center gap-2 py-2.5" style={{ ...MICRO, color: 'var(--text-secondary)', border: HAIRLINE }}>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" /> Processing…
                   </div>
                 )}
               </div>
-            </div>
+
+              {live && (
+                <div className="mt-4 space-y-1" style={{ ...MICRO, color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
+                  <div className="flex items-baseline justify-between">
+                    <span>Chapter {parts.length + 1}</span>
+                    <span>{formatTime(partElapsedMs)}</span>
+                  </div>
+                  {cutTotal(cuts) > 0 && (
+                    <div className="flex items-baseline justify-between" style={{ color: 'var(--accent)' }}>
+                      <span>Cut from this chapter</span>
+                      <span>{Math.round(cutTotal(cuts))}s</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </section>
+
+            {(marks.length > 0 || cuts.length > 0) && (
+              <section>
+                <SectionLabel>This take</SectionLabel>
+                <div className="space-y-1.5">
+                  {marks.map((at, i) => (
+                    <div key={`mark-${i}`} className="flex items-baseline justify-between py-1" style={{ borderBottom: HAIRLINE }}>
+                      <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 13, color: 'var(--text-secondary)' }}>
+                        Chapter {i + 1}
+                      </span>
+                      <span style={{ ...MICRO, color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>{formatTime(at)}</span>
+                    </div>
+                  ))}
+                  {cuts.map((c, i) => (
+                    <div key={`cut-${i}`} className="flex items-center justify-between py-1" style={{ borderBottom: HAIRLINE }}>
+                      <span className="inline-flex items-center gap-1.5" style={{ ...MICRO, color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>
+                        <Scissors className="w-3 h-3" /> {formatTime(c.fromSec * 1000)}–{formatTime(c.toSec * 1000)}
+                      </span>
+                      <button
+                        onClick={() => dropCut(i)}
+                        aria-label="Keep this take after all"
+                        style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <section>
+              <SectionLabel>Teleprompter <span style={{ opacity: 0.5 }}>T</span></SectionLabel>
+              <select
+                value={tpCourseId}
+                onChange={(e) => { setTpCourseId(e.target.value); setTpLessonId(''); }}
+                className="w-full px-2 py-1.5 mb-1.5 text-xs"
+                style={{ background: 'transparent', border: HAIRLINE, color: 'var(--text-primary)' }}
+              >
+                <option value="">— Course —</option>
+                {myCourses.map((c) => <option key={c._id} value={c._id}>{c.title}</option>)}
+              </select>
+              <select
+                value={tpLessonId}
+                onChange={(e) => pickPrompterLesson(e.target.value)}
+                disabled={!tpLessons.length}
+                className="w-full px-2 py-1.5 mb-1.5 text-xs disabled:opacity-40"
+                style={{ background: 'transparent', border: HAIRLINE, color: 'var(--text-primary)' }}
+              >
+                <option value="">— Lesson —</option>
+                {tpLessons.map((l) => <option key={l._id} value={String(l._id)}>{l.order}. {l.title}</option>)}
+              </select>
+              <textarea
+                rows={4}
+                value={script}
+                onChange={(e) => setScript(e.target.value)}
+                placeholder="Your script. Picking a lesson fills this from its Level Card."
+                className="w-full px-2 py-1.5 text-xs resize-none"
+                style={{ background: 'transparent', border: HAIRLINE, color: 'var(--text-primary)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}
+              />
+              <button
+                onClick={() => setPrompterOpen((v) => !v)}
+                className="w-full mt-1.5 py-2"
+                style={{ ...MICRO, color: prompterOpen ? 'var(--accent)' : 'var(--text-primary)', background: 'transparent', border: '1px solid rgba(255,255,255,0.24)', cursor: 'pointer' }}
+              >
+                {prompterOpen ? 'Hide prompter' : 'Show prompter'}
+              </button>
+            </section>
           </div>
         </div>
 
-        {stage === STAGE.REVIEW && recordedUrl && (
-          <ReviewPanel
-            recordedUrl={recordedUrl}
-            recordedBlob={recordedBlob}
-            durationMs={elapsedMs}
+        {stage === STAGE.REVIEW && parts.length > 0 && (
+          <RecorderReview
+            parts={parts}
             myCourses={myCourses}
-            onSave={onSaveAsLesson}
+            onSave={onSaveParts}
             onReRecord={reset}
-            uploadProgress={uploadProgress}
+            saving={saving}
+            progress={progress}
           />
         )}
       </div>
@@ -509,122 +805,62 @@ const Recorder = () => {
   );
 };
 
-const ReviewPanel = ({ recordedUrl, recordedBlob, durationMs, myCourses, onSave, onReRecord, uploadProgress }) => {
-  const [courseId, setCourseId] = useState(myCourses[0]?._id || '');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(null);
+const SectionLabel = ({ children }) => (
+  <div className="pb-2 mb-3" style={{ ...MICRO, color: 'var(--text-muted)', borderBottom: HAIRLINE }}>{children}</div>
+);
 
-  const submit = async () => {
-    if (!courseId) { setError('Pick a course.'); return; }
-    setSaving(true);
-    setError(null);
-    try {
-      await onSave(courseId, title.trim(), description.trim());
-    } catch (e) {
-      setError(e?.response?.data?.message || e?.message || 'Save failed.');
-    } finally {
-      setSaving(false);
-    }
-  };
+const Key = ({ children }) => (
+  <span style={{ marginLeft: 'auto', opacity: 0.45, fontSize: '0.52rem' }}>{children}</span>
+);
 
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="mt-6 rounded-2xl p-5"
-      style={{ ...surfaceRecipe('mentor'), border: borderTint({ from: '#a78bfa', to: '#3b82f6' }, 24) }}
-    >
-      <div className="flex items-center gap-2 mb-3">
-        <Sparkles className="w-4 h-4 text-accent" />
-        <h2 className="text-lg font-medium" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-          Review your recording.
-        </h2>
-        <span className="ml-auto text-xs text-text-muted font-mono">{formatTime(durationMs)} · {(recordedBlob.size / 1024 / 1024).toFixed(1)} MB</span>
-      </div>
-
-      <video src={recordedUrl} controls className="w-full aspect-video rounded-xl bg-black mb-4" />
-
-      <div className="grid md:grid-cols-2 gap-3">
-        <div>
-          <Field label="Course">
-            <select value={courseId} onChange={(e) => setCourseId(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-text-primary">
-              <option value="">— Pick a course —</option>
-              {myCourses.map((c) => <option key={c._id} value={c._id}>{c.title}</option>)}
-            </select>
-          </Field>
-          <Field label="Lesson title">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What this lesson teaches…"
-              className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-text-primary" />
-          </Field>
-          <Field label="Description (optional)">
-            <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-sm text-text-primary resize-none" />
-          </Field>
-          {error && <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-2 text-xs text-rose-200 mb-2">{error}</div>}
-          {saving && uploadProgress > 0 && (
-            <div className="text-[10px] text-text-muted mb-2">Uploading: {uploadProgress}%</div>
-          )}
-          <div className="flex items-center gap-2 mt-3">
-            <button onClick={submit} disabled={saving || !courseId}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-pill bg-accent/15 text-accent border border-accent/30 text-xs font-bold uppercase tracking-widest disabled:opacity-40">
-              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-              {saving ? 'Saving…' : 'Save as lesson'}
-            </button>
-            <button onClick={onReRecord}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill bg-surface/40 border border-border-subtle text-xs font-bold uppercase tracking-widest text-text-secondary">
-              <RefreshCw className="w-3.5 h-3.5" /> Re-record
-            </button>
-          </div>
-        </div>
-      </div>
-    </motion.section>
-  );
+const TONE = {
+  plain: { color: 'var(--text-primary)', border: '1px solid rgba(255,255,255,0.18)' },
+  danger: { color: '#fda4af', border: '1px solid rgba(244,63,94,0.42)' },
+  go: { color: '#a7f3d0', border: '1px solid rgba(52,211,153,0.42)' },
 };
 
-const ToggleRow = ({ Icon, label, on, onToggle }) => (
-  <button onClick={onToggle} className="w-full flex items-center gap-2 p-2 rounded-lg bg-surface/30 border border-border-subtle text-left">
-    <Icon className={`w-3.5 h-3.5 ${on ? 'text-emerald-300' : 'text-text-muted'}`} />
-    <span className="text-xs font-bold flex-1">{label}</span>
-    <span className={`text-[10px] font-bold uppercase tracking-widest ${on ? 'text-emerald-300' : 'text-text-muted'}`}>{on ? 'on' : 'off'}</span>
+const StudioButton = ({ onClick, disabled, tone = 'plain', children }) => (
+  <button
+    onClick={onClick}
+    disabled={disabled}
+    className="w-full inline-flex items-center gap-2 px-3 py-2.5 disabled:opacity-40"
+    style={{ ...MICRO, ...TONE[tone], background: 'transparent', cursor: disabled ? 'not-allowed' : 'pointer' }}
+  >
+    {children}
   </button>
 );
 
-const Field = ({ label, children }) => (
-  <label className="block mb-2">
-    <span className="block text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">{label}</span>
-    {children}
-  </label>
+const ToggleRow = ({ Icon, label, on, onToggle }) => (
+  <button
+    onClick={onToggle}
+    className="w-full flex items-center gap-2 py-1.5"
+    style={{ background: 'transparent', border: 'none', borderBottom: HAIRLINE, cursor: 'pointer' }}
+  >
+    <Icon className="w-3.5 h-3.5" style={{ color: on ? '#6ee7b7' : 'var(--text-muted)' }} />
+    <span className="flex-1 text-left" style={{ ...MICRO, color: 'var(--text-secondary)' }}>{label}</span>
+    <span style={{ ...MICRO, color: on ? '#6ee7b7' : 'var(--text-muted)' }}>{on ? 'on' : 'off'}</span>
+  </button>
 );
 
-const WhiteboardColorSwatch = ({ color, whiteboardRef }) => {
-  const setColor = () => {
-    if (!whiteboardRef.current) return;
-    whiteboardRef.current.dataset.color = color;
-  };
-  return (
-    <button
-      onClick={setColor}
-      className="w-5 h-5 rounded-full border-2 border-white/30 hover:border-white/80 transition"
-      style={{ background: color }}
-      title={color}
-    />
-  );
-};
+const WhiteboardColorSwatch = ({ color, whiteboardRef }) => (
+  <button
+    onClick={() => { if (whiteboardRef.current) whiteboardRef.current.dataset.color = color; }}
+    className="w-4 h-4"
+    style={{ background: color, border: '1px solid rgba(255,255,255,0.3)', cursor: 'pointer' }}
+    title={color}
+    aria-label={`Pencil ${color}`}
+  />
+);
 
 function stopAllStreams(srcs) {
-  Object.values(srcs).forEach((stream) => {
+  Object.values(srcs || {}).forEach((stream) => {
     if (stream) stream.getTracks().forEach((t) => t.stop());
   });
 }
 
 function formatTime(ms) {
-  const total = Math.floor(ms / 1000);
-  const m = Math.floor(total / 60);
-  const s = total % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  const total = Math.max(0, Math.floor(ms / 1000));
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 }
 
 function pickMime() {
@@ -656,6 +892,7 @@ function beginWhiteboardStroke(e, ref, visible) {
   s.drawing = true;
   s.last = boardCoords(e, ref);
 }
+
 function extendWhiteboardStroke(e, ref, visible) {
   if (!visible || !ref.current) return;
   const s = getStroke(ref.current);
@@ -672,12 +909,14 @@ function extendWhiteboardStroke(e, ref, visible) {
   ctx.stroke();
   s.last = next;
 }
+
 function endWhiteboardStroke(ref) {
   if (!ref?.current) return;
   const s = getStroke(ref.current);
   s.drawing = false;
   s.last = null;
 }
+
 function clearWhiteboard(ref) {
   if (!ref.current) return;
   const ctx = ref.current.getContext('2d');
@@ -685,3 +924,4 @@ function clearWhiteboard(ref) {
 }
 
 export default Recorder;
+

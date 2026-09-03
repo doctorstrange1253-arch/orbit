@@ -286,3 +286,76 @@ describe("GET /courses?mentor=me", () => {
         expect(res.body.items[0].isPublished).toBe(true);
     });
 });
+
+describe("lesson cuts — the Recorder's retake, applied at playback", () => {
+    it("stores cuts on a new lesson, sorted, merged and cleaned", async () => {
+        const mentor = await makeUser(["mentor"]);
+        const course = await makeCourseWithQuiz(mentor._id);
+
+        await request(app)
+            .post(`/api/courses/${course._id}/lessons`)
+            .set("Authorization", `Bearer ${tokenFor(mentor)}`)
+            .send({
+                title: "Recorded live",
+                videoUrl: "https://res.cloudinary.com/x/v/c.webm",
+                cuts: [
+                    { fromSec: 40, toSec: 60 },
+                    { fromSec: 10, toSec: 20 },
+                    { fromSec: 18, toSec: 25 },
+                    { fromSec: 5, toSec: 5 },
+                    { fromSec: -3, toSec: 2 },
+                    { fromSec: "x", toSec: 9 },
+                ],
+            })
+            .expect(201);
+
+        const after = await Course.findById(course._id).lean();
+        const lesson = after.lessons[after.lessons.length - 1];
+        expect(lesson.cuts).toEqual([
+            { fromSec: 10, toSec: 25 },
+            { fromSec: 40, toSec: 60 },
+        ]);
+    });
+
+    it("serializes cuts so the player can skip them", async () => {
+        const mentor = await makeUser(["mentor"]);
+        const course = await makeCourseWithQuiz(mentor._id);
+        course.lessons[0].cuts = [{ fromSec: 12.5, toSec: 32.5 }];
+        await course.save();
+
+        const res = await request(app).get(`/api/courses/${course._id}`).expect(200);
+        expect(res.body.lessons[0].cuts).toEqual([{ fromSec: 12.5, toSec: 32.5 }]);
+    });
+
+    it("leaves existing cuts alone when the body has no cuts field", async () => {
+        const mentor = await makeUser(["mentor"]);
+        const course = await makeCourseWithQuiz(mentor._id);
+        course.lessons[0].cuts = [{ fromSec: 1, toSec: 4 }];
+        await course.save();
+
+        await request(app)
+            .patch(`/api/courses/${course._id}/lessons/${course.lessons[0]._id}`)
+            .set("Authorization", `Bearer ${tokenFor(mentor)}`)
+            .send({ title: "Renamed only" })
+            .expect(200);
+
+        const after = await Course.findById(course._id).lean();
+        expect(after.lessons[0].cuts).toEqual([{ fromSec: 1, toSec: 4 }]);
+    });
+
+    it("lets a mentor clear every cut by sending an empty list", async () => {
+        const mentor = await makeUser(["mentor"]);
+        const course = await makeCourseWithQuiz(mentor._id);
+        course.lessons[0].cuts = [{ fromSec: 1, toSec: 4 }];
+        await course.save();
+
+        await request(app)
+            .patch(`/api/courses/${course._id}/lessons/${course.lessons[0]._id}`)
+            .set("Authorization", `Bearer ${tokenFor(mentor)}`)
+            .send({ cuts: [] })
+            .expect(200);
+
+        const after = await Course.findById(course._id).lean();
+        expect(after.lessons[0].cuts).toEqual([]);
+    });
+});
