@@ -297,6 +297,23 @@ const userSchema = new mongoose.Schema({
                 default: [],
             },
         },
+        // One small task a day, deterministic in the UTC day so a reload never
+        // rerolls it. `streak` counts consecutive CLAIMED days; every fifth one
+        // grants a Gravity Assist, which is how the shield is earned by playing
+        // rather than only granted weekly or bought.
+        dailyQuest: {
+            day:           { type: String, default: "" },      // "YYYY-MM-DD" UTC
+            key:           { type: String, default: "" },
+            metric:        { type: String, default: "" },       // swap | message | rating | streak_day
+            target:        { type: Number, default: 0 },
+            stardust:      { type: Number, default: 0 },
+            label:         { type: String, default: "" },
+            description:   { type: String, default: "" },
+            progress:      { type: Number, default: 0 },
+            claimed:       { type: Boolean, default: false },
+            streak:        { type: Number, default: 0 },
+            shieldsEarned: { type: Number, default: 0 },
+        },
         // Weekly League — fresh Orbit XP earned each ISO week (resets Monday UTC),
         // ranked within a fixed-size group; top/bottom promote/relegate at the
         // weekly rollover (workers/leagueWorker.js). `weekXp` self-heals to 0 on

@@ -64,6 +64,19 @@ function normalizeOrbit(orbit = {}) {
             rerollsUsed: (o.missions && o.missions.rerollsUsed) || 0,
             items: (o.missions && Array.isArray(o.missions.items)) ? o.missions.items.map((i) => ({ ...i })) : [],
         },
+        dailyQuest: {
+            day: (o.dailyQuest && o.dailyQuest.day) || "",
+            key: (o.dailyQuest && o.dailyQuest.key) || "",
+            metric: (o.dailyQuest && o.dailyQuest.metric) || "",
+            target: (o.dailyQuest && o.dailyQuest.target) || 0,
+            stardust: (o.dailyQuest && o.dailyQuest.stardust) || 0,
+            label: (o.dailyQuest && o.dailyQuest.label) || "",
+            description: (o.dailyQuest && o.dailyQuest.description) || "",
+            progress: (o.dailyQuest && o.dailyQuest.progress) || 0,
+            claimed: !!(o.dailyQuest && o.dailyQuest.claimed),
+            streak: (o.dailyQuest && o.dailyQuest.streak) || 0,
+            shieldsEarned: (o.dailyQuest && o.dailyQuest.shieldsEarned) || 0,
+        },
         league: {
             divisionId: (o.league && o.league.divisionId) || league.DIVISION_IDS[0],
             groupId: (o.league && o.league.groupId) || "",
@@ -92,12 +105,16 @@ function normalizeOrbit(orbit = {}) {
 function rollForward(orbit, now = new Date()) {
     const o = normalizeOrbit(orbit);
     const weekId = isoWeekId(now);
+    const today = utcDayStr(now);
 
     const g = engine.grantWeeklyFreeze(o.freeze, weekId);
     o.freeze = g.freeze;
 
     const m = engine.rollMissions(o.missions, weekId);
     o.missions = m.missions;
+
+    const q = engine.rollDailyQuest(o.dailyQuest, today);
+    o.dailyQuest = q.quest;
 
     // League weekly reset: when the ISO week changes, this week's XP starts at 0
     // and a provisional group is assigned in the current division (the rollover
@@ -115,8 +132,7 @@ function rollForward(orbit, now = new Date()) {
         leagueChanged = true;
     }
 
-    return { orbit: o, changed: g.granted || m.rolled || leagueChanged, weekId };
-}
+    return { orbit: o, changed: g.granted || m.rolled || q.rolled || leagueChanged, weekId, today };}
 
 /**
  * recordOrbitAction — the single entry point actions call. Advances the streak
@@ -190,10 +206,16 @@ async function recordOrbitAction(io, userId, metric, opts = {}) {
         if (streakEligible || metric !== "message") {
             let mp = engine.applyMissionProgress(orbit.missions, metric, amount);
             orbit.missions = mp.missions; completed.push(...mp.completedNow);
+            const dq = engine.applyDailyProgress(orbit.dailyQuest, metric, amount);
+            orbit.dailyQuest = dq.quest;
+            if (dq.completedNow) completed.push({ ...dq.completedNow, daily: true });
         }
         if (res.counted) {
             const mp2 = engine.applyMissionProgress(orbit.missions, "streak_day", 1);
             orbit.missions = mp2.missions; completed.push(...mp2.completedNow);
+            const dq2 = engine.applyDailyProgress(orbit.dailyQuest, "streak_day", 1);
+            orbit.dailyQuest = dq2.quest;
+            if (dq2.completedNow) completed.push({ ...dq2.completedNow, daily: true });
         }
 
         // 3) Weekly League XP — swap/review/mission/milestone dominate; message XP
@@ -231,10 +253,10 @@ async function recordOrbitAction(io, userId, metric, opts = {}) {
         }
         for (const c of completed) {
             createNotification(io, userId, {
-                type: "orbit_mission_complete",
-                title: "Mission complete",
+                type: c.daily ? "orbit_quest_complete" : "orbit_mission_complete",
+                title: c.daily ? "Today's quest is done" : "Mission complete",
                 body: `“${c.label}” is complete — claim ${c.stardust} Photons.`,
-                data: { link: "/orbit", missionKey: c.key, stardust: c.stardust, photons: c.stardust },
+                data: { link: "/orbit", missionKey: c.key, stardust: c.stardust, photons: c.stardust, daily: !!c.daily },
             }).catch(() => {});
         }
 

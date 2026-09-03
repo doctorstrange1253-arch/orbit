@@ -2,7 +2,7 @@ const express = require("express");
 const router  = express.Router();
 const auth    = require("../middleware/auth");
 
-const { getMyOrbit, claimMission, rerollMission, buyFreeze, setPrefs, getLedger, giftPhotons } = require("../controllers/orbitController");
+const { getMyOrbit, claimMission, rerollMission, buyFreeze, setPrefs, getLedger, giftPhotons, claimDailyQuest } = require("../controllers/orbitController");
 const binaryStar = require("../controllers/binaryStarController");
 const { getMyLeague } = require("../controllers/leagueController");
 const shop = require("../controllers/shopController");
@@ -13,6 +13,10 @@ router.get("/me", auth, getMyOrbit);
 
 // Claim a completed weekly mission's Stardust reward (protected).
 router.post("/missions/:key/claim", auth, claimMission);
+
+// Claim today's quest. Every fifth consecutive claim also grants a Gravity
+// Assist, so the streak shield is earned by showing up (protected).
+router.post("/quest/claim", auth, claimDailyQuest);
 
 // Spend Photons to swap one unclaimed, incomplete mission for a fresh one
 // (once per week — protected).

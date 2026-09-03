@@ -24,6 +24,7 @@ const WEEKLY_FREEZE_GRANT  = 1;   // tokens granted at each new ISO week
 const FREEZE_STARDUST_COST = 200; // Stardust to buy one extra Gravity Assist
 const MISSIONS_PER_WEEK    = 3;   // rotating goals per week
 const ACTIVE_DAY_STARDUST  = 5;   // tiny drip for a real-progress day
+const DAILY_SHIELD_EVERY   = 5;   // consecutive daily quests that earn a Gravity Assist
 
 // Milestone "orbits" — reaching one pays Stardust once (milestonesHit guards).
 const MILESTONES = Object.freeze([
@@ -59,8 +60,21 @@ const MISSION_TEMPLATES = Object.freeze([
     { key: "full_revolution",     metric: "streak_day", target: 7,  stardust: 320, label: "Full Revolution",     description: "Stay in orbit all 7 days this week" },
 ]);
 
-// ── Pure date helpers (UTC, string-in) ──────────────────────────────────────
-/** Whole-day number since the Unix epoch for a "YYYY-MM-DD" UTC date string. */
+// Daily quest pool — one small task a day, sized so a single honest session
+// clears it. Same metrics the action hook already emits, so nothing new has to
+// be instrumented. Clearing DAILY_SHIELD_EVERY in a row earns a Gravity Assist,
+// which is how the shield becomes something you play for rather than only
+// something granted or bought.
+const DAILY_TEMPLATES = Object.freeze([
+    { key: "day_one_swap",    metric: "swap",    target: 1, stardust: 30, label: "One Good Hour",   description: "Complete 1 skill swap today" },
+    { key: "day_two_swaps",   metric: "swap",    target: 2, stardust: 70, label: "Double Transit",  description: "Complete 2 skill swaps today" },
+    { key: "day_reach_out",   metric: "message",  target: 2, stardust: 20, label: "Two Signals",     description: "Message 2 different partners today" },
+    { key: "day_check_in",    metric: "message",  target: 4, stardust: 40, label: "Open Channel",    description: "Message 4 partners today" },
+    { key: "day_review",      metric: "rating",   target: 1, stardust: 35, label: "Say It Plainly",  description: "Leave a review for a partner today" },
+    { key: "day_show_up",     metric: "streak_day", target: 1, stardust: 15, label: "Show Up",       description: "Do one real thing today" },
+]);
+
+// ── Pure date helpers (UTC, string-in) ──────────────────────────────────────/** Whole-day number since the Unix epoch for a "YYYY-MM-DD" UTC date string. */
 function toDayNum(dateStr) {
     if (!dateStr) return null;
     const [y, m, d] = String(dateStr).split("-").map(Number);
@@ -335,6 +349,87 @@ function claimMission(missions, key) {
     return { missions: { ...missions, items }, ok, stardust, reason };
 }
 
+// ── Daily quest ──────────────────────────────────────────────────────────────
+/**
+ * pickDailyQuest — one template for a UTC day, deterministic in the day string
+ * so every replica shows the same quest and a reload never rerolls it.
+ */
+function pickDailyQuest(dayKey, templates = DAILY_TEMPLATES) {
+    const order = seededOrder(`quest:${dayKey}`, templates.length);
+    return templates[order[0]];
+}
+
+/**
+ * rollDailyQuest — swap in today's quest when the UTC day turns over.
+ * The consecutive-day counter survives only if yesterday's quest was claimed;
+ * a skipped day drops it to 0, which is what makes the shield worth chasing.
+ *
+ * @returns {{ quest, rolled:boolean }}
+ */
+function rollDailyQuest(quest, dayKey, templates = DAILY_TEMPLATES) {
+    if (quest && quest.day === dayKey && quest.key) return { quest, rolled: false };
+    const t = pickDailyQuest(dayKey, templates);
+    const carried = quest && quest.claimed && dayGap(quest.day, dayKey) === 1
+        ? Math.max(0, Number(quest.streak) || 0)
+        : 0;
+    return {
+        quest: {
+            day: dayKey,
+            key: t.key, metric: t.metric, target: t.target, stardust: t.stardust,
+            label: t.label, description: t.description,
+            progress: 0, claimed: false,
+            streak: carried,
+            shieldsEarned: Math.max(0, Number(quest && quest.shieldsEarned) || 0),
+        },
+        rolled: true,
+    };
+}
+
+/**
+ * applyDailyProgress — bump today's quest when its metric fires.
+ * @returns {{ quest, completedNow:object|null }}
+ */
+function applyDailyProgress(quest, metric, amount = 1) {
+    if (!quest || !quest.key || quest.metric !== metric || quest.claimed) return { quest, completedNow: null };
+    const wasComplete = quest.progress >= quest.target;
+    const progress = Math.min(quest.target, (quest.progress || 0) + amount);
+    const next = { ...quest, progress };
+    return { quest: next, completedNow: !wasComplete && progress >= quest.target ? next : null };
+}
+
+/**
+ * claimDailyQuest — pay today's quest once, advance the consecutive-day count,
+ * and report whether that count just earned a Gravity Assist.
+ *
+ * @returns {{ quest, ok:boolean, stardust:number, shieldEarned:boolean, reason?:string }}
+ */
+function claimDailyQuest(quest, dayKey) {
+    if (!quest || !quest.key) return { quest, ok: false, stardust: 0, shieldEarned: false, reason: "no_quest" };
+    if (quest.day !== dayKey) return { quest, ok: false, stardust: 0, shieldEarned: false, reason: "stale" };
+    if (quest.claimed) return { quest, ok: false, stardust: 0, shieldEarned: false, reason: "already_claimed" };
+    if ((quest.progress || 0) < quest.target) return { quest, ok: false, stardust: 0, shieldEarned: false, reason: "incomplete" };
+
+    const streak = (Number(quest.streak) || 0) + 1;
+    const shieldEarned = streak % DAILY_SHIELD_EVERY === 0;
+    return {
+        quest: {
+            ...quest,
+            claimed: true,
+            streak,
+            shieldsEarned: (Number(quest.shieldsEarned) || 0) + (shieldEarned ? 1 : 0),
+        },
+        ok: true,
+        stardust: quest.stardust,
+        shieldEarned,
+    };
+}
+
+/** Consecutive claims still needed before the next Gravity Assist. */
+function questsToNextShield(quest) {
+    const streak = Math.max(0, Number(quest && quest.streak) || 0);
+    return DAILY_SHIELD_EVERY - (streak % DAILY_SHIELD_EVERY);
+}
+
 // ── Milestone helper ─────────────────────────────────────────────────────────
 /** The next milestone strictly above `current` (for progress UI), or null. */
 function nextMilestone(current) {
@@ -378,6 +473,7 @@ module.exports = {
     // constants
     FREEZE_CAP, WEEKLY_FREEZE_GRANT, FREEZE_STARDUST_COST, MISSIONS_PER_WEEK,
     ACTIVE_DAY_STARDUST, MILESTONES, MISSION_TEMPLATES,
+    DAILY_TEMPLATES, DAILY_SHIELD_EVERY,
     MISSION_REROLL_COST, REROLLS_PER_WEEK,
     GIFT_MIN, GIFT_MAX, GIFT_DAILY_CAP, validateGift,
     // date helpers
@@ -388,6 +484,8 @@ module.exports = {
     grantWeeklyFreeze,
     // missions
     seededOrder, pickMissions, rollMissions, applyMissionProgress, claimMission, rerollMission,
+    // daily quest
+    pickDailyQuest, rollDailyQuest, applyDailyProgress, claimDailyQuest, questsToNextShield,
     // graduation (Part 3)
     phaseFor, graduationStatus,
     // misc

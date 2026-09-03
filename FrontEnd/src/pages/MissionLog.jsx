@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, TrendingDown, Target, Award, Shield, ShoppingBag, Gift, Star, Zap, CheckCircle2, RefreshCw, Send, Inbox, Users } from 'lucide-react';
 import PhotonIcon from '../cosmic/PhotonIcon';
-import { useOrbit, useLedger } from '../cosmic/useOrbit';
+import { useOrbit, useLedger, useClaimDailyQuest } from '../cosmic/useOrbit';
 import CosmicLoader from '../cosmic/CosmicLoader';
 import ErrorState from '../components/common/ErrorState';
 
@@ -41,6 +41,76 @@ function missionStatus(m) {
   return { label: 'In progress', cls: 'bg-white/5 text-slate-300 ring-white/10' };
 }
 
+function DailyQuestCard({ quest, freeze }) {
+  const claim = useClaimDailyQuest();
+  if (!quest) return null;
+
+  const reward = quest.photons ?? quest.stardust ?? 0;
+  const pct = Math.min(100, Math.round(((quest.progress || 0) / (quest.target || 1)) * 100));
+  const shieldPct = Math.round(((quest.shieldEvery - quest.toNextShield) / quest.shieldEvery) * 100);
+
+  return (
+    <section className="rounded-2xl border border-white/10 bg-slate-900/30 p-3 sm:p-4 space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-sm font-bold text-white">Today&apos;s quest</h2>
+        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400 tabular-nums">
+          <Shield size={12} className="text-cyan-300" />
+          {freeze?.tokens ?? 0} shield{(freeze?.tokens ?? 0) === 1 ? '' : 's'} banked
+        </span>
+      </div>
+
+      <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3.5 space-y-2">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-white">{quest.label}</div>
+            <div className="text-xs text-slate-400">{quest.description}</div>
+          </div>
+          {quest.claimed ? (
+            <span className="shrink-0 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 bg-emerald-500/15 text-emerald-300 ring-emerald-400/30">
+              <CheckCircle2 size={12} /> Claimed
+            </span>
+          ) : (
+            <button
+              onClick={() => claim.mutate()}
+              disabled={!quest.complete || claim.isPending}
+              className="shrink-0 rounded-full px-3 py-1 text-[11px] font-bold ring-1 disabled:opacity-40 bg-amber-500/15 text-amber-200 ring-amber-400/30"
+            >
+              {quest.complete ? (claim.isPending ? 'Claiming…' : `Claim ${reward}`) : 'In progress'}
+            </button>
+          )}
+        </div>
+
+        <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+          <div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-400" style={ { width: `${pct}%` } } />
+        </div>
+        <div className="flex items-center justify-between text-[11px]">
+          <span className="tabular-nums text-slate-400">{Math.min(quest.progress || 0, quest.target || 0)} / {quest.target}</span>
+          <span className="inline-flex items-center gap-1 font-semibold text-violet-200">
+            <PhotonIcon size={12} animated={false} /> {reward}
+          </span>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-white/10 bg-slate-900/20 p-3 space-y-1.5">
+        <div className="flex items-center justify-between text-[11px]">
+          <span className="text-slate-300 font-semibold">
+            {quest.streak} day{quest.streak === 1 ? '' : 's'} of quests in a row
+          </span>
+          <span className="text-slate-400 tabular-nums">
+            {quest.toNextShield} more for a Gravity Assist
+          </span>
+        </div>
+        <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+          <div className="h-full rounded-full bg-cyan-400/80" style={ { width: `${shieldPct}%` } } />
+        </div>
+        <p className="text-[11px] text-slate-500">
+          A shield covers one missed day, so a long streak survives a bad week. Earned every {quest.shieldEvery} quests — {quest.shieldsEarned} earned so far.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 export default function MissionLog() {
   const orbit = useOrbit({});
   const ledger = useLedger();
@@ -64,7 +134,9 @@ export default function MissionLog() {
         </Link>
         <h1 className="ml-1 text-xl font-bold text-white">Mission Log</h1>
       </div>
-      <p className="text-xs text-slate-400 -mt-2">Every weekly mission with its status and rewards, plus your full Photon history.</p>
+      <p className="text-xs text-slate-400 -mt-2">Today&apos;s quest, every weekly mission with its status and rewards, plus your full Photon history.</p>
+
+      <DailyQuestCard quest={orbit.data.dailyQuest} freeze={orbit.data.freeze} />
 
       <section className="rounded-2xl border border-white/10 bg-slate-900/30 p-3 sm:p-4 space-y-3">
         <h2 className="text-sm font-bold text-white">Weekly missions</h2>

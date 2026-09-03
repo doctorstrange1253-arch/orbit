@@ -12,6 +12,7 @@ const league = require("../services/leagueService");
 const cfg = require("../services/orbitConfig");
 const flags = require("../services/orbitFlags");
 const { utcDayStr, rollForward } = require("../services/orbitActivity");
+const { createNotification } = require("../services/notify");
 
 // Build the client payload from a fully-rolled orbit object.
 function shapeOrbit(orbit, now = new Date()) {
@@ -69,6 +70,27 @@ function shapeOrbit(orbit, now = new Date()) {
             complete: m.progress >= m.target,
         })),
         missionsWeekId: orbit.missions.weekId,
+        dailyQuest: (() => {
+            const q = orbit.dailyQuest || {};
+            if (!q.key) return null;
+            return {
+                day: q.day,
+                key: q.key,
+                label: q.label,
+                description: q.description,
+                metric: q.metric,
+                target: q.target,
+                progress: q.progress || 0,
+                photons: q.stardust,
+                stardust: q.stardust,
+                claimed: !!q.claimed,
+                complete: (q.progress || 0) >= q.target,
+                streak: q.streak || 0,
+                shieldsEarned: q.shieldsEarned || 0,
+                shieldEvery: engine.DAILY_SHIELD_EVERY,
+                toNextShield: engine.questsToNextShield(q),
+            };
+        })(),
         // Photon gifting — limits + how much of today's allowance remains.
         gift: {
             min: engine.GIFT_MIN,
@@ -161,8 +183,62 @@ exports.claimMission = async (req, res) => {
     }
 };
 
-// POST /api/orbit/missions/:key/reroll — spend Photons to swap ONE mission you
-// don't like for a fresh one (unclaimed + incomplete only; once per week).
+// POST /api/orbit/quest/claim — collect today's quest. Every fifth consecutive
+// claim also grants a Gravity Assist, so the shield is earned by turning up.
+exports.claimDailyQuest = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select("orbit").lean();
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const now = new Date();
+        const today = utcDayStr(now);
+        let { orbit } = rollForward(user.orbit, now);
+
+        const result = engine.claimDailyQuest(orbit.dailyQuest, today);
+        if (!result.ok) {
+            return res.status(400).json({ message: "Today's quest is not claimable", reason: result.reason });
+        }
+        orbit.dailyQuest = result.quest;
+        orbit.stardust += result.stardust;
+        orbit.league.weekXp += league.XP_MISSION_CLAIM;
+
+        let shieldGranted = false;
+        if (result.shieldEarned && orbit.freeze.tokens < engine.FREEZE_CAP) {
+            orbit.freeze.tokens += 1;
+            shieldGranted = true;
+        }
+
+        const upd = await User.updateOne(
+            { _id: req.user.id, "orbit.dailyQuest.day": today, "orbit.dailyQuest.claimed": { $ne: true } },
+            { $set: { orbit } },
+        );
+        if (!upd.matchedCount) {
+            return res.status(409).json({ message: "Today's quest is already claimed", reason: "already_claimed" });
+        }
+
+        require("../services/photonLedger").record(req.user.id, result.stardust, "mission");
+        if (shieldGranted) {
+            createNotification(req.app.get("io"), req.user.id, {
+                type: "orbit_shield_earned",
+                title: "Gravity Assist earned",
+                body: `${result.quest.streak} days of quests in a row — one missed day is now covered.`,
+                data: { link: "/orbit", freezeTokens: orbit.freeze.tokens },
+            }).catch(() => {});
+        }
+
+        return res.status(200).json({
+            awarded: result.stardust,
+            awardedPhotons: result.stardust,
+            shieldEarned: shieldGranted,
+            ...shapeOrbit(orbit, now),
+        });
+    } catch (err) {
+        console.error("claimDailyQuest error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// POST /api/orbit/missions/:key/reroll — spend Photons to swap ONE mission you// don't like for a fresh one (unclaimed + incomplete only; once per week).
 exports.rerollMission = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select("orbit").lean();

@@ -30,8 +30,20 @@ export function useClaimMission() {
   });
 }
 
-/** Spend Photons to swap ONE unclaimed, incomplete mission for a fresh one. */
-export function useRerollMission() {
+/** Claim today's quest. Every fifth consecutive claim also grants a shield. */
+export function useClaimDailyQuest() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.post('/orbit/quest/claim').then((r) => r.data),
+    onSuccess: (data) => {
+      qc.setQueryData(ORBIT_KEY, (prev) => ({ ...prev, ...data }));
+      qc.invalidateQueries({ queryKey: ['orbit', 'shop'] });
+      qc.invalidateQueries({ queryKey: ['orbit', 'ledger'] });
+    },
+  });
+}
+
+/** Spend Photons to swap ONE unclaimed, incomplete mission for a fresh one. */export function useRerollMission() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (key) => api.post(`/orbit/missions/${key}/reroll`).then((r) => r.data),
