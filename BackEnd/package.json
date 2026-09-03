@@ -11,7 +11,8 @@
     "seed:orbit-demo": "node scripts/seedOrbitDemo.js",
     "seed:store": "node scripts/seedStore.js",
     "migrate:binary-star": "node scripts/migrateConstellationToBinaryStar.js",
-    "migrate:user-roles": "node scripts/migrateUserRoles.js"
+    "migrate:user-roles": "node scripts/migrateUserRoles.js",
+    "migrate:photon-payouts": "node scripts/migratePhotonPayoutsToMoney.js"
   },
   "keywords": [],
   "author": "",

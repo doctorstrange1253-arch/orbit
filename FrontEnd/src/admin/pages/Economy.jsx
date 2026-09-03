@@ -32,6 +32,7 @@ function Supply() {
   if (err) return <div className="ssctl-err">{err}</div>;
   if (!data) return <div className="ssctl-muted">Loading…</div>;
   const l = data.ledger || {};
+  const q = l.quarantined || {};
   return (
     <div>
       <div className="ssctl-grid" style={{ marginBottom: 16 }}>
@@ -40,6 +41,11 @@ function Supply() {
         <Kpi label="Avg balance" value={Number(data.avgBalance).toLocaleString()} />
         <Kpi label="Net supply (ledger)" value={Number(l.netSupply ?? 0).toLocaleString()} />
       </div>
+      {q.needsMigration && (
+        <div className="ssctl-err" style={{ marginBottom: 16 }}>
+          {Number(q.count).toLocaleString()} money rows (₹{Number(q.total).toLocaleString()}) are still stored in the Photon ledger and are excluded from every figure below. Run <strong>npm run migrate:photon-payouts -- --apply</strong> to move them to MoneyLedger.
+        </div>
+      )}
       <div className="ssctl-card">
         <div className="ssctl-section-title" style={{ marginBottom: 8 }}>Faucets vs Sinks</div>
         <table className="ssctl-table">
@@ -48,6 +54,7 @@ function Supply() {
             <tr><td className="ssctl-muted">Earned (faucets)</td><td>{Number(l.totalEarned ?? 0).toLocaleString()}</td></tr>
             <tr><td className="ssctl-muted">Spent (sinks)</td><td>{Number(l.totalSpent ?? 0).toLocaleString()}</td></tr>
             <tr><td className="ssctl-muted">Inflation flag</td><td>{l.inflationAlert ? 'YES — faucets outpacing sinks' : 'no'}</td></tr>
+            <tr><td className="ssctl-muted">Money rows quarantined</td><td>{Number(q.count ?? 0).toLocaleString()}</td></tr>
           </tbody>
         </table>
       </div>

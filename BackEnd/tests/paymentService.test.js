@@ -110,43 +110,58 @@ describe("payment — production safety gate", () => {
     });
 });
 
-describe("payment — initiatePayout writes a ledger row", () => {
+describe("payment — payouts are money, never Photons", () => {
     const mongoose = require("mongoose");
-    const { MongoMemoryServer } = require("mongodb-memory-server");
     const ORIGINAL = { ...process.env };
 
-    let mongo;
-    beforeAll(async () => {
+    beforeAll(() => {
         jest.resetModules();
         delete process.env.RAZORPAY_KEY_ID;
         delete process.env.RAZORPAY_KEY_SECRET;
         process.env.RAZORPAY_MOCK = "true";
         process.env.NODE_ENV = "test";
-        mongo = await MongoMemoryServer.create();
-        await mongoose.connect(mongo.getUri());
     });
-    afterAll(async () => {
-        await mongoose.disconnect();
-        await mongo.stop();
+    afterAll(() => {
         process.env = ORIGINAL;
     });
-    afterEach(async () => {
-        for (const key in mongoose.connection.collections) await mongoose.connection.collections[key].deleteMany();
-    });
 
-    test("initiatePayout invokes PhotonLedger.create with the expected payload", async () => {
-        // Spy on the model's create method so we don't depend on cross-describe
-        // mongoose state (jest.resetModules in this describe means the model
-        // identity is fresh; we still want to assert the call shape).
+    test("initiatePayout delegates to mentorPayouts with the session as the idempotency ref", async () => {
+        const mentorPayouts = require("../services/mentorPayouts");
         const PhotonLedger = require("../models/PhotonLedger");
-        const spy = jest.spyOn(PhotonLedger, "create").mockResolvedValue({});
+        const queue = jest.spyOn(mentorPayouts, "queueSessionPayout").mockResolvedValue({ txnId: "sesspay:queue:s9", duplicate: false, amountMinor: 85000 });
+        const photon = jest.spyOn(PhotonLedger, "create").mockResolvedValue({});
+
         const payment = require("../services/payment");
         const mentorId = new mongoose.Types.ObjectId();
-        await payment.initiatePayout({ mentorId, amountInr: 850 });
-        expect(spy).toHaveBeenCalledWith({
-            userId: mentorId, delta: 850, source: "session_payout_pending",
-        });
-        spy.mockRestore();
+        const out = await payment.initiatePayout({ mentorId, amountInr: 850, sessionId: "s9" });
+
+        expect(queue).toHaveBeenCalledWith({ mentorId, amountInr: 850, sessionId: "s9" });
+        expect(out.amountMinor).toBe(85000);
+        expect(out.duplicate).toBe(false);
+        expect(photon).not.toHaveBeenCalled();
+
+        queue.mockRestore();
+        photon.mockRestore();
+    });
+
+    test("releaseHeld records the same session txn, so the two paths cannot double-pay", async () => {
+        const mentorPayouts = require("../services/mentorPayouts");
+        const queue = jest.spyOn(mentorPayouts, "queueSessionPayout").mockResolvedValue({ txnId: "sesspay:queue:s10", duplicate: true });
+
+        const payment = require("../services/payment");
+        const mentorId = new mongoose.Types.ObjectId();
+        await payment.releaseHeld({ paymentId: "pay_x", amountInr: 700, mentorId, sessionId: "s10" });
+
+        expect(queue).toHaveBeenCalledWith({ mentorId, amountInr: 700, sessionId: "s10" });
+        queue.mockRestore();
+    });
+
+    test("initiatePayout still refuses a missing mentor or a non-integer amount", async () => {
+        const payment = require("../services/payment");
+        const mentorId = new mongoose.Types.ObjectId();
+        await expect(payment.initiatePayout({ amountInr: 100 })).rejects.toThrow();
+        await expect(payment.initiatePayout({ mentorId, amountInr: 0 })).rejects.toThrow();
+        await expect(payment.initiatePayout({ mentorId, amountInr: 12.5 })).rejects.toThrow();
     });
 });
 

@@ -7,8 +7,8 @@
  *   3. start()        → status="live"
  *   4. complete()     → status="completed", payment.status="released",
  *                       mentorPayoutInr === floor(1000 * 0.85) (IMMUTABLE)
- *                       AND a PhotonLedger row tagged "session_payout_pending"
- *                       for +850 against the mentor.
+ *                       AND a balanced MoneyLedger payout txn crediting
+ *                       mentor:<id>:payout_pending with 85000 paise.
  *
  * Plus FSM guards, webhook idempotency, and the conflict-detection call.
  */
@@ -26,7 +26,7 @@ const crypto = require("crypto");
 const User = require("../models/user");
 const MentorProfile = require("../models/MentorProfile");
 const OrbitSession = require("../models/OrbitSession");
-const PhotonLedger = require("../models/PhotonLedger");
+const MoneyLedger = require("../models/MoneyLedger");
 const C = require("../controllers/sessionsController");
 const sessionService = require("../services/sessionService");
 
@@ -72,12 +72,13 @@ async function seedMentor({ rate = 1000, availability = { weekly: [] } } = {}) {
 }
 
 async function waitForPayoutLedger(mentorId, n = 1) {
+    const account = `mentor:${String(mentorId)}:payout_pending`;
     for (let i = 0; i < 50; i++) {
-        const rows = await PhotonLedger.find({ userId: mentorId, source: "session_payout_pending" }).lean();
+        const rows = await MoneyLedger.find({ account }).lean();
         if (rows.length >= n) return rows;
         await new Promise((r) => setTimeout(r, 10));
     }
-    return PhotonLedger.find({ userId: mentorId, source: "session_payout_pending" }).lean();
+    return MoneyLedger.find({ account }).lean();
 }
 
 describe("OrbitSession — headline vertical: book → pay → verify → start → complete", () => {
@@ -121,11 +122,20 @@ describe("OrbitSession — headline vertical: book → pay → verify → start 
         expect(row.payment.status).toBe("released");
         expect(row.mentorPayoutInr).toBe(850);
 
-        // Payout ledger row queued for the mentor.
+        // Payout queued for the mentor as money, in paise, double-entry.
         const ledger = await waitForPayoutLedger(mentor._id, 1);
         expect(ledger.length).toBe(1);
-        expect(ledger[0].delta).toBe(850);
-        expect(String(ledger[0].userId)).toBe(String(mentor._id));
+        expect(ledger[0].amountMinor).toBe(85000);
+        expect(ledger[0].currency).toBe("INR");
+        expect(ledger[0].kind).toBe("payout");
+        expect(ledger[0].counterAccount).toBe("platform:escrow");
+
+        const txn = await MoneyLedger.find({ txnId: ledger[0].txnId }).lean();
+        expect(txn.length).toBe(2);
+        expect(txn.reduce((n, r) => n + r.amountMinor, 0)).toBe(0);
+
+        const photonRows = await require("../models/PhotonLedger").find({ userId: mentor._id }).lean();
+        expect(photonRows.every((r) => !/payout/i.test(r.source))).toBe(true);
     });
 });
 

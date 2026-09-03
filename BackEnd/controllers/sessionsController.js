@@ -15,18 +15,11 @@ const OrbitSession = require("../models/OrbitSession");
 const SessionPackage = require("../models/SessionPackage");
 const payment = require("../services/payment");
 const sessionService = require("../services/sessionService");
+const mentorPayouts = require("../services/mentorPayouts");
 const { createNotification } = require("../services/notify");
 const { track: analytics } = require("../services/orbitAnalytics");
 
 // ── helpers ────────────────────────────────────────────────────────────────
-// Lazy-load PhotonLedger so this file doesn't pay the import cost on every
-// boot. The lazy thunk handles the Mongoose hot-reload guard too — if the
-// model was already registered (e.g. by tests or a previous require), reuse
-// it; otherwise register fresh.
-const PhotonLedger = () => {
-    const m = require("../models/PhotonLedger");
-    return m.default || m.PhotonLedger || m;
-};
 
 function shapeMentor(p, user) {
     return {
@@ -79,7 +72,7 @@ exports.applyAsMentor = async (req, res) => {
 // ── GET /api/sessions/mentor/me ────────────────────────────────────────────
 // Returns the caller's MentorProfile in ANY application state (draft /
 // submitted / approved / rejected / suspended) plus a denormalized earnings
-// summary computed from PhotonLedger so the MentorHub can render the
+// summary computed from MoneyLedger so the MentorHub can render the
 // approved-state dashboard without a second round-trip.
 exports.getMyMentor = async (req, res) => {
     try {
@@ -88,19 +81,9 @@ exports.getMyMentor = async (req, res) => {
         if (!profile) return res.json({ profile: null });
         const user = await User.findById(meId).select("name avatar").lean();
 
-        // Aggregate the mentor's earnings from the photon ledger. Both pending
-        // and released payouts count toward the lifetime total the UI shows.
-        const earningsAgg = await PhotonLedger().aggregate([
-            { $match: { userId: meId, source: { $in: ["session_payout_pending", "session_payout_released"] } } },
-            { $group: { _id: "$source", total: { $sum: "$delta" } } },
-        ]);
-        const earnings = { totalInr: 0, pendingInr: 0, releasedInr: 0 };
-        for (const row of earningsAgg) {
-            const t = row.total || 0;
-            earnings.totalInr += t;
-            if (row._id === "session_payout_pending") earnings.pendingInr = t;
-            if (row._id === "session_payout_released") earnings.releasedInr = t;
-        }
+        // Rupees live in MoneyLedger (integer paise, double-entry). PhotonLedger
+        // is the in-game currency and must never be summed for money.
+        const earnings = await mentorPayouts.earningsFor(meId);
 
         return res.json({
             profile: {
@@ -399,7 +382,7 @@ exports.complete = async (req, res) => {
         // Mark the mentor's rating + auto-bump payout multiplier when eligible.
         // (Live rating increments happen via /rate; this is the payout trigger.)
         if (s.mentorPayoutInr > 0) {
-            await payment.initiatePayout({ mentorId: s.mentorId, amountInr: s.mentorPayoutInr });
+            await payment.initiatePayout({ mentorId: s.mentorId, amountInr: s.mentorPayoutInr, sessionId: String(s._id) });
         }
 
         // ── Gameology + Pact hooks ───────────────────────────────────────────

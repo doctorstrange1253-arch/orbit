@@ -14,15 +14,17 @@
  *  - createOrder / verifySignature / captureHeld / releaseHeld / refund /
  *    handleWebhook / getStatus call Razorpay in live mode and return
  *    deterministic shapes in mock mode.
- *  - initiatePayout is a no-op that just writes a ledger row tagged
- *    "session_payout_pending" (Razorpay Route payouts are a later slice).
+ *  - initiatePayout is a no-op transfer that only records the intent as a
+ *    balanced MoneyLedger txn (Razorpay Route payouts are a later slice).
+ *    Rupees NEVER go into PhotonLedger — that ledger counts in-game Photons,
+ *    and mixing units corrupted the Gravimeter's supply report.
  */
 
 const crypto = require("crypto");
 // Lazy-required so the model is bound to the *current* mongoose connection
 // at call time (not at module-load time, which is when test files may
 // reset modules + reconnect between describes).
-const PhotonLedger = () => require("../../models/PhotonLedger");
+const mentorPayouts = () => require("../mentorPayouts");
 
 const KEY_ID  = process.env.RAZORPAY_KEY_ID  || "";
 const SECRET  = process.env.RAZORPAY_KEY_SECRET || "";
@@ -122,13 +124,15 @@ async function captureHeld({ paymentId, amountInr } = {}) {
 /**
  * releaseHeld — escrow → mentor. In mock this is a no-op; in live this would
  * route to Razorpay Route payouts. THIS SLICE: no actual bank transfer; we
- * just record the intent in a PhotonLedger row tagged "session_payout_pending".
+ * record the intent as a balanced MoneyLedger txn keyed by session, so calling
+ * this and initiatePayout for the same session cannot double-count.
  */
-async function releaseHeld({ paymentId, amountInr, mentorId } = {}) {
+async function releaseHeld({ paymentId, amountInr, mentorId, sessionId } = {}) {
     if (isMockMode()) {
         if (mentorId && amountInr > 0) {
-            // Fire-and-forget ledger entry — mirrors the real payout intent.
-            PhotonLedger().create({ userId: mentorId, delta: amountInr, source: "session_payout_pending" }).catch(() => {});
+            await mentorPayouts()
+                .queueSessionPayout({ mentorId, amountInr, sessionId: sessionId || paymentId })
+                .catch(() => {});
         }
         return mockResponse("release", { paymentId, amount: amountInr, mentorId });
     }
@@ -145,18 +149,20 @@ async function refund({ paymentId, amountInr } = {}) {
 }
 
 /**
- * initiatePayout — explicit payout trigger. This slice is a no-op that just
- * records a "session_payout_pending" ledger row, so a future Route integration
- * picks up the queued payouts without losing money-in-flight.
+ * initiatePayout — explicit payout trigger. This slice moves no money; it
+ * records the queued transfer as a balanced two-row MoneyLedger txn
+ * (platform:escrow → mentor:<id>:payout_pending, in paise) so a future Route
+ * integration picks up money-in-flight without losing it. Pass `sessionId` to
+ * make the write idempotent — without it a retry writes a second txn.
  */
-async function initiatePayout({ mentorId, amountInr } = {}) {
+async function initiatePayout({ mentorId, amountInr, sessionId } = {}) {
     if (!mentorId || !Number.isInteger(amountInr) || amountInr <= 0) {
         throw new Error("mentorId and positive integer amountInr are required");
     }
-    PhotonLedger().create({ userId: mentorId, delta: amountInr, source: "session_payout_pending" }).catch(() => {});
-    if (isMockMode()) return mockResponse("payout", { mentorId, amount: amountInr });
+    const receipt = await mentorPayouts().queueSessionPayout({ mentorId, amountInr, sessionId });
+    if (isMockMode()) return { ...mockResponse("payout", { mentorId, amount: amountInr }), ...receipt };
     // Future: rzp.payouts.create(...). For now, mark pending.
-    return { mentorId, queued: true, amount: amountInr };
+    return { mentorId, queued: true, amount: amountInr, ...receipt };
 }
 
 /**

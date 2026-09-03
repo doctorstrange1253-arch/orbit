@@ -3,27 +3,46 @@
  * (Mission Control C6). `record()` is fire-and-forget (never throws into the
  * request path). `aggregate()` is PURE over a list of events so it's unit-
  * testable; `report()` is the DB wrapper.
+ *
+ * UNIT INVARIANT: every delta is Photons. Session payouts were once written
+ * here in rupees, so `aggregate()` quarantines money-unit rows instead of
+ * summing them — historical contamination is reported, never counted.
  */
 
 const PhotonLedger = require("../models/PhotonLedger");
 
+const { isMoneySource } = PhotonLedger;
+
 /** Append one flow. Best-effort. delta>0 earn, delta<0 spend. */
 function record(userId, delta, source) {
-    if (!userId || !delta) return;
+    if (!userId || !delta) return false;
+    if (isMoneySource(source)) {
+        console.error(`[photonLedger] refused '${source}' — money belongs in MoneyLedger, not the Photon supply.`);
+        return false;
+    }
     PhotonLedger.create({ userId, delta, source: source || "unknown" }).catch(() => {});
+    return true;
 }
 
 /**
  * aggregate — PURE. Reconcile a list of {userId, delta, source} into an economy
  * snapshot: sources vs sinks, net supply, top earners/spenders, inflation flag.
+ * Rows whose source names a money flow are quarantined, not summed.
  * @param {Array} events
  * @param {object} [opts] { inflationRatio=3 } → alert when earned > spent*ratio
  */
 function aggregate(events = [], { inflationRatio = 3 } = {}) {
     const sources = {}, sinks = {}, earnBy = {}, spendBy = {};
-    let totalEarned = 0, totalSpent = 0;
+    const quarantinedSources = {};
+    let totalEarned = 0, totalSpent = 0, quarantinedCount = 0, quarantinedTotal = 0;
 
     for (const e of events) {
+        if (isMoneySource(e.source)) {
+            quarantinedCount += 1;
+            quarantinedTotal += Math.abs(e.delta || 0);
+            quarantinedSources[e.source] = (quarantinedSources[e.source] || 0) + Math.abs(e.delta || 0);
+            continue;
+        }
         const uid = String(e.userId);
         if (e.delta > 0) {
             sources[e.source] = (sources[e.source] || 0) + e.delta;
@@ -47,7 +66,14 @@ function aggregate(events = [], { inflationRatio = 3 } = {}) {
         totalEarned, totalSpent, netSupply,
         sinkRatio: totalEarned ? Math.round((totalSpent / totalEarned) * 100) / 100 : 0,
         topEarners: top(earnBy), topSpenders: top(spendBy),
-        inflationAlert, events: events.length,
+        inflationAlert,
+        events: events.length - quarantinedCount,
+        quarantined: {
+            count: quarantinedCount,
+            total: quarantinedTotal,
+            sources: quarantinedSources,
+            needsMigration: quarantinedCount > 0,
+        },
     };
 }
 
@@ -59,4 +85,4 @@ async function report({ from, to } = {}) {
     return aggregate(events);
 }
 
-module.exports = { record, aggregate, report };
+module.exports = { record, aggregate, report, isMoneySource };

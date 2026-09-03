@@ -19,7 +19,7 @@ const MoneyLedgerSchema = new mongoose.Schema({
     refType: {
         type: String,
         required: true,
-        enum: ["subscription_period", "course_seat", "payout_batch", "refund", "manual"],
+        enum: ["subscription_period", "course_seat", "session", "payout_batch", "refund", "manual"],
     },
     refId:           { type: String, required: true },
     idempotencyKey:  { type: String, required: true, unique: true },
