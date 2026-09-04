@@ -16,7 +16,7 @@
  * Reduced-motion: 600ms cross-fade with the title + CTA.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +31,6 @@ const _isReducedMotion = () => {
 
 const PlanetMaterialization = ({ course, onDone, onCancel }) => {
   const reduced = _isReducedMotion();
-  const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
   const accent = '#fbbf24';
 
@@ -63,8 +62,7 @@ const PlanetMaterialization = ({ course, onDone, onCancel }) => {
 
   return createPortal(
     <AnimatePresence>
-      {visible && (
-        reduced ? (
+      {reduced ? (
           <motion.div
             key="planet-reduced"
             initial={{ opacity: 0 }}
@@ -156,8 +154,7 @@ const PlanetMaterialization = ({ course, onDone, onCancel }) => {
               </button>
             </motion.div>
           </motion.div>
-        )
-      )}
+        )}
     </AnimatePresence>,
     document.body
   );

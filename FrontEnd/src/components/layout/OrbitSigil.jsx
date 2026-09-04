@@ -41,7 +41,6 @@ const ROTATION_PERIOD_MS = 12 * 60 * 1000; // 12 minutes per full revolution
 const COLOR_LEVEL    = '#fbbf24'; // Solaris amber (level gem)
 const COLOR_STREAK   = '#fb923c'; // orange flame
 const COLOR_STARDUST = '#22d3ee'; // Pulsar cyan (ticks)
-const COLOR_LEAGUE   = null;      // dynamic, from useSigilState
 
 // Tick a 50ms pulseTick on the active soul. Returns early if the
 // V2 soundManager is muted or reduced-motion is on (pulseTick
@@ -57,7 +56,6 @@ export default function OrbitSigil() {
   const sigil = useSigilState();
   const navigate = useNavigate();
   const wrapperRef = useRef(null);
-  const [hover, setHover] = useState(false);   // hovering the sigil at all
   const [hovered, setHovered] = useState(null); // which satellite is focused
   const [reducedMotion, setReducedMotion] = useState(false);
   const [open, setOpen] = useState(false);     // tooltip visibility (also from focus)
@@ -115,8 +113,8 @@ export default function OrbitSigil() {
     <div
       ref={wrapperRef}
       className="relative inline-flex items-center justify-center"
-      onMouseEnter={() => { setHover(true); setOpen(true); }}
-      onMouseLeave={() => { setHover(false); setHovered(null); /* keep open if a satellite is focused */ }}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setHovered(null)}
     >
       <svg
         width={SIZE}

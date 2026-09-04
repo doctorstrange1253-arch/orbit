@@ -24,7 +24,6 @@ const DEFAULT_META = { label: 'Dust', color: '#a8a29e', from: '#a8a29e', to: '#7
 
 const TierBadge = ({ tier = 'dust', size = 28, withLabel = false, animated = false }) => {
   const meta = TIER_META[tier] || DEFAULT_META;
-  const id = `tier-${tier}-${size}`;
   const gradient = `linear-gradient(135deg, ${meta.from}, ${meta.to})`;
 
   return (

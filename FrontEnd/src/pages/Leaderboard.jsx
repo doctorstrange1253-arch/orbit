@@ -36,10 +36,10 @@ import LeagueTable from '../components/cosmic/LeagueTable';
 import PactHallTable from '../components/pact/PactHall';
 
 const SCOPES = [
-  { id: 'neighborhood', label: 'Neighborhood', Icon: ({ size = 13 }) => <span className="text-xs">▦</span> },
-  { id: 'city',         label: 'City',         Icon: ({ size = 13 }) => <span className="text-xs">▢</span> },
-  { id: 'region',       label: 'Region',       Icon: ({ size = 13 }) => <span className="text-xs">▣</span> },
-  { id: 'country',      label: 'Country',      Icon: ({ size = 13 }) => <span className="text-xs">◉</span> },
+  { id: 'neighborhood', label: 'Neighborhood', Icon: () => <span className="text-xs">▦</span> },
+  { id: 'city',         label: 'City',         Icon: () => <span className="text-xs">▢</span> },
+  { id: 'region',       label: 'Region',       Icon: () => <span className="text-xs">▣</span> },
+  { id: 'country',      label: 'Country',      Icon: () => <span className="text-xs">◉</span> },
 ];
 
 const MEDAL_TINT = { 1: '#FFD08A', 2: '#D6DCE6', 3: '#E0A878' };
@@ -358,7 +358,7 @@ const GameologyBoard = () => (
     </div>
 );
 
-const PactBoard = ({ navigate }) => (
+const PactBoard = () => (
     <div className="mt-4">
         <div className="rounded-2xl p-4 mb-4" style={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)' }}>
             <div className="text-[11px] font-bold tracking-[0.14em] text-accent mb-1">YOUR PACT GROUP</div>
@@ -429,7 +429,7 @@ export default function Leaderboard() {
             transition={{ duration: 0.18 }}>
             {tab === 'cosmic' && (isMentor || isPeer) && <CosmicBoard navigate={navigate} user={user} />}
             {tab === 'gameology' && <GameologyBoard />}
-            {tab === 'pact' && isMentor && <PactBoard navigate={navigate} />}
+            {tab === 'pact' && isMentor && <PactBoard />}
             {tab === 'pact' && !isMentor && (
               <EmptyState
                 icon={<BookOpen size={28} />}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Award, Printer, Download, Share2, QrCode } from 'lucide-react';
+import { Award, Printer, Download, Share2 } from 'lucide-react';
 
 /**
  * CertificateView — inline SVG certificate.
@@ -110,7 +110,7 @@ const CertificateView = ({ certificate, course, mentor, learner }) => {
     );
 };
 
-const QrIcon = ({ url }) => (
+const QrIcon = () => (
     <div className="w-14 h-14 bg-white p-1.5 rounded">
         <svg viewBox="0 0 21 21" className="w-full h-full">
             {/* Tiny "QR-like" decorative pattern (not a real QR; the real verify URL is below) */}

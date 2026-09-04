@@ -23,26 +23,26 @@ const VisibleWatermark = ({ userId, displayName, enabled = true }) => {
 
   useEffect(() => {
     if (!enabled || reduced) {
-      setVisible(true);  // static (always-on) under reduced-motion
+      setVisible(true);
       return undefined;
     }
-    // 4s in, 8s out, 4s in, ... (12s cycle, 33% on / 67% off)
-    const on = () => setVisible(true);
-    const off = () => setVisible(false);
-    on();
-    const i1 = setInterval(on, 12_000);
-    const i2 = setTimeout(() => {
-      off();
-      const cycle = () => { off(); setTimeout(on, 8_000); };
-      cycle();
-      setInterval(cycle, 12_000);
-    }, 4_000);
-    return () => { clearInterval(i1); clearTimeout(i2); };
+    let onTimer = 0;
+    let offTimer = 0;
+    const cycle = () => {
+      setVisible(true);
+      offTimer = setTimeout(() => {
+        setVisible(false);
+        onTimer = setTimeout(cycle, 8_000);
+      }, 4_000);
+    };
+    cycle();
+    return () => { clearTimeout(onTimer); clearTimeout(offTimer); };
   }, [enabled, reduced]);
 
   if (!enabled) return null;
   const date = new Date().toISOString().slice(0, 10);
   const tag = (displayName || 'Orbit').slice(0, 16);
+  const mark = String(userId || '').slice(-6).toUpperCase();
 
   return (
     <motion.div
@@ -63,6 +63,7 @@ const VisibleWatermark = ({ userId, displayName, enabled = true }) => {
     >
       <div>ORBIT</div>
       <div style={{ opacity: 0.75 }}>{tag} · {date}</div>
+      {mark && <div style={{ opacity: 0.6 }}>{mark}</div>}
     </motion.div>
   );
 };

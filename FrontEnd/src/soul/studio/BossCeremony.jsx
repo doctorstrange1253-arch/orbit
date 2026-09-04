@@ -15,7 +15,7 @@
  * Reduced-motion: a 200ms cross-fade, no ring, no sound.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Crown } from 'lucide-react';
 import { SoulSound } from '../soundLibrary';
@@ -28,7 +28,6 @@ const _isReducedMotion = () => {
 
 const BossCeremony = ({ lesson, onDone, onCancel }) => {
   const reduced = _isReducedMotion();
-  const [visible, setVisible] = useState(true);
 
   // Fire sound + haptic once on mount.
   useEffect(() => {
@@ -55,7 +54,6 @@ const BossCeremony = ({ lesson, onDone, onCancel }) => {
   if (reduced) {
     return (
       <AnimatePresence>
-        {visible && (
           <motion.div
             key="boss-fade"
             initial={{ opacity: 0 }}
@@ -65,7 +63,6 @@ const BossCeremony = ({ lesson, onDone, onCancel }) => {
             className="fixed inset-0 z-[260] bg-[#060810]"
             aria-hidden
           />
-        )}
       </AnimatePresence>
     );
   }

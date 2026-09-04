@@ -96,8 +96,7 @@ function _groupIntoModules(lessons = [], explicitModules = false) {
 }
 
 const CourseMap = ({ course, completedLessonIds = [], activeLessonId, onPick }) => {
-  const { soul, nebula } = useSoul();
-  const reduced = _isReducedMotion();
+  const { nebula } = useSoul();
   const lessons = Array.isArray(course?.lessons) ? course.lessons : [];
   const explicit = lessons.some((l) => l.module || l.moduleTitle);
   const modules = useMemo(() => _groupIntoModules(lessons, explicit), [lessons, explicit]);

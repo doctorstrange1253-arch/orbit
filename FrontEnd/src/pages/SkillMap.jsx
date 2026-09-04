@@ -26,7 +26,7 @@ import { knowledge } from '../services/knowledge';
 import { useNavigate } from 'react-router-dom';
 
 const SkillMap = () => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const accent = nebula?.from || '#22d3ee';
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
@@ -36,12 +36,6 @@ const SkillMap = () => {
   const { data: skillMap, isLoading } = useQuery({
     queryKey: ['knowledge', 'skill-map', 'me'],
     queryFn: () => knowledge.getMySkillMap(),
-    staleTime: 120_000,
-  });
-
-  const { data: pathData } = useQuery({
-    queryKey: ['knowledge', 'path'],
-    queryFn: () => knowledge.getMyPath(),
     staleTime: 120_000,
   });
 

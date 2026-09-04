@@ -38,7 +38,7 @@ const ROWS = [
 ];
 
 const TransparentFormula = () => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const accent = nebula?.from || '#22d3ee';
   const [open, setOpen] = useState(false);
 

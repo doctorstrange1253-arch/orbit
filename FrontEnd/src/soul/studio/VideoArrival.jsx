@@ -13,7 +13,7 @@
  * Reduced-motion: 200ms cross-fade, then onDone.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play } from 'lucide-react';
 
@@ -24,7 +24,6 @@ const _isReducedMotion = () => {
 
 const VideoArrival = ({ sourceRect, lesson, onDone, onCancel }) => {
   const reduced = _isReducedMotion();
-  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     if (!sourceRect) return undefined;
@@ -48,7 +47,6 @@ const VideoArrival = ({ sourceRect, lesson, onDone, onCancel }) => {
   if (reduced) {
     return (
       <AnimatePresence>
-        {visible && (
           <motion.div
             key="arrival-fade"
             initial={{ opacity: 0 }}
@@ -58,7 +56,6 @@ const VideoArrival = ({ sourceRect, lesson, onDone, onCancel }) => {
             className="fixed inset-0 z-[250] bg-[#060810]"
             aria-hidden
           />
-        )}
       </AnimatePresence>
     );
   }

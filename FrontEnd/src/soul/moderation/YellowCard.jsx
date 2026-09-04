@@ -17,7 +17,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, ExternalLink, Edit3, ShieldOff, X, Check } from 'lucide-react';
-import { surfaceRecipe, borderTint, tintHalo } from '../tints';
+import { surfaceRecipe, tintHalo } from '../tints';
 import { Haptic } from '../haptics';
 
 const YellowCard = ({ review, onEdit, onAppeal, onFalsePositive, onDismiss }) => {

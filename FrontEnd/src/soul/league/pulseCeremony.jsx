@@ -37,7 +37,7 @@ const _isReducedMotion = () => {
 // Tiny store. Lives outside React so non-component code can fire the
 // ceremony. (Future: emit from the gameology:xp socket handler when
 // the user's tier index increases.)
-export const usePulseCeremony = create((set, get) => ({
+export const usePulseCeremony = create((set) => ({
   active: false,
   tier: 'dust',
   start: (tier) => {

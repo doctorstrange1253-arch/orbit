@@ -14,7 +14,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, ChevronRight, ShieldOff } from 'lucide-react';
 import { useSoul } from '../../hooks/useSoul';
-import { surfaceRecipe, borderTint, tintHalo } from '../tints';
+import { surfaceRecipe, borderTint } from '../tints';
 import YellowCard from './YellowCard';
 import api from '../../services/api';
 
@@ -23,8 +23,7 @@ const fetchFpRate = async () => (await api.get('/moderation/me/fp-rate')).data;
 const respond = async ({ id, action, note, falsePositive }) => (await api.post(`/moderation/${id}/respond`, { action, note, falsePositive })).data;
 
 const ModerationInbox = () => {
-  const { soul, nebula } = useSoul();
-  const accent = nebula?.from || '#22d3ee';
+  const { nebula } = useSoul();
   const qc = useQueryClient();
   const [expandedId, setExpandedId] = useState(null);
 

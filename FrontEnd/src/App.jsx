@@ -53,7 +53,6 @@ import ResetPassword from './pages/ResetPassword';
 import Walkthrough from './components/common/Walkthrough';
 
 // Lazy loaded protected pages (code-split bundles)
-const MySkills     = lazy(() => import('./pages/MySkills'));
 const BrowseSkills = lazy(() => import('./pages/BrowseSkills'));
 const Matches      = lazy(() => import('./pages/Matches'));
 const Connections  = lazy(() => import('./pages/Connections'));
@@ -258,9 +257,10 @@ function MentorInviteWatcher() {
   }, [token, user?._id]);
 
   const respond = useCallback(async (action) => {
-    if (!invite?.kind) return;
+    const kind = invite?.kind;
+    if (!kind) return;
     try {
-      await api.post('/mentor-invites/respond', { kind: invite.kind, action });
+      await api.post('/mentor-invites/respond', { kind, action });
     } catch { /* best-effort — the modal flow continues either way */ }
   }, [invite?.kind]);
 
@@ -615,7 +615,7 @@ function AppInner() {
     // student knows to hop in. Only meaningful to the student side; the
     // mentor who started the room is already inside it, and a peer_learner
     // who happens to be online has no /student/sessions tab to navigate to.
-    socket.on('session:started', (data) => {
+    socket.on('session:started', () => {
       const roles = useAuthStore.getState().user?.roles || [];
       if (!roles.includes('student')) return;
       useNotificationStore.getState().addNotification({

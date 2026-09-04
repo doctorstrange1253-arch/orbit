@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { Sparkles, Trophy, Flame, Award, History, BookOpen, GraduationCap, Lock } from 'lucide-react';
+import { Sparkles, Trophy, Award, History, BookOpen, GraduationCap, Lock } from 'lucide-react';
 import { useGameologyMe, useMyAchievements, useGameologyHistory } from '../hooks/useGameology';
 import { useStreak } from '../hooks/useStreak';
 import { XP_EVENT_LABELS, XP_EVENT_ICONS } from '../components/cosmic/xpEventLabels';
@@ -17,22 +16,6 @@ import TransparentFormula from '../soul/league/TransparentFormula';
 import { TIERS } from '../soul/league/tierMeta';
 
 const xpForLevel = (l) => 100 * Math.max(0, l - 1) ** 2;
-
-const LEAGUE_TINT = {
-    bronze:   { from: 'from-amber-700/40',  border: 'border-amber-500/40',  text: 'text-amber-300',   label: 'Bronze' },
-    silver:   { from: 'from-slate-400/30',  border: 'border-slate-300/40',  text: 'text-slate-200',   label: 'Silver' },
-    gold:     { from: 'from-yellow-500/40', border: 'border-yellow-300/40', text: 'text-yellow-200',  label: 'Gold' },
-    platinum: { from: 'from-cyan-500/30',   border: 'border-cyan-300/40',   text: 'text-cyan-200',    label: 'Platinum' },
-    diamond:  { from: 'from-sky-400/30',    border: 'border-sky-300/40',    text: 'text-sky-200',     label: 'Diamond' },
-    legend:   { from: 'from-fuchsia-500/40', border: 'border-fuchsia-300/40', text: 'text-fuchsia-200', label: 'Legend' },
-};
-
-const RARITY_TINT = {
-    common:    { from: 'from-slate-500/20',  border: 'border-slate-400/30',  glow: 'rgba(148,163,184,0.5)' },
-    rare:      { from: 'from-cyan-500/20',   border: 'border-cyan-400/30',   glow: 'rgba(34,211,238,0.5)' },
-    epic:      { from: 'from-fuchsia-500/20', border: 'border-fuchsia-400/30', glow: 'rgba(217,70,239,0.5)' },
-    legendary: { from: 'from-amber-500/30',  border: 'border-amber-300/40',  glow: 'rgba(251,191,36,0.6)' },
-};
 
 /**
  * Gameology — student's lifetime identity dashboard.
@@ -57,7 +40,6 @@ const Gameology = () => {
     const level = me?.level || 1;
     const weeklyXp = me?.weeklyXp || 0;
     const leagueId = me?.leagueId || 'bronze';
-    const leagueTint = LEAGUE_TINT[leagueId] || LEAGUE_TINT.bronze;
     const cur = xpForLevel(level);
     const next = xpForLevel(level + 1);
     const pct = Math.max(0, Math.min(1, (xp - cur) / Math.max(1, next - cur)));
@@ -161,7 +143,6 @@ const Gameology = () => {
                     ) : (
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                             {catalog.map((a) => {
-                                const tint = RARITY_TINT[a.rarity] || RARITY_TINT.common;
                                 return (
                                     <HolographicCard
                                         key={a.key}

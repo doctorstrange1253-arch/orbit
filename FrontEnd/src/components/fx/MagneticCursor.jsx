@@ -20,7 +20,7 @@
  * `mix-blend-mode: difference` is used on the dot so it stays visible
  * against any background.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 const isCoarsePointer = () =>

@@ -43,7 +43,7 @@ const ADJACENT = {
 };
 
 const WaitingRoom = ({ constellation = 'general', genre = 'general' }) => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const reduced = _isReducedMotion();
   const accent = nebula?.from || '#22d3ee';
   const [launched, setLaunched] = useState(false);

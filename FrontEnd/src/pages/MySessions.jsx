@@ -16,6 +16,7 @@ import ErrorState from '../components/common/ErrorState';
 import EmptyState from '../components/common/EmptyState';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
 import RateSessionButton from '../components/sessions/RateSessionButton';
+import { useNow } from '../hooks/useNow';
 
 const STATUS_PILL = {
     pending_payment: "bg-warning/10 text-warning border border-warning/30",
@@ -47,8 +48,8 @@ const MySessions = () => {
         refetchInterval: 60_000,
     });
 
+    const now = useNow();
     const { upcoming, past } = useMemo(() => {
-        const now = Date.now();
         const up = [];
         const pa = [];
         for (const s of sessions) {
@@ -59,7 +60,7 @@ const MySessions = () => {
         up.sort((a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt));
         pa.sort((a, b) => new Date(b.scheduledAt) - new Date(a.scheduledAt));
         return { upcoming: up, past: pa };
-    }, [sessions]);
+    }, [sessions, now]);
 
     const list = tab === "upcoming" ? upcoming : past;
 

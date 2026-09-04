@@ -21,7 +21,7 @@
  * onDone immediately. The course detail page renders in place.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const _isReducedMotion = () => {
@@ -31,7 +31,6 @@ const _isReducedMotion = () => {
 
 const CameraZoom = ({ sourceRect, course, onDone, onCancel }) => {
   const reduced = _isReducedMotion();
-  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     if (!sourceRect) return undefined;
@@ -55,7 +54,6 @@ const CameraZoom = ({ sourceRect, course, onDone, onCancel }) => {
   if (reduced) {
     return (
       <AnimatePresence>
-        {visible && (
           <motion.div
             key="zoom-fade"
             initial={{ opacity: 0 }}
@@ -65,7 +63,6 @@ const CameraZoom = ({ sourceRect, course, onDone, onCancel }) => {
             className="fixed inset-0 z-[250] bg-[#060810]"
             aria-hidden
           />
-        )}
       </AnimatePresence>
     );
   }

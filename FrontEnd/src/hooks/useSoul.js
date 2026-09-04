@@ -45,10 +45,8 @@ export function useSoul() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const roles = useMemo(() => {
-    const r = Array.isArray(user?.roles) && user.roles.length > 0
-      ? user.roles
-      : ['peer_learner'];
-    return r;
+    const r = user?.roles;
+    return Array.isArray(r) && r.length > 0 ? r : ['peer_learner'];
   }, [user?.roles]);
 
   const activeId = useMemo(

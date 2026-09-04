@@ -22,7 +22,7 @@ const _isReducedMotion = () => {
 };
 
 const BossNode = ({ lesson, isCompleted, isLocked, onPick }) => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const reduced = _isReducedMotion();
   const accent = nebula?.from || '#22d3ee';
   const gold = '#fbbf24';

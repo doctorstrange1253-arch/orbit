@@ -29,7 +29,7 @@ const _isReducedMotion = () => {
 };
 
 const LevelCard = ({ lesson, onBegin }) => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const reduced = _isReducedMotion();
   const [showButton, setShowButton] = useState(reduced);
 

@@ -21,6 +21,7 @@ import Nameplate from '../cosmic/Nameplate';
 import { InfoDot, ScoreExplainerBody } from '../cosmic/scoreInfo';
 import { TRUST_TOOLTIP, TRUST_SCORE_INFO } from '../cosmic/scoreCopy';
 import LanguageMultiSelect from '../components/common/LanguageMultiSelect';
+import { useNow } from '../hooks/useNow';
 
 const MAX_LANGUAGES = 5;
 
@@ -115,10 +116,9 @@ const Profile = () => {
   // The array drives both the row list AND the conditional stat queries
   // below — only call the endpoint for the roles the user actually has.
   const userRoles = useMemo(() => {
-    const r = Array.isArray(user?.roles) && user.roles.length > 0
-      ? user.roles
-      : ['peer_learner'];
-    return r.includes('peer_learner') ? r : ['peer_learner', ...r];
+    const r = user?.roles;
+    const list = Array.isArray(r) && r.length > 0 ? r : ['peer_learner'];
+    return list.includes('peer_learner') ? list : ['peer_learner', ...list];
   }, [user?.roles]);
   const userRolesSet = useMemo(() => new Set(userRoles), [userRoles]);
 
@@ -190,8 +190,8 @@ const Profile = () => {
 
   // Derive student upcoming/past counts. Matches MySessions' bucketing
   // rules so the numbers agree with what the user sees on /my-sessions.
+  const now = useNow();
   const { studentUpcoming, studentPast } = useMemo(() => {
-    const now = Date.now();
     let up = 0; let pa = 0;
     for (const s of studentSessions) {
       const at = new Date(s.scheduledAt).getTime();
@@ -199,7 +199,7 @@ const Profile = () => {
       if (terminal || at < now) pa++; else up++;
     }
     return { studentUpcoming: up, studentPast: pa };
-  }, [studentSessions]);
+  }, [studentSessions, now]);
 
   // Peer active-matches count: matches that aren't already an accepted
   // connection are the "active" pool. /skills/matches already returns
@@ -361,7 +361,7 @@ const Profile = () => {
             upcoming: mentorBookings.filter((s) => {
               const at = new Date(s.scheduledAt).getTime();
               const terminal = ['completed', 'cancelled', 'no_show', 'disputed'].includes(s.status);
-              return !terminal && at >= Date.now();
+              return !terminal && at >= now;
             }).length,
           } : null,
           student: hasStudent ? { upcoming: studentUpcoming, past: studentPast } : null,

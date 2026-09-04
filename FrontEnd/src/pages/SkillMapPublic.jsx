@@ -21,7 +21,7 @@ import { useSoul } from '../hooks/useSoul';
 
 const SkillMapPublic = () => {
   const { userId } = useParams();
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const accent = nebula?.from || '#22d3ee';
   const [searchParams] = useSearchParams();
   const isSharedView = searchParams.get('ref') === 'share';

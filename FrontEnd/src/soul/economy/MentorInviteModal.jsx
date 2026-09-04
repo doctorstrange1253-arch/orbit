@@ -24,7 +24,7 @@ import { useSoul } from '../../hooks/useSoul';
 import { Haptic } from '../haptics';
 
 const MentorInviteModal = ({ invite, onDismiss, onAccept }) => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const accent = nebula?.from || '#22d3ee';
   const navigate = useNavigate();
   const [step, setStep] = useState('intro');  // 'intro' | 'questions' | 'done'
@@ -37,7 +37,6 @@ const MentorInviteModal = ({ invite, onDismiss, onAccept }) => {
     : false;
 
   const isTopSwapper = invite.kind === 'top_swapper';
-  const isTopStudent = invite.kind === 'top_student';
 
   const metrics = invite.metrics || {};
 

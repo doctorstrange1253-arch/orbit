@@ -20,7 +20,7 @@ const _isReducedMotion = () => {
 };
 
 const UniverseEmpty = () => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const reduced = _isReducedMotion();
   const accent = nebula?.from || '#fbbf24';
   const accent2 = nebula?.to || '#f43f5e';

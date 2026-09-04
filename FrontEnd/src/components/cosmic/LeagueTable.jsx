@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameologyLeaderboard } from '../../hooks/useGameology';
 import { TIERS, TIERS_ORDER } from '../../soul/league/tierMeta';

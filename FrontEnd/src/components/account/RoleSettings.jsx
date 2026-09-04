@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Users, Loader2, Check, AlertTriangle, GraduationCap, BookOpen } from 'lucide-react';
 import api from '../../services/api';
 import { useAuthStore, ACCOUNT_ROLES, ROLE_META } from '../../store/authStore';
@@ -19,7 +19,6 @@ const ROLE_HOME = {
 // The two non-peer roles are mutually exclusive. Enabling one implicitly
 // disables the other (this is the user's desired radio-button behavior).
 const PEER_BASELINE = 'peer_learner';
-const SWITCHABLE = ['mentor', 'student'];
 
 const ICONS = {
   peer_learner: Users,

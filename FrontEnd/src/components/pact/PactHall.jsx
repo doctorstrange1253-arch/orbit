@@ -1,4 +1,4 @@
-import { usePactHall, usePactMe } from '../../hooks/usePact';
+import { usePactHall } from '../../hooks/usePact';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { tierById } from '../../services/pact';
@@ -17,7 +17,6 @@ import { Crown, ArrowUp, ArrowDown, Minus } from 'lucide-react';
  */
 const PactHall = () => {
     const { data: hall, isLoading } = usePactHall();
-    const { data: me } = usePactMe();
 
     if (isLoading) {
         return (

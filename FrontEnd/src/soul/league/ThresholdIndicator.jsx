@@ -20,7 +20,7 @@ function _nextTier(currentTier) {
 }
 
 const ThresholdIndicator = ({ weeklyXp = 0, currentTier = 'dust' }) => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const accent = nebula?.from || '#22d3ee';
   const next = _nextTier(currentTier);
   if (!next) return null;

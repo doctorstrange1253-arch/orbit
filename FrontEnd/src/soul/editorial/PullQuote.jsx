@@ -21,6 +21,7 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../services/api';
 import { useAuthStore } from '../../store/authStore';
+import { useDayIndex } from '../../hooks/useNow';
 
 // Three short Orbit-voiced placeholders. The seed picks one of these
 // based on the user's streak so the quote never repeats consecutively
@@ -34,6 +35,7 @@ const PLACEHOLDERS = [
 export default function PullQuote() {
   const user = useAuthStore((s) => s.user);
   const streak = user?.gameology?.currentStreak || 0;
+  const dayIndex = useDayIndex();
 
   // Try to fetch a real review first. If the endpoint isn't there
   // or the user has no reviews, fall back to a placeholder.
@@ -61,13 +63,13 @@ export default function PullQuote() {
     }
     // No real quote — pick a placeholder by streak (so it varies across
     // sessions without storing state).
-    const seed = (streak + Math.floor(Date.now() / 86400000)) % PLACEHOLDERS.length;
+    const seed = (streak + dayIndex) % PLACEHOLDERS.length;
     return {
       body: PLACEHOLDERS[seed],
       attribution: 'Orbit',
       isReal: false,
     };
-  }, [reviews, streak]);
+  }, [reviews, streak, dayIndex]);
 
   // The "real" case (a real review) is the only case that should
   // reliably render. The placeholder case is gated on streak > 0 so

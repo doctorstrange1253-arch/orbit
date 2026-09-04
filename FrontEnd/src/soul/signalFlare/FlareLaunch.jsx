@@ -19,6 +19,17 @@ import { Rocket, Check } from 'lucide-react';
 import { SoulSound } from '../soundLibrary';
 import { Haptic } from '../haptics';
 
+const SPARKS = [
+  { x: -26, y: 58 },
+  { x: -17, y: 96 },
+  { x: -9, y: 72 },
+  { x: -3, y: 110 },
+  { x: 5, y: 66 },
+  { x: 12, y: 104 },
+  { x: 20, y: 80 },
+  { x: 27, y: 118 },
+];
+
 const _isReducedMotion = () => {
   if (typeof window === 'undefined' || !window.matchMedia) return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -26,7 +37,6 @@ const _isReducedMotion = () => {
 
 const FlareLaunch = ({ sourceRect, onDone, onCancel }) => {
   const reduced = _isReducedMotion();
-  const [visible, setVisible] = useState(true);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -56,8 +66,7 @@ const FlareLaunch = ({ sourceRect, onDone, onCancel }) => {
 
   return createPortal(
     <AnimatePresence>
-      {visible && (
-        reduced ? (
+      {reduced ? (
           <motion.div
             key="flare-reduced"
             initial={{ opacity: 0 }}
@@ -131,13 +140,13 @@ const FlareLaunch = ({ sourceRect, onDone, onCancel }) => {
                   top: sourceRect.top + sourceRect.height / 2,
                 }}
               >
-                {[...Array(8)].map((_, i) => (
+                {SPARKS.map((spark, i) => (
                   <motion.span
                     key={i}
                     initial={{ x: 0, y: 0, opacity: 0.9, scale: 1 }}
                     animate={{
-                      x: (Math.random() - 0.5) * 60,
-                      y: 40 + Math.random() * 80,
+                      x: spark.x,
+                      y: spark.y,
                       opacity: 0,
                       scale: 0.4,
                     }}
@@ -152,8 +161,7 @@ const FlareLaunch = ({ sourceRect, onDone, onCancel }) => {
               </div>
             )}
           </div>
-        )
-      )}
+        )}
     </AnimatePresence>,
     document.body
   );

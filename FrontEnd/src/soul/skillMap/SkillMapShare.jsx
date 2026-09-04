@@ -10,12 +10,12 @@
  */
 
 import { useState } from 'react';
-import { Share2, Check, Copy } from 'lucide-react';
+import { Share2, Check } from 'lucide-react';
 import { useSoul } from '../../hooks/useSoul';
 import { Haptic } from '../haptics';
 
 const SkillMapShare = ({ userId, displayName }) => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const accent = nebula?.from || '#22d3ee';
   const [copied, setCopied] = useState(false);
 

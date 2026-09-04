@@ -19,7 +19,6 @@
  */
 
 import soundManager from '../utils/soundManager';
-import { SOUL_TO_NEBULA } from './palette';
 
 const C = {
   A4: 440.0,

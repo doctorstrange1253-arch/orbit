@@ -54,7 +54,7 @@ function _brightness(lastActiveMs) {
 }
 
 const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const navigate = useNavigate();
   const reduced = _isReducedMotion();
   const canvasRef = useRef(null);
@@ -106,7 +106,6 @@ const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
     ctx.scale(dpr, dpr);
 
     const accent = nebula?.from || '#a78bfa';
-    const accentSoft = `${accent}55`;
 
     let frame = 0;
     const render = () => {

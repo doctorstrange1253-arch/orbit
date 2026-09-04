@@ -1,4 +1,5 @@
 import { useGameologyMe } from './useGameology';
+import { useToday } from './useNow';
 
 /**
  * useStreak — returns the current learning streak + a dayKey for branching
@@ -13,12 +14,11 @@ import { useGameologyMe } from './useGameology';
 export function useStreak() {
     const { data } = useGameologyMe();
     const last = data?.lastActiveDate;
-    const today = new Date().toISOString().slice(0, 10);
-    const yest = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    const { today, yesterday } = useToday();
 
     let dayKey = 'never';
     if (last === today) dayKey = 'today';
-    else if (last === yest) dayKey = 'yesterday';
+    else if (last === yesterday) dayKey = 'yesterday';
     else if (last) dayKey = 'older';
 
     return {

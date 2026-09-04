@@ -25,16 +25,6 @@ const IdentitySelection = () => {
   const navigate = useNavigate();
   const soul = useSoul();
 
-  // If the user arrives with a single role (e.g. they're a mentor already
-  // and just need to confirm), preselect that soul — no choice needed.
-  const preselectFromRoles = () => {
-    const roles = soul.soul ? [soul.soul.roleId] : [];
-    if (roles.length === 1 && SOULS[Object.keys(SOULS).find((id) => SOULS[id].roleId === roles[0])]) {
-      return Object.keys(SOULS).find((id) => SOULS[id].roleId === roles[0]);
-    }
-    return null;
-  };
-
   // Cancel any in-flight transit when the page mounts — if a user lands
   // here from a back-button or external link, the store should be clean.
   useEffect(() => {

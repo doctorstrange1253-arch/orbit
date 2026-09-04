@@ -40,7 +40,7 @@ const FALLBACK_WRONG = "Not quite — give it another try.";
 const FALLBACK_RIGHT = "Nice. That's the foundation for what's next.";
 
 const CoachQuiz = ({ questions = [], passingScore = 70, onSubmit, onPass, isBoss = false }) => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const reduced = _isReducedMotion();
   const accent = nebula?.from || '#22d3ee';
 

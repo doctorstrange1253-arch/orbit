@@ -14,7 +14,6 @@ import {
     MentorEyebrow,
     MentorTitle,
     MentorDeck,
-    MentorRule,
     MentorStat,
     MentorTag,
 } from '../../components/pact/MentorEditorial';

@@ -89,7 +89,7 @@ export default function WeekStrip({ events = [] }) {
   // back face. Click a cell to add/remove from the set.
   const [flipped, setFlipped] = useState(() => new Set());
 
-  const { cells, caption, totalThisWeek } = useMemo(() => {
+  const { cells, caption } = useMemo(() => {
     const safeEvents = Array.isArray(events) ? events : [];
     const byDate = bucketByDate(safeEvents);
     const thisWeekStart = startOfWeekMs(new Date());

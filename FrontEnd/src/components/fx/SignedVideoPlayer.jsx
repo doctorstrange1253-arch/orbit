@@ -32,13 +32,14 @@ import { Haptic } from '../../soul/haptics';
 import { SoulSound } from '../../soul/soundLibrary';
 
 const SignedVideoPlayer = ({ lesson, onComplete, isCompleted, onSignError }) => {
-  const { id, lessonId } = useParams();
+  const params = useParams();
+  const id = params.id;
+  const lessonId = lesson?._id || params.lessonId;
   const user = useAuthStore((s) => s.user);
   const videoRef = useRef(null);
   const [signed, setSigned] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const completeFiredRef = useRef(false);
 
@@ -82,8 +83,8 @@ const SignedVideoPlayer = ({ lesson, onComplete, isCompleted, onSignError }) => 
   const togglePlay = () => {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused) { v.play().catch(() => {}); setPlaying(true); }
-    else         { v.pause(); setPlaying(false); }
+    if (v.paused) { v.play().catch(() => {}); }
+    else         { v.pause(); }
   };
 
   // If the signed URL expires (5 min), the video element will emit an
@@ -133,8 +134,6 @@ const SignedVideoPlayer = ({ lesson, onComplete, isCompleted, onSignError }) => 
         className="w-full h-full object-contain"
         controls
         onTimeUpdate={handleTimeUpdate}
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
         onClick={togglePlay}
         onError={onVideoError}
         playsInline

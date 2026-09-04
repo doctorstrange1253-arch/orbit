@@ -18,9 +18,7 @@
  * PactBadge + Pact Pulse widgets already in /mentor/hub.
  */
 
-import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useSoul } from '../../hooks/useSoul';
 
 const _isReducedMotion = () => {
   if (typeof window === 'undefined' || !window.matchMedia) return false;
@@ -48,7 +46,6 @@ const LuminosityStar = ({
   avgRating = 0,
   steadyWeeks = 0,
 }) => {
-  const { soul, nebula } = useSoul();
   const reduced = _isReducedMotion();
   const baseColor = DIVISION_COLOR[division] || DEFAULT_COLOR;
   const color = baseColor;

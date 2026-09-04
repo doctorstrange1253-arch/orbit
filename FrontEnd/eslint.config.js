@@ -25,6 +25,9 @@ export default defineConfig([
         varsIgnorePattern: '^_',
         caughtErrorsIgnorePattern: '^_',
       }],
+      // A bare `catch {}` around a best-effort call (localStorage on a
+      // locked-down browser, an optional analytics beacon) is deliberate.
+      'no-empty': ['error', { allowEmptyCatch: true }],
       // react-hooks v7 added aggressive, opinionated rules that flag working,
       // intentional patterns (deriving state in an effect, ref/immutability
       // heuristics, third-party-hook interop). Keep them visible as warnings

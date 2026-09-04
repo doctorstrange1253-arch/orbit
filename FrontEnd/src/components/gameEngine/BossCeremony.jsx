@@ -24,7 +24,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Crown, Share2, ArrowRight, Sparkles } from 'lucide-react';
-import { useSoul } from '../../hooks/useSoul';
 import { SoulSound } from '../../soul/soundLibrary';
 import { Haptic } from '../../soul/haptics';
 
@@ -34,9 +33,7 @@ const _isReducedMotion = () => {
 };
 
 const BossCeremony = ({ lesson, course, concepts = [], onDone }) => {
-  const { soul, nebula } = useSoul();
   const reduced = _isReducedMotion();
-  const [visible, setVisible] = useState(true);
   const [showContinue, setShowContinue] = useState(false);
 
   // Fire sound + haptic once on mount.
@@ -66,7 +63,6 @@ const BossCeremony = ({ lesson, course, concepts = [], onDone }) => {
   if (reduced) {
     return (
       <AnimatePresence>
-        {visible && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -93,14 +89,12 @@ const BossCeremony = ({ lesson, course, concepts = [], onDone }) => {
               )}
             </div>
           </motion.div>
-        )}
       </AnimatePresence>
     );
   }
 
   return (
     <AnimatePresence>
-      {visible && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -211,7 +205,6 @@ const BossCeremony = ({ lesson, course, concepts = [], onDone }) => {
             )}
           </motion.div>
         </motion.div>
-      )}
     </AnimatePresence>
   );
 };

@@ -32,15 +32,16 @@ const IDLE_BEFORE_DECEL_MS = 60_000;
 const RESTORE_DELAY_MS = 1500;
 
 const AttentionArc = ({ videoRef, enabled = true }) => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const reduced = _isReducedMotion();
-  const lastActivityRef = useRef(Date.now());
+  const lastActivityRef = useRef(0);
   const [decelerated, setDecelerated] = useState(false);
   const [showIndicator, setShowIndicator] = useState(false);
 
   // Activity listeners — bump lastActivity on any user gesture.
   useEffect(() => {
     if (!enabled) return undefined;
+    lastActivityRef.current = Date.now();
     const onActivity = () => { lastActivityRef.current = Date.now(); };
     const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'pointerdown', 'wheel'];
     events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));

@@ -40,7 +40,7 @@ function _planetState(progressPct) {
 }
 
 const Planet = ({ enrollment, onZoom, size = 110, index = 0 }) => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const reduced = _isReducedMotion();
   const course = enrollment?.course || {};
   const progress = enrollment?.progressPct || 0;

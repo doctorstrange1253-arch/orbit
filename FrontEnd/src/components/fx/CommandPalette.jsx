@@ -21,7 +21,7 @@ import { create } from 'zustand';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-    Search, Sun, Moon, Volume2, VolumeX, Music, Music2,
+    Search, Sun, Moon, Volume2, Music,
     Compass, Home, Settings, Rocket, Trophy, ShoppingBag,
     GraduationCap, Calendar, Wallet,
     Layers, Handshake, Users, Map, Phone, ShieldCheck,

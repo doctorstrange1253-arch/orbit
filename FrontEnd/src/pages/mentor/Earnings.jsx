@@ -12,8 +12,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import {
-    IndianRupee, TrendingUp, Wallet, Clock, AlertCircle,
-    Calendar, Video, ArrowRight,
+    IndianRupee, Wallet, AlertCircle,
+    Calendar, ArrowRight,
 } from 'lucide-react';
 import api from '../../services/api';
 import ErrorState from '../../components/common/ErrorState';
@@ -100,7 +100,6 @@ const Earnings = () => {
 
     const profile = data?.profile;
     const earnings = data?.earnings || { totalInr: 0, pendingInr: 0, releasedInr: 0 };
-    const isApproved = profile && profile.applicationStatus === 'approved';
     const isPending = profile && profile.applicationStatus !== 'approved';
 
     return (

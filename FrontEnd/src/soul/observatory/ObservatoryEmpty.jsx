@@ -21,7 +21,7 @@ const _isReducedMotion = () => {
 };
 
 const ObservatoryEmpty = () => {
-  const { soul, nebula } = useSoul();
+  const { nebula } = useSoul();
   const reduced = _isReducedMotion();
   const accent = nebula?.from || '#a78bfa';
 

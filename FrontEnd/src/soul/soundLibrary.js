@@ -130,7 +130,6 @@ export const SoulSound = {
   // 800ms 3-note ascending chord. Used by gameology level-ups (within tier).
   levelUp: ({ soul } = {}) => _play((ac, m, t) => {
     const v = _voice(soul);
-    const start = [C.C5, C.E5, C.G5][0];
     [C.C5, C.E5, C.G5].forEach((f, i) => {
       _tone(ac, m, { freq: f, t: t + i * 0.1, dur: 0.7, type: v.type, peak: 0.18 * v.peakScale, lp: v.lp });
     });
