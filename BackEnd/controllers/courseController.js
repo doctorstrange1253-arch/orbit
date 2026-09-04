@@ -40,6 +40,8 @@ const User = require("../models/user");
 const gameology = require("../services/gameologyService");
 const pact = require("../services/pactService");
 const stages = require("../services/courseStages");
+const taxonomy = require("../data/taxonomy");
+const moderation = require("../services/moderationService");
 const { createNotification } = require("../services/notify");
 
 // ── Helpers ──────────────────────────────────────────────────────────────
@@ -104,6 +106,16 @@ function publicShape(c, mentor, opts = {}) {
 }
 
 const LESSON_COPY_FIELDS = ["promiseCopy", "whyCopy", "rememberCopy", "bossChallenge"];
+
+// A course's category is a taxonomy genre slug, so browse-by-genre and the
+// Topic-level competition have real data to work with. "general" stays legal as
+// the escape hatch for courses that predate the taxonomy.
+function readCategory(value) {
+    const slug = String(value ?? "").trim();
+    if (!slug || slug === "general") return { ok: true, slug: "general" };
+    if (taxonomy.genre(slug)) return { ok: true, slug };
+    return { ok: false, slug: null };
+}
 
 function sanitizeCuts(input) {
     if (!Array.isArray(input)) return null;
@@ -228,12 +240,16 @@ exports.createCourse = async (req, res) => {
     try {
         const meId = req.user.id;
         const body = req.body || {};
+        const category = readCategory(body.category);
+        if (!category.ok) {
+            return res.status(400).json({ message: `Unknown genre '${body.category}'. Pick one from the taxonomy.`, code: "UNKNOWN_GENRE" });
+        }
         const doc = await Course.create({
             mentorId: meId,
             title: (body.title || "Untitled course").slice(0, 140),
             subtitle: (body.subtitle || "").slice(0, 240),
             description: (body.description || "").slice(0, 5000),
-            category: body.category || "general",
+            category: category.slug,
             level: ["beginner", "intermediate", "advanced"].includes(body.level) ? body.level : "beginner",
             language: body.language || "English",
             priceInr: Number.isFinite(body.priceInr) ? Math.max(0, body.priceInr) : 0,
@@ -257,7 +273,13 @@ exports.updateCourse = async (req, res) => {
         if (body.title !== undefined) c.title = String(body.title).slice(0, 140);
         if (body.subtitle !== undefined) c.subtitle = String(body.subtitle).slice(0, 240);
         if (body.description !== undefined) c.description = String(body.description).slice(0, 5000);
-        if (body.category !== undefined) c.category = body.category;
+        if (body.category !== undefined) {
+            const category = readCategory(body.category);
+            if (!category.ok) {
+                return res.status(400).json({ message: `Unknown genre '${body.category}'. Pick one from the taxonomy.`, code: "UNKNOWN_GENRE" });
+            }
+            c.category = category.slug;
+        }
         if (body.level !== undefined && ["beginner", "intermediate", "advanced"].includes(body.level)) c.level = body.level;
         if (body.language !== undefined) c.language = body.language;
         if (body.priceInr !== undefined) c.priceInr = Math.max(0, Number(body.priceInr) || 0);
@@ -395,6 +417,19 @@ exports.uploadThumbnail = async (req, res) => {
     }
 };
 
+// A lesson's own words are the only text a mentor can publish unreviewed, so
+// every write is scanned and anything that trips the filter opens a review in
+// the mentor's own inbox. Best-effort: moderation never blocks authoring.
+function scanLessonBestEffort(course, lesson) {
+    try {
+        const hits = moderation.scanLesson(lesson);
+        if (!hits.length) return;
+        moderation
+            .recordReview(course.mentorId, { courseId: course._id, lessonId: lesson._id, hits })
+            .catch(() => {});
+    } catch (_scanErr) { void _scanErr; }
+}
+
 // ── Lessons (nested) ────────────────────────────────────────────────────
 exports.addLesson = async (req, res) => {
     try {
@@ -416,6 +451,7 @@ exports.addLesson = async (req, res) => {
         }));
         await c.save();
         const added = c.lessons[c.lessons.length - 1];
+        scanLessonBestEffort(c, added);
         return res.status(201).json({ _id: String(added._id), order: added.order });
     } catch (err) {
         console.error("addLesson:", err);
@@ -453,6 +489,7 @@ exports.updateLesson = async (req, res) => {
         if (body.isFree !== undefined) lesson.isFree = !!body.isFree;
         readLessonAuthoringFields(body, lesson);
         await c.save();
+        scanLessonBestEffort(c, lesson);
         return res.json({ ok: true });
     } catch (err) {
         console.error("updateLesson:", err);

@@ -711,6 +711,7 @@ app.use("/api/pact", pactRoutes);
 app.use("/api/knowledge", knowledgeGraphRoutes);
 app.use("/api/flares", signalFlareRoutes);
 app.use("/api/taxonomy", require("./routes/taxonomyRoutes"));
+app.use("/api/ai", require("./routes/aiRoutes"));
 app.use("/api/billing", require("./routes/billingRoutes"));
 app.use("/api/moderation", moderationRoutes);
 // V3 — Cross-soul mentor invites: pending invite + accept/dismiss (the

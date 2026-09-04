@@ -5,6 +5,7 @@ import {
     Tag, X, Globe2, Send, Eye, Wand2,
 } from 'lucide-react';
 import api from '../../services/api';
+import TopicPicker from '../taxonomy/TopicPicker';
 
 const TIMEZONES = [
     'Asia/Kolkata', 'Asia/Tokyo', 'Asia/Singapore', 'Asia/Shanghai',
@@ -24,6 +25,7 @@ const MentorApplicationForm = ({ initial = {} }) => {
     const [timezone, setTimezone] = useState(initial.timezone || 'Asia/Kolkata');
     const [skillInput, setSkillInput] = useState('');
     const [skills, setSkills] = useState(Array.isArray(initial.skills) ? initial.skills : []);
+    const [topics, setTopics] = useState(Array.isArray(initial.topics) ? initial.topics : []);
 
     const payoutMultiplier = 0.85;
     const keepPerHour = Math.round(hourlyRateInr * payoutMultiplier);
@@ -56,6 +58,7 @@ const MentorApplicationForm = ({ initial = {} }) => {
             hourlyRateInr: Number(hourlyRateInr),
             timezone,
             skills: skills.map((s) => s.trim()).filter(Boolean),
+            topics,
         }),
     });
 
@@ -63,7 +66,8 @@ const MentorApplicationForm = ({ initial = {} }) => {
     const rateOk = Number(hourlyRateInr) >= 100;
     const bioOk = bio.trim().length >= 40;
     const skillsOk = skills.length >= 1;
-    const canSubmit = headlineOk && rateOk && bioOk && skillsOk && !m.isPending;
+    const topicsOk = topics.length >= 1;
+    const canSubmit = headlineOk && rateOk && bioOk && skillsOk && topicsOk && !m.isPending;
 
     return (
         <section style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
@@ -171,8 +175,21 @@ const MentorApplicationForm = ({ initial = {} }) => {
 
                 <Section
                     icon={<Tag className="w-4 h-4" />}
-                    title="What you teach"
-                    hint="Type a skill, then press Enter or comma. Up to 12."
+                    title="The topics you teach"
+                    hint="Pick from Orbit's taxonomy. This is how students filter, and how a Signal Flare finds you when enough of them ask for something you teach. Up to 12."
+                >
+                    <TopicPicker value={topics} onChange={setTopics} max={12} />
+                    {topics.length === 0 && (
+                        <p className="mt-1.5 text-xs text-text-muted">
+                            Pick at least one. Without a topic you will not appear in filtered searches or Signal Flares.
+                        </p>
+                    )}
+                </Section>
+
+                <Section
+                    icon={<Tag className="w-4 h-4" />}
+                    title="In your own words"
+                    hint="Free-text skills for your public card. Type one, then press Enter or comma. Up to 12."
                 >
                     <div className="input-glass px-3 py-2.5 flex flex-wrap items-center gap-2 min-h-[44px]">
                         {skills.map((s) => (
@@ -248,6 +265,7 @@ const MentorApplicationForm = ({ initial = {} }) => {
                             {!rateOk && <li>· Hourly rate must be at least ₹100</li>}
                             {!bioOk && <li>· Bio should be at least 40 characters</li>}
                             {!skillsOk && <li>· Add at least one skill</li>}
+                            {!topicsOk && <li>· Pick at least one topic from the taxonomy</li>}
                         </ul>
                     )}
                 </div>

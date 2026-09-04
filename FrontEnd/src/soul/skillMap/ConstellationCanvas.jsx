@@ -15,8 +15,7 @@
  * — the shareable URL looks the same to anyone.
  */
 
-import { useEffect, useRef, useState } from 'react';
-import { useSoul } from '../../hooks/useSoul';
+import { useEffect, useMemo, useRef, useState } from 'react';
 // V3 — haptic + sound on constellation star tap.
 import { Haptic } from '../haptics';
 import { SoulSound } from '../soundLibrary';
@@ -61,40 +60,25 @@ function _layoutStars(stars = [], width, height) {
 }
 
 const ConstellationCanvas = ({ data, width = 800, height = 560, onSelectStar }) => {
-  const { soul, nebula } = useSoul();
   const reduced = _isReducedMotion();
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
   const [linesDrawn, setLinesDrawn] = useState(false);
 
-  const stars = useMemo
-    ? useMemo(() => _layoutStars(data?.stars || [], width, height), [data?.stars, width, height])
-    : _layoutStars(data?.stars || [], width, height);
+  const stars = useMemo(
+    () => _layoutStars(data?.stars || [], width, height),
+    [data?.stars, width, height],
+  );
 
-  // Build a slug → (x, y) map for the edges. The map is keyed by concept
-  // slug, but stars are keyed by courseId. We approximate by hashing the
-  // course's category concepts to a center near the star. For MVP we draw
-  // edges by concept: every concept that's the "main" of a star (we
-  // approximate by hashing) draws to every related concept.
-  const slugPos = useMemo
-    ? useMemo(() => {
-        // For each course star, derive one concept position by hashing
-        // its category. Distribute concept "anchors" around the star.
-        const m = new Map();
-        stars.forEach((s, i) => {
-          const slug = s.category || `c${i}`;
-          m.set(slug, { x: s.x, y: s.y, brightness: s.brightness || 0.5 });
-        });
-        return m;
-      }, [stars])
-    : (() => {
-        const m = new Map();
-        stars.forEach((s, i) => {
-          m.set(s.category || `c${i}`, { x: s.x, y: s.y, brightness: s.brightness || 0.5 });
-        });
-        return m;
-      })();
+  const slugPos = useMemo(() => {
+    const m = new Map();
+    stars.forEach((s, i) => {
+      const slug = s.category || `c${i}`;
+      m.set(slug, { x: s.x, y: s.y, brightness: s.brightness || 0.5 });
+    });
+    return m;
+  }, [stars]);
 
   // Render loop.
   useEffect(() => {
@@ -107,11 +91,9 @@ const ConstellationCanvas = ({ data, width = 800, height = 560, onSelectStar }) 
     ctx.scale(dpr, dpr);
 
     let raf = 0;
-    let frame = 0;
     const start = performance.now();
 
     const render = () => {
-      frame += 1;
       const t = (performance.now() - start) / 1000;
       ctx.clearRect(0, 0, width, height);
 

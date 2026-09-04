@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { Plus, Save, ChevronLeft, Upload, Video, X, ChevronDown, ChevronRight, Trash2, Sparkles, Loader2 } from 'lucide-react';
+import { Plus, Save, Upload, Video, X, ChevronDown, ChevronRight, Trash2, Sparkles, Loader2 } from 'lucide-react';
 import { courses } from '../../services/courses';
 import { proposeLevel, isStubProposal } from '../../services/ai';
+import GenrePicker from '../../components/taxonomy/GenrePicker';
 import {
     MentorBackLink,
     MentorEyebrow,
     MentorTitle,
-    MentorTag,
 } from '../../components/pact/MentorEditorial';
 
 const blankLesson = () => ({
@@ -178,8 +178,13 @@ const CourseBuilder = () => {
                             <textarea rows={4} value={state.description} onChange={(e) => dispatch({ type: 'SET', key: 'description', value: e.target.value })} className="w-full px-3 py-2" style={inputStyle} />
                         </Field>
                         <div className="grid sm:grid-cols-3 gap-3">
-                            <Field label="Category">
-                                <input value={state.category} onChange={(e) => dispatch({ type: 'SET', key: 'category', value: e.target.value })} className="w-full px-3 py-2" style={inputStyle} />
+                            <Field label="Genre">
+                                <GenrePicker
+                                    value={state.category}
+                                    onChange={(value) => dispatch({ type: 'SET', key: 'category', value })}
+                                    className="w-full px-3 py-2"
+                                    style={inputStyle}
+                                />
                             </Field>
                             <Field label="Level">
                                 <select value={state.level} onChange={(e) => dispatch({ type: 'SET', key: 'level', value: e.target.value })} className="w-full px-3 py-2" style={inputStyle}>

@@ -9,12 +9,13 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { Calendar, Video, Star, IndianRupee, Clock, ListChecks } from 'lucide-react';
+import { Calendar, Video, IndianRupee, Clock, ListChecks } from 'lucide-react';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import ErrorState from '../components/common/ErrorState';
 import EmptyState from '../components/common/EmptyState';
 import FuturisticBackdrop from '../components/common/FuturisticBackdrop';
+import RateSessionButton from '../components/sessions/RateSessionButton';
 
 const STATUS_PILL = {
     pending_payment: "bg-warning/10 text-warning border border-warning/30",
@@ -155,12 +156,18 @@ const MySessions = () => {
                                             </Link>
                                         )}
                                         {s.status === "completed" && (
-                                            <Link
-                                                to={`/student/mentors/${otherUserId}`}
-                                                className="inline-flex items-center gap-1.5 nav-tab-glass px-3.5 py-2 rounded-lg text-sm text-text-primary"
-                                            >
-                                                <Star className="w-4 h-4" /> Rate / rebook
-                                            </Link>
+                                            <>
+                                                <RateSessionButton
+                                                    session={s}
+                                                    alreadyRated={role === "Mentor" ? !!s.mentorRating?.stars : !!s.studentRating?.stars}
+                                                />
+                                                <Link
+                                                    to={`/student/mentors/${otherUserId}`}
+                                                    className="inline-flex items-center gap-1.5 nav-tab-glass px-3.5 py-2 rounded-lg text-sm text-text-primary"
+                                                >
+                                                    <Calendar className="w-4 h-4" /> Rebook
+                                                </Link>
+                                            </>
                                         )}
                                     </div>
                                 </li>

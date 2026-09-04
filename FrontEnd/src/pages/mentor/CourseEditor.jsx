@@ -164,6 +164,26 @@ const CourseEditor = () => {
                             <Eye size={11} /> Publish
                         </button>
                     )}
+                    {publish.isError && (
+                        <p
+                            className="mt-3 max-w-xl"
+                            style={{
+                                fontFamily: 'var(--font-serif)',
+                                fontStyle: 'italic',
+                                fontSize: '0.9rem',
+                                color: 'rgba(252,165,165,1)',
+                                borderLeft: '1px solid rgba(252,165,165,0.45)',
+                                paddingLeft: 12,
+                            }}
+                        >
+                            {publish.error?.response?.data?.message || 'Could not publish this course.'}
+                            {publish.error?.response?.data?.code === 'INTRO_REQUIRED' && (
+                                <span className="block mt-1.5" style={{ color: 'rgba(245,245,245,0.55)' }}>
+                                    Open a lesson below and tick <strong>This is the introduction</strong>.
+                                </span>
+                            )}
+                        </p>
+                    )}
                 </div>
             </motion.header>
 
@@ -226,6 +246,14 @@ const CourseEditor = () => {
                                     }}
                                 >
                                     {l.title}
+                                    {l.isIntro && (
+                                        <span
+                                            className="ml-2 font-mono uppercase"
+                                            style={{ fontSize: '0.54rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(103,232,249,1)' }}
+                                        >
+                                            Introduction
+                                        </span>
+                                    )}
                                     {l.isBoss && (
                                         <span
                                             className="ml-2 font-mono uppercase"

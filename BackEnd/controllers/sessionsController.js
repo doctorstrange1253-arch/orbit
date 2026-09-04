@@ -17,6 +17,7 @@ const payment = require("../services/payment");
 const sessionService = require("../services/sessionService");
 const mentorPayouts = require("../services/mentorPayouts");
 const honoursService = require("../services/honours");
+const taxonomy = require("../data/taxonomy");
 const { createNotification } = require("../services/notify");
 const { track: analytics } = require("../services/orbitAnalytics");
 
@@ -30,6 +31,8 @@ function shapeMentor(p, user) {
         headline: p.headline,
         bio: p.bio,
         skills: (p.skills || []).map(String),
+        topics: (p.topics || []).map(String),
+        genres: (p.genres || []).map(String),
         hourlyRateInr: p.hourlyRateInr,
         rating: p.rating,
         honours: honoursService.shapeHonours(p.honours),
@@ -42,10 +45,15 @@ function shapeMentor(p, user) {
 exports.applyAsMentor = async (req, res) => {
     try {
         const meId = req.user.id;
-        const { headline, bio, skills, hourlyRateInr, timezone, availability } = req.body || {};
+        const { headline, bio, skills, topics, hourlyRateInr, timezone, availability } = req.body || {};
         if (!Number.isFinite(hourlyRateInr) || hourlyRateInr < 0) {
             return res.status(400).json({ message: "hourlyRateInr must be a non-negative number" });
         }
+        // Topics are the taxonomy slugs the Signal Flare matches on; genres are
+        // derived from them so the two can never drift apart. `skills` stays as
+        // the mentor's own free-text wording for their public card.
+        const cleanTopics = taxonomy.normaliseTopics(Array.isArray(topics) ? topics : []);
+        const { genres } = taxonomy.ancestryOf(cleanTopics);
         const profile = await MentorProfile.findOneAndUpdate(
             { userId: meId },
             {
@@ -54,6 +62,8 @@ exports.applyAsMentor = async (req, res) => {
                     headline: (headline || "").slice(0, 120),
                     bio: (bio || "").slice(0, 2000),
                     skills: Array.isArray(skills) ? skills : [],
+                    topics: cleanTopics,
+                    genres,
                     hourlyRateInr: Math.floor(hourlyRateInr),
                     timezone: timezone || "Asia/Kolkata",
                     availability: availability || { weekly: [] },

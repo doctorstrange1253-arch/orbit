@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { ChevronLeft, Save, Plus, X, Trash2, Loader2, Sparkles, Crown, Wand2 } from 'lucide-react';
+import { ChevronLeft, Save, Plus, X, Loader2, Sparkles, Crown } from 'lucide-react';
 import { courses } from '../../services/courses';
 import { proposeLevel, isStubProposal } from '../../services/ai';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
@@ -12,7 +12,6 @@ import api from '../../services/api';
 
 const LessonEdit = () => {
     const { id, lessonId } = useParams();
-    const navigate = useNavigate();
     const qc = useQueryClient();
 
     const { data: course, isLoading } = useQuery({
@@ -32,7 +31,9 @@ const LessonEdit = () => {
                 title: lesson.title || '',
                 description: lesson.description || '',
                 isFree: !!lesson.isFree,
+                isIntro: !!lesson.isIntro,
                 isBoss: !!lesson.isBoss,
+                bossChallenge: lesson.bossChallenge || '',
                 promiseCopy: lesson.promiseCopy || '',
                 whyCopy: lesson.whyCopy || '',
                 rememberCopy: lesson.rememberCopy || '',
@@ -94,6 +95,7 @@ const LessonEdit = () => {
         if (aiProposal.promiseCopy && !patch.promiseCopy) patch.promiseCopy = aiProposal.promiseCopy;
         if (aiProposal.whyCopy && !patch.whyCopy) patch.whyCopy = aiProposal.whyCopy;
         if (aiProposal.rememberCopy && !patch.rememberCopy) patch.rememberCopy = aiProposal.rememberCopy;
+        if (aiProposal.bossChallenge && !patch.bossChallenge) patch.bossChallenge = aiProposal.bossChallenge;
         if (Array.isArray(aiProposal.quizQuestions) && aiProposal.quizQuestions.length > 0
             && (!patch.quiz?.questions || patch.quiz.questions.length === 0)) {
             patch.quiz = { ...(patch.quiz || { passingScore: 70 }), questions: aiProposal.quizQuestions };
@@ -143,7 +145,9 @@ const LessonEdit = () => {
             title: form.title,
             description: form.description,
             isFree: form.isFree,
+            isIntro: form.isIntro,
             isBoss: form.isBoss,
+            bossChallenge: form.bossChallenge,
             promiseCopy: form.promiseCopy,
             whyCopy: form.whyCopy,
             rememberCopy: form.rememberCopy,
@@ -195,14 +199,35 @@ const LessonEdit = () => {
 
                     <div className="grid sm:grid-cols-2 gap-3 pt-2 border-t border-border-subtle/40">
                         <label className="flex items-center gap-2 text-xs text-text-secondary">
-                            <input type="checkbox" checked={form.isFree} onChange={(e) => setField('isFree', e.target.checked)} />
+                            <input type="checkbox" checked={form.isFree} onChange={(e) => setField('isFree', e.target.checked)} disabled={form.isIntro} />
                             Free preview (anyone can watch)
+                            {form.isIntro && <span className="text-[9px] text-text-muted">— forced on for the introduction</span>}
                         </label>
                         <label className={`flex items-center gap-2 text-xs ${form.isBoss ? 'text-amber-200' : 'text-text-secondary'}`}>
                             <input type="checkbox" checked={form.isBoss} onChange={(e) => setField('isBoss', e.target.checked)} />
                             <Crown size={12} className="text-amber-300" />
                             <span className="font-bold uppercase tracking-widest text-[10px]">Boss Level</span>
                             {form.isBoss && <span className="text-[9px] text-amber-300/80">— 5+ question quiz · 100% to pass · 6s ceremony on pass</span>}
+                        </label>
+                    </div>
+
+                    <div className="pt-2 border-t border-border-subtle/40">
+                        <label className={`flex items-start gap-2 text-xs ${form.isIntro ? 'text-cyan-200' : 'text-text-secondary'}`}>
+                            <input
+                                type="checkbox"
+                                checked={form.isIntro}
+                                onChange={(e) => {
+                                    setField('isIntro', e.target.checked);
+                                    if (e.target.checked) setField('isFree', true);
+                                }}
+                                className="mt-0.5"
+                            />
+                            <span>
+                                <span className="font-bold uppercase tracking-widest text-[10px]">This is the introduction</span>
+                                <span className="block text-[10px] text-text-muted mt-0.5">
+                                    Every course needs one before it can be published. Students watch it free to judge your teaching before they subscribe — so it is always a free preview.
+                                </span>
+                            </span>
                         </label>
                     </div>
 
@@ -256,6 +281,13 @@ const LessonEdit = () => {
                                 placeholder="The root note is the one that feels like home."
                                 className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-sm text-text-primary resize-none" />
                         </Field>
+                        {form.isBoss && (
+                            <Field label="Boss challenge — what they must prove (800 chars)" hint={`${form.bossChallenge.length} / 800`}>
+                                <textarea rows={3} maxLength={800} value={form.bossChallenge} onChange={(e) => setField('bossChallenge', e.target.value)}
+                                    placeholder="Name every root by ear across two octaves, no instrument."
+                                    className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-sm text-text-primary resize-none" />
+                            </Field>
+                        )}
                     </div>
 
                     <div className="pt-2 border-t border-border-subtle/40">
