@@ -81,7 +81,6 @@ const LearnerRow = ({ learner }) => {
                             background: 'rgba(255,255,255,0.06)',
                             border: `1px solid ${HAIRLINE_SOFT}`,
                             fontFamily: 'var(--font-editorial)',
-                            fontStyle: 'italic',
                             fontWeight: 700,
                             fontSize: '1.1rem',
                             color: 'var(--text-primary)',
@@ -97,7 +96,6 @@ const LearnerRow = ({ learner }) => {
                             to={`/profile/${learner.userId}`}
                             style={{
                                 fontFamily: 'var(--font-serif)',
-                                fontStyle: 'italic',
                                 fontSize: '1.12rem',
                                 color: 'var(--text-primary)',
                                 textDecoration: 'none',
@@ -151,7 +149,6 @@ const LearnerRow = ({ learner }) => {
                                 <span
                                     style={{
                                         fontFamily: 'var(--font-serif)',
-                                        fontStyle: 'italic',
                                         fontSize: '0.92rem',
                                         color: 'rgba(245,245,245,0.62)',
                                         flexShrink: 0,
@@ -235,7 +232,7 @@ const Students = () => {
             {isLoading ? (
                 <p
                     className="py-14 text-center"
-                    style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: MUTED }}
+                    style={{ fontFamily: 'var(--font-serif)', color: MUTED }}
                 >
                     Reading the roll.
                 </p>
@@ -325,7 +322,7 @@ const Students = () => {
                     <SectionBoundary name="The roll">
                         <section className="py-6">
                             {visible.length === 0 ? (
-                                <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: MUTED }}>
+                                <p style={{ fontFamily: 'var(--font-serif)', color: MUTED }}>
                                     No learner matches that.
                                 </p>
                             ) : (

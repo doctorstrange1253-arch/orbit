@@ -255,7 +255,6 @@ const CourseBuilder = () => {
                             <h3
                                 style={{
                                     fontFamily: 'var(--font-editorial)',
-                                    fontStyle: 'italic',
                                     fontWeight: 700,
                                     fontSize: '1.6rem',
                                     lineHeight: 1.1,
@@ -269,7 +268,6 @@ const CourseBuilder = () => {
                                     className="mt-1.5"
                                     style={{
                                         fontFamily: 'var(--font-serif)',
-                                        fontStyle: 'italic',
                                         color: 'rgba(245,245,245,0.65)',
                                     }}
                                 >
@@ -289,7 +287,6 @@ const CourseBuilder = () => {
                         <p
                             style={{
                                 fontFamily: 'var(--font-serif)',
-                                fontStyle: 'italic',
                                 color: 'rgba(245,245,245,0.55)',
                             }}
                         >
@@ -589,7 +586,7 @@ const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAdd
                                     >
                                         Why it matters
                                     </div>
-                                    <div style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.75)', fontSize: '0.92rem' }}>{aiProposal.whyCopy}</div>
+                                    <div style={{ fontFamily: 'var(--font-serif)', color: 'rgba(245,245,245,0.75)', fontSize: '0.92rem' }}>{aiProposal.whyCopy}</div>
                                 </div>
                             )}
                             {aiProposal.rememberCopy && (
@@ -600,7 +597,7 @@ const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAdd
                                     >
                                         One thing to remember
                                     </div>
-                                    <div style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.75)', fontSize: '0.92rem' }}>{aiProposal.rememberCopy}</div>
+                                    <div style={{ fontFamily: 'var(--font-serif)', color: 'rgba(245,245,245,0.75)', fontSize: '0.92rem' }}>{aiProposal.rememberCopy}</div>
                                 </div>
                             )}
                             {Array.isArray(aiProposal.quizQuestions) && aiProposal.quizQuestions.length > 0 && (
@@ -611,7 +608,7 @@ const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAdd
                                     >
                                         {aiProposal.quizQuestions.length} quiz question{aiProposal.quizQuestions.length > 1 ? 's' : ''}
                                     </div>
-                                    <ol className="list-decimal pl-4" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.75)', fontSize: '0.86rem' }}>
+                                    <ol className="list-decimal pl-4" style={{ fontFamily: 'var(--font-serif)', color: 'rgba(245,245,245,0.75)', fontSize: '0.86rem' }}>
                                         {aiProposal.quizQuestions.slice(0, 3).map((q, i) => (
                                             <li key={i} className="line-clamp-1">{q.prompt || `Question ${i + 1}`}</li>
                                         ))}
@@ -626,7 +623,7 @@ const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAdd
                                     >
                                         Boss challenge
                                     </div>
-                                    <div style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.75)', fontSize: '0.92rem' }}>{aiProposal.bossChallenge}</div>
+                                    <div style={{ fontFamily: 'var(--font-serif)', color: 'rgba(245,245,245,0.75)', fontSize: '0.92rem' }}>{aiProposal.bossChallenge}</div>
                                 </div>
                             )}
                         </div>

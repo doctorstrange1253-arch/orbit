@@ -13,9 +13,9 @@ import { PACT_TIERS, tierById, tierIndex } from '../../services/pact';
  * Three modes:
  *   - compact : just the strip, mono caps, fits in a header rail
  *   - inline  : strip + a sentence about your position
- *   - folio   : strip + large Playfair-italic title + Cormorant body
+ *   - folio   : strip + large Poppins title + Open Sans body
  *
- * Uses the V3 editorial type scale (Playfair Display, Cormorant,
+ * Uses the app type scale (Poppins, Open Sans,
  * JetBrains Mono) so it sits naturally next to the MyOrbit issue.
  */
 
@@ -117,7 +117,6 @@ const LeagueRail = ({ currentTierId, mode = 'inline' }) => {
               <div
                 style={{
                   fontFamily: 'var(--font-editorial)',
-                  fontStyle: 'italic',
                   fontWeight: 700,
                   fontSize: 'clamp(1.6rem, 2.4vw, 2.2rem)',
                   lineHeight: 1.05,
@@ -132,7 +131,6 @@ const LeagueRail = ({ currentTierId, mode = 'inline' }) => {
                 className="mt-1.5"
                 style={{
                   fontFamily: 'var(--font-serif)',
-                  fontStyle: 'italic',
                   color: 'rgba(245,245,245,0.65)',
                   fontSize: '0.95rem',
                   maxWidth: '46ch',
@@ -143,7 +141,7 @@ const LeagueRail = ({ currentTierId, mode = 'inline' }) => {
             </div>
             <div className="font-mono uppercase text-text-muted md:text-right" style={{ fontSize: '0.62rem', letterSpacing: '0.22em', fontWeight: 700 }}>
               Six divisions
-              <div style={{ fontFamily: 'var(--font-editorial)', fontStyle: 'italic', color: 'var(--text-primary)', fontSize: '1.4rem', letterSpacing: '-0.02em', marginTop: 2 }}>
+              <div style={{ fontFamily: 'var(--font-editorial)', color: 'var(--text-primary)', fontSize: '1.4rem', letterSpacing: '-0.02em', marginTop: 2 }}>
                 One covenant
               </div>
             </div>
@@ -192,7 +190,6 @@ const LeagueRail = ({ currentTierId, mode = 'inline' }) => {
                   <div
                     style={{
                       fontFamily: 'var(--font-editorial)',
-                      fontStyle: 'italic',
                       fontWeight: 700,
                       fontSize: '1.05rem',
                       lineHeight: 1.05,
@@ -273,7 +270,6 @@ const LeagueRail = ({ currentTierId, mode = 'inline' }) => {
               <div
                 style={{
                   fontFamily: 'var(--font-editorial)',
-                  fontStyle: 'italic',
                   fontWeight: 700,
                   fontSize: '0.95rem',
                   lineHeight: 1.05,

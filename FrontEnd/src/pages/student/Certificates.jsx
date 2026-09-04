@@ -57,7 +57,6 @@ const CertificateRow = ({ row }) => {
             <span
               style={{
                 fontFamily: 'var(--font-serif)',
-                fontStyle: 'italic',
                 fontSize: '0.95rem',
                 color: 'rgba(245,245,245,0.72)',
                 flexShrink: 0,
@@ -144,7 +143,7 @@ const Certificates = () => {
       {isLoading ? (
         <p
           className="py-14 text-center"
-          style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: MUTED }}
+          style={{ fontFamily: 'var(--font-serif)', color: MUTED }}
         >
           Reading the record.
         </p>
@@ -218,7 +217,6 @@ const Certificates = () => {
                       to={`/courses/${row.courseId}/learn`}
                       style={{
                         fontFamily: 'var(--font-serif)',
-                        fontStyle: 'italic',
                         fontSize: '1.05rem',
                         color: 'var(--text-primary)',
                         textDecoration: 'none',

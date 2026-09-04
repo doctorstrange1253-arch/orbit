@@ -8,7 +8,7 @@ import { usePactPulse, useMarkPactPulseSeen, usePactMe } from '../../hooks/usePa
  * PactPulse — the Wednesday mid-week message widget.
  *
  * The pulse is read as a private dispatch from the Pact, not a
- * gamified notification. Eyebrow in mono caps, body in Cormorant
+ * gamified notification. Eyebrow in mono caps, body in Open Sans
  * italic, and the rank in tabular numerals. The widget has a single
  * 1px hairline border, no gradient, no glow.
  *
@@ -80,7 +80,6 @@ const PactPulse = () => {
                         <p
                             style={{
                                 fontFamily: 'var(--font-serif)',
-                                fontStyle: 'italic',
                                 fontSize: '1.02rem',
                                 lineHeight: 1.4,
                                 color: 'rgba(245,245,245,0.85)',

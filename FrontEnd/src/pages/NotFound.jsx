@@ -61,7 +61,7 @@ const NotFound = () => {
           <Compass size={28} style={{ color: '#a78bfa' }} />
         </div>
 
-        <h1 className="text-3xl font-display font-bold text-text-primary mb-3">
+        <h1 className="text-3xl font-display font-extrabold text-text-primary mb-3">
           Page Not Found
         </h1>
         <p className="text-text-muted text-sm leading-relaxed mb-8 max-w-sm mx-auto">

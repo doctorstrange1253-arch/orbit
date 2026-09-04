@@ -19,7 +19,7 @@
   inset: 0;
   background: var(--ss-bg);
   color: var(--ss-text);
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Open Sans', system-ui, sans-serif;
   overflow: auto;
   z-index: 5000;
 }

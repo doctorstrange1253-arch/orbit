@@ -24,19 +24,22 @@
   --color-text-muted: var(--text-muted);
   --color-text-on-accent: var(--text-on-accent);
 
-  --font-sans: "Cormorant Garamond", "Georgia", serif;
-  --font-display: "Playfair Display", "Times New Roman", serif;
-  /* V3 — editorial type system. The MyOrbit + mentor pages mix three voices:
-       --font-editorial   = Playfair Display (didone, magazine cover)
-       --font-serif       = Cormorant Garamond (book-grade, italic-loaded)
-       --font-mono        = JetBrains Mono (stardust, dot leaders, code) */
-  --font-editorial: "Playfair Display", "Times New Roman", serif;
-  --font-serif: "Cormorant Garamond", "Georgia", serif;
+  --font-sans: "Open Sans", system-ui, sans-serif;
+  --font-display: "Poppins", system-ui, sans-serif;
+  /* Three voices app-wide:
+       --font-display / --font-editorial = Poppins (titles, stat numerals)
+       --font-sans / --font-serif        = Open Sans (body, decks, prose)
+       --font-mono                       = JetBrains Mono (labels, dot leaders,
+                                           tabular columns, code)
+     --font-playfair stays real: the course certificate is the one surface
+     that should read as an engraved document. */
+  --font-editorial: "Poppins", system-ui, sans-serif;
+  --font-serif: "Open Sans", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --font-cormorant: "Cormorant Garamond", "Georgia", serif;
+  --font-cormorant: "Open Sans", system-ui, sans-serif;
   --font-playfair: "Playfair Display", "Times New Roman", serif;
 
-  --default-font-family: "Cormorant Garamond", "Georgia", serif;
+  --default-font-family: "Open Sans", system-ui, sans-serif;
   --default-mono-font-family: "JetBrains Mono", ui-monospace, monospace;
 
   --radius-card: 20px;
@@ -270,13 +273,13 @@
 
   body {
     @apply bg-background text-text-primary overflow-x-hidden;
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-editorial);
+    font-family: var(--font-display);
   }
 
   code, kbd, samp, pre {
@@ -1175,7 +1178,7 @@ body, html {
 
   .font-editorial { font-family: var(--font-editorial); }
   .font-cormorant { font-family: var(--font-serif); }
-  .font-playfair  { font-family: var(--font-editorial); }
+  .font-playfair  { font-family: var(--font-playfair); }
 }
 
 html .leaflet-container,

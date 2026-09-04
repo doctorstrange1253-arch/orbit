@@ -102,7 +102,7 @@ const Matches = () => {
         <link rel="canonical" href="https://react-skill-swap-fully-fledged.vercel.app/matches" />
       </Helmet>
       <div>
-        <h1 className="text-3xl font-display font-bold flex items-center gap-3 heading-teal-gradient"
+        <h1 className="text-3xl font-display font-extrabold flex items-center gap-3 heading-teal-gradient"
           style={{ background: 'linear-gradient(135deg,#00e5a0,#00c6ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
           <Handshake size={26} className="icon-teal" style={{ color: '#00e5a0', WebkitTextFillColor: '#00e5a0' }} />
           Your Matches

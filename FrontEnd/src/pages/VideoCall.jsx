@@ -718,7 +718,7 @@ const VideoCall = () => {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold"
+        <h1 className="text-3xl font-display font-extrabold"
           style={{ background: 'linear-gradient(135deg,#a855f7,#00c6ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
           Video Calls
         </h1>

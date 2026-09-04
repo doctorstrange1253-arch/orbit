@@ -55,7 +55,6 @@ export function StageRail({ course, completedLessonIds, compact = false, onSelec
         <span
           style={{
             fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
             fontSize: '0.92rem',
             color: MUTED,
           }}
@@ -106,7 +105,6 @@ export function StageRail({ course, completedLessonIds, compact = false, onSelec
               <div
                 style={{
                   fontFamily: 'var(--font-editorial)',
-                  fontStyle: 'italic',
                   fontWeight: 700,
                   fontSize: '1.22rem',
                   lineHeight: 1.05,
@@ -140,7 +138,6 @@ export function StageRail({ course, completedLessonIds, compact = false, onSelec
                   className="mt-2.5"
                   style={{
                     fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
                     fontSize: '0.9rem',
                     lineHeight: 1.4,
                     color: 'rgba(245,245,245,0.62)',

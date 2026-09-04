@@ -3,7 +3,7 @@
  *
  * "By the numbers" — the 4-cell strip on the MyOrbit issue.
  *
- * Every cell is identical in shape: a big Playfair Display italic
+ * Every cell is identical in shape: a big Poppins
  * number on top, a clean mono-caps label below, separated from its
  * neighbors by a hairline. No soul gradient, no glow, no signature
  * cell — the user picked the "very magazine" treatment, where the
@@ -47,7 +47,7 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
   const stats = useMemo(() => computeStats(safeEvents, skillsCount), [safeEvents, skillsCount]);
 
   // Four cells in a row, identical shape. Every number is set in
-  // Playfair Display italic, clean white, no gradient, no glow.
+  // Poppins, clean white, no gradient, no glow.
   const cells = [
     { key: 'swaps',   label: 'Swaps',          value: stats.swaps   },
     { key: 'lessons', label: 'Lessons',        value: stats.lessons },
@@ -77,14 +77,13 @@ export default function StatsStrip({ events = [], skillsCount = 0 }) {
                   : '1px solid rgba(255,255,255,0.10)',
               }}
             >
-              {/* The number — uniform Playfair Display italic, clean
+              {/* The number — uniform Poppins, clean
                   white, no gradient, no glow. The cell hairlines do
                   the visual work. */}
               <div
                 style={{
                   fontFamily: 'var(--font-editorial)',
                   fontWeight: 700,
-                  fontStyle: 'italic',
                   lineHeight: 0.9,
                   letterSpacing: '-0.03em',
                   fontSize: 'clamp(2.4rem, 4.6vw, 3.6rem)',

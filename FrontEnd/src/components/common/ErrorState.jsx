@@ -4,9 +4,10 @@ import { AlertCircle, RefreshCw } from 'lucide-react';
  * ErrorState — shown when a React Query fetch fails.
  *
  * @param {string}   message  Custom message (optional)
+ * @param {string}   detail   The server's own words — status, code, message
  * @param {Function} onRetry  Called when the user clicks "Retry"
  */
-const ErrorState = ({ message = 'Failed to load data.', onRetry }) => (
+const ErrorState = ({ message = 'Failed to load data.', detail, onRetry }) => (
   <div
     className="flex flex-col items-center justify-center py-16 rounded-2xl text-center"
     style={{
@@ -26,7 +27,16 @@ const ErrorState = ({ message = 'Failed to load data.', onRetry }) => (
     </div>
 
     <h3 className="text-base font-semibold text-text-primary mb-1">Oops!</h3>
-    <p className="text-text-muted text-sm mb-5 max-w-xs">{message}</p>
+    <p className="text-text-muted text-sm mb-2 max-w-xs">{message}</p>
+    {detail && (
+      <p
+        className="text-[11px] mb-4 max-w-sm px-4 break-words"
+        style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.38)' }}
+      >
+        {detail}
+      </p>
+    )}
+    {!detail && <div className="mb-3" />}
 
     {onRetry && (
       <button

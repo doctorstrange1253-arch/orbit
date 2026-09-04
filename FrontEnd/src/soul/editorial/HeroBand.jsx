@@ -180,7 +180,6 @@ export default function HeroBand({ events = [] }) {
             style={{
               color: 'var(--text-muted)',
               fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
               fontWeight: 400,
             }}
           >
@@ -191,7 +190,6 @@ export default function HeroBand({ events = [] }) {
             style={{
               color: 'var(--text-muted)',
               fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
               fontWeight: 400,
             }}
           >
@@ -200,7 +198,7 @@ export default function HeroBand({ events = [] }) {
           <motion.span {...wordReveal(2)} style={{ color: 'var(--text-primary)' }}>
             {firstName}
           </motion.span>
-          <motion.span {...wordReveal(3)} style={{ color: accent, fontStyle: 'italic' }}>.</motion.span>
+          <motion.span {...wordReveal(3)} style={{ color: accent }}>.</motion.span>
         </h1>
         <div className="mt-5 max-w-[44ch] space-y-2">
           {ledeLines.map((line, i) => (
@@ -237,7 +235,6 @@ export default function HeroBand({ events = [] }) {
             className="ml-2"
             style={{
               fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
               fontSize: '0.78rem',
               letterSpacing: '0.01em',
               color: 'rgba(245,245,245,0.45)',
@@ -253,7 +250,6 @@ export default function HeroBand({ events = [] }) {
             style={{
               fontFamily: 'var(--font-editorial)',
               fontWeight: 800,
-              fontStyle: 'italic',
               lineHeight: 0.86,
               letterSpacing: '-0.04em',
               fontSize: 'clamp(4.2rem, 9vw, 6.4rem)',

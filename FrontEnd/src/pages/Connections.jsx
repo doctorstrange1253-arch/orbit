@@ -126,7 +126,7 @@ const Connections = () => {
         <link rel="canonical" href="https://react-skill-swap-fully-fledged.vercel.app/connections" />
       </Helmet>
       <div>
-        <h1 className="text-3xl font-display font-bold"
+        <h1 className="text-3xl font-display font-extrabold"
           style={{ background: 'linear-gradient(135deg,#00c6ff,#a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
           Connections
         </h1>

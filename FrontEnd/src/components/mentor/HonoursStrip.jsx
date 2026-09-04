@@ -63,7 +63,7 @@ const HonoursStrip = ({ mentor, balance, canGive = true }) => {
           return (
             <span key={id} className="inline-flex items-baseline gap-1.5" style={{ opacity: n ? 1 : 0.4 }}>
               <Icon className="w-3.5 h-3.5 self-center" style={{ color: n ? 'var(--accent)' : 'var(--text-muted)' }} />
-              <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 20, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
+              <span style={{ fontFamily: 'var(--font-serif)', fontSize: 20, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
                 {n}
               </span>
               <span style={{ ...MICRO, color: 'var(--text-muted)' }}>{TIER_META[id].label}</span>
@@ -77,7 +77,7 @@ const HonoursStrip = ({ mentor, balance, canGive = true }) => {
           {items.slice(0, 5).map((h) => (
             <div key={h._id} className="flex items-baseline gap-2 py-1.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
               <span style={{ ...MICRO, color: 'var(--accent)' }}>{TIER_META[h.tier]?.label || h.tier}</span>
-              <span className="min-w-0 flex-1 truncate text-sm" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-secondary)' }}>
+              <span className="min-w-0 flex-1 truncate text-sm" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-secondary)' }}>
                 {h.note || `${h.from.name} said nothing, and meant it.`}
               </span>
               <span style={{ ...MICRO, color: 'var(--text-muted)' }}>{when(h.at)}</span>

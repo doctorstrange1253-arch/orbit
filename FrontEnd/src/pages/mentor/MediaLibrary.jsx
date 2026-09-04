@@ -234,7 +234,7 @@ const MediaLibrary = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-3">
             <Film className="w-3.5 h-3.5 text-accent" /> Studio
           </div>
-          <h1 className="text-2xl md:text-3xl font-medium" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-primary)' }}>
+          <h1 className="text-2xl md:text-3xl font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>
             Media Library.
           </h1>
           <p className="text-text-secondary text-sm mt-1">Every video you've attached to a lesson, in one place. Drop new files to bulk-upload.</p>
@@ -251,7 +251,7 @@ const MediaLibrary = () => {
             role="alert"
           >
             <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: 'rgba(252,165,165,1)', marginTop: 2 }} />
-            <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(252,165,165,0.92)', fontSize: '0.95rem', flex: 1 }}>
+            <p style={{ fontFamily: 'var(--font-serif)', color: 'rgba(252,165,165,0.92)', fontSize: '0.95rem', flex: 1 }}>
               {error}
             </p>
             <button
@@ -405,7 +405,7 @@ const MediaLibrary = () => {
 
 const StatCell = ({ label, value }) => (
   <div className="rounded-xl border border-border-subtle bg-surface/30 px-3 py-2.5 text-center">
-    <div className="text-2xl font-bold text-text-primary" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>{value}</div>
+    <div className="text-2xl font-bold text-text-primary" style={{ fontFamily: 'var(--font-serif)' }}>{value}</div>
     <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{label}</div>
   </div>
 );
@@ -594,7 +594,7 @@ const EmptyLibrary = ({ onUpload, hasItems }) => (
     <div className="w-12 h-12 rounded-full bg-accent/15 flex items-center justify-center mx-auto mb-3">
       <Film className="w-6 h-6 text-accent" />
     </div>
-    <div className="text-base font-semibold text-text-primary mb-1" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+    <div className="text-base font-semibold text-text-primary mb-1" style={{ fontFamily: 'var(--font-serif)' }}>
       {hasItems ? 'No videos match your search.' : 'No videos yet.'}
     </div>
     <p className="text-sm text-text-secondary mb-3">

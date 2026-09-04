@@ -334,7 +334,7 @@ const Profile = () => {
       </Helmet>
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold"
+        <h1 className="text-3xl font-display font-extrabold"
           style={{ background: 'linear-gradient(135deg,#ffb800,#ff0076)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
           Profile Settings
         </h1>

@@ -1,7 +1,7 @@
 /**
  * Earnings.jsx — Mentor window → /mentor/earnings.
  *
- * V3 — fully editorial. The masthead is set in Playfair Display
+ * V3 — fully editorial. The masthead is set in Poppins
  * italic; every panel drops HolographicCard and glass-card-glow
  * for a 1px-hairline treatment. The earnings ledger is a typeset
  * table with mono caps for column headers and tabular numerals.
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import api from '../../services/api';
 import ErrorState from '../../components/common/ErrorState';
+import { describeApiError } from '../../services/apiError';
 import EmptyState from '../../components/common/EmptyState';
 import {
     MentorEyebrow,
@@ -79,7 +80,6 @@ const Earnings = () => {
                     <span
                         style={{
                             fontFamily: 'var(--font-serif)',
-                            fontStyle: 'italic',
                             color: 'rgba(245,245,245,0.55)',
                         }}
                     >
@@ -93,7 +93,7 @@ const Earnings = () => {
     if (error) {
         return (
             <div className="max-w-3xl mx-auto px-4 py-10">
-                <ErrorState message="Couldn't load your earnings" onRetry={refetch} />
+                <ErrorState message="Couldn't load your earnings" detail={describeApiError(error)} onRetry={refetch} />
             </div>
         );
     }
@@ -140,7 +140,6 @@ const Earnings = () => {
                         className="mt-3"
                         style={{
                             fontFamily: 'var(--font-editorial)',
-                            fontStyle: 'italic',
                             fontWeight: 700,
                             fontSize: '1.6rem',
                             color: 'var(--text-primary)',
@@ -152,7 +151,6 @@ const Earnings = () => {
                         className="mt-2 text-sm max-w-md mx-auto"
                         style={{
                             fontFamily: 'var(--font-serif)',
-                            fontStyle: 'italic',
                             color: 'rgba(245,245,245,0.65)',
                             fontSize: '1.02rem',
                             lineHeight: 1.5,
@@ -229,7 +227,6 @@ const Earnings = () => {
                                 <span
                                     style={{
                                         fontFamily: 'var(--font-editorial)',
-                                        fontStyle: 'italic',
                                         fontSize: '1.2rem',
                                         color: 'var(--text-primary)',
                                         letterSpacing: '-0.01em',
@@ -357,7 +354,6 @@ const Earnings = () => {
                                                         className="font-semibold truncate"
                                                         style={{
                                                             fontFamily: 'var(--font-serif)',
-                                                            fontStyle: 'italic',
                                                             fontSize: '1.05rem',
                                                             color: 'var(--text-primary)',
                                                         }}

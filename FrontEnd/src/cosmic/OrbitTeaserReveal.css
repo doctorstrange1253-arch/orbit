@@ -55,14 +55,14 @@
 /* Wordmark + taglines. The NAME is already revealed — sharp with a gentle glow. */
 .otr-copy{ position:absolute; left:700px; top:360px; transform:translateY(-50%); width:540px; }
 .otr-word{
-  font-family:'Playfair Display',Georgia,serif; font-style:italic; font-weight:900; font-size:150px; line-height:.9; letter-spacing:-4px;
+  font-family:'Poppins',system-ui,sans-serif; font-weight:900; font-size:150px; line-height:.9; letter-spacing:-4px;
   background:linear-gradient(120deg,var(--c1) 8%,#a07bff 50%,var(--pink) 92%);
   -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
   filter:drop-shadow(0 0 26px rgba(124,58,237,.35));
 }
 /* The "tank" drains slowly and continuously across the whole transfer window. */
 .otr-tagline{
-  font-family:'Playfair Display',Georgia,serif; font-style:italic; font-weight:700; font-size:34px; color:#eef1fb; margin-top:14px;
+  font-family:'Poppins',system-ui,sans-serif; font-weight:700; font-size:34px; color:#eef1fb; margin-top:14px;
   filter:blur(13px) drop-shadow(3px 0 rgba(0,198,255,.6)) drop-shadow(-3px 0 rgba(255,0,118,.6));
   animation:otr-focusIn 3.8s cubic-bezier(.45,0,.55,1) 2.0s forwards;
 }
@@ -113,9 +113,9 @@
 @keyframes otr-glint{ 0%{opacity:0; left:-70%;} 30%{opacity:.9;} 100%{opacity:0; left:130%;} }
 
 .otr-card .ico{ display:inline-flex; line-height:1; filter:drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
-.otr-card .big{ font-family:'Playfair Display',Georgia,serif; font-style:italic; font-weight:900; font-size:26px; }
+.otr-card .big{ font-family:'Poppins',system-ui,sans-serif; font-weight:900; font-size:26px; }
 .otr-card .lbl{ font-size:13px; color:#aab2d4; font-weight:600; letter-spacing:.2px; }
-.otr-card .name{ font-family:'Playfair Display',Georgia,serif; font-style:italic; font-weight:700; font-size:19px; }
+.otr-card .name{ font-family:'Poppins',system-ui,sans-serif; font-weight:700; font-size:19px; }
 
 /* All four fill in PARALLEL over the same window (tiny offsets only, for life). */
 .otr-c-streak{ left:150px; top:210px; --in:2.3s; --glint:6.2s; --floatStart:6.4s; }

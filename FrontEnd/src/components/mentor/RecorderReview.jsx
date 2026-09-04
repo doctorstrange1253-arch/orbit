@@ -62,7 +62,7 @@ const RecorderReview = ({ parts, myCourses, onSave, onReRecord, saving, progress
 
       <div className="flex items-baseline gap-3 flex-wrap mb-4">
         <Sparkles className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-        <h2 className="text-xl" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-primary)' }}>
+        <h2 className="text-xl" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>
           {parts.length > 1 ? `${parts.length} chapters, ${parts.length} lessons` : 'Review your recording'}
         </h2>
         <span className="ml-auto" style={{ ...MICRO, color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
@@ -89,7 +89,7 @@ const RecorderReview = ({ parts, myCourses, onSave, onReRecord, saving, progress
           <div key={p.id} className="grid md:grid-cols-[minmax(0,320px)_1fr] gap-4">
             <div>
               <div className="flex items-baseline gap-2 mb-1.5">
-                <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 15, color: 'var(--text-muted)' }}>
+                <span style={{ fontFamily: 'var(--font-serif)', fontSize: 15, color: 'var(--text-muted)' }}>
                   {ROMAN[i] || i + 1}
                 </span>
                 <span style={{ ...MICRO, color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
@@ -121,7 +121,7 @@ const RecorderReview = ({ parts, myCourses, onSave, onReRecord, saving, progress
                   value={rowFor(p, i).description}
                   onChange={(e) => setRow(p, i, { description: e.target.value })}
                   className="w-full px-3 py-2 text-sm resize-none"
-                  style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.16)', color: 'var(--text-primary)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}
+                  style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.16)', color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}
                 />
               </label>
             </div>

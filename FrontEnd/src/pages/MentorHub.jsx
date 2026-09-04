@@ -9,7 +9,7 @@
  *   rejected    → Rejection reason + re-apply form pre-filled from prior.
  *   suspended   → Suspension reason + appeal instructions.
  *
- * V3 — fully editorial. The masthead uses Playfair Display italic.
+ * V3 — fully editorial. The masthead is set in Poppins.
  * The state panels drop glass-card-glow and HolographicCard for a
  * 1px-hairline treatment that reads like a private-club roster.
  */
@@ -24,6 +24,7 @@ import {
     Eye, BookOpen, MessageSquare, ArrowRight,
 } from 'lucide-react';
 import api from '../services/api';
+import { describeApiError, isRoleRequired } from '../services/apiError';
 import ErrorState from '../components/common/ErrorState';
 import EmptyState from '../components/common/EmptyState';
 import MentorApplicationForm from '../components/mentor/MentorApplicationForm';
@@ -96,11 +97,14 @@ const MentorHub = () => {
         },
     });
 
+    const roleMissing = isRoleRequired(error);
+
     const state = useMemo(() => {
+        if (roleMissing) return "not_applied";
         if (!data) return "loading";
         if (!data.profile) return "not_applied";
         return data.profile.applicationStatus || "submitted";
-    }, [data]);
+    }, [data, roleMissing]);
 
     const meta = STATE_META[state] || STATE_META.not_applied;
     const profile = data?.profile || null;
@@ -149,12 +153,16 @@ const MentorHub = () => {
             {isLoading ? (
                 <div className="py-12 text-center">
                     <Loader className="w-4 h-4 inline-block animate-spin mr-2" />
-                    <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.55)' }}>
+                    <span style={{ fontFamily: 'var(--font-serif)', color: 'rgba(245,245,245,0.55)' }}>
                         Reading your mentor profile.
                     </span>
                 </div>
-            ) : error ? (
-                <ErrorState message="Couldn't load your mentor profile" onRetry={refetch} />
+            ) : error && !roleMissing ? (
+                <ErrorState
+                    message="Couldn't load your mentor profile"
+                    detail={describeApiError(error)}
+                    onRetry={refetch}
+                />
             ) : state === "not_applied" ? (
                 <NotAppliedView />
             ) : state === "submitted" ? (
@@ -246,7 +254,6 @@ const PendingView = ({ profile }) => (
                 className="mt-4 pt-4"
                 style={{
                     fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
                     color: 'rgba(245,245,245,0.55)',
                     fontSize: '0.95rem',
                     borderTop: '1px solid rgba(255,255,255,0.08)',
@@ -323,7 +330,7 @@ const ApprovedView = ({ profile, earnings, upcomingBookings, hasStudentRole, onR
                         <div className="font-mono uppercase" style={{ fontSize: '0.58rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}>
                             Weekly Pact
                         </div>
-                        <div style={{ fontFamily: 'var(--font-editorial)', fontStyle: 'italic', fontSize: '1.05rem', color: 'var(--text-primary)' }}>
+                        <div style={{ fontFamily: 'var(--font-editorial)', fontSize: '1.05rem', color: 'var(--text-primary)' }}>
                             Your standing
                         </div>
                     </div>
@@ -387,7 +394,7 @@ const ApprovedView = ({ profile, earnings, upcomingBookings, hasStudentRole, onR
                                     {b.student?.name?.[0] || "S"}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-text-primary truncate" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.02rem' }}>
+                                    <div className="font-semibold text-text-primary truncate" style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem' }}>
                                         {b.student?.name || "Student"}
                                     </div>
                                     <div className="text-[11px] text-text-muted font-mono" style={{ letterSpacing: '0.06em' }}>
@@ -425,7 +432,6 @@ const ApprovedView = ({ profile, earnings, upcomingBookings, hasStudentRole, onR
                         className="px-1"
                         style={{
                             fontFamily: 'var(--font-serif)',
-                            fontStyle: 'italic',
                             color: 'rgba(245,245,245,0.55)',
                             fontSize: '0.95rem',
                             lineHeight: 1.4,
@@ -454,7 +460,6 @@ const RejectedView = ({ profile }) => (
                 className="mt-2"
                 style={{
                     fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
                     color: 'rgba(245,245,245,0.85)',
                     fontSize: '1.05rem',
                     lineHeight: 1.5,
@@ -489,7 +494,6 @@ const SuspendedView = ({ profile }) => (
                 className="mt-2"
                 style={{
                     fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
                     color: 'rgba(245,245,245,0.85)',
                     fontSize: '1.05rem',
                     lineHeight: 1.5,
@@ -508,7 +512,6 @@ const SuspendedView = ({ profile }) => (
                 className="text-sm"
                 style={{
                     fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
                     color: 'rgba(245,245,245,0.70)',
                     fontSize: '1.02rem',
                     lineHeight: 1.5,
@@ -556,7 +559,7 @@ const ReadOnlySummary = ({ profile }) => (
                 </div>
                 <p
                     className="text-sm whitespace-pre-wrap leading-relaxed"
-                    style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.85)', fontSize: '1.02rem' }}
+                    style={{ fontFamily: 'var(--font-serif)', color: 'rgba(245,245,245,0.85)', fontSize: '1.02rem' }}
                 >
                     {profile.bio}
                 </p>
@@ -574,7 +577,7 @@ const Field = ({ label, value }) => (
             {label}
         </div>
         <div
-            style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-primary)', fontSize: '1.02rem' }}
+            style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)', fontSize: '1.02rem' }}
         >
             {value}
         </div>
@@ -591,7 +594,7 @@ const Bullet = ({ Icon, title, body }) => (
         </div>
         <div>
             <div
-                style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.05rem', color: 'var(--text-primary)', fontWeight: 600 }}
+                style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', color: 'var(--text-primary)', fontWeight: 600 }}
             >
                 {title}
             </div>
@@ -619,7 +622,7 @@ const QuickLinkBody = ({ Icon, label }) => (
     <>
         <span className="flex items-center gap-2">
             <Icon size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
-            <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.05rem' }}>
+            <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem' }}>
                 {label}
             </span>
         </span>

@@ -201,7 +201,7 @@ const Learning = () => {
       {isLoading && (
         <p
           className="py-14 text-center"
-          style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: MUTED }}
+          style={{ fontFamily: 'var(--font-serif)', color: MUTED }}
         >
           Reading the ledger.
         </p>

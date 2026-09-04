@@ -30,7 +30,7 @@ const MySkills = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-display font-bold flex items-center gap-3"
+          <h1 className="text-3xl font-display font-extrabold flex items-center gap-3"
             style={{ background: 'linear-gradient(135deg,#00c6ff,#7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             <Layers size={26} style={{ color: '#00c6ff', WebkitTextFillColor: '#00c6ff' }} />
             My Skills

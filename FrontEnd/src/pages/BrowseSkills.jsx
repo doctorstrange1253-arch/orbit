@@ -138,7 +138,7 @@ const BrowseSkills = () => {
       
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold flex items-center gap-3 heading-pink-gradient"
+        <h1 className="text-3xl font-display font-extrabold flex items-center gap-3 heading-pink-gradient"
           style={{ background: 'linear-gradient(135deg,#ff0076,#a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
           <Compass size={26} className="icon-pink" style={{ color: '#ff0076', WebkitTextFillColor: '#ff0076' }} />
           Browse Skills

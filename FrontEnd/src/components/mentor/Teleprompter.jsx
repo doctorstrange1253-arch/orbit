@@ -58,7 +58,6 @@ const Teleprompter = ({ text, onClose }) => {
           className="px-[8%] pt-[16%] will-change-transform"
           style={{
             fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
             fontSize: `${fontSize}px`,
             lineHeight: 1.5,
             color: '#f4f4f8',

@@ -25,6 +25,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Video, IndianRupee, Clock, ListChecks, User } from 'lucide-react';
 import api from '../../services/api';
 import ErrorState from '../../components/common/ErrorState';
+import { describeApiError } from '../../services/apiError';
 import EmptyState from '../../components/common/EmptyState';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
 import { useNow } from '../../hooks/useNow';
@@ -122,7 +123,7 @@ const MentorSessions = () => {
                         ))}
                     </div>
                 ) : error ? (
-                    <ErrorState message="Couldn't load your bookings" onRetry={refetch} />
+                    <ErrorState message="Couldn't load your bookings" detail={describeApiError(error)} onRetry={refetch} />
                 ) : list.length === 0 ? (
                     <EmptyState
                         icon={<Calendar className="w-10 h-10" />}

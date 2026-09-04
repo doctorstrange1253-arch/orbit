@@ -2,7 +2,7 @@
  * soul/editorial/FolioHeader.jsx
  *
  * A thin breathing-room spacer. The user dropped the section eyebrows
- * (mono-caps) and the Playfair italic titles — sections are now
+ * (mono-caps) and the Poppins titles — sections are now
  * separated only by hairline rules, and the first big content piece
  * (the greeting, the number, the first card) is the first thing the
  * eye lands on.

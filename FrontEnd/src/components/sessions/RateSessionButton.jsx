@@ -96,7 +96,6 @@ const RateSessionButton = ({ session, alreadyRated }) => {
           border: '1px solid rgba(255,255,255,0.14)',
           color: 'var(--text-primary)',
           fontFamily: 'var(--font-serif)',
-          fontStyle: 'italic',
         }}
       />
 

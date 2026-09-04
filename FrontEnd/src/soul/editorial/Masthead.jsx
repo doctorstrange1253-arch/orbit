@@ -48,7 +48,6 @@ export default function Masthead() {
         className="hidden sm:inline"
         style={{
           fontFamily: 'var(--font-serif)',
-          fontStyle: 'italic',
           fontSize: '0.92rem',
           color: 'rgba(245,245,245,0.72)',
           fontWeight: 400,

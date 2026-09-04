@@ -23,7 +23,7 @@ import {
  *
  * The page is laid out as an editorial issue:
  *
- *   I.   Masthead          — eyebrow + Playfair italic title + deck
+ *   I.   Masthead          — eyebrow + Poppins title + deck
  *   II.  League Rail       — the 6 divisions with the caller's stand
  *   III. Monday Dispatch   — last week's results, when fresh
  *   IV.  This week         — Pact Pulse + Rivals + Roll side-by-side
@@ -158,7 +158,6 @@ const PactHallPage = () => {
                             <div
                                 style={{
                                     fontFamily: 'var(--font-editorial)',
-                                    fontStyle: 'italic',
                                     fontWeight: 700,
                                     fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
                                     lineHeight: 0.95,
@@ -166,7 +165,7 @@ const PactHallPage = () => {
                                     color: heldWeeks >= 4 ? 'rgba(251,191,36,1)' : 'rgba(245,245,245,0.85)',
                                 }}
                             >
-                                {heldWeeks}<span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '0.8em', marginLeft: 4 }}>w</span>
+                                {heldWeeks}<span style={{ fontFamily: 'var(--font-serif)', fontSize: '0.8em', marginLeft: 4 }}>w</span>
                             </div>
                             <div
                                 className="font-mono uppercase"
@@ -183,7 +182,6 @@ const PactHallPage = () => {
                             <div
                                 style={{
                                     fontFamily: 'var(--font-serif)',
-                                    fontStyle: 'italic',
                                     color: 'rgba(245,245,245,0.55)',
                                     fontSize: '0.85rem',
                                     marginTop: 4,

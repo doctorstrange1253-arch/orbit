@@ -73,7 +73,7 @@ const Analytics = () => {
             <div className="max-w-5xl mx-auto px-4 py-10">
                 <p
                     className="py-14 text-center"
-                    style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: MUTED }}
+                    style={{ fontFamily: 'var(--font-serif)', color: MUTED }}
                 >
                     Reading the numbers.
                 </p>
@@ -144,7 +144,7 @@ const Analytics = () => {
                             </div>
                             <p
                                 className="mt-4"
-                                style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: MUTED, fontSize: '0.98rem' }}
+                                style={{ fontFamily: 'var(--font-serif)', color: MUTED, fontSize: '0.98rem' }}
                             >
                                 {completionRate}% of everyone who enrolled has finished.
                                 {funnel.enrolled > funnel.started
@@ -168,7 +168,7 @@ const Analytics = () => {
                             </div>
 
                             {dropOff.length === 0 ? (
-                                <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: MUTED }}>
+                                <p style={{ fontFamily: 'var(--font-serif)', color: MUTED }}>
                                     Nobody is stalled mid-course. Either everyone is finishing, or nobody
                                     has started.
                                 </p>
@@ -187,7 +187,6 @@ const Analytics = () => {
                                                 <span
                                                     style={{
                                                         fontFamily: 'var(--font-serif)',
-                                                        fontStyle: 'italic',
                                                         fontSize: '1.02rem',
                                                         color: 'var(--text-primary)',
                                                         flexShrink: 0,
@@ -247,7 +246,7 @@ const Analytics = () => {
                             </div>
                             <p
                                 className="mt-4"
-                                style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: MUTED, fontSize: '0.98rem' }}
+                                style={{ fontFamily: 'var(--font-serif)', color: MUTED, fontSize: '0.98rem' }}
                             >
                                 Session earnings only. Course pricing is displayed but not yet billed.
                             </p>
@@ -267,7 +266,6 @@ const Analytics = () => {
                                             to={`/mentor/courses/${c._id}/edit`}
                                             style={{
                                                 fontFamily: 'var(--font-editorial)',
-                                                fontStyle: 'italic',
                                                 fontWeight: 700,
                                                 fontSize: '1.18rem',
                                                 letterSpacing: '-0.02em',

@@ -57,7 +57,7 @@ const HonourModal = ({ mentor, balance, onClose }) => {
         <div className="flex items-start justify-between gap-4 mb-5">
           <div>
             <div style={{ ...MICRO, color: 'var(--text-muted)' }}>An honour, not a rating</div>
-            <h2 className="text-xl mt-1.5" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-primary)' }}>
+            <h2 className="text-xl mt-1.5" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>
               Mark what {mentor.name} did for you
             </h2>
           </div>
@@ -66,7 +66,7 @@ const HonourModal = ({ mentor, balance, onClose }) => {
           </button>
         </div>
 
-        <p className="text-sm mb-5" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-secondary)' }}>
+        <p className="text-sm mb-5" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-secondary)' }}>
           Honours are Photons you spend, not stars you award. They sit beside a mentor&apos;s name for good and never move their rating — which is exactly why they mean something. One per mentor per day.
         </p>
 
@@ -90,10 +90,10 @@ const HonourModal = ({ mentor, balance, onClose }) => {
               >
                 <Icon className="w-4 h-4 shrink-0" style={{ color: active ? 'var(--accent)' : 'var(--text-muted)' }} />
                 <span className="flex-1 min-w-0">
-                  <span className="block" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 16, color: 'var(--text-primary)' }}>
+                  <span className="block" style={{ fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text-primary)' }}>
                     {meta.label}
                   </span>
-                  <span className="block mt-0.5 text-sm" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-secondary)' }}>
+                  <span className="block mt-0.5 text-sm" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-secondary)' }}>
                     {meta.blurb}
                   </span>
                 </span>
@@ -116,7 +116,7 @@ const HonourModal = ({ mentor, balance, onClose }) => {
             onChange={(e) => setNote(e.target.value)}
             placeholder="What actually changed for you."
             className="w-full px-3 py-2 text-sm resize-none"
-            style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.16)', color: 'var(--text-primary)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}
+            style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.16)', color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}
           />
         </label>
 

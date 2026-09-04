@@ -126,7 +126,7 @@ const Login = () => {
             <OrbitLogo size={56} />
           </div>
           <h1
-            className="text-3xl font-display font-bold mb-1"
+            className="text-3xl font-display font-extrabold mb-1"
             style={{
               background: 'linear-gradient(135deg, #00c6ff, #a855f7, #ff0076)',
               WebkitBackgroundClip: 'text',

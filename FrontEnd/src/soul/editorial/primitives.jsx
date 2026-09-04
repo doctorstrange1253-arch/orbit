@@ -31,7 +31,7 @@ export function Eyebrow({ children, className = '', tone, style = {} }) {
   );
 }
 
-export function Title({ children, size = 'lg', as: Tag = 'h1', className = '', style = {} }) {
+export function Title({ children, size = 'lg', as: Tag = 'h1', gradient, className = '', style = {} }) {
   const fontSize = size === 'xl'
     ? 'clamp(2.4rem, 5.4vw, 4.2rem)'
     : size === 'lg'
@@ -39,18 +39,27 @@ export function Title({ children, size = 'lg', as: Tag = 'h1', className = '', s
       : size === 'sm'
         ? 'clamp(1.15rem, 2vw, 1.45rem)'
         : 'clamp(1.4rem, 2.6vw, 1.9rem)';
+  const clipped = gradient ?? (size === 'xl');
+  const paint = clipped
+    ? {
+        background: 'var(--soul-gradient, linear-gradient(135deg, var(--accent-1), var(--accent-2)))',
+        WebkitBackgroundClip: 'text',
+        backgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        paddingBottom: '0.08em',
+      }
+    : { color: 'var(--text-primary)' };
   return (
     <Tag
       className={className}
       style={{
-        fontFamily: 'var(--font-editorial)',
-        fontStyle: 'italic',
-        fontWeight: 700,
-        lineHeight: 0.98,
-        letterSpacing: '-0.025em',
+        fontFamily: 'var(--font-display)',
+        fontWeight: 800,
+        lineHeight: 1.04,
+        letterSpacing: '-0.03em',
         fontSize,
-        color: 'var(--text-primary)',
         margin: 0,
+        ...paint,
         ...style,
       }}
     >
@@ -64,11 +73,10 @@ export function Deck({ children, className = '', style = {} }) {
     <p
       className={className}
       style={{
-        fontFamily: 'var(--font-serif)',
-        fontStyle: 'italic',
+        fontFamily: 'var(--font-sans)',
         color: 'rgba(245,245,245,0.70)',
-        fontSize: '1.05rem',
-        lineHeight: 1.45,
+        fontSize: '1.02rem',
+        lineHeight: 1.55,
         ...style,
       }}
     >
@@ -162,12 +170,11 @@ export function Stat({ label, value, hint, tone = 'neutral', align = 'left', las
     >
       <div
         style={{
-          fontFamily: 'var(--font-editorial)',
-          fontStyle: 'italic',
-          fontWeight: 700,
+          fontFamily: 'var(--font-display)',
+          fontWeight: 800,
           fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
-          lineHeight: 0.95,
-          letterSpacing: '-0.025em',
+          lineHeight: 1.0,
+          letterSpacing: '-0.03em',
           color: valueColor,
         }}
       >
@@ -188,10 +195,9 @@ export function Stat({ label, value, hint, tone = 'neutral', align = 'left', las
       {hint && (
         <div
           style={{
-            fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
+            fontFamily: 'var(--font-sans)',
             color: MUTED,
-            fontSize: '0.85rem',
+            fontSize: '0.82rem',
             marginTop: 4,
           }}
         >

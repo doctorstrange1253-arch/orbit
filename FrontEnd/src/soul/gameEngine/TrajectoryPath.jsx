@@ -263,7 +263,7 @@ function Node({ point, lesson, stage, state, onPick, reduced }) {
         x={point.x}
         y={point.y + r + 15}
         textAnchor="middle"
-        style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 12 }}
+        style={{ fontFamily: 'var(--font-serif)', fontSize: 12 }}
         fill="rgba(245,245,245,0.62)"
       >
         {lesson.title?.length > 22 ? `${lesson.title.slice(0, 21)}…` : lesson.title}
@@ -313,7 +313,7 @@ export function TrajectoryPath({ course, completedLessonIds, onPick }) {
         <span style={{ ...MONO, fontSize: '0.58rem', color: 'rgba(245,245,245,0.55)' }}>
           The trajectory · {clearedCount}/{rows.length} cleared
         </span>
-        <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '0.92rem', color: 'rgba(245,245,245,0.55)' }}>
+        <span style={{ fontFamily: 'var(--font-serif)', fontSize: '0.92rem', color: 'rgba(245,245,245,0.55)' }}>
           {shape.scaleLabel}
         </span>
       </div>

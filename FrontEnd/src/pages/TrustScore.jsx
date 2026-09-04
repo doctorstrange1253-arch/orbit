@@ -51,7 +51,7 @@ const ScoreRing = ({ score = 0 }) => {
 
         {/* Centre content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-5xl font-display font-bold tabular-nums" style={{ color: 'var(--text-primary)' }}>{Math.round(score)}</span>
+          <span className="text-5xl font-display font-extrabold tabular-nums" style={{ color: 'var(--text-primary)' }}>{Math.round(score)}</span>
           <span className="text-xs font-semibold mt-0.5 text-text-muted">/100</span>
         </div>
       </div>
@@ -168,7 +168,7 @@ const TrustScore = () => {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold text-text-primary flex items-center gap-3">
+        <h1 className="text-3xl font-display font-extrabold text-text-primary flex items-center gap-3">
           <span style={{ background: 'linear-gradient(135deg,#00c6ff,#a855f7)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
             Trust & Reputation
           </span>

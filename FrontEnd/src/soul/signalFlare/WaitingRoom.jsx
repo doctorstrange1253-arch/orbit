@@ -112,7 +112,7 @@ const WaitingRoom = ({ constellation = 'general', genre = 'general' }) => {
         </div>
       </div>
 
-      <h2 className="text-2xl md:text-3xl font-display font-bold text-center text-text-primary mb-2">
+      <h2 className="text-2xl md:text-3xl font-display font-extrabold text-center text-text-primary mb-2">
         No courses here yet. The sky is forming.
       </h2>
       <p className="text-sm text-text-secondary text-center max-w-md mx-auto mb-5">

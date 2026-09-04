@@ -76,9 +76,12 @@ const CertificateView = ({ certificate, course, mentor, learner }) => {
                         <rect x="40" y="40" width="920" height="627" fill="none" stroke="rgba(253,230,138,0.3)" strokeWidth="1" />
                     </svg>
 
-                    <div className="relative h-full flex flex-col items-center justify-center text-center p-8">
-                        <div className="text-[10px] font-bold uppercase tracking-[0.4em] text-amber-200/80">Orbit</div>
-                        <h1 className="mt-2 text-3xl md:text-4xl font-bold text-amber-50 tracking-wider">CERTIFICATE</h1>
+                    <div
+                        className="relative h-full flex flex-col items-center justify-center text-center p-8"
+                        style={{ fontFamily: 'var(--font-playfair)' }}
+                    >
+                        <div className="text-[10px] font-bold uppercase tracking-[0.4em] text-amber-200/80" style={{ fontFamily: 'var(--font-mono)' }}>Orbit</div>
+                        <h1 className="mt-2 text-3xl md:text-4xl font-bold text-amber-50 tracking-wider" style={{ fontFamily: 'var(--font-playfair)' }}>CERTIFICATE</h1>
                         <div className="mt-1 text-sm italic text-amber-100/80">of completion</div>
 
                         <div className="mt-6 text-xs text-amber-100/70">This certifies that</div>

@@ -135,7 +135,7 @@ const Settings = () => {
       {/* Header */}
       <div>
         <h1
-          className="text-3xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500"
+          className="text-3xl font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500"
         >
           Settings
         </h1>

@@ -1,7 +1,7 @@
 /**
  * pages/Moderation.jsx — Mentor's moderation inbox at /mentor/moderation.
  *
- * V3 — the masthead uses Playfair Display italic. No gradient
+ * V3 — the masthead is set in Poppins. No gradient
  * text, no glass panels. The intro paragraph reads as a private
  * dispatch from the moderation pipeline, not a status banner.
  */

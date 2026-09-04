@@ -3,7 +3,7 @@
  *
  * A magazine-style "issue" that reads as a spread, not a dashboard.
  * Six sections, separated by hairline rules. The user dropped the
- * section eyebrows (mono-caps) and the Playfair italic section
+ * section eyebrows (mono-caps) and the Poppins section
  * titles — the first content piece in each section is the first
  * thing the eye lands on. The order is deliberate: greeting →
  * skills (the "good priority" surface, with Add Skill as the
@@ -11,7 +11,7 @@
  *
  *   The week that was.      (hero: name + varied-cadence lede)
  *   The skills you carry.   (Add Skill CTA, then archive grid)
- *   By the numbers.         (4-col stats strip, uniform Playfair)
+ *   By the numbers.         (4-col stats strip, uniform Poppins)
  *   Day by day.             (7-cell current-week strip)
  *   The people who stayed.  (horizontal person row)
  *   The quote you earned.   (optional pull quote, data-driven)
@@ -111,7 +111,7 @@ const MyOrbit = () => {
           right after the lede, the Add Skill CTA is the first thing
           the user can act on), then the numbers, the day-by-day grid,
           the people, and finally the optional pull quote. No numbered
-          titles, no eyebrows, no Playfair italic section labels —
+          titles, no eyebrows, no Poppins section labels —
           sections are separated only by hairline rules. The first
           content piece in each section is the first thing the eye
           lands on. */}

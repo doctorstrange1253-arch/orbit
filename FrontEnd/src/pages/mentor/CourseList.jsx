@@ -16,7 +16,7 @@ import { stageCount, scaleLabel } from '../../soul/gameEngine/stages';
 /**
  * CourseList — mentor's own courses dashboard.
  *
- * V3 — fully editorial. The masthead uses Playfair Display italic;
+ * V3 — fully editorial. The masthead is set in Poppins;
  * the course grid drops HolographicCard for a 1px-hairline treatment
  * with the mentor's PactBadge in the corner. Each card is a small
  * typeset block, no glass, no gradient.
@@ -86,7 +86,6 @@ const CourseList = () => {
                     className="py-12 text-center"
                     style={{
                         fontFamily: 'var(--font-serif)',
-                        fontStyle: 'italic',
                         color: 'rgba(245,245,245,0.55)',
                     }}
                 >
@@ -128,7 +127,6 @@ const CourseList = () => {
                                             className="line-clamp-2"
                                             style={{
                                                 fontFamily: 'var(--font-editorial)',
-                                                fontStyle: 'italic',
                                                 fontWeight: 700,
                                                 fontSize: '1.1rem',
                                                 lineHeight: 1.1,

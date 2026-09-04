@@ -69,7 +69,7 @@ const PublicProfile = () => {
 
         <div className="flex-1 text-center md:text-left space-y-4 w-full">
           <div>
-            <h1 className="text-3xl font-display font-bold text-text-primary flex items-center justify-center md:justify-start gap-2">
+            <h1 className="text-3xl font-display font-extrabold text-text-primary flex items-center justify-center md:justify-start gap-2">
               <Nameplate plateKey={equippedFromUser(user).plateKey}><GlowName user={user} exploring>{user.name}</GlowName></Nameplate>
               {user.trustScore >= 80 && (
                 <ShieldCheck className="text-accent" size={20} title="Highly Trusted" />

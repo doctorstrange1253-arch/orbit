@@ -81,7 +81,6 @@ export function StageClearOverlay({ stage, onDone }) {
               transition={{ delay: 0.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               style={{
                 fontFamily: 'var(--font-editorial)',
-                fontStyle: 'italic',
                 fontWeight: 700,
                 fontSize: 'clamp(2.4rem, 7vw, 4rem)',
                 lineHeight: 1,
@@ -99,7 +98,6 @@ export function StageClearOverlay({ stage, onDone }) {
               transition={{ delay: 0.52, duration: 0.5 }}
               style={{
                 fontFamily: 'var(--font-serif)',
-                fontStyle: 'italic',
                 fontSize: '1.08rem',
                 lineHeight: 1.5,
                 color: 'rgba(245,245,245,0.72)',

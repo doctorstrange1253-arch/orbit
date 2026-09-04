@@ -107,7 +107,7 @@ const AdminDashboard = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border-subtle pb-6">
         <div>
-          <h1 className="text-3xl font-display font-bold text-text-primary flex items-center gap-3">
+          <h1 className="text-3xl font-display font-extrabold text-text-primary flex items-center gap-3">
             <Server className="text-danger" size={28} /> System Dashboard
           </h1>
           <p className="text-text-secondary mt-1 text-sm flex items-center gap-2">

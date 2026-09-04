@@ -11,7 +11,7 @@ import { Crown, ArrowUp, ArrowDown, Minus } from 'lucide-react';
  * the 2 above + 2 below highlighted). Rank-change animations on
  * update via the key+layout pattern. The table is typeset, not
  * glassed — hairline rules separate rows, mono-caps for rank +
- * tabular numerals, Playfair italic for the "you" name, and a
+ * tabular numerals, Poppins for the "you" name, and a
  * tier dot to the left of every name so the eye can scan the
  * division at a glance.
  */
@@ -22,7 +22,7 @@ const PactHall = () => {
         return (
             <div
                 className="py-10 text-center"
-                style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.55)' }}
+                style={{ fontFamily: 'var(--font-serif)', color: 'rgba(245,245,245,0.55)' }}
             >
                 Drawing the roll.
             </div>
@@ -32,7 +32,7 @@ const PactHall = () => {
         return (
             <div
                 className="py-10 text-center"
-                style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.55)' }}
+                style={{ fontFamily: 'var(--font-serif)', color: 'rgba(245,245,245,0.55)' }}
             >
                 No group this week yet. The roll assembles on Monday.
             </div>

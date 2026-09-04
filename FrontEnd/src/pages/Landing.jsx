@@ -274,7 +274,7 @@ const Landing = () => {
 
           {/* Headline - Keep bulb, remove rocket */}
           <motion.h1
-            className="text-5xl sm:text-7xl font-display font-bold tracking-tight mb-6 leading-[1.05]"
+            className="text-5xl sm:text-7xl font-display font-extrabold tracking-tight mb-6 leading-[1.05]"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -299,7 +299,6 @@ const Landing = () => {
             <span
               style={{
                 fontFamily: 'var(--font-editorial)',
-                fontStyle: 'italic',
                 fontWeight: 900,
                 background: 'linear-gradient(135deg, #00c6ff 0%, #a855f7 35%, #ff0076 65%, #ffb800 100%)',
                 backgroundSize: '200% auto',
@@ -501,7 +500,7 @@ const Landing = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <motion.h2
-              className="text-3xl sm:text-5xl font-display font-bold text-text-primary mb-4"
+              className="text-3xl sm:text-5xl font-display font-extrabold text-text-primary mb-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}
@@ -511,7 +510,6 @@ const Landing = () => {
               <span
                 style={{
                   fontFamily: 'var(--font-editorial)',
-                  fontStyle: 'italic',
                   fontWeight: 900,
                   background: 'linear-gradient(90deg, #00c6ff, #ff0076)',
                   WebkitBackgroundClip: 'text',
@@ -573,7 +571,7 @@ const Landing = () => {
                 ))}
               </div>
 
-              <h3 className="text-3xl sm:text-4xl font-display font-bold text-text-primary mb-4">
+              <h3 className="text-3xl sm:text-4xl font-display font-extrabold text-text-primary mb-4">
                 Ready to grow?
               </h3>
               <p className="text-text-secondary mb-10 max-w-lg mx-auto">

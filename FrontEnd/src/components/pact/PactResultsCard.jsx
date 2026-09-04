@@ -7,7 +7,7 @@ import { tierById, nextTierId, prevTierId } from '../../services/pact';
  *
  * Reads the latest weeklyHistory row and frames the past week as a
  * small dispatch from the Pact. Set as a single hairline card with
- * mono eyebrow + Playfair italic verdict. Steady Shield surfaces as
+ * mono eyebrow + Poppins verdict. Steady Shield surfaces as
  * a separate mono tag when the mentor has held 4+ weeks.
  */
 const PactResultsCard = ({ history, me }) => {
@@ -59,7 +59,6 @@ const PactResultsCard = ({ history, me }) => {
                     <div
                         style={{
                             fontFamily: 'var(--font-editorial)',
-                            fontStyle: 'italic',
                             fontWeight: 700,
                             fontSize: '1.4rem',
                             lineHeight: 1.05,
@@ -72,7 +71,6 @@ const PactResultsCard = ({ history, me }) => {
                     <p
                         style={{
                             fontFamily: 'var(--font-serif)',
-                            fontStyle: 'italic',
                             color: 'rgba(245,245,245,0.78)',
                             fontSize: '1.02rem',
                             lineHeight: 1.4,

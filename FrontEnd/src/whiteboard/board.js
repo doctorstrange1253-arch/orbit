@@ -544,8 +544,8 @@ function objectToSVG(o) {
     if (o.shape === 'diamond') return `<polygon points="${x + w / 2},${y} ${x + w},${y + h / 2} ${x + w / 2},${y + h} ${x},${y + h / 2}" ${common}/>`;
     return `<line x1="${o.x0}" y1="${o.y0}" x2="${o.x1}" y2="${o.y1}" stroke="${o.color}" stroke-width="${o.width}"/>`;
   }
-  if (o.type === 'text') return `<text x="${o.x}" y="${o.y + (o.size || 22)}" fill="${o.color}" font-size="${o.size}" font-family="Cormorant Garamond, Georgia, serif">${esc(o.text)}</text>`;
-  if (o.type === 'sticky') return `<g><rect x="${o.x}" y="${o.y}" width="${o.w}" height="${o.h}" rx="8" fill="${o.color}"/><text x="${o.x + 12}" y="${o.y + 28}" fill="#1a1a2e" font-size="15" font-family="Cormorant Garamond, Georgia, serif">${esc(o.text)}</text></g>`;
+  if (o.type === 'text') return `<text x="${o.x}" y="${o.y + (o.size || 22)}" fill="${o.color}" font-size="${o.size}" font-family="Open Sans, system-ui, sans-serif">${esc(o.text)}</text>`;
+  if (o.type === 'sticky') return `<g><rect x="${o.x}" y="${o.y}" width="${o.w}" height="${o.h}" rx="8" fill="${o.color}"/><text x="${o.x + 12}" y="${o.y + 28}" fill="#1a1a2e" font-size="15" font-family="Open Sans, system-ui, sans-serif">${esc(o.text)}</text></g>`;
   if (['image', 'math', 'code'].includes(o.type)) return `<image x="${o.x}" y="${o.y}" width="${o.w}" height="${o.h}" href="${o.src}"/>`;
   return '';
 }

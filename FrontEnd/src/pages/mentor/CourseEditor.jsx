@@ -22,7 +22,7 @@ import { StageRail } from '../../soul/gameEngine/StageRail';
  * and Q&A reuse the same forms the builder uses, kept as placeholders
  * that point to the public Q&A thread.
  *
- * V3 — fully editorial. Playfair italic title, hairline-separated
+ * V3 — fully editorial. Poppins title, hairline-separated
  * tabs, typeset lesson list.
  */
 const TABS = [
@@ -74,7 +74,6 @@ const CourseEditor = () => {
                     className="py-12 text-center"
                     style={{
                         fontFamily: 'var(--font-serif)',
-                        fontStyle: 'italic',
                         color: 'rgba(245,245,245,0.55)',
                     }}
                 >
@@ -169,7 +168,6 @@ const CourseEditor = () => {
                             className="mt-3 max-w-xl"
                             style={{
                                 fontFamily: 'var(--font-serif)',
-                                fontStyle: 'italic',
                                 fontSize: '0.9rem',
                                 color: 'rgba(252,165,165,1)',
                                 borderLeft: '1px solid rgba(252,165,165,0.45)',
@@ -240,7 +238,6 @@ const CourseEditor = () => {
                                     className="truncate"
                                     style={{
                                         fontFamily: 'var(--font-serif)',
-                                        fontStyle: 'italic',
                                         fontSize: '1.05rem',
                                         color: 'var(--text-primary)',
                                     }}
@@ -318,7 +315,6 @@ const CourseEditor = () => {
                             className="py-8 text-center"
                             style={{
                                 fontFamily: 'var(--font-serif)',
-                                fontStyle: 'italic',
                                 color: 'rgba(245,245,245,0.55)',
                             }}
                         >
@@ -354,7 +350,6 @@ const EnrollmentsTab = ({ id }) => {
                 className="py-6"
                 style={{
                     fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
                     color: 'rgba(245,245,245,0.55)',
                 }}
             >
@@ -368,7 +363,6 @@ const EnrollmentsTab = ({ id }) => {
                 className="py-6"
                 style={{
                     fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
                     color: 'rgba(245,245,245,0.55)',
                 }}
             >
@@ -404,7 +398,6 @@ const EnrollmentsTab = ({ id }) => {
                             className="truncate"
                             style={{
                                 fontFamily: 'var(--font-serif)',
-                                fontStyle: 'italic',
                                 fontSize: '1.02rem',
                                 color: 'var(--text-primary)',
                             }}

@@ -3,7 +3,7 @@
  *
  * The page reads as an editorial observatory, not a dashboard:
  *
- *   I.   Masthead          — eyebrow + Playfair italic title + deck
+ *   I.   Masthead          — eyebrow + Poppins title + deck
  *   II.  League Rail       — the 6 divisions with the caller's stand
  *   III. Luminosity Star   — the mentor's signature (centered, calm)
  *   IV.  Star Map          — students as points of light (canvas)
@@ -12,7 +12,7 @@
  *   VII. Quick links       — course list, public profile
  *
  * No gradient h1, no glass-card-glow panels, no HolographicCard.
- * The masthead uses Playfair Display italic; every section is
+ * The masthead is set in Poppins; every section is
  * separated by a 1px hairline.
  */
 
@@ -126,7 +126,6 @@ const Observatory = () => {
             className="mt-4 max-w-md mx-auto"
             style={{
               fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
               color: 'rgba(245,245,245,0.65)',
               fontSize: '1.05rem',
               lineHeight: 1.4,
@@ -242,7 +241,6 @@ const Observatory = () => {
           className="mt-3 text-center max-w-md"
           style={{
             fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
             color: 'rgba(245,245,245,0.55)',
             fontSize: '0.95rem',
           }}
@@ -362,7 +360,7 @@ const Observatory = () => {
           >
             <span className="flex items-center gap-2">
               <BookOpen size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
-              <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.05rem' }}>
+              <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem' }}>
                 My courses
               </span>
             </span>
@@ -379,7 +377,7 @@ const Observatory = () => {
           >
             <span className="flex items-center gap-2">
               <Eye size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
-              <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.05rem' }}>
+              <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem' }}>
                 Public profile
               </span>
             </span>
@@ -395,7 +393,7 @@ const Observatory = () => {
           >
             <span className="flex items-center gap-2">
               <Edit3 size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
-              <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.05rem' }}>
+              <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem' }}>
                 {hasStudentRole ? 'Edit profile' : 'Teach hub'}
               </span>
             </span>

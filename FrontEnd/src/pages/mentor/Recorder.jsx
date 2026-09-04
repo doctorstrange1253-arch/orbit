@@ -477,10 +477,10 @@ const Recorder = () => {
 
         <motion.header initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <div style={{ ...MICRO, color: 'var(--text-muted)' }}>The studio</div>
-          <h1 className="text-2xl md:text-3xl mt-1.5" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-primary)' }}>
+          <h1 className="text-2xl md:text-3xl mt-1.5" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>
             Orbit Recorder
           </h1>
-          <p className="text-sm mt-1.5 max-w-xl" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-secondary)' }}>
+          <p className="text-sm mt-1.5 max-w-xl" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-secondary)' }}>
             Screen, camera and whiteboard composed in the browser. Mark chapters as you talk and each one saves as its own lesson.
           </p>
           <div className="h-px w-full mt-5" style={{ background: 'rgba(255,255,255,0.12)' }} />
@@ -561,7 +561,7 @@ const Recorder = () => {
                     className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
                     style={{ background: 'rgba(0,0,0,0.42)' }}
                   >
-                    <div className="leading-none" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontWeight: 500, fontSize: 150, color: '#fff' }}>
+                    <div className="leading-none" style={{ fontFamily: 'var(--font-serif)', fontWeight: 500, fontSize: 150, color: '#fff' }}>
                       {countdown}
                     </div>
                   </motion.div>
@@ -572,7 +572,7 @@ const Recorder = () => {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
                     <Monitor className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-                    <div className="text-sm" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--text-secondary)' }}>
+                    <div className="text-sm" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-secondary)' }}>
                       Pick a source on the right to grant access.
                     </div>
                   </div>
@@ -675,7 +675,7 @@ const Recorder = () => {
 
             <section>
               <SectionLabel>Controls</SectionLabel>
-              <div className="text-center my-3" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 34, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
+              <div className="text-center my-3" style={{ fontFamily: 'var(--font-serif)', fontSize: 34, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
                 {formatTime(elapsedMs)}
               </div>
               <div className="flex flex-col gap-1.5">
@@ -726,7 +726,7 @@ const Recorder = () => {
                 <div className="space-y-1.5">
                   {marks.map((at, i) => (
                     <div key={`mark-${i}`} className="flex items-baseline justify-between py-1" style={{ borderBottom: HAIRLINE }}>
-                      <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 13, color: 'var(--text-secondary)' }}>
+                      <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13, color: 'var(--text-secondary)' }}>
                         Chapter {i + 1}
                       </span>
                       <span style={{ ...MICRO, color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>{formatTime(at)}</span>
@@ -777,7 +777,7 @@ const Recorder = () => {
                 onChange={(e) => setScript(e.target.value)}
                 placeholder="Your script. Picking a lesson fills this from its Level Card."
                 className="w-full px-2 py-1.5 text-xs resize-none"
-                style={{ background: 'transparent', border: HAIRLINE, color: 'var(--text-primary)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}
+                style={{ background: 'transparent', border: HAIRLINE, color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}
               />
               <button
                 onClick={() => setPrompterOpen((v) => !v)}

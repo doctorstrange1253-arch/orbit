@@ -127,7 +127,7 @@ const Universe = () => {
           {isLoading ? (
             <p
               className="py-10 text-center"
-              style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'rgba(245,245,245,0.55)' }}
+              style={{ fontFamily: 'var(--font-serif)', color: 'rgba(245,245,245,0.55)' }}
             >
               Reading the sky.
             </p>

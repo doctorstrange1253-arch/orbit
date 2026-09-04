@@ -39,7 +39,7 @@ const UniverseEmpty = () => {
       <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-text-muted mb-4">
         My universe
       </div>
-      <h2 className="text-2xl md:text-3xl font-display font-bold mb-3 text-text-primary">
+      <h2 className="text-2xl md:text-3xl font-display font-extrabold mb-3 text-text-primary">
         Your universe is dark. Enroll in a course to light your first star.
       </h2>
       <p className="text-sm text-text-secondary max-w-md mx-auto mb-6">

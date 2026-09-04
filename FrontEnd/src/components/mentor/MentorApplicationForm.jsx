@@ -84,7 +84,6 @@ const MentorApplicationForm = ({ initial = {} }) => {
                         <h2
                             style={{
                                 fontFamily: 'var(--font-serif)',
-                                fontStyle: 'italic',
                                 fontSize: 'clamp(1.4rem, 2.4vw, 1.8rem)',
                                 lineHeight: 1.15,
                                 color: 'var(--text-primary)',

@@ -70,7 +70,6 @@ const PlanCard = ({ plan, cycle, onPick, busy }) => {
         <span
           style={{
             fontFamily: 'var(--font-editorial)',
-            fontStyle: 'italic',
             fontWeight: 700,
             fontSize: 'clamp(2.2rem, 4vw, 3rem)',
             lineHeight: 1,
@@ -85,7 +84,7 @@ const PlanCard = ({ plan, cycle, onPick, busy }) => {
 
       <p
         className="mt-2"
-        style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '0.92rem', color: MUTED }}
+        style={{ fontFamily: 'var(--font-serif)', fontSize: '0.92rem', color: MUTED }}
       >
         {plan.taxNote}
       </p>
@@ -106,7 +105,7 @@ const PlanCard = ({ plan, cycle, onPick, busy }) => {
       <div className="mt-5 mb-5" style={{ height: 1, background: HAIRLINE_SOFT }} />
 
       <p
-        style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1rem', lineHeight: 1.5, color: 'rgba(245,245,245,0.72)' }}
+        style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', lineHeight: 1.5, color: 'rgba(245,245,245,0.72)' }}
       >
         {plan.blurb}
       </p>
@@ -281,7 +280,7 @@ const Pricing = () => {
       <SectionBoundary name="Plans">
         <section className="py-8" style={{ borderBottom: `1px solid ${HAIRLINE}` }}>
           {isLoading ? (
-            <p className="py-14 text-center" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: MUTED }}>
+            <p className="py-14 text-center" style={{ fontFamily: 'var(--font-serif)', color: MUTED }}>
               Reading the price list.
             </p>
           ) : (

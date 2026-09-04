@@ -136,7 +136,7 @@ const NearbyMap = () => {
       </Helmet>
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold flex items-center gap-3"
+        <h1 className="text-3xl font-display font-extrabold flex items-center gap-3"
           style={{ background: 'linear-gradient(135deg,#00e5a0,#00c6ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
           <MapPin size={26} style={{ color: '#00e5a0', WebkitTextFillColor: '#00e5a0' }} />
           Nearby Skills
