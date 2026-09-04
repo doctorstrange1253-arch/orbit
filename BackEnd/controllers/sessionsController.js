@@ -42,6 +42,13 @@ function shapeMentor(p, user) {
 }
 
 // ── POST /api/sessions/mentor/apply ────────────────────────────────────────
+// There is no admin review queue in this build: nothing anywhere flips
+// applicationStatus from "submitted" to "approved", so a submitted profile
+// was a dead end — invisible to listMentors, getMentor, honours and the
+// Signal Flare, all of which filter on "approved". Applying now approves
+// and grants the 'mentor' role in the same call. The rolesVersion bump makes
+// the caller's JWT stale on purpose; api.js recovers it through
+// GET /user/roles without the user seeing anything.
 exports.applyAsMentor = async (req, res) => {
     try {
         const meId = req.user.id;
@@ -49,6 +56,17 @@ exports.applyAsMentor = async (req, res) => {
         if (!Number.isFinite(hourlyRateInr) || hourlyRateInr < 0) {
             return res.status(400).json({ message: "hourlyRateInr must be a non-negative number" });
         }
+
+        // A suspended profile must not be able to re-approve itself by
+        // re-submitting the form. Mirrors the same guard in PUT /user/roles.
+        const existing = await MentorProfile.findOne({ userId: meId }).select("applicationStatus").lean();
+        if (existing && existing.applicationStatus === "suspended") {
+            return res.status(403).json({
+                code: "MENTOR_SUSPENDED",
+                message: "Your mentor account is suspended. Email support@orbit.dev to appeal.",
+            });
+        }
+
         // Topics are the taxonomy slugs the Signal Flare matches on; genres are
         // derived from them so the two can never drift apart. `skills` stays as
         // the mentor's own free-text wording for their public card.
@@ -67,14 +85,30 @@ exports.applyAsMentor = async (req, res) => {
                     hourlyRateInr: Math.floor(hourlyRateInr),
                     timezone: timezone || "Asia/Kolkata",
                     availability: availability || { weekly: [] },
-                    applicationStatus: "submitted",
+                    applicationStatus: "approved",
                     status: "active",
                 },
             },
             { upsert: true, new: true, setDefaultsOnInsert: true }
         );
+
+        const me = await User.findById(meId).select("roles rolesVersion").lean();
+        const roles = Array.isArray(me?.roles) && me.roles.length > 0 ? me.roles : ["peer_learner"];
+        const rolesGranted = !roles.includes("mentor");
+        if (rolesGranted) {
+            await User.updateOne(
+                { _id: meId },
+                { $set: { roles: [...roles, "mentor"], rolesVersion: (me?.rolesVersion || 0) + 1 } }
+            );
+        }
+
         analytics("session.apply", { userId: String(meId) });
-        return res.status(201).json({ ok: true, applicationStatus: profile.applicationStatus, id: String(profile._id) });
+        return res.status(201).json({
+            ok: true,
+            applicationStatus: profile.applicationStatus,
+            id: String(profile._id),
+            rolesGranted,
+        });
     } catch (err) {
         console.error("applyAsMentor:", err);
         return res.status(500).json({ message: "Server error" });
@@ -89,8 +123,20 @@ exports.applyAsMentor = async (req, res) => {
 exports.getMyMentor = async (req, res) => {
     try {
         const meId = req.user.id;
-        const profile = await MentorProfile.findOne({ userId: meId }).lean();
+        let profile = await MentorProfile.findOne({ userId: meId }).lean();
         if (!profile) return res.json({ profile: null });
+
+        // Profiles created before the review queue was dropped are stranded at
+        // "submitted" with nothing left in the system that can approve them.
+        // Settle it on read, the same way the weekly cadences self-heal.
+        if (profile.applicationStatus === "submitted") {
+            await MentorProfile.updateOne(
+                { _id: profile._id, applicationStatus: "submitted" },
+                { $set: { applicationStatus: "approved", status: "active" } }
+            );
+            profile = { ...profile, applicationStatus: "approved", status: "active" };
+        }
+
         const user = await User.findById(meId).select("name avatar").lean();
 
         // Rupees live in MoneyLedger (integer paise, double-entry). PhotonLedger

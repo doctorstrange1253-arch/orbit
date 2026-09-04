@@ -6,10 +6,14 @@ import { Helmet } from 'react-helmet-async';
 import {
   ChevronLeft, Upload, Film, Trash2, Loader2, AlertTriangle, Search,
   X, ExternalLink, Sparkles, FileVideo, BookOpen, CheckCircle2, Cloud, GripVertical,
+  Clock, Video,
 } from 'lucide-react';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
 import { courses } from '../../services/courses';
 import { surfaceRecipe, borderTint } from '../../soul/tints';
+import {
+  StudioMasthead, StudioStat, StudioPanel, Reveal, studioSurface,
+} from '../../soul/studio/surfaces';
 import { Haptic } from '../../soul/haptics';
 import { SoulSound } from '../../soul/soundLibrary';
 
@@ -213,12 +217,34 @@ const MediaLibrary = () => {
   const stats = useMemo(() => {
     const byCourse = {};
     for (const it of items) byCourse[it.courseId] = (byCourse[it.courseId] || 0) + 1;
+
+    // Per-course video counts, longest shelf first, capped so the bar row
+    // stays legible on a mentor with thirty courses.
+    const perCourse = Object.values(byCourse).sort((a, b) => b - a).slice(0, 10);
+
+    // How many of the mentor's courses actually carry video. The remainder
+    // draw as empty track, which is the point: it shows the gap.
+    const withVideo = Object.keys(byCourse).length;
+    const coverage = myCourses.slice(0, 10).map((c) => (byCourse[c._id] ? byCourse[c._id] : 0));
+
+    // Duration spread in five buckets: <2m, 2-5m, 5-10m, 10-20m, 20m+.
+    const buckets = [0, 0, 0, 0, 0];
+    for (const it of items) {
+      const m = (it.durationSec || 0) / 60;
+      const b = m < 2 ? 0 : m < 5 ? 1 : m < 10 ? 2 : m < 20 ? 3 : 4;
+      buckets[b] += 1;
+    }
+
     return {
       total: items.length,
-      courses: Object.keys(byCourse).length,
+      courses: withVideo,
       durationMin: Math.round(totalSizeSec / 60),
+      perCourse,
+      coverage,
+      buckets,
+      emptyCourses: Math.max(0, myCourses.length - withVideo),
     };
-  }, [items, totalSizeSec]);
+  }, [items, totalSizeSec, myCourses]);
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -226,19 +252,43 @@ const MediaLibrary = () => {
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
         <Helmet><title>Media Library · Orbit Mentor</title></Helmet>
 
-        <Link to="/mentor/courses" className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-text-primary mb-3">
+        <Link to="/mentor/courses" className="inline-flex items-center gap-1.5 font-mono uppercase mb-4 transition-colors hover:text-text-primary"
+          style={{ fontSize: '0.6rem', letterSpacing: '0.22em', fontWeight: 700, color: 'rgba(245,245,245,0.45)' }}>
           <ChevronLeft className="w-3.5 h-3.5" /> My courses
         </Link>
 
-        <motion.header initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill text-[11px] font-semibold uppercase tracking-widest text-text-secondary bg-surface border border-border-subtle mb-3">
-            <Film className="w-3.5 h-3.5 text-accent" /> Studio
+        <StudioMasthead
+          eyebrow="Studio"
+          Icon={Film}
+          title="Media Library"
+          deck="Every video you have attached to a lesson, in one place. Drop files anywhere on the plate below to bulk-upload."
+        >
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-pill font-mono uppercase transition-transform hover:scale-[1.03] active:scale-95"
+              style={{
+                fontSize: '0.6rem', letterSpacing: '0.2em', fontWeight: 700,
+                background: 'var(--studio-gradient)', color: 'var(--text-on-accent)',
+                boxShadow: '0 10px 30px -12px color-mix(in oklab, var(--studio-from) 60%, transparent)',
+              }}
+            >
+              <Upload className="w-3.5 h-3.5" /> Upload
+            </button>
+            <button
+              onClick={() => navigate('/mentor/recorder')}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-pill font-mono uppercase transition-colors"
+              style={{
+                fontSize: '0.6rem', letterSpacing: '0.2em', fontWeight: 700,
+                color: 'rgba(245,245,245,0.72)',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.12)',
+              }}
+            >
+              <Video className="w-3.5 h-3.5" /> Record
+            </button>
           </div>
-          <h1 className="text-2xl md:text-3xl font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>
-            Media Library.
-          </h1>
-          <p className="text-text-secondary text-sm mt-1">Every video you've attached to a lesson, in one place. Drop new files to bulk-upload.</p>
-        </motion.header>
+        </StudioMasthead>
 
         {error && (
           <div
@@ -264,44 +314,142 @@ const MediaLibrary = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-3 gap-2 mb-5">
-          <StatCell label="Videos" value={stats.total} />
-          <StatCell label="Courses" value={stats.courses} />
-          <StatCell label="Minutes" value={stats.durationMin} />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <StudioStat
+            index={1}
+            label="Videos"
+            Icon={FileVideo}
+            value={stats.total}
+            hint={stats.total ? `across ${stats.courses} course${stats.courses === 1 ? '' : 's'}` : 'nothing uploaded yet'}
+            series={stats.perCourse}
+          />
+          <StudioStat
+            index={2}
+            label="Coverage"
+            Icon={BookOpen}
+            value={`${stats.courses}/${myCourses.length || 0}`}
+            hint={stats.emptyCourses
+              ? `${stats.emptyCourses} course${stats.emptyCourses === 1 ? '' : 's'} still has no video`
+              : myCourses.length ? 'every course has video' : 'no courses yet'}
+            series={stats.coverage}
+          />
+          <StudioStat
+            index={3}
+            label="Runtime"
+            Icon={Clock}
+            value={stats.durationMin >= 60
+              ? `${Math.floor(stats.durationMin / 60)}h ${stats.durationMin % 60}m`
+              : `${stats.durationMin}m`}
+            hint={stats.total ? 'shortest to longest lesson' : 'no runtime recorded'}
+            series={stats.buckets}
+          />
         </div>
 
-        <div
-          ref={dropRef}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          className={`relative rounded-2xl p-6 mb-5 text-center transition border-2 border-dashed ${
-            dragOver ? 'border-accent bg-accent/10' : 'border-border-subtle bg-surface/30'
-          }`}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="video/*"
-            multiple
-            onChange={(e) => e.target.files?.length && enqueue(e.target.files)}
-            className="hidden"
-          />
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-full bg-accent/15 flex items-center justify-center">
-              <Cloud className="w-6 h-6 text-accent" />
+        <Reveal index={4}>
+          <div
+            ref={dropRef}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            className="relative mb-4 overflow-hidden transition-all duration-300"
+            style={{
+              ...studioSurface('mentor'),
+              borderRadius: 20,
+              borderStyle: 'dashed',
+              borderColor: dragOver
+                ? 'color-mix(in oklab, var(--studio-from) 75%, transparent)'
+                : 'rgba(255,255,255,0.14)',
+              transform: dragOver ? 'scale(1.008)' : 'none',
+            }}
+          >
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+              style={{
+                opacity: dragOver ? 1 : 0.35,
+                backgroundImage: `
+                  linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px)
+                `,
+                backgroundSize: '22px 22px',
+                maskImage: 'radial-gradient(70% 70% at 50% 45%, #000 0%, transparent 100%)',
+              }}
+            />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="video/*"
+              multiple
+              onChange={(e) => e.target.files?.length && enqueue(e.target.files)}
+              className="hidden"
+            />
+            <div className="relative flex flex-col items-center gap-3 px-6 py-9">
+              <motion.div
+                animate={dragOver ? { scale: 1.12, y: -3 } : { scale: 1, y: 0 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+                className="relative inline-flex items-center justify-center"
+                style={{
+                  width: 54, height: 54, borderRadius: 999,
+                  background: 'color-mix(in oklab, var(--studio-from) 14%, transparent)',
+                  border: '1px solid color-mix(in oklab, var(--studio-from) 34%, transparent)',
+                  boxShadow: dragOver
+                    ? '0 0 0 10px color-mix(in oklab, var(--studio-from) 10%, transparent)'
+                    : 'none',
+                }}
+              >
+                <Cloud className="w-6 h-6" style={{ color: 'var(--studio-from)' }} />
+              </motion.div>
+
+              <div
+                style={{
+                  fontFamily: 'var(--font-display)', fontWeight: 700,
+                  fontSize: '1.05rem', letterSpacing: '-0.02em', color: 'var(--text-primary)',
+                }}
+              >
+                {dragOver ? 'Let go to queue them' : 'Drop videos to attach them to a course'}
+              </div>
+
+              <div className="flex items-center flex-wrap justify-center gap-1.5">
+                {['MP4', 'WEBM', 'MOV', 'MKV'].map((ext) => (
+                  <span
+                    key={ext}
+                    className="font-mono uppercase"
+                    style={{
+                      fontSize: '0.54rem', letterSpacing: '0.16em', fontWeight: 700,
+                      padding: '3px 7px', borderRadius: 5,
+                      color: 'rgba(245,245,245,0.55)',
+                      background: 'rgba(255,255,255,0.045)',
+                      border: '1px solid rgba(255,255,255,0.09)',
+                    }}
+                  >
+                    {ext}
+                  </span>
+                ))}
+                <span
+                  className="font-mono uppercase"
+                  style={{
+                    fontSize: '0.54rem', letterSpacing: '0.16em', fontWeight: 700,
+                    padding: '3px 7px', borderRadius: 5, color: 'rgba(245,245,245,0.38)',
+                  }}
+                >
+                  500 MB each
+                </span>
+              </div>
+
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="mt-1 inline-flex items-center gap-2 px-5 py-2.5 rounded-pill font-mono uppercase transition-transform hover:scale-[1.04] active:scale-95"
+                style={{
+                  fontSize: '0.6rem', letterSpacing: '0.2em', fontWeight: 700,
+                  background: 'var(--studio-gradient)', color: 'var(--text-on-accent)',
+                  boxShadow: '0 12px 32px -14px color-mix(in oklab, var(--studio-from) 65%, transparent)',
+                }}
+              >
+                <Upload className="w-3.5 h-3.5" /> Choose files
+              </button>
             </div>
-            <div className="text-sm font-semibold text-text-primary">Drop videos to attach them to a course</div>
-            <div className="text-xs text-text-muted">.mp4 · .webm · .mov · .mkv · up to 500 MB each</div>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="mt-1 inline-flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-bold uppercase tracking-widest"
-              style={{ background: 'linear-gradient(135deg, #a78bfa, #3b82f6)', color: 'var(--text-on-accent)' }}
-            >
-              <Upload className="w-3.5 h-3.5" /> Choose files
-            </button>
           </div>
-        </div>
+        </Reveal>
 
         <AnimatePresence>
           {queue.length > 0 && (
@@ -349,41 +497,73 @@ const MediaLibrary = () => {
           )}
         </AnimatePresence>
 
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-pill bg-surface/30 border border-border-subtle flex-1 min-w-[200px]">
-            <Search className="w-3.5 h-3.5 text-text-muted" />
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search by lesson or course…"
-              className="bg-transparent outline-none text-sm text-text-primary flex-1"
-            />
+        <Reveal index={5}>
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            <div
+              className="flex items-center gap-2.5 px-4 py-2.5 flex-1 min-w-[220px] transition-colors focus-within:border-accent/50"
+              style={{
+                borderRadius: 999,
+                background: 'rgba(255,255,255,0.035)',
+                border: '1px solid rgba(255,255,255,0.10)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
+              }}
+            >
+              <Search className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'rgba(245,245,245,0.42)' }} />
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search by lesson or course"
+                className="bg-transparent outline-none text-sm flex-1 min-w-0"
+                style={{ fontFamily: 'var(--font-sans)', color: 'var(--text-primary)' }}
+              />
+              {q && (
+                <button onClick={() => setQ('')} aria-label="Clear search" className="flex-shrink-0" style={{ color: 'rgba(245,245,245,0.42)' }}>
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+            <select
+              value={courseFilter}
+              onChange={(e) => setCourseFilter(e.target.value)}
+              className="px-4 py-2.5 font-mono uppercase outline-none cursor-pointer"
+              style={{
+                borderRadius: 999,
+                fontSize: '0.6rem', letterSpacing: '0.16em', fontWeight: 700,
+                color: 'rgba(245,245,245,0.72)',
+                background: 'rgba(255,255,255,0.035)',
+                border: '1px solid rgba(255,255,255,0.10)',
+              }}
+            >
+              <option value="all">All courses</option>
+              {myCourses.map((c) => (
+                <option key={c._id} value={c._id}>{c.title}</option>
+              ))}
+            </select>
+            <span
+              className="font-mono uppercase px-3 flex-shrink-0"
+              style={{ fontSize: '0.58rem', letterSpacing: '0.18em', fontWeight: 700, color: 'rgba(245,245,245,0.38)' }}
+            >
+              {visible.length} shown
+            </span>
           </div>
-          <select
-            value={courseFilter}
-            onChange={(e) => setCourseFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-pill bg-surface/30 border border-border-subtle text-xs text-text-primary"
-          >
-            <option value="all">All courses</option>
-            {myCourses.map((c) => (
-              <option key={c._id} value={c._id}>{c.title}</option>
-            ))}
-          </select>
-        </div>
+        </Reveal>
 
         {isLoading ? (
-          <div className="text-center py-12 text-text-muted"><Loader2 className="w-5 h-5 animate-spin inline" /></div>
+          <div className="text-center py-12" style={{ color: 'rgba(245,245,245,0.45)' }}>
+            <Loader2 className="w-5 h-5 animate-spin inline" />
+          </div>
         ) : visible.length === 0 ? (
           <EmptyLibrary onUpload={() => fileInputRef.current?.click()} hasItems={items.length > 0} />
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {visible.map((it) => (
-              <MediaCard
-                key={`${it.courseId}-${it.lessonId}`}
-                item={it}
-                onReattach={() => reattach(it)}
-                onDelete={() => setConfirmDelete(it)}
-              />
+            {visible.map((it, i) => (
+              <Reveal key={`${it.courseId}-${it.lessonId}`} index={6 + Math.min(i, 12)}>
+                <MediaCard
+                  item={it}
+                  onReattach={() => reattach(it)}
+                  onDelete={() => setConfirmDelete(it)}
+                />
+              </Reveal>
             ))}
           </div>
         )}
@@ -402,13 +582,6 @@ const MediaLibrary = () => {
     </div>
   );
 };
-
-const StatCell = ({ label, value }) => (
-  <div className="rounded-xl border border-border-subtle bg-surface/30 px-3 py-2.5 text-center">
-    <div className="text-2xl font-bold text-text-primary" style={{ fontFamily: 'var(--font-serif)' }}>{value}</div>
-    <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{label}</div>
-  </div>
-);
 
 const QueueRow = ({ entry, courses: courseList, onUpdate, onRemove }) => {
   const pct = entry.progress;
@@ -483,59 +656,104 @@ const MediaCard = ({ item, onReattach, onDelete }) => {
   return (
     <motion.div
       layout
-      whileHover={{ y: -2 }}
-      className="rounded-2xl overflow-hidden border border-border-subtle bg-surface/30 group"
-      style={{ borderColor: 'var(--border-subtle)' }}
+      whileHover={{ y: -3 }}
+      transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+      className="overflow-hidden group h-full"
+      style={{ ...studioSurface('mentor'), borderRadius: 18 }}
     >
-      <div className="relative aspect-video bg-black">
+      <div className="relative aspect-video" style={{ background: '#07070f' }}>
         {poster ? (
-          <img src={poster} alt="" className="w-full h-full object-cover" loading="lazy" />
+          <img
+            src={poster}
+            alt=""
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+          />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Film className="w-8 h-8 text-text-muted" />
+          <div
+            className="w-full h-full flex items-center justify-center"
+            style={{ background: 'radial-gradient(70% 90% at 50% 40%, color-mix(in oklab, var(--studio-from) 16%, transparent), transparent 70%)' }}
+          >
+            <Film className="w-8 h-8" style={{ color: 'color-mix(in oklab, var(--studio-from) 60%, transparent)' }} />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(3,3,10,0.86) 0%, rgba(3,3,10,0.12) 46%, transparent 100%)' }} />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+          style={{ height: 2, background: 'var(--studio-gradient)' }}
+        />
         {item.durationSec > 0 && (
-          <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-white text-[10px] font-mono">
+          <div
+            className="absolute bottom-2 right-2 px-1.5 py-0.5 font-mono"
+            style={{
+              fontSize: '0.6rem', borderRadius: 5, color: '#fff',
+              background: 'rgba(3,3,10,0.78)', border: '1px solid rgba(255,255,255,0.14)',
+              backdropFilter: 'blur(6px)',
+            }}
+          >
             {formatDur(item.durationSec)}
           </div>
         )}
         {item.isBoss && (
-          <div className="absolute top-2 left-2 inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/90 text-amber-950 text-[9px] font-bold uppercase tracking-widest">
+          <div className="absolute top-2 left-2 inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 text-[9px] font-bold uppercase tracking-widest">
             <Sparkles className="w-2.5 h-2.5" /> Boss
           </div>
         )}
         {item.isFree && !item.isBoss && (
-          <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-emerald-500/90 text-emerald-950 text-[9px] font-bold uppercase tracking-widest">
+          <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-emerald-400 text-emerald-950 text-[9px] font-bold uppercase tracking-widest">
             Free
           </div>
         )}
         <button
           onClick={onReattach}
-          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           title="Edit lesson"
         >
-          <span className="px-3 py-1.5 rounded-pill bg-black/70 text-white text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
+          <span
+            className="px-3.5 py-2 font-mono uppercase"
+            style={{
+              fontSize: '0.58rem', letterSpacing: '0.2em', fontWeight: 700, borderRadius: 999,
+              color: '#fff', background: 'rgba(3,3,10,0.7)',
+              border: '1px solid rgba(255,255,255,0.22)', backdropFilter: 'blur(8px)',
+            }}
+          >
             Open in editor
           </span>
         </button>
       </div>
-      <div className="p-3">
-        <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted flex items-center gap-1 mb-1">
-          <BookOpen className="w-3 h-3" /> {item.courseTitle}
+      <div className="p-3.5">
+        <div
+          className="font-mono uppercase flex items-center gap-1.5 mb-1.5 truncate"
+          style={{ fontSize: '0.56rem', letterSpacing: '0.2em', fontWeight: 700, color: 'color-mix(in oklab, var(--studio-from) 72%, white)' }}
+        >
+          <BookOpen className="w-3 h-3 flex-shrink-0" />
+          <span className="truncate">{item.courseTitle}</span>
         </div>
-        <div className="text-sm font-semibold text-text-primary line-clamp-2 mb-2">{item.lessonTitle}</div>
+        <div
+          className="line-clamp-2 mb-3"
+          style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.94rem', letterSpacing: '-0.015em', color: 'var(--text-primary)' }}
+        >
+          {item.lessonTitle}
+        </div>
         <div className="flex items-center gap-1.5">
           <button
             onClick={onReattach}
-            className="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1 rounded-pill bg-accent/15 text-accent border border-accent/30 text-[10px] font-bold uppercase tracking-widest"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 font-mono uppercase transition-transform hover:scale-[1.02] active:scale-95"
+            style={{
+              fontSize: '0.56rem', letterSpacing: '0.18em', fontWeight: 700, borderRadius: 999,
+              color: 'var(--text-on-accent)', background: 'var(--studio-gradient)',
+            }}
           >
             <ExternalLink className="w-3 h-3" /> Edit
           </button>
           <button
             onClick={onDelete}
-            className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-pill bg-rose-500/10 text-rose-300 border border-rose-500/30 text-[10px] font-bold uppercase tracking-widest"
+            className="inline-flex items-center justify-center px-2.5 py-1.5 transition-colors"
+            style={{
+              borderRadius: 999, color: 'rgba(252,165,165,0.9)',
+              background: 'rgba(244,63,94,0.10)', border: '1px solid rgba(244,63,94,0.28)',
+            }}
             title="Delete lesson (and unlink video)"
           >
             <Trash2 className="w-3 h-3" />
@@ -590,26 +808,64 @@ const DeleteModal = ({ item, onClose, onConfirm, pending }) => (
 );
 
 const EmptyLibrary = ({ onUpload, hasItems }) => (
-  <div className="rounded-2xl border border-border-subtle bg-surface/30 p-8 text-center">
-    <div className="w-12 h-12 rounded-full bg-accent/15 flex items-center justify-center mx-auto mb-3">
-      <Film className="w-6 h-6 text-accent" />
-    </div>
-    <div className="text-base font-semibold text-text-primary mb-1" style={{ fontFamily: 'var(--font-serif)' }}>
-      {hasItems ? 'No videos match your search.' : 'No videos yet.'}
-    </div>
-    <p className="text-sm text-text-secondary mb-3">
-      {hasItems ? 'Try a different search term or course filter.' : 'Drop a video above, or record one in the Studio.'}
-    </p>
-    {!hasItems && (
-      <button
-        onClick={onUpload}
-        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-bold uppercase tracking-widest"
-        style={{ background: 'linear-gradient(135deg, #a78bfa, #3b82f6)', color: 'var(--text-on-accent)' }}
+  <StudioPanel radius={20} className="px-8 py-12 text-center overflow-hidden">
+    <div
+      aria-hidden
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        backgroundImage: `
+          linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px)
+        `,
+        backgroundSize: '26px 26px',
+        maskImage: 'radial-gradient(60% 60% at 50% 40%, #000 0%, transparent 100%)',
+      }}
+    />
+    <div className="relative">
+      <div
+        className="inline-flex items-center justify-center mx-auto mb-4"
+        style={{
+          width: 56, height: 56, borderRadius: 999,
+          background: 'color-mix(in oklab, var(--studio-from) 13%, transparent)',
+          border: '1px solid color-mix(in oklab, var(--studio-from) 30%, transparent)',
+          boxShadow: '0 0 0 12px color-mix(in oklab, var(--studio-from) 5%, transparent)',
+        }}
       >
-        <Upload className="w-3.5 h-3.5" /> Upload your first video
-      </button>
-    )}
-  </div>
+        <Film className="w-6 h-6" style={{ color: 'var(--studio-from)' }} />
+      </div>
+      <div
+        className="mb-1.5"
+        style={{
+          fontFamily: 'var(--font-display)', fontWeight: 800,
+          fontSize: 'clamp(1.2rem, 2.4vw, 1.6rem)', letterSpacing: '-0.03em',
+          color: 'var(--text-primary)',
+        }}
+      >
+        {hasItems ? 'Nothing matches that' : 'The shelf is empty'}
+      </div>
+      <p
+        className="text-sm mb-5 max-w-sm mx-auto leading-relaxed"
+        style={{ fontFamily: 'var(--font-sans)', color: 'rgba(245,245,245,0.55)' }}
+      >
+        {hasItems
+          ? 'Try a different search term, or widen the course filter.'
+          : 'Drop a file on the plate above, or record a lesson in the Studio and it lands here automatically.'}
+      </p>
+      {!hasItems && (
+        <button
+          onClick={onUpload}
+          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono uppercase transition-transform hover:scale-[1.04] active:scale-95"
+          style={{
+            fontSize: '0.6rem', letterSpacing: '0.2em', fontWeight: 700, borderRadius: 999,
+            background: 'var(--studio-gradient)', color: 'var(--text-on-accent)',
+            boxShadow: '0 12px 32px -14px color-mix(in oklab, var(--studio-from) 65%, transparent)',
+          }}
+        >
+          <Upload className="w-3.5 h-3.5" /> Upload your first video
+        </button>
+      )}
+    </div>
+  </StudioPanel>
 );
 
 function formatDur(sec) {

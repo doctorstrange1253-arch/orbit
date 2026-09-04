@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
     CheckCircle, Loader, GraduationCap, IndianRupee,
     Tag, X, Globe2, Send, Eye, Wand2,
@@ -19,6 +19,7 @@ const TIMEZONES = [
 ];
 
 const MentorApplicationForm = ({ initial = {} }) => {
+    const qc = useQueryClient();
     const [headline, setHeadline] = useState(initial.headline || '');
     const [bio, setBio] = useState(initial.bio || '');
     const [hourlyRateInr, setHourlyRateInr] = useState(initial.hourlyRateInr || 1000);
@@ -60,6 +61,10 @@ const MentorApplicationForm = ({ initial = {} }) => {
             skills: skills.map((s) => s.trim()).filter(Boolean),
             topics,
         }),
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ['sessions', 'mentor', 'me'] });
+            qc.invalidateQueries({ queryKey: ['sessions', 'mentor', 'bookings'] });
+        },
     });
 
     const headlineOk = headline.trim().length >= 8 && headlineCount <= 120;
@@ -244,7 +249,7 @@ const MentorApplicationForm = ({ initial = {} }) => {
                     {m.isSuccess && (
                         <div className="text-sm text-success bg-success/10 border border-success/30 rounded-lg p-3 flex items-center gap-2">
                             <CheckCircle className="w-4 h-4 flex-shrink-0" />
-                            Application submitted. An admin will review it shortly.
+                            You are live. Students can find and book you now.
                         </div>
                     )}
 

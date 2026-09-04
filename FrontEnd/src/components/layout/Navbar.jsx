@@ -17,7 +17,7 @@ import PactBadge from '../pact/PactBadge';
 import {
   LogOut, Layers, Compass, Users, Map, ShieldCheck,
   UserCircle, Menu, X, Handshake, Phone, Trophy, Rocket, ShoppingBag, Calendar, GraduationCap, DollarSign, Search, MessageCircle, Settings as SettingsIcon, Flame, Swords, Video, Film,
-  Telescope, BookOpen, Award, Network, ShieldAlert, BarChart3, Users2,
+  Telescope, BookOpen, Award, Network, ShieldAlert, BarChart3, Users2, ChevronDown,
 } from 'lucide-react';
 
 // Three independent nav pill lists, one per role window. The Navbar picks
@@ -43,18 +43,37 @@ const NAV_PEER = [
   { name: 'Shop',         path: '/shop',             Icon: ShoppingBag, window: 'shared' },
 ];
 
+// The mentor window has eleven destinations, which is four too many for one
+// flat row — the strip ran into the wordmark on one side and the photon count
+// on the other. They group cleanly, so four of the five pills open a panel
+// instead of navigating. Profile is not here: the avatar chip already links to
+// it, and listing it twice was what pushed the row over the edge.
 const NAV_MENTOR = [
-  { name: 'Observatory',  path: '/mentor/observatory', Icon: Telescope,   window: 'mentor' },
-  { name: 'Courses',      path: '/mentor/courses',   Icon: BookOpen,      window: 'mentor' },
-  { name: 'Pact',         path: '/mentor/pact',      Icon: Swords,        window: 'mentor' },
-  { name: 'Students',     path: '/mentor/students',  Icon: Users2,        window: 'mentor' },
-  { name: 'Analytics',    path: '/mentor/analytics', Icon: BarChart3,     window: 'mentor' },
-  { name: 'Record',       path: '/mentor/recorder',  Icon: Video,         window: 'mentor' },
-  { name: 'Media',        path: '/mentor/media',     Icon: Film,          window: 'mentor' },
-  { name: 'Sessions',     path: '/mentor/sessions',  Icon: Calendar,      window: 'mentor' },
-  { name: 'Earnings',     path: '/mentor/earnings',  Icon: DollarSign,    window: 'mentor' },
-  { name: 'Review',       path: '/mentor/moderation', Icon: ShieldAlert,  window: 'mentor' },
-  { name: 'Profile',      path: '/profile',          Icon: UserCircle,    window: 'shared' },
+  { name: 'Observatory', path: '/mentor/observatory', Icon: Telescope, window: 'mentor' },
+  {
+    name: 'Teach', Icon: BookOpen, window: 'mentor',
+    children: [
+      { name: 'Courses', path: '/mentor/courses',  Icon: BookOpen, hint: 'Draft, publish, restructure' },
+      { name: 'Record',  path: '/mentor/recorder', Icon: Video,    hint: 'Capture a lesson in the Studio' },
+      { name: 'Media',   path: '/mentor/media',    Icon: Film,     hint: 'Every video you have uploaded' },
+    ],
+  },
+  {
+    name: 'People', Icon: Users2, window: 'mentor',
+    children: [
+      { name: 'Students', path: '/mentor/students', Icon: Users2,   hint: 'Everyone learning from you' },
+      { name: 'Sessions', path: '/mentor/sessions', Icon: Calendar, hint: 'Bookings, past and upcoming' },
+    ],
+  },
+  {
+    name: 'Standing', Icon: BarChart3, window: 'mentor',
+    children: [
+      { name: 'Analytics', path: '/mentor/analytics', Icon: BarChart3,  hint: 'The funnel and where they stop' },
+      { name: 'Earnings',  path: '/mentor/earnings',  Icon: DollarSign, hint: 'Released against pending' },
+      { name: 'Pact',      path: '/mentor/pact',      Icon: Swords,     hint: 'Your league this week' },
+    ],
+  },
+  { name: 'Review', path: '/mentor/moderation', Icon: ShieldAlert, window: 'mentor' },
 ];
 
 const NAV_STUDENT = [
@@ -68,6 +87,135 @@ const NAV_STUDENT = [
   { name: 'Mentors',      path: '/student/mentors',      Icon: Compass,       window: 'student' },
   { name: 'Leaderboard',  path: '/leaderboard',          Icon: Trophy,        window: 'shared' },
 ];
+
+const NavDivider = () => (
+  <span
+    aria-hidden
+    className="hidden xl:block flex-shrink-0"
+    style={{ width: 1, height: 20, background: 'var(--border-subtle)', opacity: 0.7 }}
+  />
+);
+
+// A pill that opens a panel instead of navigating. Opens on hover with a
+// 140ms close grace so crossing the gap to the panel does not dismiss it,
+// and on click/Enter for keyboard and touch. Escape and any route change
+// close it.
+const NavGroup = ({ item, isActive, onNavigate }) => {
+  const [open, setOpen] = useState(false);
+  const closeTimer = useRef(0);
+  const wrapRef = useRef(null);
+  const groupActive = item.children.some((c) => isActive(c));
+
+  const cancelClose = () => { clearTimeout(closeTimer.current); closeTimer.current = 0; };
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => setOpen(false), 140);
+  };
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    const onDown = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onDown);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onDown);
+    };
+  }, [open]);
+
+  const { Icon } = item;
+  return (
+    <div
+      ref={wrapRef}
+      className="relative"
+      onMouseEnter={() => { cancelClose(); setOpen(true); }}
+      onMouseLeave={scheduleClose}
+    >
+      <button
+        type="button"
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold tracking-wide transition-all duration-200 select-none whitespace-nowrap ${
+          groupActive
+            ? 'text-accent bg-accent/10 border border-accent/30'
+            : 'text-text-secondary hover:text-text-primary hover:bg-surface border border-transparent'
+        }`}
+        style={{ letterSpacing: '0.02em' }}
+      >
+        <Icon size={12} strokeWidth={groupActive ? 2.5 : 2} />
+        {item.name}
+        <ChevronDown
+          size={11}
+          strokeWidth={2.4}
+          style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 160ms', opacity: 0.7 }}
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute left-0 top-full mt-2 z-50 rounded-2xl overflow-hidden"
+            style={{
+              minWidth: 236,
+              background: 'var(--surface)',
+              border: '1px solid var(--border-subtle)',
+              boxShadow: '0 18px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03) inset',
+              backdropFilter: 'blur(14px)',
+            }}
+          >
+            <div className="p-1.5">
+              {item.children.map((child) => {
+                const active = isActive(child);
+                const ChildIcon = child.Icon;
+                return (
+                  <NavLink
+                    key={child.path}
+                    to={child.path}
+                    onClick={() => { setOpen(false); onNavigate?.(); }}
+                    className="flex items-start gap-2.5 px-2.5 py-2 rounded-xl transition-colors"
+                    style={{
+                      background: active ? 'rgba(255,255,255,0.06)' : 'transparent',
+                      borderLeft: `2px solid ${active ? 'var(--accent-1)' : 'transparent'}`,
+                    }}
+                  >
+                    <ChildIcon
+                      size={14}
+                      strokeWidth={active ? 2.4 : 2}
+                      style={{ marginTop: 2, color: active ? 'var(--accent-1)' : 'var(--text-muted)' }}
+                    />
+                    <span className="min-w-0">
+                      <span
+                        className="block text-[12px] font-semibold"
+                        style={{ color: active ? 'var(--text-primary)' : 'var(--text-secondary)' }}
+                      >
+                        {child.name}
+                      </span>
+                      <span
+                        className="block text-[10.5px] mt-0.5 leading-snug"
+                        style={{ color: 'var(--text-muted)' }}
+                      >
+                        {child.hint}
+                      </span>
+                    </span>
+                  </NavLink>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const Navbar = () => {
   const { user, logout } = useAuthStore();
@@ -141,6 +289,10 @@ const Navbar = () => {
     if (item.path === '/peer/matches') return { ...item, badge: matchesCount };
     return item;
   });
+
+  // The mobile drawer has no hover, so groups are flattened into their leaves
+  // and every destination stays one tap away.
+  const flatNav = navWithBadges.flatMap((item) => (item.children ? item.children : [item]));
 
   const isActive = (item) => {
     const [base, qs] = item.path.split('?');
@@ -231,7 +383,7 @@ const Navbar = () => {
             style={{ height: 52 }}
           >
             {/* ── Brand ── */}
-            <NavLink to="/" className="flex items-center gap-2 flex-shrink-0 mr-2">
+            <NavLink to="/" className="flex items-center gap-2 flex-shrink-0">
               <img src="/favicon.svg" alt="Orbit" width="28" height="28" className="w-7 h-7 rounded-lg flex-shrink-0"
                 style={{ boxShadow: '0 0 14px var(--border-glow)' }} />
               <span className="text-base font-display font-bold hidden sm:block"
@@ -240,22 +392,38 @@ const Navbar = () => {
               </span>
             </NavLink>
 
+            <div className="hidden xl:flex items-center flex-shrink-0 mx-3">
+              <NavDivider />
+            </div>
+
             {/* ── Desktop nav pills ──
-                All 10 peer pills stay visible from xl+ (the breakpoint that
-                fits the whole strip). Lower widths collapse to the hamburger. */}
-            <nav className="hidden xl:flex items-center gap-0.5 flex-1 justify-center min-w-0" aria-label="Main navigation">
-              {navWithBadges.map(({ name, path, Icon, badge }) => {
+                Peer and student windows list every destination flat. The
+                mentor window groups its eleven into five, four of which open
+                a panel — see NAV_MENTOR. */}
+            <nav className="hidden xl:flex items-center gap-1 flex-1 justify-center min-w-0" aria-label="Main navigation">
+              {navWithBadges.map((item) => {
+                if (item.children) {
+                  return (
+                    <NavGroup
+                      key={item.name}
+                      item={item}
+                      isActive={isActive}
+                      onNavigate={() => setMobileOpen(false)}
+                    />
+                  );
+                }
+                const { name, path, Icon, badge } = item;
                 const active = isActive({ path });
                 return (
                   <NavLink key={path} to={path}
-                    className={`relative flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold tracking-wide transition-all duration-200 select-none whitespace-nowrap ${
+                    className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold tracking-wide transition-all duration-200 select-none whitespace-nowrap ${
                       active
                         ? 'text-accent bg-accent/10 border border-accent/30'
                         : 'text-text-secondary hover:text-text-primary hover:bg-surface border border-transparent'
                     }`}
                     style={{ letterSpacing: '0.02em' }}
                   >
-                    <Icon size={11} strokeWidth={active ? 2.5 : 2} />
+                    <Icon size={12} strokeWidth={active ? 2.5 : 2} />
                     {name}
                     {badge > 0 && (
                       <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full"
@@ -275,6 +443,10 @@ const Navbar = () => {
                 );
               })}
             </nav>
+
+            <div className="hidden xl:flex items-center flex-shrink-0 mx-3">
+              <NavDivider />
+            </div>
 
             {/* ── Right side ──
                 V3 — visible status chips. Currency (stardust) + Streak are
@@ -384,7 +556,7 @@ const Navbar = () => {
             className="fixed top-[72px] left-3 right-3 z-40 rounded-2xl overflow-hidden xl:hidden mobile-nav-glass"
           >
             <div className="p-3 grid grid-cols-2 gap-1.5">
-              {navWithBadges.map(({ name, path, Icon, badge }) => (
+              {flatNav.map(({ name, path, Icon, badge }) => (
                 <NavLink key={path} to={path} onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
                     `relative flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive ? 'text-accent bg-accent/10 border border-accent/30' : 'text-text-secondary hover:text-text-primary bg-surface border border-border-subtle'}`
