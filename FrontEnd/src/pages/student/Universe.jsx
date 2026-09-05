@@ -112,7 +112,7 @@ const Universe = () => {
       {enrollments.length > 0 && (
         <SectionBoundary name="By the numbers">
           <section className="py-6" style={{ borderBottom: `1px solid ${HAIRLINE}` }}>
-            <div className="grid grid-cols-2 md:grid-cols-4" style={{ border: `1px solid ${HAIRLINE}` }}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Stat label="Courses" value={stats.total} />
               <Stat label="In progress" value={stats.active} />
               <Stat label="Finished" value={stats.finished} tone="success" />

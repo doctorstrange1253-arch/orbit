@@ -1,23 +1,6 @@
-/**
- * soul/observatory/StarMap.jsx — A canvas star map of students.
- *
- * Each student is a point of light, seeded-positioned by their userId so
- * the same user lands at the same spot across navigations. Three states:
- *   - Active in the last 7 days  → gentle 4s pulse
- *   - Inactive 7+ days          → dimmer, no pulse, desaturated
- *   - Just completed (sparkle)  → 3s sparkle particle burst, then settles
- *
- * The map is mouse-tied: moving the cursor across the canvas drifts the
- * stars a few pixels (parallax), giving the user a sense of depth. Tapping
- * a star opens the student's public profile.
- *
- * Reduced-motion: no pulse, no parallax. Stars stay still and bright.
- */
-
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSoul } from '../../hooks/useSoul';
-// V3 — haptic + sound on star tap.
 import { Haptic } from '../haptics';
 import { SoulSound } from '../soundLibrary';
 
@@ -26,8 +9,6 @@ const _isReducedMotion = () => {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 };
 
-// Tiny deterministic hash so each userId maps to a stable (x, y) within
-// the canvas. Returns values in [0, 1).
 function _seedForId(id) {
   let h = 2166136261;
   const s = String(id || '');
@@ -40,10 +21,6 @@ function _seedForId(id) {
   return [u, v];
 }
 
-// Brightness + size from the user's "recency" (days since last activity).
-// 0 days = brightest (opacity 1.0, size 6px). 7 days = full pulse. 14+
-// days = dim (opacity 0.4, size 3px). The function is continuous so a
-// fresh event smoothly lifts a star back to full brightness.
 function _brightness(lastActiveMs) {
   if (!lastActiveMs) return { opacity: 0.4, size: 3, pulse: false };
   const days = (Date.now() - lastActiveMs) / (1000 * 60 * 60 * 24);
@@ -62,9 +39,6 @@ const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
   const [justCompletedIds, setJustCompletedIds] = useState(new Set());
 
-  // Track which students "just completed" something in the last 10s.
-  // We re-derive on every render from the `students` prop's `recentEventAt`
-  // field. The mount-time effect seeds the sparkle list.
   useEffect(() => {
     const now = Date.now();
     const ids = new Set();
@@ -80,7 +54,6 @@ const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
     return undefined;
   }, [students]);
 
-  // Lay out each student as a (x, y, brightness, recent) tuple.
   const stars = useMemo(() => {
     const pad = 40; // keep stars away from the edges
     return students.map((s) => {
@@ -93,7 +66,6 @@ const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
     });
   }, [students, width, height, justCompletedIds]);
 
-  // Parallax + render loop.
   useEffect(() => {
     if (!canvasRef.current) return;
     const ctx = canvasRef.current.getContext('2d');
@@ -111,7 +83,6 @@ const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
     const render = () => {
       frame += 1;
       ctx.clearRect(0, 0, width, height);
-      // Subtle gradient background — the deep cosmos.
       const grad = ctx.createRadialGradient(
         width * mouse.x, height * mouse.y, 0,
         width * 0.5, height * 0.5, Math.max(width, height) * 0.6
@@ -121,7 +92,6 @@ const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, width, height);
 
-      // Soft background dust — a few hundred faint dots for depth.
       ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
       for (let i = 0; i < 200; i++) {
         const x = ((i * 73 + 11) % width);
@@ -129,27 +99,22 @@ const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
         ctx.fillRect(x, y, 1, 1);
       }
 
-      // Stars (the students).
       for (const s of stars) {
-        // Parallax: shift the star a few px toward the mouse.
         const px = reduced ? 0 : (mouse.x - 0.5) * 8;
         const py = reduced ? 0 : (mouse.y - 0.5) * 8;
         const sx = s.x + px;
         const sy = s.y + py;
 
-        // Pulse factor (1.0 = full, 0.7 = dim cycle) for active stars.
         const pulse = s.pulse && !reduced
           ? 0.7 + 0.3 * Math.sin((frame * 0.04) + (s.x * 0.01))
           : 1.0;
 
-        // Halo.
         if (s.pulse || s.recent) {
           ctx.beginPath();
           ctx.fillStyle = `${accent}${s.recent ? '80' : '40'}`;
           ctx.arc(sx, sy, s.size * 3, 0, Math.PI * 2);
           ctx.fill();
         }
-        // Star body.
         ctx.beginPath();
         ctx.fillStyle = accent;
         ctx.globalAlpha = s.opacity * pulse;
@@ -157,7 +122,6 @@ const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
         ctx.fill();
         ctx.globalAlpha = 1;
 
-        // Sparkle: a short cross of light for just-completed.
         if (s.recent && !reduced) {
           ctx.strokeStyle = `${accent}cc`;
           ctx.lineWidth = 1.2;
@@ -175,13 +139,11 @@ const StarMap = ({ students = [], width = 800, height = 480, onSelect }) => {
     return () => cancelAnimationFrame(raf);
   }, [stars, width, height, mouse, nebula, reduced]);
 
-  // Mouse-move parallax handler.
   const onMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setMouse({ x: (e.clientX - rect.left) / rect.width, y: (e.clientY - rect.top) / rect.height });
   };
 
-  // Click a star → open the student's public profile.
   const onClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const mx = e.clientX - rect.left;

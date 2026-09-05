@@ -1,24 +1,5 @@
 import { PACT_TIERS, tierById, tierIndex } from '../../services/pact';
 
-/**
- * LeagueRail — the 6-tier Pact league made visible.
- *
- * Renders the six tiers as a typeset strip with the mentor's current
- * division highlighted, dots-and-pips between tiers, and a serif label
- * on every tier. The rail reads like a private-club roster, not a
- * video-game ladder.
- *
- *   Initiate · Adept · Mentor · Sage · Luminary · Oracle
- *
- * Three modes:
- *   - compact : just the strip, mono caps, fits in a header rail
- *   - inline  : strip + a sentence about your position
- *   - folio   : strip + large Poppins title + Open Sans body
- *
- * Uses the app type scale (Poppins, Open Sans,
- * JetBrains Mono) so it sits naturally next to the MyOrbit issue.
- */
-
 const POSITION_COPY = {
   initiate: 'Everyone starts here. The work begins.',
   adept:    'You have found your rhythm. Steady now.',

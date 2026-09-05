@@ -177,7 +177,7 @@ const Certificates = () => {
         <>
           <SectionBoundary name="By the numbers">
             <section className="py-6" style={{ borderBottom: `1px solid ${HAIRLINE}` }}>
-              <div className="grid grid-cols-3" style={{ border: `1px solid ${HAIRLINE}` }}>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <Stat label="Certificates" value={earned.length} tone="warning" />
                 <Stat label="Lessons behind them" value={lessonsBehind} />
                 <Stat label="Near the finish" value={inFlight.length} last />

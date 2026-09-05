@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { Swords } from 'lucide-react';
 import PactHallTable from '../../components/pact/PactHall';
 import PactPulse from '../../components/pact/PactPulse';
 import RivalWatch from '../../components/pact/RivalWatch';
@@ -13,27 +14,11 @@ import {
     MentorBackLink,
     MentorEyebrow,
     MentorTitle,
-    MentorDeck,
     MentorStat,
     MentorTag,
 } from '../../components/pact/MentorEditorial';
+import { StudioMasthead, StudioPanel } from '../../soul/studio/surfaces';
 
-/**
- * PactHall (page) — the mentor's weekly Roll.
- *
- * The page is laid out as an editorial issue:
- *
- *   I.   Masthead          — eyebrow + Poppins title + deck
- *   II.  League Rail       — the 6 divisions with the caller's stand
- *   III. Monday Dispatch   — last week's results, when fresh
- *   IV.  This week         — Pact Pulse + Rivals + Roll side-by-side
- *   V.   Standing          — 4-cell stat strip + Pact Score + Steady Shield
- *   VI.  Recent weeks      — typeset history table
- *
- * Every section is separated by a 1px hairline. No gradient text,
- * no glass-card-glow, no HolographicCard. The composition reads
- * like a private-club newsletter, not a gamified leaderboard.
- */
 const PactHallPage = () => {
     const { data: me } = usePactMe();
     const { data: history = [] } = usePactHistory(12);
@@ -53,24 +38,36 @@ const PactHallPage = () => {
                     <MentorBackLink to="/mentor/observatory">Observatory</MentorBackLink>
                 </div>
 
-                {/* ── I. Masthead ───────────────────────────────────────── */}
-                <motion.header
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                <StudioMasthead
+                    eyebrow="The Mentor Pact · Weekly"
+                    Icon={Swords}
+                    title="The Pact Roll"
+                    deck="A private register of the week. Your group, your rivals, your standing — set in the same composition each Monday morning and read through the following seven days."
                 >
-                    <MentorEyebrow>The Mentor Pact · Weekly</MentorEyebrow>
-                    <div className="mt-2.5">
-                        <MentorTitle size="xl">The Pact Roll</MentorTitle>
-                    </div>
-                    <div className="mt-2 max-w-2xl">
-                        <MentorDeck>
-                            A private register of the week. Your group, your rivals, your
-                            standing — set in the same composition each Monday morning and
-                            read through the following seven days.
-                        </MentorDeck>
-                    </div>
-                </motion.header>
+                    {rank ? (
+                        <div className="text-right">
+                            <div
+                                className="font-mono uppercase"
+                                style={{ fontSize: '0.54rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.45)' }}
+                            >
+                                Standing
+                            </div>
+                            <div
+                                className="mt-1 tabular-nums"
+                                style={{
+                                    fontFamily: 'var(--font-display)', fontWeight: 800,
+                                    fontSize: 'clamp(1.6rem, 3vw, 2.1rem)', lineHeight: 1,
+                                    letterSpacing: '-0.035em', color: 'var(--text-primary)',
+                                }}
+                            >
+                                {rank}
+                                <span style={{ fontSize: '0.9rem', color: 'rgba(245,245,245,0.45)' }}>
+                                    {groupSize ? ` / ${groupSize}` : ''}
+                                </span>
+                            </div>
+                        </div>
+                    ) : null}
+                </StudioMasthead>
 
                 {/* ── II. League Rail ───────────────────────────────────── */}
                 <motion.section
@@ -131,10 +128,7 @@ const PactHallPage = () => {
                             <MentorTitle size="md">The numbers beneath the page</MentorTitle>
                         </div>
                     </div>
-                    <div
-                        className="grid grid-cols-2 md:grid-cols-4"
-                        style={{ border: '1px solid rgba(255,255,255,0.10)', borderTop: 'none' }}
-                    >
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         <MentorStat
                             label="Division"
                             value={<PactBadge size={26} tier={me?.pact?.divisionId} withLabel={false} />}
@@ -151,45 +145,33 @@ const PactHallPage = () => {
                             value={rank ? String(rank).padStart(2, '0') : '—'}
                             hint={groupSize ? `of ${groupSize} in your group` : 'Group not yet assigned'}
                         />
-                        <div
-                            className="px-3 md:px-5 py-3"
-                            style={{ borderRight: 'none' }}
-                        >
-                            <div
-                                style={{
-                                    fontFamily: 'var(--font-editorial)',
-                                    fontWeight: 700,
-                                    fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
-                                    lineHeight: 0.95,
-                                    letterSpacing: '-0.025em',
-                                    color: heldWeeks >= 4 ? 'rgba(251,191,36,1)' : 'rgba(245,245,245,0.85)',
-                                }}
-                            >
-                                {heldWeeks}<span style={{ fontFamily: 'var(--font-serif)', fontSize: '0.8em', marginLeft: 4 }}>w</span>
-                            </div>
+                        <StudioPanel radius={18} className="px-4 pt-3.5 pb-3.5">
                             <div
                                 className="font-mono uppercase"
-                                style={{
-                                    fontSize: '0.60rem',
-                                    letterSpacing: '0.22em',
-                                    fontWeight: 700,
-                                    color: 'rgba(245,245,245,0.55)',
-                                    marginTop: 6,
-                                }}
+                                style={{ fontSize: '0.58rem', letterSpacing: '0.2em', fontWeight: 700, color: 'rgba(245,245,245,0.5)' }}
                             >
                                 Held in division
                             </div>
                             <div
+                                className="mt-1.5"
                                 style={{
-                                    fontFamily: 'var(--font-serif)',
-                                    color: 'rgba(245,245,245,0.55)',
-                                    fontSize: '0.85rem',
-                                    marginTop: 4,
+                                    fontFamily: 'var(--font-display)',
+                                    fontWeight: 800,
+                                    fontSize: 'clamp(1.7rem, 3vw, 2.3rem)',
+                                    lineHeight: 1,
+                                    letterSpacing: '-0.035em',
+                                    color: heldWeeks >= 4 ? 'rgba(251,191,36,1)' : 'var(--text-primary)',
                                 }}
+                            >
+                                {heldWeeks}<span style={{ fontSize: '0.55em', marginLeft: 3, color: 'rgba(245,245,245,0.5)' }}>w</span>
+                            </div>
+                            <div
+                                className="mt-1 text-[11px] leading-snug"
+                                style={{ fontFamily: 'var(--font-sans)', color: 'rgba(245,245,245,0.45)' }}
                             >
                                 {heldWeeks >= 4 ? 'The Shield is yours' : `${Math.max(0, 4 - heldWeeks)} week${4 - heldWeeks === 1 ? '' : 's'} to go`}
                             </div>
-                        </div>
+                        </StudioPanel>
                     </div>
                 </motion.section>
 

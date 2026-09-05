@@ -3,15 +3,6 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { tierById } from '../../services/pact';
 
-/**
- * RivalWatch — the 2-above / 2-below widget.
- *
- * Renamed visually to "Rivals" in the eyebrow; the file keeps the
- * historical name so the existing imports continue to work. Renders
- * the 5-member slice of the leaderboard centered on the caller as
- * a small typeset list with hairlines, the tier dot, and tabular
- * numerals. Tapping a rival opens their public profile.
- */
 const RivalWatch = () => {
     const { data: me } = usePactMe();
     const { data: rivals = [] } = usePactRivals();

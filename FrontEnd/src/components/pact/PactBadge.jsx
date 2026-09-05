@@ -1,20 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import pact, { tierById } from '../../services/pact';
 
-/**
- * PactBadge — the 6-tier covenant mark.
- *
- * A small insignia with a tier-specific glyph and color. The label
- * is set in mono caps (not a colored chip); the glyph is a 24×24
- * stroke-only mark that reads like a seal, not a sticker. The
- * shield ring (Steady Shield, 4+ held weeks) is a 1.5px hairline
- * ring that rotates slowly — the only motion on the component.
- *
- * Three lookup modes:
- *   - tier prop wins (caller knows the tier)
- *   - userId prop  → /pact/user/:id (public-by-id)
- *   - neither      → /pact/me (caller's own)
- */
 const PactBadge = ({ size = 28, userId, tier: tierProp, steadyShieldWeeks = 0, withLabel = false, withShield = true }) => {
     const useCaller = !userId && !tierProp;
 

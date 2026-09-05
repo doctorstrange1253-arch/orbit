@@ -1,11 +1,3 @@
-/**
- * Earnings.jsx — Mentor window → /mentor/earnings.
- *
- * V3 — fully editorial. The masthead is set in Poppins
- * italic; every panel drops HolographicCard and glass-card-glow
- * for a 1px-hairline treatment. The earnings ledger is a typeset
- * table with mono caps for column headers and tabular numerals.
- */
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -13,7 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import {
     IndianRupee, Wallet, AlertCircle,
-    Calendar, ArrowRight,
+    Calendar, ArrowRight, Hourglass, CalendarDays,
 } from 'lucide-react';
 import api from '../../services/api';
 import ErrorState from '../../components/common/ErrorState';
@@ -21,11 +13,10 @@ import { describeApiError } from '../../services/apiError';
 import EmptyState from '../../components/common/EmptyState';
 import {
     MentorEyebrow,
-    MentorTitle,
-    MentorDeck,
     MentorStat,
     MentorTag,
 } from '../../components/pact/MentorEditorial';
+import { StudioMasthead, StudioPanel } from '../../soul/studio/surfaces';
 
 const STATUS_TONE = {
     pending_payment: 'warning',
@@ -67,6 +58,22 @@ const Earnings = () => {
             .reduce((sum, s) => sum + (Number(s.mentorPayoutInr) || 0), 0);
     }, [bookings]);
 
+    const monthSeries = useMemo(() => {
+        const buckets = [0, 0, 0, 0, 0, 0];
+        if (!Array.isArray(bookings)) return buckets;
+        const now = new Date();
+        const monthIndex = (d) => d.getFullYear() * 12 + d.getMonth();
+        const nowIdx = monthIndex(now);
+        for (const s of bookings) {
+            if (s.status !== 'completed') continue;
+            const at = new Date(s.scheduledAt);
+            const back = nowIdx - monthIndex(at);
+            if (back < 0 || back > 5) continue;
+            buckets[5 - back] += Number(s.mentorPayoutInr) || 0;
+        }
+        return buckets;
+    }, [bookings]);
+
     const recent = useMemo(() => {
         return (bookings || [])
             .filter((s) => s.status === 'completed')
@@ -106,54 +113,71 @@ const Earnings = () => {
         <div className="max-w-3xl mx-auto px-4 py-10 space-y-10">
             <Helmet><title>Earnings · Orbit Mentor</title></Helmet>
 
-            <motion.header
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            <StudioMasthead
+                eyebrow="Mentor · The Ledger"
+                Icon={Wallet}
+                title="What you have earned"
+                deck="Paid out after each session completes. Pending clears within 24 hours."
             >
-                <div className="flex items-center gap-2 mb-3">
-                    <Wallet size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
-                    <MentorEyebrow>Mentor · The Ledger</MentorEyebrow>
-                </div>
-                <MentorTitle size="xl">What you have earned</MentorTitle>
-                <div className="mt-2 max-w-2xl">
-                    <MentorDeck>
-                        Paid out after each session completes. Pending clears within 24 hours.
-                    </MentorDeck>
-                </div>
-            </motion.header>
+                {profile && !isPending && (
+                    <div className="text-right">
+                        <div
+                            className="font-mono uppercase"
+                            style={{ fontSize: '0.54rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.45)' }}
+                        >
+                            Lifetime
+                        </div>
+                        <div
+                            className="mt-1 tabular-nums"
+                            style={{
+                                fontFamily: 'var(--font-display)', fontWeight: 800,
+                                fontSize: 'clamp(1.6rem, 3vw, 2.1rem)', lineHeight: 1,
+                                letterSpacing: '-0.035em', color: 'var(--text-primary)',
+                            }}
+                        >
+                            ₹{formatInr(earnings.totalInr)}
+                        </div>
+                    </div>
+                )}
+            </StudioMasthead>
 
             {!profile || isPending ? (
-                <motion.section
+                <StudioPanel radius={22} as={motion.section} className="text-center overflow-hidden"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
-                    className="text-center"
-                    style={{
-                        border: '1px solid rgba(255,255,255,0.10)',
-                        borderTop: '1px solid rgba(255,255,255,0.20)',
-                        padding: '36px 24px',
-                    }}
+                    style={{ padding: '40px 24px' }}
                 >
-                    <AlertCircle size={28} className="mx-auto" style={{ color: 'rgba(245,245,245,0.40)' }} />
-                    <h2
-                        className="mt-3"
+                    <span
+                        className="inline-flex items-center justify-center"
                         style={{
-                            fontFamily: 'var(--font-editorial)',
-                            fontWeight: 700,
+                            width: 52, height: 52, borderRadius: 16,
+                            background: 'color-mix(in oklab, var(--studio-from) 16%, transparent)',
+                            border: '1px solid color-mix(in oklab, var(--studio-from) 30%, transparent)',
+                            color: 'var(--studio-from)',
+                        }}
+                    >
+                        <AlertCircle size={24} />
+                    </span>
+                    <h2
+                        className="mt-4"
+                        style={{
+                            fontFamily: 'var(--font-display)',
+                            fontWeight: 800,
                             fontSize: '1.6rem',
+                            letterSpacing: '-0.03em',
                             color: 'var(--text-primary)',
                         }}
                     >
                         No earnings yet
                     </h2>
                     <p
-                        className="mt-2 text-sm max-w-md mx-auto"
+                        className="mt-2 max-w-md mx-auto"
                         style={{
-                            fontFamily: 'var(--font-serif)',
-                            color: 'rgba(245,245,245,0.65)',
-                            fontSize: '1.02rem',
-                            lineHeight: 1.5,
+                            fontFamily: 'var(--font-sans)',
+                            color: 'rgba(245,245,245,0.62)',
+                            fontSize: '0.95rem',
+                            lineHeight: 1.6,
                         }}
                     >
                         {isPending
@@ -164,18 +188,19 @@ const Earnings = () => {
                         to="/mentor/hub"
                         className="inline-flex items-center gap-2 mt-6 font-mono uppercase"
                         style={{
-                            fontSize: '0.66rem',
-                            letterSpacing: '0.22em',
+                            fontSize: '0.62rem',
+                            letterSpacing: '0.20em',
                             fontWeight: 700,
-                            color: 'var(--text-primary)',
+                            color: '#0d0c1c',
+                            background: 'var(--studio-gradient)',
+                            borderRadius: 999,
+                            padding: '11px 18px',
                             textDecoration: 'none',
-                            borderBottom: '1px solid rgba(255,255,255,0.30)',
-                            paddingBottom: 4,
                         }}
                     >
                         Go to Mentor Hub <ArrowRight size={11} />
                     </Link>
-                </motion.section>
+                </StudioPanel>
             ) : (
                 <>
                     <motion.section
@@ -186,31 +211,32 @@ const Earnings = () => {
                         <div className="mb-3">
                             <MentorEyebrow>I · The Totals</MentorEyebrow>
                         </div>
-                        <div
-                            className="grid grid-cols-1 md:grid-cols-3"
-                            style={{ border: '1px solid rgba(255,255,255,0.10)' }}
-                        >
-                            <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}>
-                                <MentorStat
-                                    label="Lifetime"
-                                    value={`₹${formatInr(earnings.totalInr)}`}
-                                    tone="success"
-                                />
-                            </div>
-                            <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}>
-                                <MentorStat
-                                    label="Pending payout"
-                                    value={`₹${formatInr(earnings.pendingInr)}`}
-                                    tone="warning"
-                                />
-                            </div>
-                            <div>
-                                <MentorStat
-                                    label="This month"
-                                    value={`₹${formatInr(thisMonth)}`}
-                                    tone="accent"
-                                />
-                            </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <MentorStat
+                                index={0}
+                                Icon={Wallet}
+                                label="Lifetime"
+                                value={`₹${formatInr(earnings.totalInr)}`}
+                                tone="success"
+                                hint="Everything you have ever earned"
+                            />
+                            <MentorStat
+                                index={1}
+                                Icon={Hourglass}
+                                label="Pending payout"
+                                value={`₹${formatInr(earnings.pendingInr)}`}
+                                tone="warning"
+                                hint="Sitting in escrow until release"
+                            />
+                            <MentorStat
+                                index={2}
+                                Icon={CalendarDays}
+                                label="This month"
+                                value={`₹${formatInr(thisMonth)}`}
+                                tone="accent"
+                                hint={monthSeries.some(Boolean) ? 'Last six months' : 'Nothing settled this month'}
+                                series={monthSeries}
+                            />
                         </div>
                         {profile.payoutMultiplier && profile.payoutMultiplier !== 1 && (
                             <div
@@ -246,13 +272,8 @@ const Earnings = () => {
                         <div className="mb-3">
                             <MentorEyebrow>II · Released vs Pending</MentorEyebrow>
                         </div>
-                        <div
-                            style={{
-                                border: '1px solid rgba(255,255,255,0.10)',
-                                padding: '20px 22px',
-                            }}
-                        >
-                            <div className="h-3 overflow-hidden flex" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                        <StudioPanel radius={18} style={{ padding: '20px 22px' }}>
+                            <div className="h-3 overflow-hidden flex" style={{ borderRadius: 999, background: 'rgba(255,255,255,0.06)' }}>
                                 {(() => {
                                     const total = Math.max(1, earnings.totalInr);
                                     const releasedPct = (earnings.releasedInr / total) * 100;
@@ -286,7 +307,7 @@ const Earnings = () => {
                                     <span className="w-2 h-2 rounded-full" style={{ background: 'rgba(251,191,36,1)' }} />
                                 </div>
                             </div>
-                        </div>
+                        </StudioPanel>
                     </motion.section>
 
                     <motion.section
@@ -297,8 +318,15 @@ const Earnings = () => {
                         <div className="flex items-end justify-between mb-3 gap-3 flex-wrap">
                             <div>
                                 <MentorEyebrow>III · Recent Payouts</MentorEyebrow>
-                                <div className="mt-1.5">
-                                    <MentorTitle size="md">Completed sessions</MentorTitle>
+                                <div
+                                    className="mt-1.5"
+                                    style={{
+                                        fontFamily: 'var(--font-display)', fontWeight: 800,
+                                        fontSize: 'clamp(1.35rem, 2.5vw, 1.75rem)', lineHeight: 1.1,
+                                        letterSpacing: '-0.03em', color: 'var(--text-primary)',
+                                    }}
+                                >
+                                    Completed sessions
                                 </div>
                             </div>
                             <Link
@@ -318,25 +346,15 @@ const Earnings = () => {
                             </Link>
                         </div>
                         {recent.length === 0 ? (
-                            <div
-                                style={{
-                                    border: '1px solid rgba(255,255,255,0.10)',
-                                    padding: '20px 22px',
-                                }}
-                            >
+                            <StudioPanel radius={18} style={{ padding: '8px 22px' }}>
                                 <EmptyState
                                     icon={<Calendar className="w-8 h-8" />}
                                     title="No completed sessions yet"
                                     message="Once a student finishes a session with you, the payout will appear here."
                                 />
-                            </div>
+                            </StudioPanel>
                         ) : (
-                            <div
-                                style={{
-                                    border: '1px solid rgba(255,255,255,0.10)',
-                                    padding: '0 22px',
-                                }}
-                            >
+                            <StudioPanel radius={18} style={{ padding: '0 22px' }}>
                                 <ul>
                                     {recent.map((s) => {
                                         const tone = STATUS_TONE[s.status] || 'neutral';
@@ -351,10 +369,12 @@ const Earnings = () => {
                                                         <MentorTag tone={tone}>{s.status.replace("_", " ")}</MentorTag>
                                                     </div>
                                                     <div
-                                                        className="font-semibold truncate"
+                                                        className="truncate"
                                                         style={{
-                                                            fontFamily: 'var(--font-serif)',
-                                                            fontSize: '1.05rem',
+                                                            fontFamily: 'var(--font-display)',
+                                                            fontWeight: 700,
+                                                            fontSize: '1rem',
+                                                            letterSpacing: '-0.015em',
                                                             color: 'var(--text-primary)',
                                                         }}
                                                     >
@@ -388,7 +408,7 @@ const Earnings = () => {
                                         );
                                     })}
                                 </ul>
-                            </div>
+                            </StudioPanel>
                         )}
                     </motion.section>
                 </>

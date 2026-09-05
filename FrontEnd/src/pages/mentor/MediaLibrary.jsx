@@ -10,7 +10,6 @@ import {
 } from 'lucide-react';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
 import { courses } from '../../services/courses';
-import { surfaceRecipe, borderTint } from '../../soul/tints';
 import {
   StudioMasthead, StudioStat, StudioPanel, Reveal, studioSurface,
 } from '../../soul/studio/surfaces';
@@ -218,16 +217,11 @@ const MediaLibrary = () => {
     const byCourse = {};
     for (const it of items) byCourse[it.courseId] = (byCourse[it.courseId] || 0) + 1;
 
-    // Per-course video counts, longest shelf first, capped so the bar row
-    // stays legible on a mentor with thirty courses.
     const perCourse = Object.values(byCourse).sort((a, b) => b - a).slice(0, 10);
 
-    // How many of the mentor's courses actually carry video. The remainder
-    // draw as empty track, which is the point: it shows the gap.
     const withVideo = Object.keys(byCourse).length;
     const coverage = myCourses.slice(0, 10).map((c) => (byCourse[c._id] ? byCourse[c._id] : 0));
 
-    // Duration spread in five buckets: <2m, 2-5m, 5-10m, 10-20m, 20m+.
     const buckets = [0, 0, 0, 0, 0];
     for (const it of items) {
       const m = (it.durationSec || 0) / 60;
@@ -453,12 +447,13 @@ const MediaLibrary = () => {
 
         <AnimatePresence>
           {queue.length > 0 && (
-            <motion.section
+            <StudioPanel
+              as={motion.section}
+              radius={20}
+              className="mb-5 p-4"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              className="mb-5 rounded-2xl p-4"
-              style={{ ...surfaceRecipe('mentor'), border: borderTint({ from: '#a78bfa', to: '#3b82f6' }, 24) }}
             >
               <div className="flex items-center gap-2 mb-3">
                 <GripVertical className="w-4 h-4 text-text-muted" />
@@ -493,7 +488,7 @@ const MediaLibrary = () => {
                   />
                 ))}
               </div>
-            </motion.section>
+            </StudioPanel>
           )}
         </AnimatePresence>
 
@@ -589,7 +584,7 @@ const QueueRow = ({ entry, courses: courseList, onUpdate, onRemove }) => {
   const done = entry.status === 'done';
   const errored = entry.status === 'error';
   return (
-    <div className="rounded-xl border border-border-subtle bg-surface/20 p-3">
+    <div className="p-3" style={{ borderRadius: 14, background: 'rgba(255,255,255,0.035)', border: '1px solid rgba(255,255,255,0.09)' }}>
       <div className="flex items-center gap-3">
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
           done ? 'bg-emerald-500/15 text-emerald-300' : errored ? 'bg-rose-500/15 text-rose-300' : 'bg-accent/15 text-accent'
@@ -777,7 +772,13 @@ const DeleteModal = ({ item, onClose, onConfirm, pending }) => (
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.95, opacity: 0 }}
       onClick={(e) => e.stopPropagation()}
-      className="w-full max-w-sm rounded-2xl p-5 bg-surface border border-border-subtle"
+      className="w-full max-w-sm"
+      style={{
+        borderRadius: 20, padding: 20,
+        background: 'linear-gradient(180deg, #16142c 0%, #0d0c1c 100%)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: '0 40px 90px -50px rgba(0,0,0,0.9)',
+      }}
     >
       <div className="flex items-center gap-2 mb-2">
         <AlertTriangle className="w-5 h-5 text-rose-300" />

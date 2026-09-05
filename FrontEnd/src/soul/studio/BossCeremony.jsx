@@ -1,20 +1,3 @@
-/**
- * soul/studio/BossCeremony.jsx — The 1.2s Boss Level opening ceremony.
- *
- * Plays when a student taps a boss node. Three beats:
- *
- *   0.0s  - 0.4s : Golden ring expands from center (scale 0.2 → 5.0,
- *                   opacity 0.9 → 0.2). Plays a low-frequency bass
- *                   swell (SoulSound.bossLevel).
- *   0.4s  - 0.8s : "BOSS" eyebrow + lesson title fade in centered.
- *   0.8s  - 1.2s : Vignette darkens; "Begin" hint appears.
- *
- * At 1.2s, fires onDone. The parent navigates to the boss lesson.
- * Escape cancels.
- *
- * Reduced-motion: a 200ms cross-fade, no ring, no sound.
- */
-
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Crown } from 'lucide-react';
@@ -29,7 +12,6 @@ const _isReducedMotion = () => {
 const BossCeremony = ({ lesson, onDone, onCancel }) => {
   const reduced = _isReducedMotion();
 
-  // Fire sound + haptic once on mount.
   useEffect(() => {
     if (reduced) return;
     SoulSound.bossLevel();

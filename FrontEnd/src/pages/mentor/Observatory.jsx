@@ -1,21 +1,3 @@
-/**
- * pages/mentor/Observatory.jsx — The Mentor Soul Home (V3).
- *
- * The page reads as an editorial observatory, not a dashboard:
- *
- *   I.   Masthead          — eyebrow + Poppins title + deck
- *   II.  League Rail       — the 6 divisions with the caller's stand
- *   III. Luminosity Star   — the mentor's signature (centered, calm)
- *   IV.  Star Map          — students as points of light (canvas)
- *   V.   The Roll          — current week's group leaderboard
- *   VI.  Pulse + Rivals    — V2 widgets, restyled
- *   VII. Quick links       — course list, public profile
- *
- * No gradient h1, no glass-card-glow panels, no HolographicCard.
- * The masthead is set in Poppins; every section is
- * separated by a 1px hairline.
- */
-
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -35,9 +17,9 @@ import HonoursStrip from '../../components/mentor/HonoursStrip';
 import {
     MentorEyebrow,
     MentorTitle,
-    MentorDeck,
     MentorTag,
 } from '../../components/pact/MentorEditorial';
+import { StudioMasthead } from '../../soul/studio/surfaces';
 import api from '../../services/api';
 
 const STATE_META = {
@@ -98,18 +80,12 @@ const Observatory = () => {
     return (
       <div className="space-y-7">
         <Helmet><title>The Observatory | Orbit</title></Helmet>
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <Telescope size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
-            <MentorEyebrow>Mentor · The Observatory</MentorEyebrow>
-          </div>
-          <MentorTitle size="xl">{meta.title}</MentorTitle>
-          <div className="mt-2 max-w-2xl">
-            <MentorDeck>
-              Your observatory unlocks once your mentor application is approved.
-            </MentorDeck>
-          </div>
-        </div>
+        <StudioMasthead
+          eyebrow="Mentor · The Observatory"
+          Icon={Telescope}
+          title={meta.title}
+          deck="Your observatory unlocks once your mentor application is approved."
+        />
         <div
           className="text-center"
           style={{
@@ -163,24 +139,19 @@ const Observatory = () => {
 
       {/* ── I. Masthead ───────────────────────────────────────────── */}
       <div>
-        <div className="flex items-center gap-2 mb-3">
-          <Telescope size={14} style={{ color: 'rgba(245,245,245,0.55)' }} />
-          <MentorEyebrow>Mentor · The Observatory</MentorEyebrow>
-          <span className="ml-1">
-            <MentorTag tone="success">
-              <CheckCircle size={9} style={{ marginRight: 4, display: 'inline-block' }} />
-              {STATE_META.approved.chip}
-            </MentorTag>
-          </span>
-        </div>
-        <MentorTitle size="xl">The Observatory</MentorTitle>
-        <div className="mt-2 max-w-2xl">
-          <MentorDeck>
-            {students.length === 0
-              ? 'Your first star is one booking away.'
-              : `${students.length} student${students.length === 1 ? '' : 's'} on your map. Their movements draw the sky you watch over.`}
-          </MentorDeck>
-        </div>
+        <StudioMasthead
+          eyebrow="Mentor · The Observatory"
+          Icon={Telescope}
+          title="The Observatory"
+          deck={students.length === 0
+            ? 'Your first star is one booking away.'
+            : `${students.length} student${students.length === 1 ? '' : 's'} on your map. Their movements draw the sky you watch over.`}
+        >
+          <MentorTag tone="success">
+            <CheckCircle size={9} style={{ marginRight: 4, display: 'inline-block' }} />
+            {STATE_META.approved.chip}
+          </MentorTag>
+        </StudioMasthead>
         <div className="mt-4">
           <Link
             to="/mentor/courses/new"

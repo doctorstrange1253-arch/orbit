@@ -67,9 +67,6 @@ export function Reveal({ children, index = 0, className = '', style = {} }) {
   );
 }
 
-// A bar row that reads as a distribution rather than a decoration: every
-// segment is a real share of `values`, and an empty series still draws the
-// track so the cell never collapses to a bare zero.
 export function Sparkbars({ values = [], height = 26, gap = 3, tone }) {
   const max = Math.max(1, ...values.map((v) => Number(v) || 0));
   const bars = values.length ? values : [0, 0, 0, 0, 0, 0];
@@ -151,8 +148,6 @@ export function StudioStat({ label, value, hint, Icon, series, index = 0, tone }
   );
 }
 
-// The page masthead. An aurora wash and a hairline horizon behind the title
-// so the header reads as a band rather than text floating on the starfield.
 export function StudioMasthead({ eyebrow, Icon, title, deck, children, soul = 'mentor', index = 0 }) {
   return (
     <Reveal index={index}>

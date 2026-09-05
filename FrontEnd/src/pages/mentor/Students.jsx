@@ -7,13 +7,13 @@ import api from '../../services/api';
 import SectionBoundary from '../../soul/editorial/SectionBoundary';
 import {
     MentorBackLink,
-    MentorEyebrow,
     MentorTitle,
     MentorDeck,
     MentorDotLeader,
     MentorStat,
     MentorTag,
 } from '../../components/pact/MentorEditorial';
+import { StudioMasthead } from '../../soul/studio/surfaces';
 
 const HAIRLINE = 'rgba(255,255,255,0.10)';
 const HAIRLINE_SOFT = 'rgba(255,255,255,0.06)';
@@ -215,19 +215,12 @@ const Students = () => {
                 <MentorBackLink to="/mentor/observatory">Observatory</MentorBackLink>
             </div>
 
-            <header className="pb-8" style={{ borderBottom: `1px solid ${HAIRLINE}` }}>
-                <div className="flex items-center gap-2 mb-3">
-                    <Users2 size={14} style={{ color: MUTED }} />
-                    <MentorEyebrow>Mentor · The Roll</MentorEyebrow>
-                </div>
-                <MentorTitle size="xl">Everyone you are teaching</MentorTitle>
-                <div className="mt-3 max-w-2xl">
-                    <MentorDeck>
-                        The Observatory renders these people as points of light. This is the same
-                        set, readable — one row per learner across all of your courses.
-                    </MentorDeck>
-                </div>
-            </header>
+            <StudioMasthead
+                eyebrow="Mentor · The Roll"
+                Icon={Users2}
+                title="Everyone you are teaching"
+                deck="The Observatory renders these people as points of light. This is the same set, readable — one row per learner across all of your courses."
+            />
 
             {isLoading ? (
                 <p
@@ -265,7 +258,7 @@ const Students = () => {
                 <>
                     <SectionBoundary name="By the numbers">
                         <section className="py-6" style={{ borderBottom: `1px solid ${HAIRLINE}` }}>
-                            <div className="grid grid-cols-2 md:grid-cols-4" style={{ border: `1px solid ${HAIRLINE}` }}>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                 <MentorStat label="Learners" value={stats.total} />
                                 <MentorStat label="Avg progress" value={`${stats.avg}%`} />
                                 <MentorStat label="Have finished" value={stats.finished} tone="success" />

@@ -1,17 +1,3 @@
-/**
- * soul/studio/BossNode.jsx — A boss-level checkpoint on the Course Map.
- *
- * Visually distinct from a LessonNode: wider (oval), golden ringed, with
- * a "BOSS" label. Click → fires onPick(lesson) which the parent uses to
- * trigger the Boss Ceremony (1.2s golden ring + bass) before opening
- * the player.
- *
- * The boss node sits at the end of a module (or the end of the course
- * if there's no module structure). Its presence is data-driven: a lesson
- * with `isBoss: true` in the Course schema renders as a BossNode rather
- * than a LessonNode.
- */
-
 import { motion } from 'framer-motion';
 import { Crown, Lock } from 'lucide-react';
 import { useSoul } from '../../hooks/useSoul';

@@ -1,18 +1,3 @@
-/**
- * soul/studio/VideoArrival.jsx — The 600ms "video arrival" animation.
- *
- * When a student taps a lesson node on the Course Map, the node
- * "consumes" the viewport (transform: scale 1.0 → 5.0, fade) over
- * 600ms. The parent fires onDone at 620ms, which navigates to the
- * player route.
- *
- * This is a faster, local version of the CameraZoom (V3-B's transit
- * from the planet into the course). Same vocabulary — "the lesson
- * arrives" — but the scale is smaller and the duration shorter.
- *
- * Reduced-motion: 200ms cross-fade, then onDone.
- */
-
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play } from 'lucide-react';
@@ -35,7 +20,6 @@ const VideoArrival = ({ sourceRect, lesson, onDone, onCancel }) => {
     return () => clearTimeout(t);
   }, [sourceRect, reduced, onDone]);
 
-  // Escape key dismisses.
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onCancel?.(); };
     document.addEventListener('keydown', onKey);

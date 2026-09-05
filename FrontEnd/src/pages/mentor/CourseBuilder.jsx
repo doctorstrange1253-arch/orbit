@@ -1,17 +1,13 @@
 import { useState, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { Plus, Save, Upload, Video, X, ChevronDown, ChevronRight, Trash2, Sparkles, Loader2 } from 'lucide-react';
+import { Plus, Save, Upload, Video, X, ChevronDown, ChevronRight, Trash2, Sparkles, Loader2, BookOpen } from 'lucide-react';
 import { courses } from '../../services/courses';
 import { proposeLevel, isStubProposal } from '../../services/ai';
 import GenrePicker from '../../components/taxonomy/GenrePicker';
-import {
-    MentorBackLink,
-    MentorEyebrow,
-    MentorTitle,
-} from '../../components/pact/MentorEditorial';
+import { MentorBackLink } from '../../components/pact/MentorEditorial';
+import { StudioMasthead, StudioPanel } from '../../soul/studio/surfaces';
 
 const blankLesson = () => ({
     _tempId: `tmp_${Math.random().toString(36).slice(2, 8)}`,
@@ -123,16 +119,12 @@ const CourseBuilder = () => {
                 <MentorBackLink to="/mentor/courses">My courses</MentorBackLink>
             </div>
 
-            <motion.header
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            >
-                <MentorEyebrow>Mentor · New course</MentorEyebrow>
-                <div className="mt-2">
-                    <MentorTitle size="xl">Begin a new course</MentorTitle>
-                </div>
-            </motion.header>
+            <StudioMasthead
+                eyebrow="Mentor · New course"
+                Icon={BookOpen}
+                title="Begin a new course"
+                deck="Four steps: the promise, the shape, the lessons, the release."
+            />
 
             <ol className="flex items-center gap-2 mb-2 flex-wrap">
                 {STEPS.map((s, i) => {
@@ -165,7 +157,7 @@ const CourseBuilder = () => {
                 })}
             </ol>
 
-            <div style={{ border: '1px solid rgba(255,255,255,0.10)', padding: '20px 22px' }}>
+            <StudioPanel radius={20} style={{ padding: '22px 24px' }}>
                 {step === 0 && (
                     <div className="space-y-3">
                         <Field label="Title">
@@ -294,7 +286,7 @@ const CourseBuilder = () => {
                         </p>
                     </div>
                 )}
-            </div>
+            </StudioPanel>
 
             <div className="flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.10)', paddingTop: 16 }}>
                 <button
@@ -348,16 +340,18 @@ const CourseBuilder = () => {
                             tags: state.tags,
                         })}
                         disabled={create.isPending}
-                        className="inline-flex items-center gap-2 font-mono uppercase"
+                        className="inline-flex items-center gap-2 font-mono uppercase transition-transform duration-200 hover:scale-[1.03]"
                         style={{
                             fontSize: '0.62rem',
-                            letterSpacing: '0.22em',
+                            letterSpacing: '0.20em',
                             fontWeight: 700,
-                            color: 'var(--text-primary)',
-                            background: 'transparent',
-                            border: '1px solid rgba(255,255,255,0.30)',
-                            padding: '8px 14px',
+                            color: '#0d0c1c',
+                            background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))',
+                            border: 'none',
+                            borderRadius: 999,
+                            padding: '11px 18px',
                             cursor: 'pointer',
+                            opacity: create.isPending ? 0.6 : 1,
                         }}
                     >
                         <Save size={11} /> {create.isPending ? 'Saving…' : 'Save draft'}

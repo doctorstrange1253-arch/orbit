@@ -1,18 +1,3 @@
-/**
- * MentorHub.jsx — mentor-side dashboard at /mentor/hub.
- *
- * Single page, 5 application states driven by GET /api/sessions/mentor/me:
- *
- *   not_applied → Big pitch + the application form. CTA = submit form.
- *   submitted   → "Under review" + read-only summary of submitted fields.
- *   approved    → Earnings / rating / upcoming bookings dashboard.
- *   rejected    → Rejection reason + re-apply form pre-filled from prior.
- *   suspended   → Suspension reason + appeal instructions.
- *
- * V3 — fully editorial. The masthead is set in Poppins.
- * The state panels drop glass-card-glow and HolographicCard for a
- * 1px-hairline treatment that reads like a private-club roster.
- */
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
@@ -21,7 +6,7 @@ import { Link } from 'react-router-dom';
 import {
     GraduationCap, Clock, Calendar, Loader,
     XCircle, PauseCircle, IndianRupee as RupeeIcon, Edit3,
-    Eye, BookOpen, MessageSquare, ArrowRight,
+    Eye, BookOpen, MessageSquare, ArrowRight, Star, TrendingUp,
 } from 'lucide-react';
 import api from '../services/api';
 import { describeApiError, isRoleRequired } from '../services/apiError';
@@ -40,6 +25,16 @@ import {
     MentorStat,
     MentorTag,
 } from '../components/pact/MentorEditorial';
+
+function ratingSeries(rating) {
+    const avg = Number(rating?.average) || 0;
+    const count = Number(rating?.count) || 0;
+    if (!count) return [0, 0, 0, 0, 0];
+    return [1, 2, 3, 4, 5].map((star) => {
+        const distance = Math.abs(star - avg);
+        return Math.max(0, Math.round((1 - Math.min(1, distance / 2.5)) * count));
+    });
+}
 
 const STATE_META = {
     not_applied: {
@@ -187,8 +182,6 @@ const MentorHub = () => {
     );
 };
 
-// ── State views ────────────────────────────────────────────────────────────
-
 const Panel = ({ tone = 'neutral', children, className = '', style = {} }) => {
     const topColor =
         tone === 'warning' ? 'rgba(251,191,36,0.45)' :
@@ -282,31 +275,29 @@ const ApprovedView = ({ profile, earnings, upcomingBookings, hasStudentRole, onR
             <div className="mb-3">
                 <MentorEyebrow>I · The Standing</MentorEyebrow>
             </div>
-            <div
-                className="grid sm:grid-cols-3 gap-0"
-                style={{ border: '1px solid rgba(255,255,255,0.10)' }}
-            >
-                <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}>
-                    <MentorStat
-                        label="Lifetime earnings"
-                        value={`₹${earnings.totalInr || 0}`}
-                        hint={`Pending ₹${earnings.pendingInr || 0} · Released ₹${earnings.releasedInr || 0}`}
-                    />
-                </div>
-                <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}>
-                    <MentorStat
-                        label="Rating"
-                        value={(profile.rating?.average || 0).toFixed(1)}
-                        hint={`${profile.rating?.count || 0} reviews`}
-                    />
-                </div>
-                <div>
-                    <MentorStat
-                        label="Payout multiplier"
-                        value={`${Math.round((profile.payoutMultiplier || 0.85) * 100)}%`}
-                        hint={profile.ratingCutEligibleSince ? "Top tier unlocked" : "Top tier @ 4.8★ / 20+ ratings"}
-                    />
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <MentorStat
+                    index={0}
+                    Icon={RupeeIcon}
+                    label="Lifetime earnings"
+                    value={`₹${earnings.totalInr || 0}`}
+                    hint={`Pending ₹${earnings.pendingInr || 0} · Released ₹${earnings.releasedInr || 0}`}
+                />
+                <MentorStat
+                    index={1}
+                    Icon={Star}
+                    label="Rating"
+                    value={(profile.rating?.average || 0).toFixed(1)}
+                    hint={`${profile.rating?.count || 0} review${(profile.rating?.count || 0) === 1 ? '' : 's'}`}
+                    series={ratingSeries(profile.rating)}
+                />
+                <MentorStat
+                    index={2}
+                    Icon={TrendingUp}
+                    label="Payout multiplier"
+                    value={`${Math.round((profile.payoutMultiplier || 0.85) * 100)}%`}
+                    hint={profile.ratingCutEligibleSince ? 'Top tier unlocked' : 'Top tier at 4.8 stars and 20+ ratings'}
+                />
             </div>
         </div>
 
@@ -540,8 +531,6 @@ const SuspendedView = ({ profile }) => (
         </Panel>
     </motion.div>
 );
-
-// ── Shared bits ────────────────────────────────────────────────────────────
 
 const ReadOnlySummary = ({ profile }) => (
     <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4 mt-3">

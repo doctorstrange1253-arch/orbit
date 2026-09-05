@@ -4,20 +4,6 @@ import { X, ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import { useState } from 'react';
 import { usePactPulse, useMarkPactPulseSeen, usePactMe } from '../../hooks/usePact';
 
-/**
- * PactPulse — the Wednesday mid-week message widget.
- *
- * The pulse is read as a private dispatch from the Pact, not a
- * gamified notification. Eyebrow in mono caps, body in Open Sans
- * italic, and the rank in tabular numerals. The widget has a single
- * 1px hairline border, no gradient, no glow.
- *
- *   encourage  → "you can promote"  (green tone, up arrow)
- *   steady     → "hold the line"    (neutral, dash)
- *   caution    → "stay sharp"       (amber tone, down arrow)
- *
- * Dismissible per-week via /pact/pulse/seen.
- */
 const ARROW = {
   encourage: ArrowUp,
   steady:    Minus,

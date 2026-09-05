@@ -2,14 +2,6 @@ import { motion } from 'framer-motion';
 import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import { tierById, nextTierId, prevTierId } from '../../services/pact';
 
-/**
- * PactResultsCard — Monday morning end-of-week summary.
- *
- * Reads the latest weeklyHistory row and frames the past week as a
- * small dispatch from the Pact. Set as a single hairline card with
- * mono eyebrow + Poppins verdict. Steady Shield surfaces as
- * a separate mono tag when the mentor has held 4+ weeks.
- */
 const PactResultsCard = ({ history, me }) => {
     if (!Array.isArray(history) || history.length === 0) return null;
     const last = history[0];

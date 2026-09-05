@@ -7,6 +7,7 @@ import {
   ChevronLeft, Monitor, Camera, Mic, MicOff, Video, VideoOff,
   Trash2, Square, Circle as CircleIcon, Pause, Play, Bookmark,
   Scissors, AlertTriangle, Loader2, Eye, EyeOff, X, Columns2, User, PictureInPicture2,
+  Clapperboard,
 } from 'lucide-react';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
 import Teleprompter from '../../components/mentor/Teleprompter';
@@ -14,6 +15,7 @@ import RecorderReview from '../../components/mentor/RecorderReview';
 import { courses } from '../../services/courses';
 import { Haptic } from '../../soul/haptics';
 import { SoulSound } from '../../soul/soundLibrary';
+import { StudioMasthead, StudioPanel } from '../../soul/studio/surfaces';
 import { LAYOUTS, LAYOUT_LABEL, LAYOUT_TRANSITION_MS, resolveLayout, blendLayouts, drawCover, buildScript } from '../../studio/recorderStage';
 import { addCut, cutTotal } from '../../studio/cuts';
 
@@ -475,16 +477,12 @@ const Recorder = () => {
           <ChevronLeft className="w-3.5 h-3.5" /> My courses
         </Link>
 
-        <motion.header initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-          <div style={{ ...MICRO, color: 'var(--text-muted)' }}>The studio</div>
-          <h1 className="text-2xl md:text-3xl mt-1.5" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>
-            Orbit Recorder
-          </h1>
-          <p className="text-sm mt-1.5 max-w-xl" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-secondary)' }}>
-            Screen, camera and whiteboard composed in the browser. Mark chapters as you talk and each one saves as its own lesson.
-          </p>
-          <div className="h-px w-full mt-5" style={{ background: 'rgba(255,255,255,0.12)' }} />
-        </motion.header>
+        <StudioMasthead
+          eyebrow="Mentor · The Studio"
+          Icon={Clapperboard}
+          title="Orbit Recorder"
+          deck="Screen, camera and whiteboard composed in the browser. Mark chapters as you talk and each one saves as its own lesson."
+        />
 
         {error && (
           <div className="mb-4 px-3 py-2 inline-flex items-center gap-2 text-sm" style={{ border: '1px solid rgba(244,63,94,0.4)', color: '#fecdd3' }}>
@@ -494,7 +492,14 @@ const Recorder = () => {
 
         <div className="grid lg:grid-cols-[1fr_300px] gap-6">
           <div>
-            <div className="relative w-full aspect-video overflow-hidden bg-black" style={{ border: HAIRLINE }}>
+            <div
+              className="relative w-full aspect-video overflow-hidden bg-black"
+              style={{
+                border: HAIRLINE,
+                borderRadius: 18,
+                boxShadow: '0 30px 70px -40px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.06)',
+              }}
+            >
               <video ref={screenVideoRef} autoPlay muted playsInline style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none', left: 0, top: 0 }} />
               <video ref={cameraVideoRef} autoPlay muted playsInline style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none', left: 0, top: 0 }} />
               <canvas ref={compositionRef} className="w-full h-full block" />
@@ -561,7 +566,7 @@ const Recorder = () => {
                     className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
                     style={{ background: 'rgba(0,0,0,0.42)' }}
                   >
-                    <div className="leading-none" style={{ fontFamily: 'var(--font-serif)', fontWeight: 500, fontSize: 150, color: '#fff' }}>
+                    <div className="leading-none" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 150, letterSpacing: '-0.05em', color: '#fff' }}>
                       {countdown}
                     </div>
                   </motion.div>
@@ -629,8 +634,8 @@ const Recorder = () => {
             </div>
           </div>
 
-          <div className="space-y-6">
-            <section>
+          <div className="space-y-4">
+            <StudioPanel radius={16} as="section" className="p-4">
               <SectionLabel>Source</SectionLabel>
               <div className="grid grid-cols-3 gap-1 mb-3">
                 {[
@@ -671,11 +676,11 @@ const Recorder = () => {
                   {sources.mic && <ToggleRow Icon={micOn ? Mic : MicOff} label="Microphone" on={micOn} onToggle={() => setMicOn((v) => !v)} />}
                 </div>
               )}
-            </section>
+            </StudioPanel>
 
-            <section>
+            <StudioPanel radius={16} as="section" className="p-4">
               <SectionLabel>Controls</SectionLabel>
-              <div className="text-center my-3" style={{ fontFamily: 'var(--font-serif)', fontSize: 34, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
+              <div className="text-center my-3" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 34, letterSpacing: '-0.03em', color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
                 {formatTime(elapsedMs)}
               </div>
               <div className="flex flex-col gap-1.5">
@@ -718,10 +723,10 @@ const Recorder = () => {
                   )}
                 </div>
               )}
-            </section>
+            </StudioPanel>
 
             {(marks.length > 0 || cuts.length > 0) && (
-              <section>
+              <StudioPanel radius={16} as="section" className="p-4">
                 <SectionLabel>This take</SectionLabel>
                 <div className="space-y-1.5">
                   {marks.map((at, i) => (
@@ -747,10 +752,10 @@ const Recorder = () => {
                     </div>
                   ))}
                 </div>
-              </section>
+              </StudioPanel>
             )}
 
-            <section>
+            <StudioPanel radius={16} as="section" className="p-4">
               <SectionLabel>Teleprompter <span style={{ opacity: 0.5 }}>T</span></SectionLabel>
               <select
                 value={tpCourseId}
@@ -786,7 +791,7 @@ const Recorder = () => {
               >
                 {prompterOpen ? 'Hide prompter' : 'Show prompter'}
               </button>
-            </section>
+            </StudioPanel>
           </div>
         </div>
 

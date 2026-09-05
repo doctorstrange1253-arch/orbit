@@ -1,23 +1,3 @@
-/**
- * soul/studio/CourseMap.jsx — The spatial Course Map.
- *
- * Renders a course's lessons as a vertical "path" with nodes connected
- * by a thin line. The path is divided into "valleys" (modules) with
- * "peaks" (the visual gap between modules). Each module boundary is
- * a soft horizontal break with the module's title.
- *
- * Lesson nodes render as <LessonNode>. Boss lessons (`isBoss: true`)
- * render as <BossNode>. The first lesson is the "active" one by
- * default; completed lessons (from the user's enrollment) render with
- * a check mark.
- *
- * Click a node → fires onPick(lesson). The parent decides whether to
- * trigger the Video Arrival (for normal lessons) or the Boss Ceremony
- * (for boss lessons) before navigating to the player.
- *
- * Reduced-motion: no path-draw animation; nodes appear immediately.
- */
-
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import LessonNode from './LessonNode';
@@ -29,7 +9,6 @@ const _isReducedMotion = () => {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 };
 
-// Path stroke connecting two nodes — a thin vertical line.
 const PathLine = ({ yStart, yEnd, x = '50%', completed }) => {
   const reduced = _isReducedMotion();
   const height = Math.max(2, yEnd - yStart);
@@ -61,7 +40,6 @@ const PathLine = ({ yStart, yEnd, x = '50%', completed }) => {
   );
 };
 
-// Module header — a soft horizontal break with the module title.
 const ModuleHeader = ({ title, idx }) => (
   <div className="w-full flex items-center gap-3 py-3">
     <div className="flex-1 h-px bg-border-subtle/40" />
@@ -72,11 +50,6 @@ const ModuleHeader = ({ title, idx }) => (
   </div>
 );
 
-/**
- * Group lessons into "modules" of N. If the course has explicit module
- * metadata on lessons (lesson.module), use that. Otherwise, just chunk
- * by 5 (a reasonable default that makes the path feel segmented).
- */
 function _groupIntoModules(lessons = [], explicitModules = false) {
   if (explicitModules) {
     const groups = new Map();
@@ -101,7 +74,6 @@ const CourseMap = ({ course, completedLessonIds = [], activeLessonId, onPick }) 
   const explicit = lessons.some((l) => l.module || l.moduleTitle);
   const modules = useMemo(() => _groupIntoModules(lessons, explicit), [lessons, explicit]);
 
-  // Compute completion / active state.
   const isCompleted = (l) => completedLessonIds.includes(l._id || l.id);
   const isActive = (l) => (activeLessonId && activeLessonId === (l._id || l.id)) ||
     (!activeLessonId && !isCompleted(l) && lessons.findIndex((x) => x === l) === lessons.findIndex((x) => !isCompleted(x)));

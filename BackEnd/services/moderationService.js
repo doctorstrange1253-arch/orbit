@@ -1,37 +1,8 @@
-/**
- * moderationService.js — AI Moderation.
- *
- * V3 has 4 stages:
- *   1. Pre-upload client check (file size, format, duration) — handled
- *      in the uploadVideo route via multer config. Out of scope here.
- *   2. Cloudinary moderation — out of scope (V3 doesn't gate publish on
- *      Cloudinary's auto-moderation result; the workspace is the
- *      mentor's own).
- *   3. Audio transcription + keyword scan — gated by ENABLE_TRANSCRIPTION.
- *      When off, this stage is a no-op. The transcription queue is
- *      out of scope for V3; the keyword scan reads from a static list
- *      matched against the lesson's description.
- *   4. Random sample human review — 5% of uploads get a ModerationReview
- *      row inserted on publish, simulating a human-review queue.
- *
- * The 3rd stage here is a keyword scan against a hard-coded profanity
- * + "advice-only" list. A real implementation would call out to an
- * LLM (Whisper for transcription, GPT for advice detection). The
- * mentor sees a Yellow Card overlay on the lesson's edit page with
- * timestamps + the matched text + a "this was wrong" false-positive
- * flag. The false-positive rate is adapted per mentor.
- */
-
 const ModerationReview = require("../models/ModerationReview");
 
-// Hard-coded lists. In production these come from a moderated catalog.
 const PROFANITY = ["profanity_word_1", "profanity_word_2", "badword"];
 const ADVICE_VIOLATIONS = ["buy_now", "discount_code", "limited_time_offer"];
 
-// Naive keyword scan. Returns an array of { timestampSec, text, reason }
-// for each match. The lesson doesn't carry audio timestamps in V3, so
-// we use a fake timestamp of 0 — a real impl would have transcription
-// word-level timestamps.
 function _scanText(text = "") {
     const hits = [];
     if (!text) return hits;
@@ -49,15 +20,11 @@ function _scanText(text = "") {
     return hits;
 }
 
-// Scan a lesson's title + description for moderation hits. Returns
-// the array of hits (empty if clean).
 function scanLesson(lesson = {}) {
     const allText = [lesson.title, lesson.description, lesson.bossChallenge].filter(Boolean).join(" ");
     return _scanText(allText);
 }
 
-// Record a moderation review for a lesson. Called from the publish
-// flow (random 5% + flag-driven scan). Returns the new row.
 async function recordReview(mentorId, { courseId, lessonId, hits = [], status = "pending" }) {
     if (!hits || hits.length === 0) return null;
     try {
@@ -68,8 +35,6 @@ async function recordReview(mentorId, { courseId, lessonId, hits = [], status = 
     }
 }
 
-// Mentor has acted on a review (edited / appealed / cleared). Updates
-// the row. `action: 'cleared'` may set falsePositive=true.
 async function respond(mentorId, reviewId, action, { note = null, falsePositive = false } = {}) {
     const valid = ["edited", "appealed", "cleared"];
     if (!valid.includes(action)) return null;
@@ -86,23 +51,29 @@ async function respond(mentorId, reviewId, action, { note = null, falsePositive 
     }
 }
 
-// Fetch the mentor's pending reviews (the Inbox).
 async function getInbox(mentorId) {
     try {
-        return await ModerationReview.find({ mentorId, status: "pending" })
+        const rows = await ModerationReview.find({ mentorId, status: "pending" })
             .sort({ createdAt: -1 })
             .limit(50)
+            .populate({ path: "courseId", select: "title lessons._id lessons.title" })
             .lean();
+
+        return rows.map((r) => {
+            const course = r.courseId && typeof r.courseId === "object" ? r.courseId : null;
+            const lesson = course?.lessons?.find((l) => String(l._id) === String(r.lessonId)) || null;
+            return {
+                ...r,
+                courseId: course ? course._id : r.courseId,
+                courseTitle: course?.title || null,
+                lessonTitle: lesson?.title || null,
+            };
+        });
     } catch (err) {
         return [];
     }
 }
 
-// Compute the false-positive rate over the last 30 days for a mentor.
-// If > 50%, the moderation pipeline pauses for that mentor for 7 days.
-// (We don't actually pause here — the scan stage just no-ops if the
-// mentor is in cooldown. The 7-day cooldown lives on the user doc;
-// out of scope for this minimal V3-I implementation.)
 async function getFalsePositiveRate(mentorId) {
     try {
         const since = new Date();

@@ -1,3 +1,5 @@
+import { studioSurface, Sparkbars, Reveal } from '../studio/surfaces';
+
 const MUTED = 'rgba(245,245,245,0.55)';
 const HAIRLINE = 'rgba(255,255,255,0.10)';
 const HAIRLINE_SOFT = 'rgba(255,255,255,0.08)';
@@ -150,7 +152,10 @@ export function SectionHeader({ eyebrow, title, children, className = '' }) {
   );
 }
 
-export function Stat({ label, value, hint, tone = 'neutral', align = 'left', last = false, accent }) {
+export function Stat({
+  label, value, hint, tone = 'neutral', align = 'left', accent,
+  Icon, series, index = 0, soul = 'mentor',
+}) {
   const valueColor = tone === 'accent'
     ? (accent || 'var(--text-primary)')
     : tone === 'success'
@@ -161,49 +166,75 @@ export function Stat({ label, value, hint, tone = 'neutral', align = 'left', las
           ? TONES.danger.color
           : 'var(--text-primary)';
   return (
-    <div
-      className="px-3 md:px-5 py-3"
-      style={{
-        textAlign: align,
-        borderRight: last ? 'none' : `1px solid ${HAIRLINE_SOFT}`,
-      }}
-    >
+    <Reveal index={index} className="h-full">
       <div
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontWeight: 800,
-          fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
-          lineHeight: 1.0,
-          letterSpacing: '-0.03em',
-          color: valueColor,
-        }}
+        className="px-4 pt-3.5 pb-3.5 h-full group"
+        style={{ ...studioSurface(soul, accent), borderRadius: 18, textAlign: align }}
       >
-        {value}
-      </div>
-      <div
-        className="font-mono uppercase"
-        style={{
-          fontSize: '0.60rem',
-          letterSpacing: '0.22em',
-          fontWeight: 700,
-          color: MUTED,
-          marginTop: 6,
-        }}
-      >
-        {label}
-      </div>
-      {hint && (
+        <div className="flex items-start justify-between gap-3">
+          <span
+            className="font-mono uppercase"
+            style={{ fontSize: '0.58rem', letterSpacing: '0.2em', fontWeight: 700, color: 'rgba(245,245,245,0.5)' }}
+          >
+            {label}
+          </span>
+          {Icon && (
+            <span
+              className="inline-flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+              style={{
+                width: 26, height: 26, borderRadius: 8,
+                background: 'color-mix(in oklab, var(--studio-from) 16%, transparent)',
+                border: '1px solid color-mix(in oklab, var(--studio-from) 28%, transparent)',
+                color: 'var(--studio-from)',
+              }}
+            >
+              <Icon size={13} />
+            </span>
+          )}
+        </div>
+
         <div
+          className="mt-1.5"
           style={{
-            fontFamily: 'var(--font-sans)',
-            color: MUTED,
-            fontSize: '0.82rem',
-            marginTop: 4,
+            fontFamily: 'var(--font-display)',
+            fontWeight: 800,
+            fontSize: 'clamp(1.7rem, 3vw, 2.3rem)',
+            lineHeight: 1,
+            letterSpacing: '-0.035em',
+            color: valueColor,
           }}
         >
-          {hint}
+          {value}
         </div>
-      )}
+
+        {hint && (
+          <div className="mt-1 text-[11px] leading-snug" style={{ fontFamily: 'var(--font-sans)', color: 'rgba(245,245,245,0.45)' }}>
+            {hint}
+          </div>
+        )}
+
+        {series && (
+          <div className="mt-2.5">
+            <Sparkbars values={series} />
+          </div>
+        )}
+      </div>
+    </Reveal>
+  );
+}
+
+export function Panel({ tone, children, className = '', soul = 'mentor', style = {} }) {
+  return (
+    <div
+      className={className}
+      style={{
+        ...studioSurface(soul),
+        borderRadius: 18,
+        borderTop: `1px solid ${tone ? toneOf(tone).rule : 'rgba(255,255,255,0.16)'}`,
+        ...style,
+      }}
+    >
+      {children}
     </div>
   );
 }
@@ -230,21 +261,6 @@ export function BackLink({ to = -1, children = 'Back', className = '' }) {
       <span aria-hidden style={{ width: 16, display: 'inline-block' }}>←</span>
       {children}
     </a>
-  );
-}
-
-export function Panel({ tone, children, className = '', style = {} }) {
-  return (
-    <div
-      className={className}
-      style={{
-        border: `1px solid ${HAIRLINE}`,
-        borderTop: `1px solid ${tone ? toneOf(tone).rule : 'rgba(255,255,255,0.20)'}`,
-        ...style,
-      }}
-    >
-      {children}
-    </div>
   );
 }
 

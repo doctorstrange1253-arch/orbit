@@ -1,17 +1,3 @@
-/**
- * soul/studio/LessonNode.jsx — A single lesson node on the Course Map.
- *
- * Rendered as a circular node connected to siblings by a path line.
- * States:
- *   - completed  → golden border + check icon
- *   - active     → pulsing border (the next lesson to take)
- *   - locked     → grey + lock icon (not yet enrolled / not free)
- *   - free       → emerald dot (preview lesson)
- *
- * Click → fires onPick(lesson). The parent renders <VideoArrival> which
- * blooms the node into the player.
- */
-
 import { motion } from 'framer-motion';
 import { Check, Lock, Play } from 'lucide-react';
 import { useSoul } from '../../hooks/useSoul';

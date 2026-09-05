@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { ChevronLeft, Save, Plus, X, Loader2, Sparkles, Crown } from 'lucide-react';
 import { courses } from '../../services/courses';
@@ -9,6 +8,7 @@ import { proposeLevel, isStubProposal } from '../../services/ai';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
 import YellowCard from '../../soul/moderation/YellowCard';
 import api from '../../services/api';
+import { StudioMasthead, StudioPanel } from '../../soul/studio/surfaces';
 
 const LessonEdit = () => {
     const { id, lessonId } = useParams();
@@ -165,16 +165,12 @@ const LessonEdit = () => {
                     <ChevronLeft className="w-3.5 h-3.5" /> Back to {course?.title}
                 </Link>
 
-                <motion.header
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-5"
-                >
-                    <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">
-                        {course?.isPublished ? 'Published' : 'Draft'} · Lesson
-                    </div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-text-primary line-clamp-2">{form.title || 'Untitled lesson'}</h1>
-                </motion.header>
+                <StudioMasthead
+                    eyebrow={`${course?.isPublished ? 'Published' : 'Draft'} · Lesson`}
+                    Icon={Crown}
+                    title={form.title || 'Untitled lesson'}
+                    deck={course?.title ? `In ${course.title}.` : undefined}
+                />
 
                 {lessonReview && (
                     <div className="mb-5">
@@ -187,7 +183,7 @@ const LessonEdit = () => {
                     </div>
                 )}
 
-                <div className="space-y-3 rounded-xl border border-border-subtle bg-surface/40 p-4">
+                <StudioPanel radius={18} className="space-y-3 p-4">
                     <Field label="Title">
                         <input value={form.title} onChange={(e) => setField('title', e.target.value)}
                             className="w-full px-3 py-2 rounded-lg bg-bg/50 border border-border-subtle text-text-primary" />
@@ -345,12 +341,17 @@ const LessonEdit = () => {
 
                     <div className="flex items-center gap-2 pt-3 border-t border-border-subtle/40">
                         <button onClick={save} disabled={updateLesson.isPending}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-pill bg-accent/15 text-accent border border-accent/30 text-xs font-bold uppercase tracking-widest">
+                            className="inline-flex items-center gap-1.5 px-4 py-2 font-mono uppercase"
+                            style={{
+                                fontSize: '0.60rem', letterSpacing: '0.18em', fontWeight: 700,
+                                color: '#0d0c1c', background: 'var(--studio-gradient)',
+                                borderRadius: 999, border: 'none', cursor: 'pointer',
+                            }}>
                             <Save className="w-3.5 h-3.5" /> {updateLesson.isPending ? 'Saving…' : 'Save lesson'}
                         </button>
                         <Link to={`/mentor/courses/${id}/edit`} className="ml-auto text-xs text-text-muted hover:text-text-primary">Cancel</Link>
                     </div>
-                </div>
+                </StudioPanel>
             </div>
         </div>
     );

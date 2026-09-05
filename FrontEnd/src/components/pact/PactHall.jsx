@@ -4,17 +4,6 @@ import { Link } from 'react-router-dom';
 import { tierById } from '../../services/pact';
 import { Crown, ArrowUp, ArrowDown, Minus } from 'lucide-react';
 
-/**
- * PactHall — the leaderboard table.
- *
- * Renders the caller's group with rival indicators (you in the middle,
- * the 2 above + 2 below highlighted). Rank-change animations on
- * update via the key+layout pattern. The table is typeset, not
- * glassed — hairline rules separate rows, mono-caps for rank +
- * tabular numerals, Poppins for the "you" name, and a
- * tier dot to the left of every name so the eye can scan the
- * division at a glance.
- */
 const PactHall = () => {
     const { data: hall, isLoading } = usePactHall();
 

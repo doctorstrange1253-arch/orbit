@@ -14,6 +14,7 @@ import {
     MentorStat,
     MentorTag,
 } from '../../components/pact/MentorEditorial';
+import { StudioMasthead } from '../../soul/studio/surfaces';
 
 const HAIRLINE = 'rgba(255,255,255,0.10)';
 const HAIRLINE_SOFT = 'rgba(255,255,255,0.06)';
@@ -89,19 +90,12 @@ const Analytics = () => {
                 <MentorBackLink to="/mentor/observatory">Observatory</MentorBackLink>
             </div>
 
-            <header className="pb-8" style={{ borderBottom: `1px solid ${HAIRLINE}` }}>
-                <div className="flex items-center gap-2 mb-3">
-                    <BarChart3 size={14} style={{ color: MUTED }} />
-                    <MentorEyebrow>Mentor · The Readings</MentorEyebrow>
-                </div>
-                <MentorTitle size="xl">How your teaching lands</MentorTitle>
-                <div className="mt-3 max-w-2xl">
-                    <MentorDeck>
-                        Not vanity numbers. Where learners stop is the one figure that tells you
-                        which lesson to rewrite.
-                    </MentorDeck>
-                </div>
-            </header>
+            <StudioMasthead
+                eyebrow="Mentor · The Readings"
+                Icon={BarChart3}
+                title="How your teaching lands"
+                deck="Not vanity numbers. Where learners stop is the one figure that tells you which lesson to rewrite."
+            />
 
             {courseStats.length === 0 ? (
                 <section className="py-14">
@@ -136,7 +130,7 @@ const Analytics = () => {
                                 <MentorEyebrow>I</MentorEyebrow>
                                 <MentorTitle size="md">The funnel</MentorTitle>
                             </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4" style={{ border: `1px solid ${HAIRLINE}` }}>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                 <MentorStat label="Enrolled" value={funnel.enrolled} />
                                 <MentorStat label="Started" value={funnel.started} />
                                 <MentorStat label="Past halfway" value={funnel.halfway} />
@@ -239,7 +233,7 @@ const Analytics = () => {
                                 <MentorEyebrow>III</MentorEyebrow>
                                 <MentorTitle size="md">Revenue</MentorTitle>
                             </div>
-                            <div className="grid grid-cols-3" style={{ border: `1px solid ${HAIRLINE}` }}>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <MentorStat label="Lifetime" value={`₹${formatInr(earnings.totalInr)}`} tone="success" />
                                 <MentorStat label="Released" value={`₹${formatInr(earnings.releasedInr)}`} />
                                 <MentorStat label="Pending" value={`₹${formatInr(earnings.pendingInr)}`} tone="warning" last />

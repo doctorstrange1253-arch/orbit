@@ -1,30 +1,15 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { BookOpen, Eye, EyeOff, Save, Pencil, Trash2, Users, MessageCircle, Edit3, Crown } from 'lucide-react';
 import { courses } from '../../services/courses';
 import CommentThread from '../../components/courses/CommentThread';
 import PactBadge from '../../components/pact/PactBadge';
-import {
-    MentorBackLink,
-    MentorTitle,
-    MentorTag,
-} from '../../components/pact/MentorEditorial';
+import { MentorBackLink } from '../../components/pact/MentorEditorial';
+import { StudioMasthead, StudioPanel } from '../../soul/studio/surfaces';
 import { StageRail } from '../../soul/gameEngine/StageRail';
 
-/**
- * CourseEditor — post-create management surface.
- *
- * Tabs: Lessons / Pricing / Q&A / Enrollments / Settings. For MVP we
- * implement Lessons + Settings + a read-only Enrollments list. Pricing
- * and Q&A reuse the same forms the builder uses, kept as placeholders
- * that point to the public Q&A thread.
- *
- * V3 — fully editorial. Poppins title, hairline-separated
- * tabs, typeset lesson list.
- */
 const TABS = [
     { id: 'lessons',      label: 'Lessons',      icon: BookOpen },
     { id: 'qa',           label: 'Q&A',          icon: MessageCircle },
@@ -91,99 +76,81 @@ const CourseEditor = () => {
                 <MentorBackLink to="/mentor/courses">My courses</MentorBackLink>
             </div>
 
-            <motion.header
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            <StudioMasthead
+                eyebrow={`${course.isPublished ? 'Published' : 'Draft'} · Course`}
+                Icon={BookOpen}
+                title={course.title}
+                deck={`${course.lessons?.length || 0} lesson${(course.lessons?.length || 0) === 1 ? '' : 's'} in this course.`}
             >
-                <div className="flex items-center gap-2 mb-3 flex-wrap">
-                    <MentorTag tone={course.isPublished ? 'success' : 'warning'}>
-                        {course.isPublished ? 'Published' : 'Draft'}
-                    </MentorTag>
-                    <span
-                        className="font-mono uppercase"
-                        style={{ fontSize: '0.60rem', letterSpacing: '0.20em', fontWeight: 700, color: 'rgba(245,245,245,0.55)' }}
-                    >
-                        {course.lessons?.length || 0} lesson{(course.lessons?.length || 0) === 1 ? '' : 's'}
-                    </span>
-                </div>
-                <MentorTitle size="lg">{course.title}</MentorTitle>
-                <div className="mt-4">
-                    <StageRail course={course} completedLessonIds={[]} />
-                </div>
-                <div className="mt-3 flex items-center gap-3 flex-wrap">
-                    <Link
-                        to={`/courses/${id}`}
-                        className="font-mono uppercase"
+                {course.isPublished ? (
+                    <button
+                        onClick={() => unpublish.mutate()}
+                        disabled={unpublish.isPending}
+                        className="inline-flex items-center gap-1.5 font-mono uppercase transition-transform duration-200 hover:scale-[1.03]"
                         style={{
-                            fontSize: '0.60rem',
-                            letterSpacing: '0.22em',
-                            fontWeight: 700,
-                            color: 'rgba(245,245,245,0.55)',
-                            textDecoration: 'none',
-                            borderBottom: '1px solid rgba(255,255,255,0.20)',
-                            paddingBottom: 3,
+                            fontSize: '0.62rem', letterSpacing: '0.20em', fontWeight: 700,
+                            color: 'rgba(251,191,36,1)', background: 'rgba(251,191,36,0.10)',
+                            border: '1px solid rgba(251,191,36,0.40)', borderRadius: 999,
+                            padding: '11px 18px', cursor: 'pointer',
                         }}
                     >
-                        View public page →
-                    </Link>
-                    <PactBadge size={18} withLabel />
-                </div>
-                <div className="mt-5">
-                    {course.isPublished ? (
-                        <button onClick={() => unpublish.mutate()} disabled={unpublish.isPending}
-                            className="inline-flex items-center gap-1.5 font-mono uppercase"
-                            style={{
-                                fontSize: '0.62rem',
-                                letterSpacing: '0.22em',
-                                fontWeight: 700,
-                                color: 'rgba(251,191,36,1)',
-                                background: 'transparent',
-                                border: '1px solid rgba(251,191,36,0.40)',
-                                padding: '8px 12px',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            <EyeOff size={11} /> Unpublish
-                        </button>
-                    ) : (
-                        <button onClick={() => publish.mutate()} disabled={publish.isPending}
-                            className="inline-flex items-center gap-1.5 font-mono uppercase"
-                            style={{
-                                fontSize: '0.62rem',
-                                letterSpacing: '0.22em',
-                                fontWeight: 700,
-                                color: 'rgba(110,231,183,1)',
-                                background: 'transparent',
-                                border: '1px solid rgba(110,231,183,0.40)',
-                                padding: '8px 12px',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            <Eye size={11} /> Publish
-                        </button>
+                        <EyeOff size={11} /> Unpublish
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => publish.mutate()}
+                        disabled={publish.isPending}
+                        className="inline-flex items-center gap-1.5 font-mono uppercase transition-transform duration-200 hover:scale-[1.03]"
+                        style={{
+                            fontSize: '0.62rem', letterSpacing: '0.20em', fontWeight: 700,
+                            color: '#0d0c1c', background: 'var(--studio-gradient)',
+                            border: 'none', borderRadius: 999,
+                            padding: '11px 18px', cursor: 'pointer',
+                        }}
+                    >
+                        <Eye size={11} /> Publish
+                    </button>
+                )}
+            </StudioMasthead>
+
+            <StudioPanel radius={18} className="p-4">
+                <StageRail course={course} completedLessonIds={[]} />
+            </StudioPanel>
+
+            <div className="flex items-center gap-3 flex-wrap">
+                <Link
+                    to={`/courses/${id}`}
+                    className="font-mono uppercase"
+                    style={{
+                        fontSize: '0.60rem', letterSpacing: '0.22em', fontWeight: 700,
+                        color: 'rgba(245,245,245,0.55)', textDecoration: 'none',
+                        borderBottom: '1px solid rgba(255,255,255,0.20)', paddingBottom: 3,
+                    }}
+                >
+                    View public page →
+                </Link>
+                <PactBadge size={18} withLabel />
+            </div>
+
+            {publish.isError && (
+                <p
+                    className="max-w-xl"
+                    style={{
+                        fontFamily: 'var(--font-sans)',
+                        fontSize: '0.9rem',
+                        color: 'rgba(252,165,165,1)',
+                        borderLeft: '1px solid rgba(252,165,165,0.45)',
+                        paddingLeft: 12,
+                    }}
+                >
+                    {publish.error?.response?.data?.message || 'Could not publish this course.'}
+                    {publish.error?.response?.data?.code === 'INTRO_REQUIRED' && (
+                        <span className="block mt-1.5" style={{ color: 'rgba(245,245,245,0.55)' }}>
+                            Open a lesson below and tick <strong>This is the introduction</strong>.
+                        </span>
                     )}
-                    {publish.isError && (
-                        <p
-                            className="mt-3 max-w-xl"
-                            style={{
-                                fontFamily: 'var(--font-serif)',
-                                fontSize: '0.9rem',
-                                color: 'rgba(252,165,165,1)',
-                                borderLeft: '1px solid rgba(252,165,165,0.45)',
-                                paddingLeft: 12,
-                            }}
-                        >
-                            {publish.error?.response?.data?.message || 'Could not publish this course.'}
-                            {publish.error?.response?.data?.code === 'INTRO_REQUIRED' && (
-                                <span className="block mt-1.5" style={{ color: 'rgba(245,245,245,0.55)' }}>
-                                    Open a lesson below and tick <strong>This is the introduction</strong>.
-                                </span>
-                            )}
-                        </p>
-                    )}
-                </div>
-            </motion.header>
+                </p>
+            )}
 
             <div className="flex gap-4 mb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.10)' }}>
                 {TABS.map((t) => {
@@ -371,7 +338,7 @@ const EnrollmentsTab = ({ id }) => {
         );
     }
     return (
-        <ul style={{ border: '1px solid rgba(255,255,255,0.10)' }}>
+        <StudioPanel as="ul" radius={18} className="overflow-hidden">
             {items.map((e) => (
                 <li
                     key={e._id}
@@ -422,7 +389,7 @@ const EnrollmentsTab = ({ id }) => {
                     </div>
                 </li>
             ))}
-        </ul>
+        </StudioPanel>
     );
 };
 
@@ -441,10 +408,7 @@ const SettingsTab = ({ course, onSave, onDelete }) => {
     };
 
     return (
-        <div
-            className="space-y-3"
-            style={{ border: '1px solid rgba(255,255,255,0.10)', padding: '20px 22px' }}
-        >
+        <StudioPanel radius={20} className="space-y-3" style={{ padding: '22px 24px' }}>
             <Field label="Title">
                 <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full px-3 py-2" style={inputStyle} />
             </Field>
@@ -461,16 +425,18 @@ const SettingsTab = ({ course, onSave, onDelete }) => {
                 <button
                     onClick={save}
                     disabled={saving}
-                    className="inline-flex items-center gap-1.5 font-mono uppercase"
+                    className="inline-flex items-center gap-1.5 font-mono uppercase transition-transform duration-200 hover:scale-[1.03]"
                     style={{
                         fontSize: '0.62rem',
-                        letterSpacing: '0.22em',
+                        letterSpacing: '0.20em',
                         fontWeight: 700,
-                        color: 'var(--text-primary)',
-                        background: 'transparent',
-                        border: '1px solid rgba(255,255,255,0.30)',
-                        padding: '8px 12px',
+                        color: '#0d0c1c',
+                        background: 'var(--studio-gradient)',
+                        border: 'none',
+                        borderRadius: 999,
+                        padding: '11px 18px',
                         cursor: 'pointer',
+                        opacity: saving ? 0.6 : 1,
                     }}
                 >
                     <Save size={11} /> {saving ? 'Saving…' : 'Save changes'}
@@ -492,7 +458,7 @@ const SettingsTab = ({ course, onSave, onDelete }) => {
                     <Trash2 size={11} /> Delete course
                 </button>
             </div>
-        </div>
+        </StudioPanel>
     );
 };
 

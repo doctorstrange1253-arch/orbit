@@ -1,23 +1,3 @@
-/**
- * soul/observatory/LuminosityStar.jsx — The mentor's signature.
- *
- * A single, large point of light centered above the star map. Its
- * appearance maps to mentor metrics:
- *
- *   - size       = total students taught (log scale, capped at 200)
- *   - brightness = weekly Pact Score (higher = brighter)
- *   - color      = Pact division (Aurora violet for Initiate →
- *                  Supernova white-gold for Oracle)
- *   - stability  = average rating this week (steady = no flicker; volatile
- *                  = subtle 0.5Hz flicker)
- *   - corona     = 4+ consecutive Pact weeks held (Steady Shield) — faint
- *                  orbiting ring
- *
- * The component is the *visual identity* of the mentor at the Observatory.
- * It doesn't render the metrics themselves — those are surfaced via the
- * PactBadge + Pact Pulse widgets already in /mentor/hub.
- */
-
 import { motion } from 'framer-motion';
 
 const _isReducedMotion = () => {
@@ -25,9 +5,6 @@ const _isReducedMotion = () => {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 };
 
-// Map a Pact division to a hue. The 6-tier Pact color is a violet→gold
-// ramp. (V3-F's Pulse Ceremony will re-tune this for the 8-tier system;
-// the math here stays the same.)
 const DIVISION_COLOR = {
   initiate: '#a78bfa',  // violet
   adept:    '#8b5cf6',  // deeper violet
@@ -50,20 +27,14 @@ const LuminosityStar = ({
   const baseColor = DIVISION_COLOR[division] || DEFAULT_COLOR;
   const color = baseColor;
 
-  // Size: log scale, capped at 200 students (a saturated mentor is at cap).
   const size = 80 + Math.min(80, Math.log2(Math.max(1, studentsCount)) * 12);
 
-  // Brightness: weekly score normalized to [0.55, 1.0]. 0 score = dim
-  // (still visible, never invisible — the star is always "you").
   const brightness = 0.55 + Math.min(0.45, weeklyScore / 1500);
 
-  // Stability: rating < 3.5 = volatile. 4.5+ = steady. 5.0 = perfect.
   const stability = Math.max(0, Math.min(1, (avgRating - 3) / 2));
 
-  // Flicker intensity — high when stability is low.
   const flickerHz = (1 - stability) * 0.5;
 
-  // Steady Shield: visible after 4+ consecutive weeks held.
   const showShield = steadyWeeks >= 4;
 
   return (

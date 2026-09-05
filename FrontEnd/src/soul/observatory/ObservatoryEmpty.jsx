@@ -1,88 +1,88 @@
-/**
- * soul/observatory/ObservatoryEmpty.jsx — The Observatory empty state.
- *
- * Renders when a mentor has zero students (no connections yet). The
- * visual is a near-empty star map with a single blinking cursor at the
- * center — "your observatory is dark, but it's ready." The CTA points
- * to mentor application.
- *
- * Tone: steady, "I've been here" — the mentor register.
- */
-
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { GraduationCap, Telescope } from 'lucide-react';
-import { useSoul } from '../../hooks/useSoul';
-import { surfaceRecipe, borderTint } from '../tints';
+import { StudioPanel } from '../studio/surfaces';
 
-const _isReducedMotion = () => {
+const isReducedMotion = () => {
   if (typeof window === 'undefined' || !window.matchMedia) return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 };
 
 const ObservatoryEmpty = () => {
-  const { nebula } = useSoul();
-  const reduced = _isReducedMotion();
-  const accent = nebula?.from || '#a78bfa';
+  const reduced = isReducedMotion();
 
   return (
-    <motion.div
+    <StudioPanel
+      as={motion.div}
+      radius={24}
+      className="text-center overflow-hidden"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-2xl p-8 text-center"
-      style={{
-        ...surfaceRecipe('mentor'),
-        border: borderTint(nebula, 24),
-      }}
+      style={{ padding: '48px 28px' }}
     >
-      <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-text-muted mb-4">
+      <div
+        className="font-mono uppercase mb-4"
+        style={{ fontSize: '0.58rem', letterSpacing: '0.28em', fontWeight: 700, color: 'rgba(245,245,245,0.42)' }}
+      >
         Your observatory
       </div>
-      <h2 className="text-2xl md:text-3xl font-display font-extrabold mb-3 text-text-primary">
-        The sky is dark. It's ready.
+
+      <h2
+        style={{
+          fontFamily: 'var(--font-display)', fontWeight: 800,
+          fontSize: 'clamp(1.5rem, 3.4vw, 2.1rem)', lineHeight: 1.1,
+          letterSpacing: '-0.03em', color: 'var(--text-primary)', margin: 0,
+        }}
+      >
+        The sky is dark. It is ready.
       </h2>
-      <p className="text-sm text-text-secondary max-w-md mx-auto mb-6">
-        Each student you teach becomes a point of light in your map. The first star appears when someone books a session, completes a course, or rates a class.
+
+      <p
+        className="mx-auto mt-3"
+        style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', lineHeight: 1.65, color: 'rgba(245,245,245,0.55)', maxWidth: 460 }}
+      >
+        Every learner you teach becomes a point of light in your map. The first one appears when someone books a session, finishes a course, or rates a class.
       </p>
 
-      {/* Blinking cursor at the center */}
-      <div className="mx-auto my-6 h-24 flex items-center justify-center">
-        <motion.div
-          className="rounded-full"
+      <div className="mx-auto my-7 h-20 flex items-center justify-center">
+        <motion.span
           style={{
-            width: 8,
-            height: 8,
-            background: accent,
-            boxShadow: `0 0 20px ${accent}80`,
+            width: 8, height: 8, borderRadius: 999,
+            background: 'var(--studio-from)',
+            boxShadow: '0 0 22px color-mix(in oklab, var(--studio-from) 55%, transparent)',
           }}
           animate={reduced ? { opacity: 0.8 } : { opacity: [0.2, 1, 0.2] }}
           transition={reduced ? undefined : { duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
 
-      <div className="flex items-center justify-center gap-3 flex-wrap">
+      <div className="flex items-center justify-center gap-2.5 flex-wrap">
         <Link
           to="/mentor/courses/new"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-text-on-accent"
+          className="inline-flex items-center gap-2 font-mono uppercase transition-transform duration-200 hover:scale-[1.03]"
           style={{
-            background: `linear-gradient(135deg, ${accent}, ${nebula?.to || '#3b82f6'})`,
+            fontSize: '0.62rem', letterSpacing: '0.20em', fontWeight: 700,
+            color: '#0d0c1c', background: 'var(--studio-gradient)',
+            borderRadius: 999, padding: '12px 20px', textDecoration: 'none',
           }}
         >
-          <GraduationCap size={14} /> Create a course
+          <GraduationCap size={13} /> Create a course
         </Link>
         <Link
           to="/mentor/sessions"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-text-primary"
+          className="inline-flex items-center gap-2 font-mono uppercase"
           style={{
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid var(--border-subtle)',
+            fontSize: '0.62rem', letterSpacing: '0.20em', fontWeight: 700,
+            color: 'rgba(245,245,245,0.75)', background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            borderRadius: 999, padding: '12px 20px', textDecoration: 'none',
           }}
         >
-          <Telescope size={14} /> View session bookings
+          <Telescope size={13} /> Session bookings
         </Link>
       </div>
-    </motion.div>
+    </StudioPanel>
   );
 };
 

@@ -1,12 +1,5 @@
 import { PACT_TIERS } from '../../services/pact';
 
-/**
- * PactDivisionIcons — small inline marker for division names.
- *
- * Used in tables, dropdowns, and quiet contexts where the full
- * PactBadge would be too loud. Renders a small tier-colored dot
- * plus a mono-caps label.
- */
 const PactDivisionIcons = ({ tierId, size = 8, className = '', compact = false, withLabel = true }) => {
     const tier = PACT_TIERS.find((t) => t.id === tierId);
     if (!tier) return null;

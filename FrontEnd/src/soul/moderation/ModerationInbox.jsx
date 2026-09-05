@@ -1,20 +1,9 @@
-/**
- * soul/moderation/ModerationInbox.jsx — Mentor's review queue.
- *
- * A list of pending Yellow Cards + a stats panel showing the
- * mentor's false-positive rate. Used at /mentor/moderation.
- *
- * The inbox is mentor-only. It's a small surface — most mentors will
- * have 0-3 pending reviews at any time. The list is rendered as
- * compact rows; clicking a row expands the Yellow Card detail.
- */
-
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, ChevronRight, ShieldOff } from 'lucide-react';
-import { useSoul } from '../../hooks/useSoul';
-import { surfaceRecipe, borderTint } from '../tints';
+import { StudioPanel, StudioStat, Reveal } from '../studio/surfaces';
 import YellowCard from './YellowCard';
 import api from '../../services/api';
 
@@ -23,8 +12,8 @@ const fetchFpRate = async () => (await api.get('/moderation/me/fp-rate')).data;
 const respond = async ({ id, action, note, falsePositive }) => (await api.post(`/moderation/${id}/respond`, { action, note, falsePositive })).data;
 
 const ModerationInbox = () => {
-  const { nebula } = useSoul();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [expandedId, setExpandedId] = useState(null);
 
   const { data: inboxData, isLoading } = useQuery({
@@ -49,91 +38,155 @@ const ModerationInbox = () => {
   });
 
   const items = inboxData?.items || [];
-  const rate = fpRate?.rate || 0;
-  const ratePct = Math.round(rate * 100);
+  const reviewed = fpRate?.total || 0;
+  const ratePct = Math.round((fpRate?.rate || 0) * 100);
 
   if (isLoading) {
-    return <div className="text-text-muted text-sm py-6">Loading inbox…</div>;
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <StudioPanel key={i} radius={18} className="h-24 skeleton" />
+        ))}
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
-      {/* Stats panel */}
-      <div className="rounded-2xl p-4" style={{ ...surfaceRecipe('mentor'), border: borderTint(nebula, 18) }}>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
-          <div>
-            <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Pending</div>
-            <div className="text-2xl font-bold tabular-nums text-text-primary mt-1">{items.length}</div>
-          </div>
-          <div>
-            <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">False-positive rate (30d)</div>
-            <div className="text-2xl font-bold tabular-nums mt-1" style={{ color: ratePct > 50 ? '#fbbf24' : ratePct > 30 ? '#fbbf24' : '#34d399' }}>
-              {fpRate?.total > 0 ? `${ratePct}%` : '—'}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Reviewed (30d)</div>
-            <div className="text-2xl font-bold tabular-nums text-text-primary mt-1">{fpRate?.total || 0}</div>
-          </div>
-        </div>
-        {ratePct > 50 && (
-          <div className="mt-3 rounded-lg p-2 text-[10px] text-amber-200 bg-amber-500/10 border border-amber-500/30">
-            Your recent false-positive rate is high. The system is reducing its scrutiny for the next 7 days to avoid over-flagging.
-          </div>
-        )}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <StudioStat
+          label="Pending"
+          Icon={AlertTriangle}
+          value={<span className="tabular-nums">{String(items.length).padStart(2, '0')}</span>}
+          hint={items.length === 0 ? 'Nothing waiting on you' : 'Awaiting your read'}
+          index={0}
+        />
+        <StudioStat
+          label="False positive · 30d"
+          value={
+            <span className="tabular-nums" style={{ color: reviewed === 0 ? 'rgba(245,245,245,0.40)' : ratePct > 50 ? 'rgba(251,191,36,1)' : 'rgba(110,231,183,1)' }}>
+              {reviewed > 0 ? `${ratePct}%` : '—'}
+            </span>
+          }
+          hint={reviewed > 0 ? 'Flags that were wrong' : 'No reviews yet'}
+          index={1}
+        />
+        <StudioStat
+          label="Reviewed · 30d"
+          Icon={ShieldOff}
+          value={<span className="tabular-nums">{String(reviewed).padStart(2, '0')}</span>}
+          hint="Cards you have closed"
+          index={2}
+        />
       </div>
 
-      {/* Queue */}
+      {ratePct > 50 && (
+        <StudioPanel radius={16} className="p-3.5 flex items-start gap-2.5">
+          <AlertTriangle size={14} style={{ color: 'rgba(251,191,36,1)', flexShrink: 0, marginTop: 2 }} />
+          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.86rem', lineHeight: 1.55, color: 'rgba(245,245,245,0.70)', margin: 0 }}>
+            Your recent false-positive rate is high. The system is reducing its scrutiny for the next 7 days to avoid over-flagging.
+          </p>
+        </StudioPanel>
+      )}
+
       {items.length === 0 ? (
-        <div className="rounded-2xl p-8 text-center" style={{ ...surfaceRecipe('mentor'), border: borderTint(nebula, 18) }}>
-          <div className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center" style={{ background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.35)' }}>
-            <ShieldOff size={20} className="text-emerald-300" />
+        <StudioPanel radius={22} className="text-center" style={{ padding: '44px 24px' }}>
+          <div
+            className="mx-auto mb-4 flex items-center justify-center"
+            style={{
+              width: 52, height: 52, borderRadius: 16,
+              background: 'color-mix(in oklab, var(--studio-from) 18%, transparent)',
+              border: '1px solid color-mix(in oklab, var(--studio-from) 30%, transparent)',
+            }}
+          >
+            <ShieldOff size={22} style={{ color: 'rgba(110,231,183,1)' }} />
           </div>
-          <div className="text-sm font-semibold text-text-primary">All clear.</div>
-          <div className="text-xs text-text-muted mt-1">No pending reviews. Keep being you.</div>
-        </div>
+          <div
+            style={{
+              fontFamily: 'var(--font-display)', fontWeight: 800,
+              fontSize: 'clamp(1.25rem, 2.4vw, 1.6rem)', letterSpacing: '-0.025em',
+              color: 'var(--text-primary)',
+            }}
+          >
+            All clear
+          </div>
+          <p
+            className="mt-2 mx-auto"
+            style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', lineHeight: 1.6, color: 'rgba(245,245,245,0.55)', maxWidth: 420 }}
+          >
+            No lesson of yours is waiting on a second look. Keep teaching the way you do.
+          </p>
+        </StudioPanel>
       ) : (
         <div className="space-y-3">
-          {items.map((review) => {
+          {items.map((review, idx) => {
             const isOpen = expandedId === review._id;
+            const moments = (review.hits || []).length;
             return (
-              <div key={review._id} className="rounded-2xl overflow-hidden" style={{ ...surfaceRecipe('mentor'), border: borderTint(nebula, 18) }}>
-                <button
-                  type="button"
-                  onClick={() => setExpandedId(isOpen ? null : review._id)}
-                  className="w-full flex items-center gap-3 p-4 text-left"
-                >
-                  <AlertTriangle size={16} className="text-amber-300 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-text-primary truncate">
-                      {review.lessonTitle || 'Lesson flagged'}
-                    </div>
-                    <div className="text-[10px] text-text-muted">
-                      {(review.hits || []).length} moment{(review.hits || []).length === 1 ? '' : 's'} flagged · {new Date(review.createdAt).toLocaleDateString()}
-                    </div>
-                  </div>
-                  <ChevronRight size={16} className={`text-text-muted transition-transform ${isOpen ? 'rotate-90' : ''}`} />
-                </button>
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="px-4 pb-4"
+              <Reveal key={review._id} index={idx}>
+                <StudioPanel radius={18} className="overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(isOpen ? null : review._id)}
+                    className="w-full flex items-center gap-3 p-4 text-left"
+                    style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}
+                  >
+                    <span
+                      className="flex items-center justify-center flex-shrink-0"
+                      style={{
+                        width: 32, height: 32, borderRadius: 10,
+                        background: 'rgba(251,191,36,0.12)',
+                        border: '1px solid rgba(251,191,36,0.30)',
+                      }}
                     >
-                      <YellowCard
-                        review={review}
-                        onEdit={() => { /* navigate to course edit */ }}
-                        onAppeal={(id, note) => respondMut.mutate({ id, action: 'appealed', note })}
-                        onFalsePositive={(id, note) => respondMut.mutate({ id, action: 'cleared', note, falsePositive: true })}
-                        onDismiss={() => setExpandedId(null)}
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                      <AlertTriangle size={14} style={{ color: 'rgba(251,191,36,1)' }} />
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span
+                        className="block truncate"
+                        style={{
+                          fontFamily: 'var(--font-display)', fontWeight: 700,
+                          fontSize: '0.98rem', letterSpacing: '-0.015em', color: 'var(--text-primary)',
+                        }}
+                      >
+                        {review.lessonTitle || 'Lesson flagged'}
+                      </span>
+                      <span
+                        className="block font-mono mt-0.5 truncate"
+                        style={{ fontSize: '0.70rem', color: 'rgba(245,245,245,0.50)' }}
+                      >
+                        {review.courseTitle ? `${review.courseTitle} · ` : ''}{moments} moment{moments === 1 ? '' : 's'} · {new Date(review.createdAt).toLocaleDateString()}
+                      </span>
+                    </span>
+                    <ChevronRight
+                      size={16}
+                      className="transition-transform duration-200"
+                      style={{ color: 'rgba(245,245,245,0.45)', transform: isOpen ? 'rotate(90deg)' : 'none' }}
+                    />
+                  </button>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="px-4 pb-4"
+                      >
+                        <YellowCard
+                          review={review}
+                          onEdit={review.courseId && review.lessonId
+                            ? () => navigate(`/mentor/courses/${review.courseId}/lessons/${review.lessonId}`)
+                            : undefined}
+                          onAppeal={(id, note) => respondMut.mutate({ id, action: 'appealed', note })}
+                          onFalsePositive={(id, note) => respondMut.mutate({ id, action: 'cleared', note, falsePositive: true })}
+                          onDismiss={() => setExpandedId(null)}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </StudioPanel>
+              </Reveal>
             );
           })}
         </div>
