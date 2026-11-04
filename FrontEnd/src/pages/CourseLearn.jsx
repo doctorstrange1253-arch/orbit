@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -18,6 +18,9 @@ import CoachQuiz from '../components/gameEngine/CoachQuiz';
 import BossCeremony from '../components/gameEngine/BossCeremony';
 import StageClearOverlay from '../soul/gameEngine/StageClearOverlay';
 import { StageRail, StageChip } from '../soul/gameEngine/StageRail';
+// Phase 6 — the signature 3D world, lazy-loaded so the three.js chunk never
+// blocks first paint (mandate 3.F / 6.2 step 1).
+const CourseSpaceJourneyWorld = lazy(() => import('../cosmic/CourseSpaceJourneyWorld'));
 
 const CourseLearn = () => {
     const { id, lessonId } = useParams();
@@ -210,8 +213,18 @@ const CourseLearn = () => {
                         </ol>
                     </aside>
 
-                    {/* Main: player + quiz + Q&A */}
+                    {/* Immersive course map — seeded 3D solar system per course,
+                        with 2D keyboard fallback (auto on low tier / reduced motion) */}
                     <main>
+                        <Suspense fallback={<div className="h-[650px] rounded-2xl border border-slate-800 bg-slate-950 animate-pulse" aria-label="Loading 3D map" />}>
+                            <CourseSpaceJourneyWorld
+                                courseId={id}
+                                courseTitle={course?.title}
+                                modules={course?.modules?.length ? course.modules : (course?.lessons || [])}
+                                onSelectModule={(mod) => navigate(`/courses/${id}/learn/${mod._id || mod.id}`)}
+                                selectedModuleId={activeLessonId}
+                            />
+                        </Suspense>
                         <motion.h1
                             key={activeLessonId}
                             initial={{ opacity: 0, y: 6 }}
