@@ -1,0 +1,14 @@
+# DECISIONS
+
+| # | Decision | Why | Alternatives | Date | Reversible |
+|---|---|---|---|---|---|
+| D1 | Project root = `D:/orbit-main/orbit-main`; parent `D:/orbit-main` is scratch/skill-clone area, not the repo | git rev-parse confirms repo at nested dir; parent is not a repo | treat parent as root (rejected: no .git) | 2026-11-04 | yes |
+| D2 | Root `.gitignore` line `*.md` is a MISTAKE: it hides CLAUDE.md, docs/, .agent/ from git. Proposed fix: remove `*.md` or add `!docs/**` `!CLAUDE.md` `!.agent/**` — PENDING USER APPROVAL, not applied | `git status` shows no docs/ or .agent files; docs exist on disk | leave as-is (rejected: docs silently untracked) | 2026-11-04 | yes |
+| D3 | `tmp-r3f/`, `tmp-threejs/`, `tmp-webshaders/` at `D:/orbit-main` are earlier skill-clone downloads, not project files. Proposed action: move to `.agent/quarantine/` or leave outside repo — PENDING APPROVAL | they are full git clones with skills/, unrelated to app | delete (forbidden without approval) | 2026-11-04 | yes |
+| D4 | `build-*.log`, `AUDIT_PLAN.md`, `AUDIT_REPORT.md` at repo root are misplaced; logs are gitignored anyway; audit docs belong under `docs/progress/` — PENDING APPROVAL | PATHS.md contract | delete (forbidden without approval) | 2026-11-04 | yes |
+| D5 | `FrontEnd/_moment_*.png`, `_shoot_moment.mjs`, `_verify_moment.html` are underscore scratch files at FrontEnd root — propose quarantine — PENDING APPROVAL | naming violates PATHS.md | leave | 2026-11-04 | yes |
+| D6 | 3D runtime deps already installed in FrontEnd: three ^0.187.0, @react-three/fiber ^9.8.2, @react-three/drei ^10.7.9. @react-three/postprocessing, leva, playwright NOT installed — install pending user approval per docs/design/tooling.md | package.json read 2026-11-04 | — | 2026-11-04 | yes |
+| D7 | Test commands: BackEnd `npm test` (jest --maxWorkers=2) from `BackEnd/`; FrontEnd `npm test` (vitest run) from `FrontEnd/`. Running vitest from repo root mixes BackEnd jest files and fails — do not do that | observed failure this session | run from root (rejected) | 2026-11-04 | yes |
+| D8 | User approved on 2026-11-04 ("i approved all the things you can proceed"): cleanup plan, .gitignore fix, all package installs incl. playwright chromium binary, Phase 5 design docs. Design decisions 1-5 taken as my recommendations: AgX tone mapping, parametric shuttle (no GLTF yet), ordinary bloom (+selective on Ultra), baked Gaia bright-star subset with CC BY 4.0 attribution, Look-Dev Lab only (no Storybook) | explicit user message | — | 2026-11-04 | yes |
+| D9 | `@react-three/perf` does not exist on npm registry (404) — correct package is `r3f-perf` (installed ^7.2.3) | npm 404 error 2026-11-04 | — | 2026-11-04 | yes |
+| D10 | tmp-r3f/tmp-threejs/tmp-webshaders at D:/orbit-main left OUTSIDE the repo (they are skill source clones, not app files); not deleted | cleanup approval covered repo files; parent dir untouched | — | 2026-11-04 | yes |

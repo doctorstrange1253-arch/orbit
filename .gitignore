@@ -2,7 +2,10 @@ node_modules/
 .env
 *.log
 .DS_Store
-*.md
+
+# Agent scratch/quarantine never committed (docs themselves ARE tracked now)
+.agent/scratch/
+.agent/quarantine/
 
 # Firebase / FCM.
 # IMPORTANT: google-services.json is the Android *client* build config, NOT a
