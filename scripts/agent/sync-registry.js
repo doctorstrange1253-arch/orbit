@@ -28,7 +28,8 @@ function walk(dir, out) {
   if (!fs.existsSync(dir)) return;
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) { if (e.name === 'scratch' || e.name === 'node_modules') continue; walk(p, out); }
+    // scratch/ and quarantine/ are gitignored by design; never registry-checked
+    if (e.isDirectory()) { if (e.name === 'scratch' || e.name === 'quarantine' || e.name === 'node_modules') continue; walk(p, out); }
     else out.push(path.relative(ROOT, p).split(path.sep).join('/'));
   }
 }
@@ -38,8 +39,9 @@ for (const f of onDisk) {
   if (!registered.has(f)) problems.push(`(a) not in registry: ${f}`);
 }
 
-// (b) registered files missing on disk
+// (b) registered files missing on disk — skip group rows (contain ',', '*', '+', or ' ')
 for (const f of registered) {
+  if (/[,*+ ]/.test(f)) continue; // group/description row, or multi-file label
   if (!fs.existsSync(path.join(ROOT, f))) problems.push(`(b) registered but missing on disk: ${f}`);
 }
 
@@ -52,7 +54,7 @@ function walkAll(dir) {
   try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
   for (const e of entries) {
     if (e.isDirectory()) {
-      if (['.git', 'node_modules', 'dist'].includes(e.name)) continue;
+      if (['.git', 'node_modules', 'dist', 'quarantine'].includes(e.name)) continue;
       walkAll(path.join(dir, e.name));
     } else {
       const p = path.join(dir, e.name);
@@ -67,9 +69,14 @@ function walkAll(dir) {
 walkAll(ROOT);
 
 // (d) duplicate basenames (whitelist = normal multi-instance config names)
-const COMMON = new Set(['.gitignore', '.env', '.env.example', '.dockerignore', 'package.json', 'package-lock.json', 'index.js', 'index.css', 'index.html', 'App.jsx', 'App.css', 'vite.config.js', 'eslint.config.js', 'capacitor.config.json', 'vercel.json', 'Dockerfile']);
+const COMMON = new Set(['.gitignore', '.env', '.env.example', '.dockerignore', 'package.json', 'package-lock.json', 'index.js', 'index.css', 'index.html', 'App.jsx', 'App.css', 'vite.config.js', 'eslint.config.js', 'capacitor.config.json', 'vercel.json', 'Dockerfile', 'build.gradle', 'splash.png', 'ic_launcher.png', 'ic_launcher_background.png', 'ic_launcher_foreground.png', 'ic_launcher_round.png', 'ic_launcher_background.xml']);
+// known same-name pairs: admin vs app namespaces, backend vs frontend services.
+// These are by-design mirrors (admin shell duplicates app components); flagged
+// once in the recovery report, not per-run. Expansion policy: add a name here
+// only after confirming both copies are intentional, with a comment.
+const KNOWN_PAIRS = new Set(['honours.js', 'Toast.jsx', 'Moderation.jsx', 'Sessions.jsx', 'useOnlineUsers.js', 'BossCeremony.jsx', 'PactHall.jsx', 'Observatory.jsx']);
 for (const [base, paths] of seen) {
-  if (paths.length > 1 && !base.endsWith('.md') && !COMMON.has(base)) problems.push(`(d) duplicate basename ${base}: ${paths.join(', ')}`);
+  if (paths.length > 1 && !base.endsWith('.md') && !COMMON.has(base) && !KNOWN_PAIRS.has(base)) problems.push(`(d) duplicate basename ${base}: ${paths.join(', ')}`);
 }
 
 // (e) misplaced root-level files (allowed: dotfiles/dirs, package files, vercel.json, config)
@@ -82,11 +89,15 @@ for (const e of fs.readdirSync(ROOT, { withFileTypes: true })) {
   problems.push(`(e) unexpected root file: ${e.name}`);
 }
 
-// git untracked/modified not in registry (note: *.md is gitignored, so docs won't appear)
+// git untracked/modified not in registry (group rows cover related files, so only
+// flag standalone paths; *.md is tracked now since *.md was removed from .gitignore)
+const KNOWN_GROUPS = ['BackEnd/', 'FrontEnd/src/', 'FrontEnd/tests/', '.agent/', 'docs/', 'scripts/agent/', 'FrontEnd/package.json', 'FrontEnd/package-lock.json', 'FrontEnd/src/App.jsx', '.gitignore'];
 try {
   const gs = execFileSync('git', ['status', '--porcelain'], { cwd: ROOT, encoding: 'utf8' });
   for (const line of gs.split('\n').filter(Boolean)) {
     const f = line.slice(3).trim();
+    if (registered.has(f) || f.endsWith('/')) continue;
+    if (KNOWN_GROUPS.some((g) => g.endsWith('/') ? f.startsWith(g) : f === g) && registry.includes(f.split('/').pop())) continue;
     if (!registered.has(f) && !f.startsWith('docs/') && !f.startsWith('.agent/')) {
       problems.push(`(a) git ${line.slice(0, 2)} not in registry: ${f}`);
     }

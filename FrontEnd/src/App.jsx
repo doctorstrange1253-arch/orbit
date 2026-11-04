@@ -139,6 +139,9 @@ const LiftoffOverlay = lazy(() => import('./cosmic/LiftoffOverlay'));
 // 404s without a valid admin session).
 const AdminGate = lazy(() => import('./admin/AdminGate'));
 
+// Look-Dev Lab (dev-only route /dev/lab; leva + r3f-perf load only when visited)
+const LookDevLab = lazy(() => import('./cosmic/LookDevLab'));
+
 const PageLoader = () => (
   <div className="flex items-center justify-center py-24">
     <Spinner variant="orbit" size={48} label="Loading page" />
@@ -856,6 +859,11 @@ function AppInner() {
 
         {/* Marketing brand-reveal preview — full-screen, no chrome, not in nav */}
         <Route path="/reveal" element={<Suspense fallback={null}><OrbitTeaserReveal standalone /></Suspense>} />
+
+        {/* Look-Dev Lab — dev-only (/dev/lab), lazy so the leva/r3f-perf dev code never lands in prod chunks */}
+        {import.meta.env.DEV && (
+          <Route path="/dev/lab" element={<Suspense fallback={<PageLoader />}><LookDevLab /></Suspense>} />
+        )}
 
         {/* 404 — catch-all. AdminGate renders the hidden portal only when the
             path hashes to VITE_ADMIN_SLUG_HASH; otherwise it returns this 404. */}

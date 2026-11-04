@@ -152,5 +152,6 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.js',
+    exclude: ['node_modules', 'dist', 'tests/e2e/**'], // playwright owns e2e
   },
 });

@@ -7,6 +7,10 @@ node_modules/
 .agent/scratch/
 .agent/quarantine/
 
+# Playwright run artifacts
+FrontEnd/test-results/
+FrontEnd/playwright-report/
+
 # Firebase / FCM.
 # IMPORTANT: google-services.json is the Android *client* build config, NOT a
 # server secret — its API key is restricted by package name + app-signing SHA,
