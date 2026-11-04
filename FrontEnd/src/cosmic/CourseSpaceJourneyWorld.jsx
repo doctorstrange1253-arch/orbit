@@ -2,7 +2,8 @@ import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } fr
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Html, Float } from '@react-three/drei';
 import * as THREE from 'three';
-import { EffectComposer, Bloom, Vignette, OutputPass } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postprocessing';
+import { ToneMappingMode } from 'postprocessing';
 import useQualityTier from '../hooks/useQualityTier';
 import StarfieldBackdrop from './StarfieldBackdrop';
 import TwinkleBackdrop from './twinkleBackdrop';
@@ -22,6 +23,7 @@ import { generatePlanetLayout, ARCHETYPE_LABELS } from './PlanetGenerator';
  * Scene contents (steps 2-3 of 6.2 land here progressively):
  *  StarfieldBackdrop + TwinkleBackdrop (nebula) + central star + one seeded
  *  planet node per module via generatePlanetLayout(courseId, moduleId).
+ *  GLSL lives in shaders/*.glsl and is imported ?raw ([Skill: r3f-shaders]).
  */
 
 const TIER_DPR = { ultra: 2, high: 1.75, medium: 1.5, low: 1 };
@@ -121,7 +123,10 @@ function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedMo
         <EffectComposer>
           <Bloom intensity={0.5} luminanceThreshold={0.6} luminanceSmoothing={0.2} mipmapBlur />
           <Vignette eskil={false} offset={0.25} darkness={0.75} />
-          <OutputPass />
+          {/* EffectComposer forces renderer NoToneMapping while mounted; the
+              ToneMapping effect (last) applies AgX instead. OutputPass is not
+              exported by @react-three/postprocessing 3.2.2. */}
+          <ToneMapping mode={ToneMappingMode.AGX} />
         </EffectComposer>
       )}
     </>
@@ -164,7 +169,7 @@ export default function CourseSpaceJourneyWorld({ courseId, courseTitle, modules
   const tier = useQualityTier();
   const [override, setOverride] = useState(null); // '3d' | '2d' | null (null = auto)
   const [ctxLost, setCtxLost] = useState(false);
-  const canvasElRef = useRef(null);
+  const detachRef = useRef(null);
 
   const reducedMotion = useMemo(
     () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
@@ -173,27 +178,27 @@ export default function CourseSpaceJourneyWorld({ courseId, courseTitle, modules
   const auto2d = tier === 'low' || reducedMotion;
   const viewMode = override || (auto2d ? '2d' : '3d');
 
-  // Context-loss wiring lives in onCreated; listeners removed on unmount.
-  useEffect(() => {
-    const el = canvasElRef.current;
-    if (!el) return undefined;
+  // R3F 9 passes RootState to onCreated (renderer = state.gl). Context-loss
+  // listeners attach there (works regardless of when R3F finishes configuring)
+  // and detach on unmount or when a new canvas is created.
+  useEffect(() => () => { if (detachRef.current) detachRef.current(); detachRef.current = null; }, []);
+
+  const onCreated = useCallback((state) => {
+    // Renderer color config lives in the Canvas `gl` prop (R3F 9 applies it
+    // before firing onCreated). This handler owns context-loss wiring only.
+    const gl = state.gl;
+    gl.toneMappingExposure = 1.0;
+    const el = gl.domElement;
     const onLost = (e) => { e.preventDefault(); setCtxLost(true); };
     const onRestored = () => setCtxLost(false);
     el.addEventListener('webglcontextlost', onLost);
     el.addEventListener('webglcontextrestored', onRestored);
-    return () => {
+    if (detachRef.current) detachRef.current();
+    detachRef.current = () => {
       el.removeEventListener('webglcontextlost', onLost);
       el.removeEventListener('webglcontextrestored', onRestored);
     };
-  }, [viewMode]);
-
-  const onCreated = useCallback((gl) => {
-    const dpr = TIER_DPR[tier] || 1.5;
-    try { gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, dpr)); } catch { /* jsdom */ }
-    try { gl.toneMapping = THREE.AgXToneMapping ?? THREE.ACESFilmicToneMapping; } catch { /* mock */ }
-    try { gl.toneMappingExposure = 1.0; } catch { /* mock */ }
-    canvasElRef.current = gl.domElement;
-  }, [tier]);
+  }, []);
 
   return (
     <div className="relative w-full h-[650px] bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
@@ -220,8 +225,8 @@ export default function CourseSpaceJourneyWorld({ courseId, courseTitle, modules
         <Canvas
           camera={{ position: [0, 10, 18], fov: 60 }}
           dpr={[1, TIER_DPR[tier] || 1.5]}
+          gl={{ antialias: true, powerPreference: 'high-performance', toneMapping: THREE.AgXToneMapping }}
           onCreated={onCreated}
-          data-testid="r3f-canvas"
         >
           <Suspense fallback={null}>
             <WorldScene

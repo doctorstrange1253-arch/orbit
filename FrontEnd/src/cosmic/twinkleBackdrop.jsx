@@ -1,51 +1,49 @@
-/**
- * twinkleBackdrop — R3F component emitting a pulsing ambient gradient + sparse
- * volumetric pulse rings derived from a seeded particle field. Pure Canvas
- * pass-through; weight is ~0.02 triangles, intentionally budget-friendly.
- */
-import * as THREE from 'three';
-import { useRef, useEffect } from 'react';
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import useQualityTier from '../hooks/useQualityTier';
+import * as THREE from 'three';
+import milkywayFrag from './shaders/milkyway.frag.glsl?raw';
 
-export default function TwinkleBackdrop({ seed = 0x42, density = 400, speed = 0.3 }) {
-  const tier = useQualityTier();
-  const ref = useRef();
+/**
+ * TwinkleBackdrop — deep-space background: a BackSide sphere (r=300, outside the
+ * starfield shell) running the Milky Way + fbm nebula + dust-lane fragment
+ * shader (shaders/milkyway.frag.glsl). One draw call, ~6k tris.
+ *
+ * `motion` = 0 freezes the drift under prefers-reduced-motion. Sphere follows
+ * the camera (frustumCulled=false, position updated per frame) so it never
+ * clips at the far plane. Rendered opaque behind everything (depthWrite true).
+ */
+const MW_VERT = /* glsl */ `
+  varying vec3 vPos;
+  void main() {
+    vPos = position;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
 
-  const enabled = tier !== 'low'; // full glitter below low tier
+export default function TwinkleBackdrop({ radius = 300, motion = 1 }) {
+  const meshRef = useRef();
+  const matRef = useRef();
 
-  // Subtle global pulse matching the canonical star-field twinkle frequency
-  useFrame(() => {
-    if (!ref.current || !enabled) return;
-    ref.current.material.opacity = 0.55 + 0.45 * Math.sin(performance.now() * speed);
+  const uniforms = useMemo(() => ({
+    uTime: { value: 0 },
+    uMotion: { value: motion },
+  }), [motion]);
+
+  useFrame((state) => {
+    if (matRef.current) matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+    if (meshRef.current) meshRef.current.position.copy(state.camera.position);
   });
 
   return (
-    <mesh ref={ref}>
-      <sphereGeometry args={[100, 32, 32]} />
+    <mesh ref={meshRef} frustumCulled={false} renderOrder={-10}>
+      <sphereGeometry args={[radius, 48, 32]} />
       <shaderMaterial
-        uniforms={{ uTime: { value: performance.now() * 0.001 }, uOpacity: { value: 0.6 } }}
-        vertexShader={/* glsl */ `
-          varying vec3 vPos;
-          void main() {
-            vPos = position;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `}
-        fragmentShader={/* glsl */ `
-          uniform float uTime;
-          uniform float uOpacity;
-          varying vec3 vPos;
-          void main() {
-            // Fade far edge toward radial distance. Cheap approximate nebula glow.
-            float d = length(vPos) / 100.0;
-            gl_FragColor = vec4(0.1, 0.15, 0.25, uOpacity * (1.0 - clamp(d, 0.0, 1.0)));
-          }
-        `}
-        transparent={true}
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        ref={matRef}
+        vertexShader={MW_VERT}
+        fragmentShader={milkywayFrag}
+        uniforms={uniforms}
         side={THREE.BackSide}
+        depthWrite={false}
       />
     </mesh>
   );

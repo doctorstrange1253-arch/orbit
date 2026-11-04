@@ -20,13 +20,16 @@ vi.mock('@react-three/fiber', () => ({
         setPixelRatio() {}, setSize() {}, dispose() {}, toneMapping: 0,
       };
       lastGl = gl;
-      props.onCreated && props.onCreated(gl);
+      props.onCreated && props.onCreated({ gl });
     }, []);
     return React.createElement('div', {
       'data-testid': 'r3f-canvas',
       'data-camera': JSON.stringify(props.camera),
       'data-fov': props.fov,
-    });
+      'data-dpr': JSON.stringify(props.dpr),
+      'data-glint': typeof props.gl?.toneMapping,
+      'data-gltonemapping': props.gl?.toneMapping,
+    }, props.children); // pass children: Canvas normally renders them into the scene
   },
   useFrame: () => null,
 }));
@@ -43,8 +46,10 @@ vi.mock('@react-three/postprocessing', () => ({
   EffectComposer: (p) => React.createElement('div', { 'data-testid': 'composer' }, p.children),
   Bloom: () => null,
   Vignette: () => null,
-  OutputPass: () => null,
+  ToneMapping: (p) => React.createElement('div', { 'data-testid': 'tonemapping', 'data-mode': p.mode }),
 }));
+
+vi.mock('postprocessing', () => ({ ToneMappingMode: { AGX: 7, ACES_FILMIC: 6 } }));
 
 vi.mock('r3f-perf', () => ({ Perf: () => null }));
 
@@ -79,10 +84,15 @@ describe('CourseSpaceJourneyWorld (F1 scene shell)', () => {
     expect(canvas.getAttribute('data-camera')).toContain('18');
   });
 
-  it('applies DPR cap + AgX tone mapping in onCreated', () => {
-    render(<CourseSpaceJourneyWorld courseId="c1" courseTitle="T" modules={MODULES} onSelectModule={() => {}} />);
-    expect(lastGl).not.toBeNull();
-    expect(lastGl.toneMapping).toBe(5); // AgXToneMapping from the three mock
+  it('applies DPR cap in dpr prop + AgX via gl prop and composer ToneMapping effect', () => {
+    const { container, unmount } = render(<CourseSpaceJourneyWorld courseId="c1" courseTitle="T" modules={MODULES} onSelectModule={() => {}} />);
+    const canvas = container.querySelector('[data-testid="r3f-canvas"]');
+    const dpr = JSON.parse(canvas.getAttribute('data-dpr'));
+    expect(dpr).toEqual([1, 1.75]); // high tier per stubs
+    expect(Number(canvas.getAttribute('data-gltonemapping'))).toBe(5); // THREE.AgXToneMapping from the three mock
+    const tm = container.querySelector('[data-testid="tonemapping"]');
+    expect(Number(tm.getAttribute('data-mode'))).toBe(7); // postprocessing ToneMappingMode.AGX
+    unmount();
   });
 
   it('shows a context-lost banner when webglcontextlost fires (and preventDefault allows restore)', () => {
