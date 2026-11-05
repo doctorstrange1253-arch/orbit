@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Html, Float } from '@react-three/drei';
 import * as THREE from 'three';
@@ -7,6 +7,7 @@ import { ToneMappingMode } from 'postprocessing';
 import useQualityTier from '../hooks/useQualityTier';
 import StarfieldBackdrop from './StarfieldBackdrop';
 import TwinkleBackdrop from './twinkleBackdrop';
+import PlanetSurface from './PlanetSurface';
 import { generatePlanetLayout, ARCHETYPE_LABELS } from './PlanetGenerator';
 
 /**
@@ -47,31 +48,47 @@ function CentralStar({ title }) {
   );
 }
 
-function PlanetNode({ layout, index, active, onSelect }) {
+function PlanetNode({ layout, index, active, onSelect, reducedMotion }) {
   const [hovered, setHovered] = useState(false);
   const angle = layout.angle * Math.PI * 2;
   const x = Math.cos(angle) * layout.radius;
   const z = Math.sin(angle) * layout.radius;
   const y = layout.altitude * Math.sin(index * 1.5);
-  const color = active ? '#4ade80' : hovered ? '#facc15' : '#8b5cf6';
+  const r = layout.size * 0.8;
+  // direction from planet node to the central star (world origin)
+  const sunDir = [-x, -y, -z];
+  const hl = active ? '#4ade80' : hovered ? '#facc15' : null;
   return (
     <group position={[x, y, z]}>
-      <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
+      <Float speed={reducedMotion ? 0 : 2} rotationIntensity={0.5} floatIntensity={1}>
+        {/* click/hover proxy: invisible sphere slightly larger than the planet */}
         <mesh
           onClick={() => onSelect(index)}
           onPointerOver={() => setHovered(true)}
           onPointerOut={() => setHovered(false)}
           scale={hovered ? 1.3 : 1}
+          visible={false}
         >
-          <sphereGeometry args={[layout.size * 0.8, 32, 32]} />
-          <meshStandardMaterial
-            color={color}
-            roughness={0.3}
-            metalness={0.8}
-            emissive={color}
-            emissiveIntensity={hovered || active ? 0.6 : 0.2}
-          />
+          <sphereGeometry args={[r * 1.35, 16, 16]} />
+          <meshBasicMaterial />
         </mesh>
+        <group scale={hovered ? 1.15 : 1}>
+          <PlanetSurface
+            archetype={layout.archetype}
+            seed={layout.seed}
+            radius={r}
+            sunDirection={sunDir}
+            spin={reducedMotion ? 0 : layout.orbitSpeed * 0.5}
+            detail={16}
+            motion={reducedMotion ? 0 : 1}
+          />
+          {hl && (
+            <mesh scale={1.12}>
+              <sphereGeometry args={[r, 32, 32]} />
+              <meshBasicMaterial color={hl} transparent opacity={0.18} side={THREE.BackSide} depthWrite={false} />
+            </mesh>
+          )}
+        </group>
       </Float>
       <Html position={[0, 1.3, 0]} center distanceFactor={15}>
         <button
@@ -91,7 +108,7 @@ function PlanetNode({ layout, index, active, onSelect }) {
   );
 }
 
-function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedModuleId, tier }) {
+function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedModuleId, tier, reducedMotion }) {
   const layouts = useMemo(
     () => modules.map((m, i) => generatePlanetLayout({
       courseId: courseId || 'course',
@@ -116,6 +133,7 @@ function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedMo
           index={i}
           active={String(selectedModuleId) === String(modules[i]._id || modules[i].id)}
           onSelect={(idx) => onSelectModule && onSelectModule(modules[idx])}
+          reducedMotion={reducedMotion}
         />
       ))}
       <OrbitControls enablePan minDistance={8} maxDistance={35} autoRotate autoRotateSpeed={0.5} />
@@ -236,6 +254,7 @@ export default function CourseSpaceJourneyWorld({ courseId, courseTitle, modules
               onSelectModule={onSelectModule}
               selectedModuleId={selectedModuleId}
               tier={tier}
+              reducedMotion={reducedMotion}
             />
           </Suspense>
         </Canvas>

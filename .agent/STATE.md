@@ -1,11 +1,11 @@
 # STATE — one-page truth
 
-- Project root: `D:/orbit-main/orbit-main` (git repo, branch `feature/orbit-v3-foundation`). Parent `D:/orbit-main` is NOT a repo and holds stray `tmp-*` skill clones.
-- Phase: R (recovery audit), read-only until user approves cleanup. Tasks R0-R6 in `.agent/TASKS.md`.
-- Done so far this session: R0 — `.agent/` created, `scripts/agent/probe-env.js` written and run, `.agent/ENVIRONMENT.md` generated from real output (node v24.21.0, npm 11.19.0, git 2.56.0, python 3.14.8; rg NOT installed; grep/find/curl/tree present).
-- In flight: Phase 4 research DONE — `docs/design/research-log.md` rewritten with 21 cited entries (2026-11-04). WebSearch in this env returns knowledge-only (no live links) — logged as LEAD, not evidence; 4 entries VERIFIED via WebFetch (threejs tone-mapping constants incl. AgXToneMapping, WCAG 2.2 SC 1.4.3/1.4.11/2.2.2, Book of Shaders ch11+ch13 fbm/domain-warping). Blocked: raw.githubusercontent.com, iquilezles article URLs (404) — listed as verification debt. Still blocked on explicit approval: cleanup moves + .gitignore fix, package installs, Phase 5 doc approval (gates Phase 6 code).
-- Baselines recorded (2026-11-04): BackEnd jest 58/58 suites, 625/625 tests PASS (exit 0); FrontEnd vitest 43/43 tests PASS but 1 file fails to load (`tests/cosmic-components.test.jsx`, known-red E8/X3); emoji guard 116 hits (X2); sync-registry lists stray files (report section b).
-- Blockers: none. Uncommitted work on branch: M1/M2/M3 modified files + untracked cosmic/AI-quiz files (see `git status --short`).
-- Key finding already: root `.gitignore` contains `*.md` — ALL markdown (CLAUDE.md, docs/, .agent/) is git-ignored. Docs are invisible to git. Recorded in DECISIONS.md; fix pending approval.
-- Note from last agent (previous session): M3 integration finished, backend 625 tests + frontend 35 tests reported green; 3 new cosmic test files exist under `FrontEnd/tests/` and reference a not-yet-existing `CourseSpaceJourneyWorld` — expected red until fixed (scheduled, not yet approved).
+- Project root: `D:/orbit-main/orbit-main` (git repo, branch `feature/orbit-v3-foundation`). Parent `D:/orbit-main` is NOT a repo and holds stray `tmp-*` skill clones (left outside repo, D10).
+- Phase: 6 implementation (M4 gamification polish + signature 3D world). Approvals: user said "i approved all the things" 2026-11-04 (D8); design decisions 1-5 = recommendations (AgX, parametric shuttle, bloom+selective-on-ultra, Gaia subset, Lab only).
+- Done and committed: R0-R6 + P1/P3/P4/P5 phases; R-cleanup (b0778f4); P3-installs (25ee1a7: postprocessing ^6.39.6, @react-three/postprocessing ^3.2.2, leva ^0.10.1, r3f-perf ^7.2.3, playwright ^1.64.1, axe-core ^4.14.0 + chromium); F0 (70ba5d5: test suite 48/48 green); F1 scene shell (1a2aea6); F2 starfield/nebula GLSL + composer fix (c7c84f3); F3a playwright harness (08e69cf); F3 Look-Dev Lab + Star capture (20daf5f).
+- Now: vitest 10 files / 55 tests PASS; playwright 3 specs PASS; lint clean on new files; vite build green (3D chunk 271 KB gz); sync-registry clean; BackEnd jest 625/625 (baseline, re-run at milestone end). Verified real WebGL: star-lab-1280.png shows stars + milkyway band (SwiftShader = layout only).
+- Next: F4 — planet archetypes one at a time (terrestrial first: fbm terrain + atmosphere rim + seeded uniforms), each reviewed in Planet Lab with capture before wiring in.
+- Follow-ups queued: star temp ramp skews orange (polish pass); quarantine old prototype CourseSpaceJourney3D after world verified in real browser; BackEnd re-run at milestone end; real-GPU + real-device perf check still owed to user.
+- Note: M1-M3 changes from earlier sessions remain unstaged on purpose (not mine to commit); see git status.
+- Blockers: none.
 - Last session time: 2026-11-04 (this session).

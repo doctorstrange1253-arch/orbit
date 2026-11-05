@@ -23,7 +23,9 @@ vi.mock('@react-three/drei', () => ({
 }));
 vi.mock('leva', () => ({
   Leva: () => React.createElement('div'),
-  useControls: () => ({ count: 4000, seed: 49236, milkyway: true, showPerf: false }),
+  useControls: (name) => name === 'Planet lab'
+    ? { archetype: 'terrestrial', seed: 12345, spin: 0.1 }
+    : { count: 4000, seed: 49236, milkyway: true, showPerf: false },
 }));
 vi.mock('r3f-perf', () => ({ Perf: () => null }));
 
@@ -43,6 +45,7 @@ describe('LookDevLab (F3)', () => {
     expect(container.querySelector('[data-testid="lab-canvas"]')).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Star' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Nebula' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Planet' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'PostFX' })).toBeTruthy();
   });
 });

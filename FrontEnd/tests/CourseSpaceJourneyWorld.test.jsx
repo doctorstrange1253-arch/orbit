@@ -6,9 +6,21 @@ import { render, screen, act } from '@testing-library/react';
 vi.mock('three', () => ({
   Vector2: class {}, Vector3: class {}, Color: class {},
   Raycaster: class { constructor() {} },
-  ShaderMaterial: class { constructor(p) { this.uniforms = {}; } },
+  ShaderMaterial: class { constructor(_p) { this.uniforms = {}; } },
   AdditiveBlending: 'additive', BackSide: 'backside', DoubleSide: 'doubleside', NormalBlending: 'normal',
   AgXToneMapping: 5, ACESFilmicToneMapping: 4,
+}));
+
+vi.mock('../src/cosmic/PlanetSurface', () => ({
+  __esModule: true,
+  default: (p) => React.createElement('div', {
+    'data-testid': 'planet-surface',
+    'data-archetype': p.archetype,
+    'data-seed': p.seed,
+    'data-radius': p.radius,
+    'data-spin': p.spin,
+    'data-detail': p.detail,
+  }),
 }));
 
 let lastGl = null;
@@ -120,6 +132,19 @@ describe('CourseSpaceJourneyWorld (F1 scene shell)', () => {
     const { container } = render(<CourseSpaceJourneyWorld courseId="c1" courseTitle="T" modules={MODULES} onSelectModule={() => {}} />);
     await screen.findByRole('button', { name: /Module One/ });
     expect(container.querySelector('[data-testid="r3f-canvas"]')).toBeNull();
+  });
+
+  it('renders one seeded PlanetSurface per module (archetype plumbed through)', () => {
+    const { container } = render(
+      <CourseSpaceJourneyWorld courseId="c1" courseTitle="T" modules={MODULES} onSelectModule={() => {}} selectedModuleId="m1" />
+    );
+    const surfaces = container.querySelectorAll('[data-testid="planet-surface"]');
+    expect(surfaces.length).toBe(MODULES.length);
+    // Same course+module must always yield the same archetype (seeded determinism)
+    const first = surfaces[0].getAttribute('data-archetype');
+    expect(first).toBeTruthy();
+    expect(Number(surfaces[0].getAttribute('data-seed'))).toBeGreaterThan(0);
+    expect(Number(surfaces[0].getAttribute('data-detail'))).toBe(16);
   });
 
   it('view toggle switches between 3D canvas and 2D map', async () => {
