@@ -138,7 +138,7 @@ export default function LiftoffOverlay() {
     if (!event) return;
     setSharing(true);
     try {
-      const url = buildShareCard({ tierId: event.toTierId, score: event.score, city: event.city });
+      const url = await buildShareCard({ tierId: event.toTierId, score: event.score, city: event.city });
       const result = await shareOrDownload(url, {
         filename: `orbit-${event.toTierId}.png`,
         text: `${tier.displayName} — ${copy?.support} on Orbit`,

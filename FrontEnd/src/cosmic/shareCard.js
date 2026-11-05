@@ -10,7 +10,27 @@ const CATEGORY_GLOW = {
   pulsar: '76,201,240', supernova: '255,107,53', galaxy: '255,143,207', quasar: '142,197,255',
 };
 
-export function buildShareCard({ tierId, score = null, city = '' }) {
+async function decodeBadge(tier, suppliedSvg) {
+  const source = suppliedSvg || Array.from(document.querySelectorAll('.cb-badge'))
+    .find((element) => element.getAttribute('aria-label') === tier.displayName)?.querySelector('svg');
+  if (!source) throw new Error('Rank badge artwork is not available');
+  const svg = source.cloneNode(true);
+  svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/2000/svg');
+  svg.setAttribute('width', '220');
+  svg.setAttribute('height', '220');
+  const definitions = document.getElementById('cb-sky')?.parentElement;
+  if (definitions?.tagName.toLowerCase() === 'defs') svg.prepend(definitions.cloneNode(true));
+  const markup = new XMLSerializer().serializeToString(svg);
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const timer = setTimeout(() => reject(new Error('Rank badge artwork timed out')), 5000);
+    image.onload = () => { clearTimeout(timer); resolve(image); };
+    image.onerror = () => { clearTimeout(timer); reject(new Error('Rank badge artwork could not be decoded')); };
+    image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(markup)}`;
+  });
+}
+
+export async function buildShareCard({ tierId, score = null, city = '', badgeSvg }) {
   const W = 1200, H = 675;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
@@ -34,7 +54,6 @@ export function buildShareCard({ tierId, score = null, city = '' }) {
   }
   ctx.globalAlpha = 1;
 
-  // Glowing medallion with the tier emoji.
   const cx = W / 2, cy = H * 0.38, R = 110;
   const ring = ctx.createRadialGradient(cx, cy, 10, cx, cy, R);
   ring.addColorStop(0, `rgba(${glow},0.9)`);
@@ -43,9 +62,9 @@ export function buildShareCard({ tierId, score = null, city = '' }) {
   ctx.fillStyle = ring;
   ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
 
-  ctx.font = '120px serif';
+  const artwork = await decodeBadge(tier, badgeSvg);
+  ctx.drawImage(artwork, cx - 100, cy - 100, 200, 200);
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(tier.emoji, cx, cy + 6);
 
   // Headline.
   ctx.fillStyle = `rgba(${glow},0.9)`;

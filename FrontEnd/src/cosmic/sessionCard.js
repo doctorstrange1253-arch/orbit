@@ -71,11 +71,10 @@ export function buildSessionCard({ partnerName = 'a partner', rating = 0, learne
   ctx.font = '800 52px system-ui, sans-serif';
   ctx.fillText(`A swap with ${partnerName}`, W / 2, 175);
 
-  // Stars.
-  const full = Math.max(0, Math.min(5, Math.round(rating)));
+  const full = Number.isFinite(Number(rating)) ? Math.max(0, Math.min(5, Math.round(Number(rating)))) : 0;
   ctx.font = '48px system-ui, sans-serif';
   ctx.fillStyle = '#fbbf24';
-  ctx.fillText('★★★★★'.slice(0, full) + '☆☆☆☆☆'.slice(0, 5 - full), W / 2, 258);
+  ctx.fillText(full > 0 ? `Rating: ${full}/5` : 'Not rated', W / 2, 258);
 
   // "What I learned" panel.
   if (learned && learned.trim()) {
