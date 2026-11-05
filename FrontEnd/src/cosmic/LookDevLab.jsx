@@ -153,36 +153,40 @@ export default function LookDevLab() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100" data-testid="look-dev-lab">
-      <Leva
-        titleBar={{ title: 'Look-Dev' }}
-        collapsed={false}
-        theme={{ sizes: { rootWidth: '320px' } }}
-      />
-      <header className="flex items-center gap-2 pl-4 pr-[340px] py-2 border-b border-slate-800">
+      <header className="flex flex-wrap items-center gap-3 px-4 py-3 border-b border-slate-800">
         <span className="text-xs font-mono uppercase tracking-widest text-amber-400">dev-only</span>
         <h1 className="text-sm font-bold">Look-Dev Lab</h1>
-        <p className="text-[11px] text-slate-500 ml-2">reduced motion: {reduced ? 'on' : 'off'} — captures to docs/design/lab-captures/</p>
-        <nav className="ml-auto flex gap-1" aria-label="Labs">
+        <p className="text-[11px] text-slate-300 ml-2">reduced motion: {reduced ? 'on' : 'off'} — captures to docs/design/lab-captures/</p>
+        <nav className="flex w-full flex-wrap gap-2 lg:w-auto lg:ml-auto" aria-label="Labs">
           {TABS.map((t) => (
             <button
               key={t.id}
               type="button"
               aria-pressed={tab === t.id}
               onClick={() => setTab(t.id)}
-              className={`px-2.5 py-1 text-xs rounded-lg ${tab === t.id ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-300'}`}
+              className={`min-h-11 px-3 py-2 text-xs rounded-lg focus-visible:outline-2 focus-visible:outline-amber-300 ${tab === t.id ? 'bg-cyan-700 text-white' : 'bg-slate-800 text-slate-300'}`}
             >
               {t.label}
             </button>
           ))}
         </nav>
       </header>
-      <main className="h-[calc(100vh-52px)]">
-        <Canvas camera={{ position: [0, 6, 24], fov: 60 }} dpr={[1, 2]} gl={{ antialias: true, toneMapping: THREE.AgXToneMapping }}>
-          <Suspense fallback={null}>
-            {starControls.showPerf && <Perf position="top-left" minimal />}
-            {scene}
-          </Suspense>
-        </Canvas>
+      <main className="grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="relative min-w-0 h-[55vh] min-h-[320px] lg:h-[calc(100vh-136px)]">
+          <Canvas camera={{ position: [0, 6, 24], fov: 60 }} dpr={[1, 2]} gl={{ antialias: true, toneMapping: THREE.AgXToneMapping }}>
+            <Suspense fallback={null}>
+              {starControls.showPerf && <Perf position="bottom-left" minimal />}
+              {scene}
+            </Suspense>
+          </Canvas>
+        </div>
+        <aside className="min-w-0" aria-label="Lab controls">
+          <h2 className="text-sm font-semibold mb-3">Controls</h2>
+          <Leva fill flat titleBar={false} collapsed={false} theme={{ colors: {
+            elevation1: '#0f172a', elevation2: '#111827', elevation3: '#1e293b',
+            highlight1: '#cbd5e1', highlight2: '#e2e8f0', highlight3: '#f8fafc',
+          } }} />
+        </aside>
       </main>
     </div>
   );

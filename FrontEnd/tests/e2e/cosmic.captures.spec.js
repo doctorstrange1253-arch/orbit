@@ -7,13 +7,14 @@
  * visual quality. Run the Look-Dev Lab + this spec; real-GPU verification is
  * still needed on a real browser before budgets count as met.
  */
+import process from 'node:process';
 import { test } from '@playwright/test';
 
 const BASE = process.env.ORBIT_BASE_URL || 'http://127.0.0.1:5173';
 const SHOTS = '../docs/progress/screenshots';
 
-test.describe('world view states', () => {
-  test('course learn page: 2D fallback healthy at 1280 (reduced motion)', async ({ browser }) => {
+test.describe('login smoke captures', () => {
+  test('login at 1280 with reduced motion', async ({ browser }) => {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     // CourseLearn needs auth + course id; capture the unauthenticated redirect instead:
@@ -23,7 +24,7 @@ test.describe('world view states', () => {
     await ctx.close();
   });
 
-  test('course learn page at 360 (mobile, reduced motion)', async ({ browser }) => {
+  test('login at 360 with reduced motion', async ({ browser }) => {
     const ctx = await browser.newContext({ viewport: { width: 360, height: 740 }, reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     await page.goto(`${BASE}/login`, { waitUntil: 'domcontentloaded', timeout: 30000 });

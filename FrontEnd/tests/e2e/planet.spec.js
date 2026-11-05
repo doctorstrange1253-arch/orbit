@@ -15,7 +15,10 @@ test.describe('planet lab', () => {
       const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
       const page = await ctx.newPage();
       const errors = [];
-      page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
+      page.on('pageerror', (e) => errors.push(String(e)));
+      page.on('console', (message) => {
+        if (message.type() === 'error' && /THREE|WebGL|GLSL|shader/i.test(message.text())) errors.push(message.text());
+      });
       await page.goto('/dev/lab', { waitUntil: 'domcontentloaded', timeout: 45000 });
       await expect(page.getByTestId('look-dev-lab')).toBeVisible({ timeout: 20000 });
       await page.waitForTimeout(2000); // let leva + webgl settle
@@ -23,21 +26,15 @@ test.describe('planet lab', () => {
       const nav = page.getByRole('navigation', { name: 'Labs' });
       await nav.getByRole('button', { name: 'Planet', exact: true }).click();
       await page.waitForTimeout(500);
-      // Leva archetype select: find the select labeled by the Planet lab panel
-      const selects = page.locator('select');
-      const count = await selects.count();
-      for (let i = 0; i < count; i++) {
-        const opts = await selects.nth(i).locator('option').allTextContents().catch(() => []);
-        if (opts.includes('terrestrial') || opts.includes(arch)) {
-          await selects.nth(i).selectOption(arch);
-          break;
-        }
-      }
+      const select = page.locator('select').filter({ has: page.locator('option').filter({ hasText: /^terrestrial$/ }) });
+      await expect(select).toHaveCount(1);
+      await select.selectOption({ label: arch });
+      await expect(select.locator('option:checked')).toHaveText(arch);
       await page.waitForTimeout(1500); // let the shader settle
       const shot = `${SHOTS}/planet-${arch}-1280.png`;
       await page.screenshot({ path: shot });
       console.log('capture:', shot, '| pageerrors:', errors.length ? errors.join(' ;; ') : 'none');
-      expect(errors.join(' ')).not.toMatch(/WebGL|GLSL|shader|THREE\.WebGL/i);
+      expect(errors).toEqual([]);
       await ctx.close();
     });
   }
