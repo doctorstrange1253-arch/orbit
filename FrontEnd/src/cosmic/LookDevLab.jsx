@@ -1,4 +1,5 @@
 import { Suspense, useMemo, useState } from 'react';
+import React from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
@@ -7,7 +8,10 @@ import { Perf } from 'r3f-perf';
 import StarfieldBackdrop from '../cosmic/StarfieldBackdrop';
 import TwinkleBackdrop from '../cosmic/twinkleBackdrop';
 import PlanetSurface from '../cosmic/PlanetSurface';
-import { PLANET_ARCHETYPES } from '../cosmic/PlanetGenerator';
+import Shuttle from '../cosmic/Shuttle';
+import { generatePlanetLayout, layoutToPosition, PLANET_ARCHETYPES } from '../cosmic/PlanetGenerator';
+// layoutToPosition is re-exported from PlanetGenerator (from travel.js) so the
+// Lab and the world share one position formula.
 
 /**
  * LookDevLab — dev-only route (/dev/lab), excluded from production bundles via
@@ -24,6 +28,7 @@ const TABS = [
   { id: 'starfield', label: 'Star' },
   { id: 'milkyway', label: 'Nebula' },
   { id: 'planet', label: 'Planet' },
+  { id: 'shuttle', label: 'Shuttle' },
   { id: 'postprocess', label: 'PostFX' },
 ];
 
@@ -52,6 +57,47 @@ function PlanetLabScene({ archetype, seed, spin }) {
   );
 }
 
+const LAB_LAYOUTS = [
+  generatePlanetLayout({ courseId: 'lab', moduleId: 'l1', moduleTitle: 'Launch' }),
+  generatePlanetLayout({ courseId: 'lab', moduleId: 'l2', moduleTitle: 'Orbit' }),
+  generatePlanetLayout({ courseId: 'lab', moduleId: 'l3', moduleTitle: 'Deep' }),
+];
+
+function ShuttleLabScene({ spin }) {
+  const apiRef = React.useRef(null);
+  const [target, setTarget] = React.useState(1);
+  return (
+    <>
+      <color attach="background" args={['#020617']} />
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[6, 8, 4]} intensity={1.2} />
+      <TwinkleBackdrop radius={300} motion={1} />
+      <StarfieldBackdrop count={2000} radius={200} seed={7} motion={1} />
+      {LAB_LAYOUTS.map((l, i) => (
+        <group key={i} position={layoutToPosition(l, i)}>
+          <PlanetSurface archetype={l.archetype} seed={l.seed} radius={l.size * 0.8} sunDirection={[-l.radius, 0, 0]} spin={spin * 0.5} detail={16} motion={1} />
+        </group>
+      ))}
+      <Shuttle layouts={LAB_LAYOUTS} startIndex={0} reducedMotion={false} apiRef={apiRef} />
+      {/* auto-fly between nodes so captures show travel + trail */}
+      <AutoFly apiRef={apiRef} target={target} onDone={() => setTarget((t) => (t + 1) % LAB_LAYOUTS.length)} />
+      <OrbitControls enablePan={false} minDistance={6} maxDistance={40} />
+    </>
+  );
+}
+
+function AutoFly({ apiRef, target, onDone }) {
+  const fired = React.useRef(false);
+  React.useEffect(() => {
+    fired.current = false;
+    const id = setTimeout(() => {
+      if (!fired.current) { fired.current = true; apiRef.current?.flyTo?.(target); setTimeout(onDone, 4200); }
+    }, 600);
+    return () => clearTimeout(id);
+  }, [target, apiRef, onDone]);
+  return null;
+}
+
 export default function LookDevLab() {
   const [tab, setTab] = useState('starfield');
 
@@ -68,12 +114,19 @@ export default function LookDevLab() {
     spin: { value: 0.1, min: 0, max: 1.5, step: 0.05 },
   }, { collapsed: false });
 
+  const shuttleControls = useControls('Shuttle lab', {
+    thrust: { value: 1.0, min: 0, max: 2, step: 0.1 },
+    spin: { value: 0.2, min: 0, max: 1, step: 0.05 },
+  }, { collapsed: false });
+
   const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const scene = useMemo(() => tab === 'planet' ? (
     <PlanetLabScene archetype={planetControls.archetype} seed={planetControls.seed} spin={planetControls.spin} />
+  ) : tab === 'shuttle' ? (
+    <ShuttleLabScene spin={shuttleControls.spin} />
   ) : (
     <StarLabScene starCount={starControls.count} seed={starControls.seed} mwOn={starControls.milkyway} />
-  ), [tab, starControls.count, starControls.seed, starControls.milkyway, planetControls.archetype, planetControls.seed, planetControls.spin]);
+  ), [tab, starControls.count, starControls.seed, starControls.milkyway, planetControls.archetype, planetControls.seed, planetControls.spin, shuttleControls.spin]);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100" data-testid="look-dev-lab">

@@ -4,7 +4,9 @@ import { render, screen, act } from '@testing-library/react';
 
 // ── mocks (same pattern as the passing CourseSpaceJourney3D tests) ──
 vi.mock('three', () => ({
-  Vector2: class {}, Vector3: class {}, Color: class {},
+  Vector2: class {}, Vector3: class { constructor() { this.x = 0; this.y = 0; this.z = 0; } lerp() { return this; } },
+  Color: class {},
+  Quaternion: class { constructor() {} },
   Raycaster: class { constructor() {} },
   ShaderMaterial: class { constructor(_p) { this.uniforms = {}; } },
   AdditiveBlending: 'additive', BackSide: 'backside', DoubleSide: 'doubleside', NormalBlending: 'normal',
@@ -21,6 +23,14 @@ vi.mock('../src/cosmic/PlanetSurface', () => ({
     'data-spin': p.spin,
     'data-detail': p.detail,
   }),
+}));
+
+vi.mock('../src/cosmic/Shuttle', () => ({
+  __esModule: true,
+  default: function MockShuttle(p) {
+    React.useEffect(() => { if (p.apiRef) p.apiRef.current = { flyTo: () => {} }; }, []);
+    return React.createElement('div', { 'data-testid': 'shuttle' });
+  },
 }));
 
 let lastGl = null;
@@ -44,6 +54,7 @@ vi.mock('@react-three/fiber', () => ({
     }, props.children); // pass children: Canvas normally renders them into the scene
   },
   useFrame: () => null,
+  useThree: () => ({ camera: { position: { lerp() {} }, lookAt() {} } }),
 }));
 
 vi.mock('@react-three/drei', () => ({

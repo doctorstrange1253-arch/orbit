@@ -25,7 +25,17 @@ vi.mock('leva', () => ({
   Leva: () => React.createElement('div'),
   useControls: (name) => name === 'Planet lab'
     ? { archetype: 'terrestrial', seed: 12345, spin: 0.1 }
-    : { count: 4000, seed: 49236, milkyway: true, showPerf: false },
+    : name === 'Shuttle lab'
+      ? { thrust: 1.0, spin: 0.2 }
+      : { count: 4000, seed: 49236, milkyway: true, showPerf: false },
+}));
+
+vi.mock('../src/cosmic/Shuttle', () => ({
+  __esModule: true,
+  default: function MockShuttle(p) {
+    React.useEffect(() => { if (p.apiRef) p.apiRef.current = { flyTo: () => {} }; }, []);
+    return React.createElement('div', { 'data-testid': 'shuttle' });
+  },
 }));
 vi.mock('r3f-perf', () => ({ Perf: () => null }));
 
@@ -46,6 +56,7 @@ describe('LookDevLab (F3)', () => {
     expect(screen.getByRole('button', { name: 'Star' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Nebula' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Planet' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Shuttle' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'PostFX' })).toBeTruthy();
   });
 });

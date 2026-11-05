@@ -19,8 +19,12 @@
  * into octave-noise frequency floors and phase offsets. Same inputs → same output,
  * exact every reload. Determinism makes cross-client sync trivial.
  */
-export const PLANET_ARCHETYPES = ['terrestrial', 'gas_giant', 'ice_world', 'volcanic', 'oceanic', 'crystalline', 'desert', 'nebula_station'];
-export const ARCHETYPE_LABELS = {
+import { layoutToPosition } from './travel';
+
+/** Re-export so labs can place nodes without duplicating the formula. */
+export { layoutToPosition };
+
+export const PLANET_ARCHETYPES = ['terrestrial', 'gas_giant', 'ice_world', 'volcanic', 'oceanic', 'crystalline', 'desert', 'nebula_station'];export const ARCHETYPE_LABELS = {
   terrestrial: 'Terra', gas_giant: 'Gasmass', ice_world: 'Ice', volcanic: 'Vulcane',
   oceanic: 'Ocean', crystalline: 'Crystal', desert: 'Desert', nebula_station: 'Nebula',
 };

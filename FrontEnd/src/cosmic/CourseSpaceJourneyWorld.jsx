@@ -1,5 +1,5 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Html, Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postprocessing';
@@ -8,6 +8,8 @@ import useQualityTier from '../hooks/useQualityTier';
 import StarfieldBackdrop from './StarfieldBackdrop';
 import TwinkleBackdrop from './twinkleBackdrop';
 import PlanetSurface from './PlanetSurface';
+import Shuttle from './Shuttle';
+import { layoutToPosition, damp3 } from './travel';
 import { generatePlanetLayout, ARCHETYPE_LABELS } from './PlanetGenerator';
 
 /**
@@ -50,10 +52,7 @@ function CentralStar({ title }) {
 
 function PlanetNode({ layout, index, active, onSelect, reducedMotion }) {
   const [hovered, setHovered] = useState(false);
-  const angle = layout.angle * Math.PI * 2;
-  const x = Math.cos(angle) * layout.radius;
-  const z = Math.sin(angle) * layout.radius;
-  const y = layout.altitude * Math.sin(index * 1.5);
+  const [x, y, z] = layoutToPosition(layout, index); // single source of truth (travel.js)
   const r = layout.size * 0.8;
   // direction from planet node to the central star (world origin)
   const sunDir = [-x, -y, -z];
@@ -108,6 +107,22 @@ function PlanetNode({ layout, index, active, onSelect, reducedMotion }) {
   );
 }
 
+/** Damped chase camera: follows the shuttle, looks at it. Reduced motion: fixed orbit. */
+function JourneyCamera({ shuttlePosRef, reducedMotion }) {
+  const { camera } = useThree();
+  const lookRef = useRef(new THREE.Vector3(0, 0, 0));
+  useFrame((state, delta) => {
+    if (reducedMotion) return;
+    const target = shuttlePosRef?.current;
+    if (!target) return;
+    const desired = new THREE.Vector3(target.x + 6, target.y + 4, target.z + 9);
+    camera.position.lerp(desired, damp3([1, 1, 1], [1, 1, 1], 0, 0)[0] || 1 - Math.exp(-3 * delta));
+    lookRef.current.lerp(target, 1 - Math.exp(-5 * delta));
+    camera.lookAt(lookRef.current);
+  });
+  return null;
+}
+
 function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedModuleId, tier, reducedMotion }) {
   const layouts = useMemo(
     () => modules.map((m, i) => generatePlanetLayout({
@@ -118,6 +133,15 @@ function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedMo
     [courseId, modules]
   );
   const post = POST_TIERS.has(tier);
+  const shuttleApiRef = useRef(null);
+  const shuttlePosRef = useRef(null);
+
+  // Planet click -> shuttle flies there, then the app navigates on arrival
+  const handleSelect = (idx) => {
+    shuttleApiRef.current?.flyTo?.(idx);
+    onSelectModule && onSelectModule(modules[idx]);
+  };
+
   return (
     <>
       <color attach="background" args={['#020617']} />
@@ -132,11 +156,13 @@ function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedMo
           layout={layout}
           index={i}
           active={String(selectedModuleId) === String(modules[i]._id || modules[i].id)}
-          onSelect={(idx) => onSelectModule && onSelectModule(modules[idx])}
+          onSelect={handleSelect}
           reducedMotion={reducedMotion}
         />
       ))}
-      <OrbitControls enablePan minDistance={8} maxDistance={35} autoRotate autoRotateSpeed={0.5} />
+      <Shuttle layouts={layouts} startIndex={0} reducedMotion={reducedMotion} apiRef={shuttleApiRef} />
+      <JourneyCamera shuttlePosRef={shuttlePosRef} reducedMotion={reducedMotion} />
+      <OrbitControls enablePan={false} minDistance={8} maxDistance={35} autoRotate={reducedMotion ? false : true} autoRotateSpeed={0.5} />
       {post && (
         <EffectComposer>
           <Bloom intensity={0.5} luminanceThreshold={0.6} luminanceSmoothing={0.2} mipmapBlur />
