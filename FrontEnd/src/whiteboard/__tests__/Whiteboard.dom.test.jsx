@@ -1,6 +1,21 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, vi } from 'vitest';
 import { render, fireEvent, screen, cleanup, act } from '@testing-library/react';
 import Whiteboard from '../Whiteboard';
+
+vi.mock('../../services/api', () => ({ default: {
+  get: vi.fn(async () => ({ data: {} })),
+  put: vi.fn(async () => ({ data: {} })),
+  post: vi.fn(async () => ({ data: {} })),
+} }));
+
+function testSocket() {
+  const listeners = new Map();
+  return { listeners, socket: {
+    on: vi.fn((event, handler) => listeners.set(event, handler)),
+    off: vi.fn((event) => listeners.delete(event)),
+    emit: vi.fn(),
+  } };
+}
 
 /**
  * Integration test: mounts the REAL <Whiteboard> component in jsdom and drives a
@@ -23,6 +38,32 @@ beforeAll(() => {
 });
 
 describe('<Whiteboard> component', () => {
+  it('sends readable reaction values on the existing wire field and renders vectors', () => {
+    const { socket } = testSocket();
+    const { container } = render(<Whiteboard socket={socket} pc={null} roomId="test-room" user={{ _id: 'u1', name: 'Tester' }} otherUser={{ name: 'Peer' }} onClose={() => {}} />);
+    for (const label of ['Like', 'Love', 'Laugh', 'Celebrate', 'Applause', 'Fire']) {
+      const button = screen.getByRole('button', { name: `React: ${label}` });
+      expect(button.querySelector('svg')).not.toBeNull();
+      fireEvent.click(button);
+      expect(socket.emit).toHaveBeenCalledWith('whiteboard-reaction', expect.objectContaining({ roomId: 'test-room', emoji: label, name: 'Tester', from: 'u1' }));
+    }
+    expect(container.querySelectorAll('.wb-react-float svg')).toHaveLength(6);
+    cleanup();
+  });
+
+  it('renders legacy reactions as vectors without changing custom peer text', () => {
+    const { socket, listeners } = testSocket();
+    const { container } = render(<Whiteboard socket={socket} pc={null} roomId="test-room" user={{ _id: 'u1', name: 'Tester' }} otherUser={{ name: 'Peer' }} onClose={() => {}} />);
+    act(() => {
+      listeners.get('whiteboard-reaction')({ roomId: 'test-room', from: 'u2', emoji: String.fromCodePoint(0x1f44d) });
+      listeners.get('whiteboard-reaction')({ roomId: 'test-room', from: 'u2', emoji: 'Good progress' });
+      listeners.get('whiteboard-raise-hand')({ roomId: 'test-room', from: 'u2', state: true });
+    });
+    expect(container.querySelector('.wb-react-float svg')).not.toBeNull();
+    expect(screen.getByText('Good progress')).toBeTruthy();
+    expect(screen.getByText(/Peer raised a hand/)).toBeTruthy();
+    cleanup();
+  });
   it('mounts without throwing and renders the full toolset', () => {
     render(<Whiteboard socket={null} pc={null} roomId="test-room" user={{ _id: 'u1', name: 'Tester' }} otherUser={{ name: 'Peer' }} onClose={() => {}} />);
     // A representative sample of the hand-built tools must be present.

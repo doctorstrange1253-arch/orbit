@@ -14,6 +14,32 @@ const Ic = ({ n, ...p }) => { const C = Lucide[n] || Lucide.Circle; return <C {.
 // exports fall back to an in-app image preview the user can long-press to save.
 const isNativeApp = () => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 
+const REACTION_ICONS = new Map([
+  ['Like', 'ThumbsUp'], ['Love', 'Heart'], ['Laugh', 'Laugh'],
+  ['Celebrate', 'PartyPopper'], ['Applause', null], ['Fire', 'Flame'],
+]);
+const LEGACY_REACTIONS = new Map([
+  [0x1f44d, 'Like'], [0x2764, 'Love'], [0x1f602, 'Laugh'],
+  [0x1f389, 'Celebrate'], [0x1f44f, 'Applause'], [0x1f525, 'Fire'],
+]);
+
+function reactionLabel(value) {
+  if (typeof value !== 'string') return 'Reaction';
+  if (REACTION_ICONS.has(value)) return value;
+  const characters = Array.from(value);
+  const legacy = characters.length === 1 || (characters.length === 2 && characters[1].codePointAt(0) === 0xfe0f);
+  return legacy ? LEGACY_REACTIONS.get(characters[0].codePointAt(0)) || value : value;
+}
+
+function ReactionMark({ value, size = 20 }) {
+  const label = reactionLabel(value);
+  if (label === 'Applause') return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="m4 13 3 5 5 3 5-4-6-9c-1-1-3 0-2 1l2 4-4-4c-1-1-3 0-2 2l3 4-2-3c-1-1-3 0-2 1Zm9-7 7 9-2 3M5 5l1 2m3-5v3m5-3-1 2" />
+  </svg>;
+  const icon = REACTION_ICONS.get(label);
+  return icon ? <Ic n={icon} size={size} aria-hidden="true" /> : label;
+}
+
 const TOOLBAR = [
   { id: 'select', icon: 'MousePointer2', title: 'Select / move' },
   { id: 'pen', icon: 'Pen', title: 'Pen' },
@@ -470,9 +496,9 @@ export default function Whiteboard({ socket, pc, roomId, user, otherUser, onClos
 
       {/* floating reactions */}
       <div className="wb-reactions-layer">
-        {reactions.map((r) => <span key={r.id} className="wb-react-float" style={{ left: `${r.left}%` }}>{r.emoji}</span>)}
+        {reactions.map((r) => <span key={r.id} className="wb-react-float" role="img" aria-label={reactionLabel(r.emoji)} style={{ left: `${r.left}%` }}><ReactionMark value={r.emoji} size={34} /></span>)}
       </div>
-      {peerHand && <div className="wb-peer-hand">✋ {otherUser?.name || 'Peer'} raised a hand</div>}
+      {peerHand && <div className="wb-peer-hand" role="status"><Ic n="Hand" size={16} aria-hidden="true" /> {otherUser?.name || 'Peer'} raised a hand</div>}
 
       {/* top-left: close + title */}
       <div className="wb-top">
@@ -551,8 +577,8 @@ export default function Whiteboard({ socket, pc, roomId, user, otherUser, onClos
 
       {/* reactions quick bar */}
       <div className="wb-react-bar">
-        {['👍', '❤️', '😂', '🎉', '👏', '🔥'].map((em) => (
-          <button key={em} onClick={() => react(em)}>{em}</button>
+        {Array.from(REACTION_ICONS.keys()).map((label) => (
+          <button key={label} aria-label={`React: ${label}`} title={label} onClick={() => react(label)}><ReactionMark value={label} /></button>
         ))}
       </div>
 
