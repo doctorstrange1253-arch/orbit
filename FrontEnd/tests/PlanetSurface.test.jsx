@@ -9,10 +9,35 @@ vi.mock('@react-three/fiber', () => ({ useFrame: () => null }));
 // ?raw GLSL imports resolve to strings in vitest (vite handles it); assert that.
 import planetVert from '../src/cosmic/shaders/planet.vert.glsl?raw';
 import planetFrag from '../src/cosmic/shaders/planet.frag.glsl?raw';
-import { displaceIcosahedron } from '../src/cosmic/PlanetSurface';
+import { displaceIcosahedron, makeDisplace } from '../src/cosmic/PlanetSurface';
+import { BufferGeometry } from 'three';
 import PlanetSurface from '../src/cosmic/PlanetSurface';
 
 describe('PlanetSurface (F4)', () => {
+  it('uses the seed to change terrain gradients, not just coordinate offsets', () => {
+    const first = makeDisplace(42);
+    const second = makeDisplace(12345);
+    const points = [[0.25, 0.25, 0.25], [0.75, 0.25, 0.75], [1.25, 0.75, 2.25]];
+    expect(points.filter((point) => Math.abs(first(...point) - second(...point)) > 0.00001).length).toBeGreaterThanOrEqual(2);
+    expect(first(0.25, 0.25, 0.25)).toBe(makeDisplace(42)(0.25, 0.25, 0.25));
+  });
+
+  it('disposes replaced geometry and the final geometry on unmount', () => {
+    const dispose = vi.spyOn(BufferGeometry.prototype, 'dispose');
+    const { rerender, unmount } = render(<PlanetSurface seed={42} detail={2} />);
+    try {
+      expect(dispose).not.toHaveBeenCalled();
+      rerender(<PlanetSurface seed={99} detail={2} />);
+      expect(dispose).toHaveBeenCalledTimes(1);
+      rerender(<PlanetSurface seed={99} radius={2} detail={2} />);
+      expect(dispose).toHaveBeenCalledTimes(2);
+      unmount();
+      expect(dispose).toHaveBeenCalledTimes(3);
+    } finally {
+      unmount();
+      dispose.mockRestore();
+    }
+  });
   it('every archetype has a complete uniform preset', () => {
     const keys = ['palA', 'palB', 'palC', 'oceanColor', 'oceanLevel', 'capColor', 'capLevel', 'atmoColor', 'atmoStrength', 'night', 'rough', 'metal'];
     expect(PLANET_ARCHETYPES).toHaveLength(8);

@@ -8,7 +8,7 @@ varying vec3 vWorld;
 
 void main() {
   vObj = normalize(position);
-  vNormal = normalize(normalMatrix * normal);
+  vNormal = normalize((normalMatrix * normal) * mat3(viewMatrix));
   vWorld = (modelMatrix * vec4(position, 1.0)).xyz;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }

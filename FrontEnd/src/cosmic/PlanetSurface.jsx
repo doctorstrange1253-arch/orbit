@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import planetVert from './shaders/planet.vert.glsl?raw';
@@ -32,16 +32,16 @@ function mulberry32(seed) {
 // Small JS-side value noise for geometry displacement. Matches the GLSL
 // hash shape closely enough that displacement and coloring agree visually;
 // exact equality is unnecessary (color uses its own fbm at higher octaves).
-function makeDisplace(seed) {
+export function makeDisplace(seed) {
   const rand = mulberry32(seed);
-  const perm = new Float32Array(512);
+  const perm = new Uint8Array(512);
   const p = new Uint8Array(256);
   for (let i = 0; i < 256; i++) p[i] = i;
   for (let i = 255; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
     const t = p[i]; p[i] = p[j]; p[j] = t;
   }
-  for (let i = 0; i < 512; i++) perm[i] = p[i & 255] / 255;
+  for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
   const fade = (t) => t * t * (3 - 2 * t);
   const grad = (h, x, y, z) => ((h & 1) ? -x : x) + ((h & 2) ? -y : y) + ((h & 4) ? -z : z);
   function noise3(x, y, z) {
@@ -92,6 +92,7 @@ export default function PlanetSurface({ archetype = 'terrestrial', seed = 1, rad
   const preset = ARCHETYPE_UNIFORMS[archetype] || ARCHETYPE_UNIFORMS.terrestrial;
 
   const geometry = useMemo(() => displaceIcosahedron(radius, detail, seed), [radius, detail, seed]);
+  useEffect(() => () => geometry.dispose(), [geometry]);
 
   const uniforms = useMemo(() => ({
     uSeed: { value: (seed % 997) / 997 },

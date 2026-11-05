@@ -60,10 +60,10 @@ export function generatePlanetLayout({ courseId, moduleId, moduleTitle }) {
   const seed = hashToSeed(courseId || 'default', moduleId || '0');
   const archetype = PLANET_ARCHETYPES[seed % PLANET_ARCHETYPES.length];
   const angle = ((seed >>> 0) % 360) / 360;            // position around orbit
-  const radius = 6 + ((seed >> 8) % 3) * 2.5;          // orbit spacing
-  const altitude = ((seed >> 16) % 4) * 1.5;           // tilt wobble
-  const size = 0.7 + ((seed >> 0) % 10) / 10 * 1.4;    // planet relative radius
-  const orbitSpeed = 0.05 + ((seed >> 8) % 10) / 100;  // slow drifting rotation
+  const radius = 6 + ((seed >>> 8) % 3) * 2.5;
+  const altitude = ((seed >>> 16) % 4) * 1.5;
+  const size = 0.7 + (seed % 10) / 10 * 1.4;
+  const orbitSpeed = 0.05 + ((seed >>> 8) % 10) / 100;
   return {
     archetype,
     seed,
