@@ -55,7 +55,7 @@ async function main() {
             const rivals = Number(arg("rivals")) || 29;
             result = await seeder.seedDemoAccount({ userId, now, rivals });
         }
-        console.log("[seed:orbit-demo] ✓", JSON.stringify(result, null, 2));
+        console.log("[seed:orbit-demo]", JSON.stringify(result, null, 2));
     } finally {
         await mongoose.connection.close();
     }

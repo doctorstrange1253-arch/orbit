@@ -7,7 +7,7 @@
  * touches the screen, the rate restores to 1.0x.
  *
  * This is a *gentle* mechanism — the video continues at a slower rate,
- * the user is not interrupted. A small "💫" indicator appears in the
+ * the user is not interrupted. A small state indicator appears in the
  * corner for 2s to acknowledge the shift.
  *
  * Hooks into a <video> via the `videoRef` prop. The component renders

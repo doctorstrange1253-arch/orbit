@@ -180,17 +180,17 @@
       <div class="dust-layer" id="dust"></div>
 
       <!-- UI cards -->
-      <div class="card c-streak"><span class="ico">🔥</span><span><span class="big">14</span> <span class="lbl">day streak</span></span></div>
-      <div class="card c-board"><span class="ico">🏆</span><span class="name">Leaderboard</span></div>
-      <div class="card c-league"><span class="ico">💎</span><span class="name">League</span></div>
-      <div class="card c-points"><span class="ico">✨</span><span class="name">Points: 5,200</span></div>
+      <div class="card c-streak"><span class="ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M13 3c1 5-4 6-3 10 2-1 3-3 4-4 4 4 5 10 0 12-5 2-10-2-8-7 0 4 2 4 2 4-3-7 6-9 5-15Z"/></svg></span><span><span class="big">14</span> <span class="lbl">day streak</span></span></div>
+      <div class="card c-board"><span class="ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10v7a5 5 0 0 1-10 0V3Zm0 2H3v3c0 3 2 4 5 4m9-7h4v3c0 3-2 4-5 4M12 15v5m-5 1h10"/></svg></span><span class="name">Leaderboard</span></div>
+      <div class="card c-league"><span class="ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="m4 8 4-5h8l4 5-8 13L4 8Zm0 0h16M8 3l4 18L16 3"/></svg></span><span class="name">League</span></div>
+      <div class="card c-points"><span class="ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 6 3 8 9 9-6 1-8 3-9 9-1-6-3-8-9-9 6-1 8-3 9-9Z"/></svg></span><span class="name">Points: 5,200</span></div>
     </div>
   </div>
 
   <div class="bar">
-    <button class="btn" id="replay">↻ Replay</button>
-    <button class="btn" id="sound">🔊 Sound on</button>
-    <button class="btn ghost" id="rec">● Record to .webm</button>
+    <button class="btn" id="replay">Replay</button>
+    <button class="btn" id="sound">Sound on</button>
+    <button class="btn ghost" id="rec">Record to .webm</button>
     <span id="recstate" class="hint"></span>
   </div>
   <p class="hint">
@@ -328,7 +328,7 @@
   const soundBtn = document.getElementById('sound');
   soundBtn.onclick = ()=>{
     soundOn = !soundOn;
-    soundBtn.textContent = soundOn ? '🔊 Sound on' : '🔇 Sound off';
+    soundBtn.textContent = soundOn ? 'Sound on' : 'Sound off';
     soundBtn.classList.toggle('ghost', !soundOn);
     if(soundOn) document.getElementById('replay').click();   // replay + play sound together
   };

@@ -11,7 +11,7 @@
 Orbit V3 is a gamified, space-themed learning platform. Its visual language avoids generic "bootstrap neon" and cheap AI styling by enforcing a sophisticated cinematic sci-fi aesthetic inspired by hard science fiction UI (Expanse, Interstellar, NASA telemetry).
 
 - **Theme**: Deep space observatory meets elite academy command center.
-- **Zero-Emoji Discipline**: Absolute ban on emojis (`🪐`, `⭐`, `🚀`, `🔥`, etc.) in all UI labels, headers, buttons, and notifications. Replaced entirely by a bespoke custom SVG icon set and precise typographic badges.
+- **Zero-Emoji Discipline**: No emoji or text-character icons in UI labels, headers, buttons, or notifications. Use bespoke SVG artwork and precise typographic badges.
 - **Color Philosophy**: Vantablack deep space backdrops (`#020617`) contrasted with luminous celestial accent tokens (nebula cyan, stellar gold, quantum emerald).
 
 ---

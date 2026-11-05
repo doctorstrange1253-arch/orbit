@@ -19,7 +19,7 @@ async function main() {
     }
     await mongoose.connect(process.env.MONGO_URI);
     const result = await seedAdminUser();
-    console.log(`[seed:admin] ✓ ${result.email} is admin.${result.totpEnabled ? " (existing TOTP preserved)" : " TOTP enrolment required on first login."}`);
+    console.log(`[seed:admin] ${result.email} is admin.${result.totpEnabled ? " (existing TOTP preserved)" : " TOTP enrolment required on first login."}`);
     await mongoose.connection.close();
     process.exit(0);
 }

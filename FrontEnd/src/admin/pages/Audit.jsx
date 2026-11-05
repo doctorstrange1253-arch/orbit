@@ -40,7 +40,7 @@ export default function Audit() {
                   <td><code style={{ fontSize: 12 }}>{r.action}</code></td>
                   <td className="ssctl-muted">{r.actorId?.email || r.actorEmail || '—'}</td>
                   <td className="ssctl-muted">{r.targetType}{r.targetId ? `:${String(r.targetId).slice(-6)}` : ''}</td>
-                  <td>{r.success ? '✓' : <span style={{ color: 'var(--ss-danger)' }}>✗</span>}</td>
+                  <td>{r.success ? 'Success' : <span style={{ color: 'var(--ss-danger)' }}>Failed</span>}</td>
                   <td className="ssctl-muted">{new Date(r.createdAt).toLocaleString()}</td>
                 </tr>
                 {open === r._id && (

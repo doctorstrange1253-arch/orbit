@@ -82,7 +82,7 @@ function computePactScore(signals) {
     const qa = clamp(s.qaAnswers || 0, CAPS.qaAnswers);
     const ratingAvg = (s.ratingCount || 0) > 0 ? (s.ratingSum || 0) / (s.ratingCount || 1) : 0;
     // rating contribution is scaled by participation (sessions, capped at 10
-    // so a 5★ on a 1-session week is worth more per-session than a 5★ on a
+    // so a 5-star rating on a 1-session week is worth more per-session than one on a
     // 50-session week — both should still be heard).
     const ratingScaled = ratingAvg * WEIGHTS.ratingScale * Math.min(sessions, 10) / 10;
     return (

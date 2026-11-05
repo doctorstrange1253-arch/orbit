@@ -214,7 +214,7 @@ const PublicProfile = () => {
                     const percentage = total > 0 ? (count / total) * 100 : 0;
                     return (
                       <div key={stars} className="flex items-center gap-3">
-                        <span className="text-xs text-text-muted w-8">{stars} ★</span>
+                        <span className="text-xs text-text-muted w-8">{stars}/5</span>
                         <div className="flex-1 h-2 rounded-full bg-surface overflow-hidden">
                           <div 
                             className="h-full rounded-full transition-all"

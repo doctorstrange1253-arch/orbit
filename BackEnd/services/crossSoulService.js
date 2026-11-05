@@ -172,7 +172,7 @@ async function topSwapperScan() {
             await createNotification(null, row._id, {
                 type: "mentor_invite",
                 title: "You swap well. Have you considered teaching?",
-                body: `${row.count} swaps in 90 days, ${avg.toFixed(1)}★ average. We'd love to see you on the other side.`,
+                body: `${row.count} swaps in 90 days, ${avg.toFixed(1)}/5 average rating. We'd love to see you on the other side.`,
                 data: { link: "/mentor/apply" },
             });
             invited += 1;

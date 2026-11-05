@@ -18,7 +18,7 @@ import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Trophy, Sparkles, BookOpen } from 'lucide-react';
+import { Trophy, Sparkles, BookOpen, MapPin } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import useLiftoffStore from '../cosmic/liftoffStore';
 import { useLeaderboard } from '../cosmic/useCosmic';
@@ -199,7 +199,7 @@ const CosmicBoard = ({ navigate, user }) => {
 
       {data?.label && (
         <div className="flex items-center gap-1.5 text-xs text-text-muted mb-2">
-          <span className="text-xs">📍</span>
+          <MapPin size={12} aria-hidden="true" />
           <span>
             Showing mentors {data.label}
             {data.widened && data.appliedRadiusKm ? ` (widened to ${data.appliedRadiusKm} km to fill the board)` : ''}.
@@ -211,7 +211,7 @@ const CosmicBoard = ({ navigate, user }) => {
         <button onClick={() => navigate('/peer/nearby')}
           className="flex items-start gap-2 w-full text-left p-3 rounded-2xl mb-3 text-xs"
           style={{ background: 'var(--surface)', border: '1px solid var(--accent-1)' }}>
-          <span className="mt-0.5 flex-none text-accent">◎</span>
+          <MapPin size={14} aria-hidden="true" className="mt-0.5 flex-none text-accent" />
           <span className="text-text-secondary">
             <strong className="text-text-primary">Add your city</strong> to see who's ranked near you.
             We're showing the country board for now. <span className="text-accent underline">Set location</span>
@@ -222,7 +222,7 @@ const CosmicBoard = ({ navigate, user }) => {
       {scope === 'city' && data?.unplacedCount > 0 && (
         <div className="flex items-start gap-2 p-3 rounded-2xl mb-3 text-xs"
           style={{ background: 'var(--surface)', border: '1px dashed var(--border-subtle)' }}>
-          <span className="mt-0.5 flex-none text-text-muted">📍</span>
+          <MapPin size={14} aria-hidden="true" className="mt-0.5 flex-none text-text-muted" />
           <div className="text-text-muted">
             <span className="text-text-secondary">
               {data.unplacedCount} {data.unplacedCount === 1 ? "mentor hasn't" : "mentors haven't"} set a city yet,
@@ -292,7 +292,7 @@ const CosmicBoard = ({ navigate, user }) => {
       )}
       {isError && needsLocation && (
         <EmptyState
-          icon={<span className="text-2xl">📍</span>}
+          icon={<MapPin size={24} aria-hidden="true" />}
           title="Set your location to see the board"
           description="The neighborhood and city boards need your location. Set it on the Nearby map, then come back."
           ctaLabel="Go to Nearby"

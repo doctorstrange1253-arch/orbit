@@ -7,7 +7,7 @@
  *
  * The modal is short on purpose. The user sees a short paragraph that
  * explains *why* they were invited (e.g. "you swapped 14 times with
- * 4.7★ avg"), then 2 questions:
+ * 4.7/5 average), then two questions:
  *   1. Why do you want to teach on Orbit?
  *   2. What would your first course be about?
  *
@@ -104,7 +104,7 @@ const MentorInviteModal = ({ invite, onDismiss, onAccept }) => {
               </h2>
               <p className="text-sm text-text-secondary leading-relaxed mb-3">
                 {isTopSwapper
-                  ? `${metrics.swaps || 'Many'} peer swaps in 90 days, ${(metrics.avgRating || 4.5).toFixed(1)}★ average. Have you considered teaching?`
+                  ? `${metrics.swaps || 'Many'} peer swaps in 90 days, ${(metrics.avgRating || 4.5).toFixed(1)}/5 average. Have you considered teaching?`
                   : `Your learning is in the top 5% of Orbit. Have you considered teaching what you know?`}
               </p>
               <p className="text-xs text-text-muted leading-relaxed mb-6">

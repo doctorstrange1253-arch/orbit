@@ -34,7 +34,7 @@ describe('MentorInviteModal', () => {
 
   it('shows the swap metrics in the intro step', () => {
     renderModal();
-    expect(screen.getByText(/14 peer swaps in 90 days, 4\.7★ average/i)).toBeInTheDocument();
+    expect(screen.getByText(/14 peer swaps in 90 days, 4\.7\/5 average/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /tell me more/i })).toBeInTheDocument();
     expect(screen.getByText('Not now')).toBeInTheDocument();
   });

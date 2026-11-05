@@ -46,7 +46,7 @@ const CoachQuiz = ({ questions = [], passingScore = 70, onSubmit, onPass, isBoss
 
   const [answers, setAnswers] = useState({});           // { [qIdx]: chosenIdx }
   const [submitted, setSubmitted] = useState(false);
-  const [streak, setStreak] = useState(0);               // 3-right streak for the "🌟" indicator
+  const [streak, setStreak] = useState(0);
   const [showStreakSpark, setShowStreakSpark] = useState(false);
 
   const correctCount = useMemo(() => {

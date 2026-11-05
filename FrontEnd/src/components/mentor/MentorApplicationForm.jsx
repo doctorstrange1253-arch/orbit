@@ -131,7 +131,7 @@ const MentorApplicationForm = ({ initial = {} }) => {
                             style={{ fontFamily: 'var(--font-sans)', fontSize: '0.92rem', lineHeight: 1.65, color: 'rgba(245,245,245,0.58)' }}
                         >
                             Submit this and you are live the same moment — no queue, no approval to wait on. You keep
-                            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}> 85% of every 1-on-1 video session</span>, and 90% once you cross 4.8★ over 20 or more ratings. Course pricing is set separately when you build a course.
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}> 85% of every 1-on-1 video session</span>, and 90% once you cross a 4.8/5 average over 20 or more ratings. Course pricing is set separately when you build a course.
                         </p>
                     </div>
                 </div>

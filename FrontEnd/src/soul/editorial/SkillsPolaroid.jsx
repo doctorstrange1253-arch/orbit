@@ -12,7 +12,7 @@
  *   - A sessions-taught count in a corner badge
  *   - A subtle category tag (derived from the skill name's first letter,
  *     so no backend schema change is needed)
- *   - Beneath the paper, an editorial caption: "Traded N times · R.R★"
+ *   - Beneath the paper, an editorial caption: "Traded N times · R.R/5"
  *     or "Archived 14 Mar"
  *
  * Per the editorial review: washi-tape is a stationery signifier, not
@@ -98,7 +98,7 @@ export default function SkillsPolaroid({ skill, index = 0 }) {
 
   // Editorial caption beneath the card.
   const caption = exchanges > 0
-    ? `Traded ${exchanges} time${exchanges === 1 ? '' : 's'}${rating != null ? ` · ${Number(rating).toFixed(1)}★` : ''}`
+    ? `Traded ${exchanges} time${exchanges === 1 ? '' : 's'}${rating != null ? ` · ${Number(rating).toFixed(1)}/5` : ''}`
     : `Archived ${formatDate(lastTouched) || 'today'}`;
 
   return (
@@ -224,7 +224,7 @@ export default function SkillsPolaroid({ skill, index = 0 }) {
                   className="font-mono uppercase tracking-[0.18em]"
                   style={{ fontSize: '0.58rem', color: rating != null ? tag.fg : 'rgba(26,26,26,0.35)' }}
                 >
-                  {rating != null ? `${Number(rating).toFixed(1)}★` : levelLetter}
+                  {rating != null ? `${Number(rating).toFixed(1)}/5` : levelLetter}
                 </div>
               </div>
             </div>

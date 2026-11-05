@@ -104,7 +104,7 @@ const QuizCard = ({ lesson, onSubmit, onRetry, isSubmitting, result }) => {
                     >
                         <div className="text-sm font-bold text-text-primary">
                             You scored {result.score}% · {result.passed ? 'Passed' : 'Try again'}
-                            {result.perfect && ' · 🎯 Perfect!'}
+                            {result.perfect && ' · Perfect!'}
                         </div>
                         {!result.passed && (
                             <button

@@ -62,7 +62,7 @@ if (require.main === module) {
         if (!process.env.MONGO_URI) { console.error("[seed:store] MONGO_URI is not set."); process.exit(1); }
         await mongoose.connect(process.env.MONGO_URI);
         const { tiers, items } = await seedStore();
-        console.log(`[seed:store] ✓ ${tiers} rarity tiers, ${items} store items upserted.`);
+        console.log(`[seed:store] ${tiers} rarity tiers, ${items} store items upserted.`);
         await mongoose.connection.close();
         process.exit(0);
     })().catch(async (err) => {

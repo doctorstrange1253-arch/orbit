@@ -108,7 +108,7 @@ const RateSessionButton = ({ session, alreadyRated }) => {
         style={{ ...MICRO, color: 'var(--text-primary)', background: 'transparent', border: '1px solid rgba(255,255,255,0.32)', cursor: 'pointer' }}
       >
         {rate.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-        {stars ? `Send ${stars}★` : 'Pick a rating'}
+        {stars ? `Send ${stars}/5 rating` : 'Pick a rating'}
       </button>
     </div>
   );

@@ -66,12 +66,12 @@ async function runOrbitReminders(io) {
             // bridge today, so there's no urgency at all.
             let title, body;
             if (graduated) {
-                title = "🌟 Your Fixed Star is shining";
+                title = "Your Fixed Star is shining";
                 body = tokens > 0
                     ? `Your ${streak}-day orbit is glowing — and a Gravity Assist has today covered. No rush.`
                     : `Your ${streak}-day orbit is glowing. Whenever you're ready, one swap keeps it bright.`;
             } else {
-                title = "🔥 Your orbit is glowing";
+                title = "Your orbit is glowing";
                 body = tokens > 0
                     ? `Your ${streak}-day orbit is glowing — one swap keeps it alive, or a Gravity Assist (${tokens} left) will bridge today.`
                     : `Your ${streak}-day orbit is glowing — one swap, message, or review keeps it alive today.`;

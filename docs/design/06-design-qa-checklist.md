@@ -8,7 +8,7 @@
 
 ## 13-Item Design QA Checklist
 
-1. [ ] **Zero-Emoji Verification**: Zero emojis (`🪐`, `🚀`, etc.) present across all user-facing components, labels, buttons, and notifications.
+1. [ ] **Zero-Emoji Verification**: No emoji or text-character icons across user-facing components, labels, buttons, and notifications.
 2. [ ] **Bespoke SVG Icon Compliance**: All icons utilize Lucide vector sets or custom SVG geometry defined in `02-icon-and-badge-system.md`.
 3. [ ] **Typography Hierarchy**: Correct font application (`font-sans` for editorial, `font-mono uppercase tracking-widest` for telemetry badges).
 4. [ ] **Color Token Consistency**: All surfaces and borders reference `--color-*` tokens and OKLCH color rules.

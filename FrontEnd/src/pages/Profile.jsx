@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet-async';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   UserCircle, Shield, Save, Camera, Upload, X, Link as LinkIcon, Globe, Flame,
-  ArrowRight, Users, GraduationCap, BookOpen, TrendingUp, Calendar, Wallet, Handshake, Inbox,
+  ArrowRight, Users, GraduationCap, BookOpen, TrendingUp, Calendar, Wallet, Handshake, Inbox, Star,
 } from 'lucide-react';
 import api from '../services/api';
 import { useAuthStore, getCurrentWindow, ROLE_META, ACCOUNT_ROLES } from '../store/authStore';
@@ -635,9 +635,9 @@ const Profile = () => {
                       <p className="font-semibold text-sm truncate">{r.fromUser?.name}</p>
                       <span className="text-xs text-text-muted flex-shrink-0">{new Date(r.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <div className="flex gap-1 mb-2">
+                    <div className="flex gap-1 mb-2" role="img" aria-label={`${r.score} out of 5 stars`}>
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i} className={`text-[12px] ${i < r.score ? 'text-[#ffb800]' : 'text-text-muted'}`}>★</span>
+                        <Star key={i} size={12} aria-hidden="true" fill={i < r.score ? 'currentColor' : 'none'} className={i < r.score ? 'text-[#ffb800]' : 'text-text-muted'} />
                       ))}
                     </div>
                     <p className="text-sm text-text-secondary break-words">{r.review || "No written review provided."}</p>
@@ -659,9 +659,9 @@ const Profile = () => {
                       <p className="font-semibold text-sm truncate">To: {r.toUser?.name}</p>
                       <span className="text-xs text-text-muted flex-shrink-0">{new Date(r.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <div className="flex gap-1 mb-2">
+                    <div className="flex gap-1 mb-2" role="img" aria-label={`${r.score} out of 5 stars`}>
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i} className={`text-[12px] ${i < r.score ? 'text-[#ffb800]' : 'text-text-muted'}`}>★</span>
+                        <Star key={i} size={12} aria-hidden="true" fill={i < r.score ? 'currentColor' : 'none'} className={i < r.score ? 'text-[#ffb800]' : 'text-text-muted'} />
                       ))}
                     </div>
                     <p className="text-sm text-text-secondary break-words">{r.review || "No written review provided."}</p>

@@ -123,7 +123,7 @@ function Reviews({ toast }) {
       </div>
       <div className="ssctl-card" style={{ padding: 0 }}>
         <table className="ssctl-table">
-          <thead><tr><th>From</th><th>To</th><th>★</th><th>Review</th><th /></tr></thead>
+          <thead><tr><th>From</th><th>To</th><th>Rating</th><th>Review</th><th /></tr></thead>
           <tbody>
             {rows?.map((r) => (
               <tr key={r._id}>

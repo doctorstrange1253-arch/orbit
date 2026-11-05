@@ -215,7 +215,7 @@ const NotAppliedView = () => (
                 <MentorTitle size="md">A quiet practice</MentorTitle>
             </div>
             <ul className="mt-5 space-y-4">
-                <Bullet Icon={RupeeIcon} title="Keep 85% of every session" body="The payout multiplier rises to 90% once you have held a 4.8★ across 20+ ratings." />
+                <Bullet Icon={RupeeIcon} title="Keep 85% of every session" body="The payout multiplier rises to 90% once you have held a 4.8/5 average across 20+ ratings." />
                 <Bullet Icon={Calendar} title="You set your own hours" body="Tune a weekly availability grid in UTC. No minimums, no quotas." />
                 <Bullet Icon={Edit3} title="Escrow is handled for you" body="Razorpay holds the money; you are paid automatically on session completion." />
                 <Bullet Icon={MessageSquare} title="Built-in messaging" body="Chat with students before the session using the same inbox you already use." />

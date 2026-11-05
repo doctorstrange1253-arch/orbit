@@ -51,7 +51,6 @@ describe("pactService — computePactScore", () => {
         expect(computePactScore({ sessions: 100 })).toBe(50 * 4);
     });
     it("rating contributes 20 × avg, scaled by participation", () => {
-        // 4 sessions, 4 5★ ratings → 5 * 20 * 4/10 = 40
         expect(computePactScore({ sessions: 4, ratingSum: 20, ratingCount: 4 })).toBe(40 + 16);
     });
     it("rating contribution is 0 with no sessions", () => {
@@ -67,7 +66,6 @@ describe("pactService — computePactScore", () => {
         expect(computePactScore({ qaAnswers: 100 })).toBe(150);
     });
     it("composite example: a busy week", () => {
-        // 12 sessions, 4.7★ avg, 3 completions, 5 Q&A answers
         // sessions  = 12 * 4           = 48
         // rating    = 4.7 * 20 * 10/10 = 94
         // completions = 3 * 10         = 30

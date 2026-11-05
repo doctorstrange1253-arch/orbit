@@ -276,7 +276,7 @@ export default function OrbitSigil() {
             style={{ color: 'inherit' }}
           >
             <span style={{ color: 'rgba(255,255,255,0.45)' }}>PHOTONS </span>
-            <span style={{ color: '#fff', fontWeight: 600 }}>{sigil.stardust.toLocaleString()} ✦</span>
+            <span style={{ color: '#fff', fontWeight: 600 }}>{sigil.stardust.toLocaleString()}</span>
           </button>
           <button
             type="button"

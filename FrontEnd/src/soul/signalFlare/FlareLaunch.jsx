@@ -9,7 +9,7 @@
  * leaves the screen upward, the planet materializes from above later
  * (when a mentor responds).
  *
- * Reduced-motion: 300ms cross-fade with "✓ Flare launched" text.
+ * Reduced-motion: 300ms cross-fade with "Flare launched" text.
  */
 
 import { useEffect, useState } from 'react';

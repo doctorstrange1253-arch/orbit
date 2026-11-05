@@ -630,7 +630,7 @@ const LessonEditor = ({ lesson, index, open, onToggle, onUpdate, onRemove, onAdd
                                     className="flex-1 truncate"
                                     style={{ fontSize: '0.78rem', color: lesson.videoUrl ? 'rgba(245,245,245,0.75)' : 'rgba(245,245,245,0.45)' }}
                                 >
-                                    {lesson.videoUrl ? `✓ Uploaded` : 'No video uploaded'}
+                                    {lesson.videoUrl ? 'Uploaded' : 'No video uploaded'}
                                 </div>
                                 <label
                                     className="inline-flex items-center gap-1.5 font-mono uppercase cursor-pointer"

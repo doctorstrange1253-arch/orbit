@@ -553,7 +553,7 @@ io.on("connection", (socket) => {
             const { checkForBannedContent } = require("./utils/bannedKeywords");
             if (!checkForBannedContent(content).isClean) {
                 socket.emit("message-blocked", {
-                    message: "⚠️ Your message contains prohibited words and was not sent. Please keep it respectful.",
+                    message: "Your message contains prohibited words and was not sent. Please keep it respectful.",
                     content, // echoed back so the client can restore the text for editing
                 });
                 return;
@@ -789,7 +789,7 @@ mongoose.connect(process.env.MONGO_URI, {
         // preserves any existing TOTP enrolment.
         if (process.env.RUN_ADMIN_SEED === "true") {
             require("./services/adminSeeder").seedAdminUser()
-                .then((r) => console.log(`[admin-seed] ✓ ${r.email} is admin.${r.totpEnabled ? " (TOTP preserved)" : " Enrol TOTP on first login."} You can now remove RUN_ADMIN_SEED.`))
+                .then((r) => console.log(`[admin-seed] ${r.email} is admin.${r.totpEnabled ? " (TOTP preserved)" : " Enrol TOTP on first login."} You can now remove RUN_ADMIN_SEED.`))
                 .catch((e) => console.error("[admin-seed] failed:", e.message));
         }
 

@@ -238,7 +238,7 @@ const RatingModal = ({ isOpen, onClose, otherUser, callDuration }) => {
               {comment.length}/500 characters {comment.length < 10 && `(${10 - comment.length} more needed)`}
             </p>
             {comment.length >= 10 && (
-              <p className="text-xs text-green">✓ Good to go!</p>
+              <p className="text-xs text-green">Good to go!</p>
             )}
           </div>
         </div>

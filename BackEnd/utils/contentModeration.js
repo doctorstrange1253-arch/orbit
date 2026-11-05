@@ -78,7 +78,7 @@ async function enforceContentPolicy(userId, text, opts = {}) {
     ok: false,
     status: 400,
     body: {
-      message: `⚠️ WARNING ${user.warningCount}/${STRIKES_BEFORE_BAN}: Your ${context} contains prohibited terms and cannot be saved. Please review our community guidelines.`,
+      message: `WARNING ${user.warningCount}/${STRIKES_BEFORE_BAN}: Your ${context} contains prohibited terms and cannot be saved. Please review our community guidelines.`,
       warningCount: user.warningCount,
       remainingWarnings: STRIKES_BEFORE_BAN - user.warningCount,
       violationType: "content_policy",
