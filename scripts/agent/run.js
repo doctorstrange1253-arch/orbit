@@ -1,48 +1,75 @@
-#!/usr/bin/env node
-/**
- * run.js — run a command with a timeout, capture everything, print a compact result.
- * Usage: node scripts/agent/run.js "<command>" [timeoutMs=120000]
- * Writes full output to .agent/scratch/last-run.log. Never treats empty output as success.
- */
-const { execFileSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+const { spawnSync } = require('node:child_process');
+const { randomUUID } = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
 
-const ROOT = path.resolve(__dirname, '..', '..');
-const SCRATCH = path.join(ROOT, '.agent', 'scratch');
-fs.mkdirSync(SCRATCH, { recursive: true });
+const ROOT = path.resolve(__dirname, '../..');
+const SCRATCH = path.join(ROOT, '.agent/scratch');
 
-const cmd = process.argv[2];
-const timeoutMs = Number(process.argv[3] || 120000);
-if (!cmd) { console.error('usage: run.js "<command>" [timeoutMs]'); process.exit(2); }
-
-const t0 = Date.now();
-let stdout = '', stderr = '', code = 0, timedOut = false;
-try {
-  stdout = execFileSync(process.env.ComSpec || 'cmd.exe', ['/d', '/s', '/c', cmd], {
-    cwd: ROOT, encoding: 'utf8', timeout: timeoutMs, maxBuffer: 64 * 1024 * 1024,
-    stdio: ['ignore', 'pipe', 'pipe'], shell: false,
+function runCommand(command, options = {}) {
+  const cwd = path.resolve(ROOT, options.cwd || '.');
+  const timeout = options.timeout ?? 120000;
+  if (!command || !Number.isFinite(timeout) || timeout <= 0) {
+    throw new Error('A command and a positive timeout are required');
+  }
+  if (!fs.existsSync(cwd) || !fs.statSync(cwd).isDirectory()) {
+    throw new Error(`Working directory does not exist: ${cwd}`);
+  }
+  const started = Date.now();
+  const result = spawnSync(command, {
+    cwd,
+    shell: process.platform === 'win32' ? (process.env.ComSpec || 'cmd.exe') : '/bin/sh',
+    encoding: 'utf8',
+    timeout,
+    maxBuffer: 64 * 1024 * 1024,
+    windowsHide: true,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env, CI: 'true', NO_COLOR: '1', GIT_TERMINAL_PROMPT: '0', npm_config_yes: 'false' },
   });
-} catch (e) {
-  code = e.status == null ? (e.signal ? 1 : 2) : e.status;
-  timedOut = e.killed === true && e.signal === 'SIGTERM';
-  stdout = e.stdout || '';
-  stderr = (e.stderr || '') + (e.message || '');
+  const timedOut = result.error?.code === 'ETIMEDOUT';
+  const code = timedOut ? 124 : (result.status ?? 2);
+  const stdout = result.stdout || '';
+  const stderr = (result.stderr || '') + (result.error ? `\n${result.error.message}\n` : '');
+  const duration = Date.now() - started;
+  const label = String(options.label || 'run').replace(/[^a-z0-9-]/gi, '-');
+  fs.mkdirSync(SCRATCH, { recursive: true });
+  const logPath = path.join(SCRATCH, `${label}-${started}-${randomUUID().slice(0, 8)}.log`);
+  const log = `CMD: ${command}\nCWD: ${cwd}\nEXIT: ${code}${timedOut ? ' (TIMEOUT)' : ''}\nDURATION: ${duration}ms\n=== STDOUT ===\n${stdout}\n=== STDERR ===\n${stderr}\n`;
+  fs.writeFileSync(logPath, log, 'utf8');
+  fs.writeFileSync(path.join(SCRATCH, 'last-run.log'), log, 'utf8');
+  return { command, cwd, code, stdout, stderr, duration, timedOut, logPath };
 }
-const dur = ((Date.now() - t0) / 1000).toFixed(1);
 
-const logPath = path.join(SCRATCH, 'last-run.log');
-fs.writeFileSync(logPath, `CMD: ${cmd}\nCWD: ${ROOT}\nEXIT: ${code}${timedOut ? ' (TIMEOUT)' : ''}\nDURATION: ${dur}s\n=== STDOUT ===\n${stdout}\n=== STDERR ===\n${stderr}\n`);
+function printResult(result) {
+  const split = (text) => text ? text.replace(/\r\n/g, '\n').replace(/\n$/, '').split('\n') : [];
+  const stdout = split(result.stdout);
+  const stderr = split(result.stderr);
+  console.log(`CMD: ${result.command}`);
+  console.log(`CWD: ${result.cwd}  EXIT: ${result.code}${result.timedOut ? ' (TIMEOUT)' : ''}  DUR: ${(result.duration / 1000).toFixed(1)}s`);
+  console.log(`stdout ${stdout.length} lines | stderr ${stderr.length} lines | log: ${path.relative(ROOT, result.logPath).replace(/\\/g, '/')}`);
+  for (const [name, lines] of [['stdout', stdout], ['stderr', stderr]]) {
+    console.log(`--- ${name} first 40 ---\n${lines.slice(0, 40).join('\n') || '(empty)'}`);
+    if (lines.length > 40) console.log(`--- ${name} last 40 ---\n${lines.slice(-40).join('\n')}`);
+  }
+}
 
-const lines = (s) => s.split('\n').filter(Boolean);
-const so = lines(stdout), se = lines(stderr);
-const head = (a, n) => a.slice(0, n).join('\n');
-const tail = (a, n) => a.slice(-n).join('\n');
-console.log(`CMD: ${cmd}`);
-console.log(`CWD: ${ROOT}  EXIT: ${code}${timedOut ? ' (TIMEOUT)' : ''}  DUR: ${dur}s`);
-console.log(`stdout ${so.length} lines | stderr ${se.length} lines | log: ${path.relative(ROOT, logPath)}`);
-console.log('--- stdout first 40 ---\n' + (head(so, 40) || '(empty)'));
-console.log('--- stdout last 40 ---\n' + (tail(so, 40) || '(empty)'));
-console.log('--- stderr first 40 ---\n' + (head(se, 40) || '(empty)'));
-console.log('--- stderr last 40 ---\n' + (tail(se, 40) || '(empty)'));
-process.exit(code || 0);
+if (require.main === module) {
+  try {
+    const [command, ...args] = process.argv.slice(2);
+    const options = {};
+    if (args.length && /^\d+$/.test(args[0])) options.timeout = Number(args.shift());
+    while (args.length) {
+      const flag = args.shift();
+      if (!['--cwd', '--label', '--timeout'].includes(flag) || !args.length) throw new Error(`Invalid option: ${flag}`);
+      options[flag.slice(2)] = flag === '--timeout' ? Number(args.shift()) : args.shift();
+    }
+    const result = runCommand(command, options);
+    printResult(result);
+    process.exitCode = result.code;
+  } catch (error) {
+    console.error(error.message);
+    process.exitCode = 2;
+  }
+}
+
+module.exports = { runCommand, printResult };

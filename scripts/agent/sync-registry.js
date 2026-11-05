@@ -11,7 +11,6 @@ const { execFileSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..', '..');
 const problems = [];
-const ok = [];
 
 const regPath = path.join(ROOT, '.agent', 'FILE_REGISTRY.md');
 const registry = fs.existsSync(regPath) ? fs.readFileSync(regPath, 'utf8') : '';
@@ -39,10 +38,12 @@ for (const f of onDisk) {
   if (!registered.has(f)) problems.push(`(a) not in registry: ${f}`);
 }
 
-// (b) registered files missing on disk — skip group rows (contain ',', '*', '+', or ' ')
 for (const f of registered) {
-  if (/[,*+ ]/.test(f)) continue; // group/description row, or multi-file label
-  if (!fs.existsSync(path.join(ROOT, f))) problems.push(`(b) registered but missing on disk: ${f}`);
+  if (/[,*+]/.test(f) || path.isAbsolute(f) || f.split('/').includes('..')) {
+    problems.push(`(b) registry entry is not a literal project-relative path: ${f}`);
+  } else if (!fs.existsSync(path.join(ROOT, f))) {
+    problems.push(`(b) registered but missing on disk: ${f}`);
+  }
 }
 
 // (c) suspicious names anywhere (excluding node_modules/.git/dist)
@@ -54,7 +55,8 @@ function walkAll(dir) {
   try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
   for (const e of entries) {
     if (e.isDirectory()) {
-      if (['.git', 'node_modules', 'dist', 'quarantine'].includes(e.name)) continue;
+      const relative = path.relative(ROOT, path.join(dir, e.name)).split(path.sep).join('/');
+      if (['.git', 'node_modules', 'dist'].includes(e.name) || ['.agent/scratch', '.agent/quarantine', 'FrontEnd/test-results', 'FrontEnd/playwright-report'].includes(relative)) continue;
       walkAll(path.join(dir, e.name));
     } else {
       const p = path.join(dir, e.name);
@@ -89,20 +91,17 @@ for (const e of fs.readdirSync(ROOT, { withFileTypes: true })) {
   problems.push(`(e) unexpected root file: ${e.name}`);
 }
 
-// git untracked/modified not in registry (group rows cover related files, so only
-// flag standalone paths; *.md is tracked now since *.md was removed from .gitignore)
-const KNOWN_GROUPS = ['BackEnd/', 'FrontEnd/src/', 'FrontEnd/tests/', '.agent/', 'docs/', 'scripts/agent/', 'FrontEnd/package.json', 'FrontEnd/package-lock.json', 'FrontEnd/src/App.jsx', '.gitignore'];
 try {
-  const gs = execFileSync('git', ['status', '--porcelain'], { cwd: ROOT, encoding: 'utf8' });
-  for (const line of gs.split('\n').filter(Boolean)) {
-    const f = line.slice(3).trim();
-    if (registered.has(f) || f.endsWith('/')) continue;
-    if (KNOWN_GROUPS.some((g) => g.endsWith('/') ? f.startsWith(g) : f === g) && registry.includes(f.split('/').pop())) continue;
-    if (!registered.has(f) && !f.startsWith('docs/') && !f.startsWith('.agent/')) {
-      problems.push(`(a) git ${line.slice(0, 2)} not in registry: ${f}`);
-    }
+  const commands = [
+    ['diff', '--name-only', '-z'],
+    ['diff', '--cached', '--name-only', '-z'],
+    ['ls-files', '--others', '--exclude-standard', '-z'],
+  ];
+  const changed = new Set(commands.flatMap((args) => execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).split('\0').filter(Boolean)));
+  for (const file of changed) {
+    if (!registered.has(file)) problems.push(`(a) changed file not in registry: ${file}`);
   }
-} catch { ok.push('git status unavailable'); }
+} catch (error) { problems.push(`git inventory unavailable: ${error.code || error.status}`); }
 
 console.log('sync-registry report');
 console.log('registered entries:', registered.size, '| files in agent areas:', onDisk.length);
