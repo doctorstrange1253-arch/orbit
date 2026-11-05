@@ -1,11 +1,24 @@
-# STATE — one-page truth
+# STATE
 
-- Project root: `D:/orbit-main/orbit-main` (git repo, branch `feature/orbit-v3-foundation`). Parent `D:/orbit-main` is NOT a repo and holds stray `tmp-*` skill clones (left outside repo, D10).
-- Phase: 6 implementation (M4 gamification polish + signature 3D world). Approvals: user said "i approved all the things" 2026-11-04 (D8); design decisions 1-5 = recommendations (AgX, parametric shuttle, bloom+selective-on-ultra, Gaia subset, Lab only).
-- Done and committed: R0-R6 + P1/P3/P4/P5 phases; R-cleanup (b0778f4); P3-installs (25ee1a7: postprocessing ^6.39.6, @react-three/postprocessing ^3.2.2, leva ^0.10.1, r3f-perf ^7.2.3, playwright ^1.64.1, axe-core ^4.14.0 + chromium); F0 (70ba5d5: test suite 48/48 green); F1 scene shell (1a2aea6); F2 starfield/nebula GLSL + composer fix (c7c84f3); F3a playwright harness (08e69cf); F3 Look-Dev Lab + Star capture (20daf5f).
-- Now: vitest 10 files / 55 tests PASS; playwright 3 specs PASS; lint clean on new files; vite build green (3D chunk 271 KB gz); sync-registry clean; BackEnd jest 625/625 (baseline, re-run at milestone end). Verified real WebGL: star-lab-1280.png shows stars + milkyway band (SwiftShader = layout only).
-- Next: F6 — stations/checkpoints/boss encounters in the world (Station Lab capture), then UI/a11y/perf pass + milestone report (screenshots at 4 sizes, BackEnd re-run). Follow-ups: star temp orange skew, shuttle framing is small in Lab capture (tighten camera in polish), quarantine old prototype, real-GPU perf check owed.
-- Follow-ups queued: star temp ramp skews orange (polish pass); quarantine old prototype CourseSpaceJourney3D after world verified in real browser; BackEnd re-run at milestone end; real-GPU + real-device perf check still owed to user.
-- Note: M1-M3 changes from earlier sessions remain unstaged on purpose (not mine to commit); see git status.
-- Blockers: none.
-- Last session time: 2026-11-04 (this session).
+- Last verified date: 2026-11-05.
+- Phase: 6, F7; milestone remains PARTIAL, not beta-ready.
+- Repository: `.`; terminal starts in the parent directory. Branch: `feature/orbit-v3-foundation`.
+- Latest code commits: `fabfbea` test dependencies; `f82e029` planet correctness; `8a8b87c` journey lifecycle/fallback; `246f9ee` Lab accessibility/isolation; `5ab33bf` verification tooling.
+- User approved continued implementation and listed tooling on 2026-11-04. Do not add code comments. Do not pause for per-component design approvals.
+- Resumed workflow `wf_85dd8c43-8a6` COMPLETE: 4 agents, 12 independently verified findings. No workflow needs another resume.
+- Implemented: unsigned planet dimensions; seeded gradient correction; geometry disposal; world-space normals; arrival-controlled navigation; stale flight cancellation; deep-link parking; chase-camera pose/damping; unavailable-WebGL recovery; live reduced-motion changes.
+- Lab: embedded responsive controls, accessible tab targets, no Leva exclusion in axe, DEV-gated lazy import.
+- Capture tests now require the selected planet/station label and fail on page errors and shader-console diagnostics. Two representative captures rerun; exhaustive variants still pending.
+- Latest full verification: 9 agent-script tests PASS; registry PASS; frontend 14 files/98 tests PASS; backend 58 suites/625 tests PASS; production build PASS.
+- Full verification still FAILS: 13 frontend lint errors and 86 warnings; 127 authored-text emoji/pictograph matching lines.
+- Typechecks, backend lint and backend build explicitly SKIPPED because no scripts are configured.
+- Result paths: `.agent/scratch/verification.json` and the per-stage logs it references.
+- Browser evidence: 4-width Lab pointer/keyboard checks passed across two runs; full-panel axe passed. Test budget increased to 120s after earlier 60s timeouts; this is not an FPS claim.
+- Real WebGL lighting regression: first failed with brightness 180 instead of at least 250, then passed after normal-space correction.
+- Production inspection found no Lab code/assets in 110 emitted JS files or PWA precache after the import gate change.
+- Backend earlier failed local MongoMemoryServer startup; isolated, one-worker and final standard runs passed. No hosted database was used. User reported hosted MongoDB paused for inactivity.
+- Remaining: full-site lint/emoji remediation; actual browser course arrival/cancellation and GPU-memory cycling; exhaustive captures; distinct archetype art, broader screen redesign and real-device performance budgets.
+- Existing unrelated backend, mentor and Navbar working-tree changes remain untouched and uncommitted.
+- Existing development server at 127.0.0.1:5173 was reused; ownership not established this resumption. Do not kill guessed PIDs.
+- Generated wrong-cwd Playwright artifacts were preserved under `.agent/quarantine/playwright-root-run-20261105`.
+- Next: follow `.agent/HANDOFF.md` and `docs/progress/bug-audit.md`; do not repeat completed workflow reviews or label historical smoke tests as full acceptance.

@@ -19,6 +19,7 @@ Project-relative paths, forward slashes. One concept, one location.
 | Frontend tests | `FrontEnd/tests/` | `*.test.jsx` | `FrontEnd/tests/CourseSpaceJourney3D.test.jsx` |
 | Agent state | `.agent/` | fixed names: STATE, PATHS, FILE_REGISTRY, TASKS, DECISIONS, ERRORS, ENVIRONMENT, HANDOFF, SESSION_LOG | `.agent/STATE.md` |
 | Agent scripts | `scripts/agent/` | kebab-case `.js` | `scripts/agent/probe-env.js` |
+| Agent script tests | `scripts/agent/` | Node built-in test runner, `*.test.js` | `scripts/agent/run.test.js` |
 | Scratch | `.agent/scratch/` only; delete or promote before task done | any | `.agent/scratch/last-run.log` |
 | Quarantine | `.agent/quarantine/` only; never delete without user approval | keep original relative path under it | `.agent/quarantine/FrontEnd/_moment_up.png` |
 | Docs — plan | `docs/plan/` | `NN-name.md` | `docs/plan/06-dynamic-3d-space-ui.md` |

@@ -58,5 +58,7 @@ Project root (script location): D:\orbit-main\orbit-main
 ## Notes
 - Bash tool on this machine is Git Bash (MINGW64); Windows paths need forward slashes (d:/orbit-main/...). `cd D:\...` fails — always use forward slashes or POSIX /d/... paths.
 - PowerShell tool exists separately (powershell.exe 5.1); do not mix syntax.
-- The harness primary working directory is the project root D:/orbit-main/orbit-main; it is a git repo on branch feature/orbit-v3-foundation.
+- Verified 2026-11-05: Bash starts at D:/orbit-main, one level above the repo. Use absolute script paths, git -C for the repository, and explicit child-process cwd; do not rely on cd persistence.
+- The command runner uses cmd.exe on Windows, not the Git Bash caller's shell. Do not invoke npm .bin shell shims with node.
+- Bash safety classifier briefly timed out before execution on 2026-11-05; one later retry succeeded. No setting or model change was made.
 - Parent D:/orbit-main is NOT a git repo and contains stray tmp-* skill clones (see docs/progress/recovery-report.md).

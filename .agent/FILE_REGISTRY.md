@@ -1,117 +1,149 @@
-# FILE_REGISTRY — files created or significantly changed by agents
+# FILE_REGISTRY
 
-Method: from `git status --short` (2026-11-04) + docs dirs + .agent + scripts/agent. Purposes marked UNVERIFIED where not read this session.
+One literal project-relative path per row. Reconstructed entries establish location, not feature completion. Test results and approvals belong in TASKS.md and STATE.md. Generated scratch, quarantine and dependency files are excluded from this registry.
 
 | Path | Purpose | Task | Status | Date |
 |---|---|---|---|---|
-| BackEnd/middleware/identity.js | RBAC rolesVersion stale-token rejection | M1 | modified, unverified content this session | 2026-11-03 |
-| BackEnd/models/WebhookEvent.js | idempotent Razorpay webhook ledger | M1 | new | 2026-11-03 |
-| BackEnd/services/billingPlans.js | tiers, INR paise, 20% fee | M2 | modified | 2026-11-03 |
-| BackEnd M1/M2 wiring files (controllers/sessionsController.js, routes/courseRoutes.js, server.js, .env.example, package.json, package-lock.json, tests/billingPlans.test.js) | M1/M2 wiring | M1/M2 | modified (earlier sessions, unstaged) | 2026-11-03 |
-| BackEnd/models/Quiz.js | standalone AI quiz question doc | M3 | new | 2026-11-03 |
-| BackEnd M2/M3 engine files (services/ollamaService.js, controllers/aiQuizController.js + courseRequestController.js, routes/aiQuizRoutes.js, tests/courseRequest.test.js + identityMiddleware.test.js, models/CourseRequest.js) | Ollama RAG quiz + course-request engine | M2/M3 | new (earlier sessions, unstaged) | 2026-11-03 |
-| FrontEnd/src/services/aiQuiz.js | AI quiz client, `/ai` prefix fix | M3 | new | 2026-11-03 |
-| FrontEnd/src/cosmic/AICourseQuizPanel.jsx | mentor review queue UI | M3 | new | 2026-11-03 |
-| FrontEnd/src/cosmic/CourseSpaceJourney3D.jsx | R3F solar-system course map (prototype) | M3 | legacy (superseded by CourseSpaceJourneyWorld; quarantine candidate) | 2026-11-02 |
-| FrontEnd M3 wiring files (pages/CourseLearn.jsx, pages/mentor/LessonEdit.jsx, components/layout/Navbar.jsx) | mounted 3D map + quiz panel wiring | M3 | modified (earlier sessions, unstaged) | 2026-11-03 |
-| FrontEnd/package.json, package-lock.json | deps: three/fiber/drei + F3 tooling (postprocessing, leva, r3f-perf, playwright, @playwright/test, axe-core) | M3/F3 | modified, committed (25ee1a7 + 70ba5d5 + 08e69cf) | 2026-11-04 |
-| FrontEnd/tests/CourseSpaceJourney3D.test.jsx | 4 smoke tests for 3D component | M3 | new | 2026-11-03 |
-| FrontEnd/tests/cosmic.test.jsx | PlanetGenerator unit tests | Phase4-scaffold | new, expected to PASS (pure fns) | 2026-11-04 |
-| FrontEnd/tests/cosmic-components.test.jsx | component smoke tests; FIXED 2026-11-04 (imports real CourseSpaceJourney3D, pure-fn PlanetGenerator test) — now passing | Phase4-scaffold | fixed, commit 70ba5d5 | 2026-11-04 |
-| FrontEnd/src/cosmic/CourseSpaceJourneyWorld.jsx | Phase 6 F1 scene shell (lazy Canvas, tiers, ctx-loss, 2D fallback) | F1 | done, commit 1a2aea6 | 2026-11-04 |
-| FrontEnd/tests/CourseSpaceJourneyWorld.test.jsx | 6 tests for the world shell | F1 | done, commit 1a2aea6 | 2026-11-04 |
-| FrontEnd/src/pages/CourseLearn.jsx | lazy-mounts CourseSpaceJourneyWorld (supersedes M3 prototype mount) | F1 | done, commit 1a2aea6 | 2026-11-04 |
-| FrontEnd/src/cosmic/CourseSpaceJourney3D.jsx | old prototype, now unused by CourseLearn — candidate for quarantine after world verified | M3 | legacy, pending decision | 2026-11-02 |
-| FrontEnd/src/cosmic/PlanetGenerator.jsx | seeded planet layout generator; default export returns object not JSX — needs component fix | Phase4-scaffold | new, contract bug (E8) | 2026-11-04 |
-| FrontEnd/src/cosmic/StarfieldBackdrop.jsx | instanced starfield points + shaders | Phase4-scaffold | new, UNVERIFIED render | 2026-11-04 |
-| FrontEnd/src/cosmic/twinkleBackdrop.jsx | nebula pulse backdrop | Phase4-scaffold | new, UNVERIFIED render | 2026-11-04 |
-| FrontEnd/src/components/cosmic/lookDevShell.jsx | Look-Dev Lab shell | Phase4-scaffold | new, UNVERIFIED | 2026-11-04 |
-| FrontEnd/src/hooks/useQualityTier.js, useLazyScene.js, useContextLossWarning.js | tier detect, lazy scene, context-loss | Phase4-scaffold | new, UNVERIFIED | 2026-11-04 |
-| FrontEnd/src/utils/emojiGuard.js | emoji scanner | Phase4-scaffold | new, UNVERIFIED | 2026-11-04 |
-| docs/plan/*.md (22 files) | product plan docs | earlier phases | existing | pre-2026-11-03 |
-| docs/design/*.md (10 files) | tooling.md, research-log.md, 00-07 design docs | Phase 3 | new | 2026-11-03 |
-| docs/progress/milestone-ledger.md, TASKS.md | milestone ledger + task list | Phase 2 | new | 2026-11-03 |
-| AUDIT_PLAN.md, AUDIT_REPORT.md (root) | earlier audit docs, misplaced per PATHS | earlier | misplaced, quarantine proposed | 2026-10-29/30 |
-| build-d/e/f/h/i.log (root) | stray build logs | earlier | misplaced (gitignored by *.log) | 2026-08-31 |
-| FrontEnd/_moment_*.png, _shoot_moment.mjs, _verify_moment.html | underscore scratch files | earlier | misplaced, quarantine proposed | unknown |
-| .agent/* (9 files: STATE, PATHS, FILE_REGISTRY, TASKS, DECISIONS, ERRORS, ENVIRONMENT, HANDOFF, SESSION_LOG) | agent state system | Phase R | new this session | 2026-11-04 |
-| scripts/agent/*.js (probe-env, run, find-file, where, sync-registry, check-no-emoji, verify) | self-checking agent scripts | Phase R | new this session | 2026-11-04 |
-| CLAUDE.md | root agent rules (created; not pre-existing) | Phase R | new | 2026-11-04 |
-| docs/plan/00..16-*.md + bug-audit.md, research-log.md, research-plan.md, thinking.md, visual-overview.md (22 files) | product plan docs (group row; individually UNVERIFIED this session) | earlier phases | existing | pre-2026-11-03 |
-| docs/design/00..07-*.md | design docs (group row) | Phase 3 | new | 2026-11-03 |
-| docs/progress/recovery-report.md | Phase R deliverable | R5 | done | 2026-11-04 |
-| docs/progress/skills-routing.md | Phase 1 skills routing table | P1 | done | 2026-11-04 |
-
-## Explicit agent-area entries (for sync-registry)
-
-| .agent/DECISIONS.md | agent state | R3 | new | 2026-11-04 |
-| .agent/ENVIRONMENT.md | machine truth | R0 | new | 2026-11-04 |
-| .agent/ERRORS.md | failure log | R3 | new | 2026-11-04 |
-| .agent/FILE_REGISTRY.md | this registry | R3 | new | 2026-11-04 |
-| .agent/HANDOFF.md | handoff | R3 | new | 2026-11-04 |
-| .agent/PATHS.md | directory contract | R3 | new | 2026-11-04 |
-| .agent/SESSION_LOG.md | append-only log | R3 | new | 2026-11-04 |
-| .agent/STATE.md | one-page truth | R3 | new | 2026-11-04 |
-| .agent/TASKS.md | task ledger | R3 | new | 2026-11-04 |
-| CLAUDE.md | root agent rules | R3 | new | 2026-11-04 |
-| FrontEnd/tests/CourseSpaceJourney3D.test.jsx | 3D smoke tests | M3 | new | 2026-11-03 |
-| FrontEnd/tests/cosmic-components.test.jsx | component smoke (FIXED 2026-11-04, commit 70ba5d5) | scaffold | fixed | 2026-11-04 |
-| FrontEnd/tests/cosmic.test.jsx | PlanetGenerator unit tests | scaffold | new | 2026-11-04 |
-| docs/design/00-art-direction.md | design doc | Phase 3 | new | 2026-11-03 |
-| docs/design/01-design-tokens.md | design doc | Phase 3 | new | 2026-11-03 |
-| docs/design/02-icon-and-badge-system.md | design doc | Phase 3 | new | 2026-11-03 |
-| docs/design/03-3d-world-spec.md | design doc | Phase 3 | new | 2026-11-03 |
-| docs/design/04-ui-screens-spec.md | design doc | Phase 3 | new | 2026-11-03 |
-| docs/design/05-performance-and-quality-tiers.md | design doc | Phase 3 | new | 2026-11-03 |
-| docs/design/06-design-qa-checklist.md | design doc | Phase 3 | new | 2026-11-03 |
-| docs/design/07-look-dev-lab-spec.md | design doc | Phase 3 | new | 2026-11-03 |
-| docs/design/research-log.md | research log | Phase 4-prep | new | 2026-11-03 |
-| docs/design/tooling.md | tooling decisions | Phase 3 | new | 2026-11-03 |
-| docs/plan/00-executive-summary.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/01-skill-routing.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/02-identity-system.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/03-subscription-architecture.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/04-mentor-economics.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/05-course-request-engine.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/06-dynamic-3d-space-ui.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/07-ai-quiz-engine.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/08-gamification-system.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/09-extra-features.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/10-technical-architecture.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/11-implementation-roadmap.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/12-testing-qa-plan.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/13-deployment-devops.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/14-risk-register.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/15-stakeholder-governance.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/16-interview-questions.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/bug-audit.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/research-log.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/research-plan.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/thinking.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/plan/visual-overview.md | plan doc | earlier | existing | pre-2026-11-03 |
-| docs/progress/TASKS.md | task list | Phase 2 | new | 2026-11-03 |
-| docs/progress/milestone-ledger.md | milestone ledger | Phase 2 | new | 2026-11-03 |
-| docs/progress/AUDIT_PLAN.md | earlier audit plan, moved from root | R-cleanup | moved, commit b0778f4 | 2026-11-04 |
-| docs/progress/AUDIT_REPORT.md | earlier audit report, moved from root | R-cleanup | moved, commit b0778f4 | 2026-11-04 |
-| docs/progress/screenshots/login-1280.png | playwright capture 1280x800, verified non-blank | F3a | committed 08e69cf | 2026-11-04 |
-| docs/progress/screenshots/login-360.png | playwright capture 360x740, verified non-blank | F3a | committed 08e69cf | 2026-11-04 |
-| docs/design/lab-captures/star-lab-1280.png | Star Lab capture (SwiftShader headless) | F3 | 154 KB PNG, stars visible | 2026-11-04 |
-| FrontEnd/tests/e2e/cosmic.captures.spec.js | playwright smoke captures | F3a | 2 pass, committed 08e69cf | 2026-11-04 |
-| FrontEnd/tests/e2e/lookdev.spec.js | Star Lab capture spec | F3 | 1 pass | 2026-11-04 |
-| FrontEnd/tests/LookDevLab.test.jsx | lab shell unit test | F3 | passing | 2026-11-04 |
-| FrontEnd/src/cosmic/LookDevLab.jsx | dev-only /dev/lab route scene (leva + r3f-perf) | F3 | route gated by import.meta.env.DEV | 2026-11-04 |
-| FrontEnd/src/App.jsx | added DEV-gated /dev/lab route (F3) | F3 | pending commit | 2026-11-04 |
-| .gitignore | removed *.md (R-cleanup), ignored playwright artifacts (F3) | R-cleanup/F3 | pending commit | 2026-11-04 |
-| FrontEnd/src/cosmic/shaders/noise.glsl | shared noise chunk | F2 | build green | 2026-11-04 |
-| FrontEnd/src/cosmic/shaders/starfield.vert.glsl | star vertex shader | F2 | build green | 2026-11-04 |
-| FrontEnd/src/cosmic/shaders/starfield.frag.glsl | star fragment shader | F2 | build green | 2026-11-04 |
-| FrontEnd/src/cosmic/shaders/milkyway.frag.glsl | nebula + band + dust lanes | F2 | build green, capture shows MW band right side | 2026-11-04 |
-| FrontEnd/vite.config.js | vitest excludes tests/e2e (playwright owns it) | F3 | 10 files / 55 tests pass | 2026-11-04 |
-| FrontEnd/playwright.config.js | playwright chromium config | F3a | committed 08e69cf | 2026-11-04 |
-| scripts/agent/check-no-emoji.js | emoji guard | R3 | new | 2026-11-04 |
-| scripts/agent/find-file.js | file walker | R3 | new | 2026-11-04 |
-| scripts/agent/probe-env.js | env probe | R0 | new | 2026-11-04 |
-| scripts/agent/run.js | command runner | R3 | new | 2026-11-04 |
-| scripts/agent/sync-registry.js | registry sync | R3 | new | 2026-11-04 |
-| scripts/agent/verify.js | verify pipeline | R3 | new | 2026-11-04 |
-| scripts/agent/where.js | keyword lookup | R3 | new | 2026-11-04 |
+| .gitignore | Repository exclusions | R-cleanup | existing | 2026-11-05 |
+| CLAUDE.md | Session instructions | R3 | existing; stale statements need reconciliation | 2026-11-05 |
+| .agent/STATE.md | Current verified state | F7 | active | 2026-11-05 |
+| .agent/HANDOFF.md | Next-session instructions | F7 | active | 2026-11-05 |
+| .agent/PATHS.md | Canonical file locations | R3 | active | 2026-11-05 |
+| .agent/FILE_REGISTRY.md | Literal file registry | F7a | normalized | 2026-11-05 |
+| .agent/TASKS.md | Task status and evidence | F7 | active | 2026-11-05 |
+| .agent/DECISIONS.md | Approvals and decisions | R3 | active | 2026-11-05 |
+| .agent/ERRORS.md | Failures and corrective actions | F7 | active | 2026-11-05 |
+| .agent/ENVIRONMENT.md | Verified command environment | F7a | active | 2026-11-05 |
+| .agent/SESSION_LOG.md | Append-only event history | F7 | active | 2026-11-05 |
+| scripts/agent/probe-env.js | Environment probe | R0 | reconstructed; implementation not reverified | 2026-11-05 |
+| scripts/agent/run.js | Command runner with separate streams and per-run logs | F7a | seven regression tests passed | 2026-11-05 |
+| scripts/agent/run.test.js | Runner regression tests | F7a | passed | 2026-11-05 |
+| scripts/agent/find-file.js | Filesystem search fallback | R3 | reconstructed | 2026-11-05 |
+| scripts/agent/where.js | Registry and file lookup | R3 | reconstructed | 2026-11-05 |
+| scripts/agent/sync-registry.js | Registry consistency checker | F7a | checks being tightened | 2026-11-05 |
+| scripts/agent/check-no-emoji.js | Authored-text Unicode guard | F7a | scanner tests pass; source violations remain | 2026-11-05 |
+| scripts/agent/check-no-emoji.test.js | Guard scope and Unicode regression tests | F7a | passed | 2026-11-05 |
+| scripts/agent/verify.js | Package-pinned verification pipeline | F7a | full rerun pending | 2026-11-05 |
+| BackEnd/.env.example | Example backend configuration | M1 | pre-existing work preserved | 2026-11-05 |
+| BackEnd/package.json | Backend scripts and dependencies | M1-M3 | pre-existing work preserved | 2026-11-05 |
+| BackEnd/package-lock.json | Backend dependency lock | M1-M3 | pre-existing work preserved | 2026-11-05 |
+| BackEnd/server.js | API startup and route mounts | M1-M3 | pre-existing work preserved | 2026-11-05 |
+| BackEnd/controllers/sessionsController.js | Sessions and payment handling | M1-M2 | pre-existing work preserved | 2026-11-05 |
+| BackEnd/routes/courseRoutes.js | Course/request routes | M2 | pre-existing work preserved | 2026-11-05 |
+| BackEnd/services/billingPlans.js | Billing tier calculations | M2 | pre-existing work preserved | 2026-11-05 |
+| BackEnd/tests/billingPlans.test.js | Billing regression tests | M2 | pre-existing work preserved | 2026-11-05 |
+| BackEnd/middleware/identity.js | Identity middleware | M1 | reconstructed; acceptance unverified | 2026-11-05 |
+| BackEnd/models/WebhookEvent.js | Webhook event ledger | M1 | reconstructed; acceptance unverified | 2026-11-05 |
+| BackEnd/models/Quiz.js | AI question schema | M3 | reconstructed; acceptance unverified | 2026-11-05 |
+| BackEnd/models/CourseRequest.js | Course request schema | M2 | reconstructed; acceptance unverified | 2026-11-05 |
+| BackEnd/services/ollamaService.js | Local model quiz integration | M3 | reconstructed; acceptance unverified | 2026-11-05 |
+| BackEnd/controllers/aiQuizController.js | Quiz generation and review endpoints | M3 | reconstructed; acceptance unverified | 2026-11-05 |
+| BackEnd/controllers/courseRequestController.js | Course request handling | M2 | reconstructed; acceptance unverified | 2026-11-05 |
+| BackEnd/routes/aiQuizRoutes.js | AI quiz routes | M3 | reconstructed; acceptance unverified | 2026-11-05 |
+| BackEnd/tests/courseRequest.test.js | Course request tests | M2 | reconstructed | 2026-11-05 |
+| BackEnd/tests/identityMiddleware.test.js | Identity middleware tests | M1 | reconstructed | 2026-11-05 |
+| FrontEnd/package.json | Frontend scripts and dependencies | P3 | pre-existing uncommitted installs preserved | 2026-11-05 |
+| FrontEnd/package-lock.json | Frontend dependency lock | P3 | pre-existing uncommitted installs preserved | 2026-11-05 |
+| FrontEnd/playwright.config.js | Browser test configuration | F7a | Node import lint fixed | 2026-11-05 |
+| FrontEnd/vite.config.js | Build and unit-test configuration | F3 | existing | 2026-11-05 |
+| FrontEnd/src/App.jsx | Application routes and lazy imports | F3 | Lab production exclusion under review | 2026-11-05 |
+| FrontEnd/src/pages/CourseLearn.jsx | Student lesson page | F7b | journey integration under review | 2026-11-05 |
+| FrontEnd/src/pages/mentor/LessonEdit.jsx | Mentor lesson editor | M3 | pre-existing work preserved | 2026-11-05 |
+| FrontEnd/src/components/layout/Navbar.jsx | Navigation | M3 | pre-existing work preserved | 2026-11-05 |
+| FrontEnd/src/components/cosmic/lookDevShell.jsx | Earlier unused Lab scaffold | scaffold | lint failures; not replaced or deleted | 2026-11-05 |
+| FrontEnd/src/cosmic/AICourseQuizPanel.jsx | Mentor AI review panel | M3 | pre-existing work preserved | 2026-11-05 |
+| FrontEnd/src/cosmic/CourseSpaceJourney3D.jsx | Earlier course-map prototype | M3 | retained; tests reference it | 2026-11-05 |
+| FrontEnd/src/cosmic/CourseSpaceJourneyWorld.jsx | Current journey scene and fallback | F1-F7 | behavioral review in progress | 2026-11-05 |
+| FrontEnd/src/cosmic/PlanetGenerator.jsx | Seeded layout and palettes | F4 | numeric bounds under review | 2026-11-05 |
+| FrontEnd/src/cosmic/PlanetSurface.jsx | Planet mesh and shader uniforms | F4 | rendering review in progress | 2026-11-05 |
+| FrontEnd/src/cosmic/StarfieldBackdrop.jsx | Procedural star points | F2 | rendering review in progress | 2026-11-05 |
+| FrontEnd/src/cosmic/twinkleBackdrop.jsx | Nebula background | F2 | rendering review in progress | 2026-11-05 |
+| FrontEnd/src/cosmic/LookDevLab.jsx | Asset workbench | F3-F7 | accessibility review in progress | 2026-11-05 |
+| FrontEnd/src/cosmic/Shuttle.jsx | Shuttle mesh and flight state | F5 | behavioral review in progress | 2026-11-05 |
+| FrontEnd/src/cosmic/Station.jsx | Checkpoint/station/boss visuals | F6 | implemented; acceptance unverified | 2026-11-05 |
+| FrontEnd/src/cosmic/travel.js | Shared layout and travel math | F5-F6 | existing | 2026-11-05 |
+| FrontEnd/src/cosmic/shaders/noise.glsl | Noise functions | F2 | existing | 2026-11-05 |
+| FrontEnd/src/cosmic/shaders/starfield.vert.glsl | Star vertex shader | F2 | existing | 2026-11-05 |
+| FrontEnd/src/cosmic/shaders/starfield.frag.glsl | Star fragment shader | F2 | existing | 2026-11-05 |
+| FrontEnd/src/cosmic/shaders/milkyway.frag.glsl | Nebula fragment shader | F2 | existing | 2026-11-05 |
+| FrontEnd/src/cosmic/shaders/planet.vert.glsl | Planet vertex shader | F4 | existing | 2026-11-05 |
+| FrontEnd/src/cosmic/shaders/planet.frag.glsl | Planet fragment shader | F4 | existing | 2026-11-05 |
+| FrontEnd/src/hooks/useQualityTier.js | Renderer tier detection | F1 | fallback under review | 2026-11-05 |
+| FrontEnd/src/hooks/useLazyScene.js | Earlier lazy-render helper | scaffold | lint failure; retained | 2026-11-05 |
+| FrontEnd/src/hooks/useContextLossWarning.js | Earlier context-warning helper | scaffold | reconstructed; not GPU recovery | 2026-11-05 |
+| FrontEnd/src/services/aiQuiz.js | Quiz service client | M3 | pre-existing work preserved | 2026-11-05 |
+| FrontEnd/src/utils/emojiGuard.js | Earlier runtime Unicode scanner | scaffold | parse failure; retained | 2026-11-05 |
+| FrontEnd/tests/CourseSpaceJourney3D.test.jsx | Earlier prototype smoke tests | M3 | current unit suite passes | 2026-11-05 |
+| FrontEnd/tests/CourseSpaceJourneyWorld.test.jsx | Scene shell tests | F1-F6 | regression expansion pending | 2026-11-05 |
+| FrontEnd/tests/cosmic.test.jsx | Planet layout tests | F4 | current unit suite passes | 2026-11-05 |
+| FrontEnd/tests/cosmic-components.test.jsx | Cosmic component tests | F0 | current unit suite passes | 2026-11-05 |
+| FrontEnd/tests/LookDevLab.test.jsx | Lab component tests | F3 | current unit suite passes | 2026-11-05 |
+| FrontEnd/tests/PlanetSurface.test.jsx | Planet geometry tests | F4 | current unit suite passes | 2026-11-05 |
+| FrontEnd/tests/Shuttle.test.jsx | Shuttle tests | F5 | behavioral coverage under review | 2026-11-05 |
+| FrontEnd/tests/Station.test.jsx | Station tests | F6 | current unit suite passes | 2026-11-05 |
+| FrontEnd/tests/travel.test.jsx | Travel math tests | F5 | current unit suite passes | 2026-11-05 |
+| FrontEnd/tests/e2e/cosmic.captures.spec.js | Login smoke captures, not course-flow coverage | F7a | misleading test titles corrected | 2026-11-05 |
+| FrontEnd/tests/e2e/lookdev.spec.js | Star Lab screenshot test | F3 | historical capture | 2026-11-05 |
+| FrontEnd/tests/e2e/planet-lighting.spec.js | Real-WebGL camera-invariant diffuse lighting regression | F7b | passed after red reproduction; f82e029 | 2026-11-05 |
+| FrontEnd/tests/e2e/planet.spec.js | Planet palette screenshot tests | F4 | historical captures | 2026-11-05 |
+| FrontEnd/tests/e2e/shuttle.spec.js | Shuttle Lab screenshot test | F5 | historical capture | 2026-11-05 |
+| FrontEnd/tests/e2e/station.spec.js | Station screenshot tests | F6 | historical captures | 2026-11-05 |
+| FrontEnd/tests/e2e/a11y-sizes.spec.js | Lab screenshots and partial axe scan | F7 | excludes Leva; full scan not passed | 2026-11-05 |
+| docs/plan/00-executive-summary.md | Product vision | plan | historical; unverified claims possible | 2026-11-05 |
+| docs/plan/01-skill-routing.md | Earlier skill routing | plan | historical | 2026-11-05 |
+| docs/plan/02-identity-system.md | Identity plan | plan | historical | 2026-11-05 |
+| docs/plan/03-subscription-architecture.md | Subscription plan | plan | historical | 2026-11-05 |
+| docs/plan/04-mentor-economics.md | Mentor economics plan | plan | historical | 2026-11-05 |
+| docs/plan/05-course-request-engine.md | Request engine plan | plan | historical | 2026-11-05 |
+| docs/plan/06-dynamic-3d-space-ui.md | Journey plan | plan | historical | 2026-11-05 |
+| docs/plan/07-ai-quiz-engine.md | Quiz architecture plan | plan | historical | 2026-11-05 |
+| docs/plan/08-gamification-system.md | Gamification plan | plan | historical | 2026-11-05 |
+| docs/plan/09-extra-features.md | Additional feature plan | plan | historical | 2026-11-05 |
+| docs/plan/10-technical-architecture.md | Architecture plan | plan | historical | 2026-11-05 |
+| docs/plan/11-implementation-roadmap.md | Four-milestone roadmap | plan | historical; completion requires evidence | 2026-11-05 |
+| docs/plan/12-testing-qa-plan.md | Test strategy | plan | historical | 2026-11-05 |
+| docs/plan/13-deployment-devops.md | Deployment plan | plan | historical | 2026-11-05 |
+| docs/plan/14-risk-register.md | Risk register | plan | historical | 2026-11-05 |
+| docs/plan/15-stakeholder-governance.md | Governance plan | plan | historical | 2026-11-05 |
+| docs/plan/16-interview-questions.md | Product questions | plan | historical | 2026-11-05 |
+| docs/plan/bug-audit.md | Earlier audit | plan | historical | 2026-11-05 |
+| docs/plan/research-log.md | Earlier research notes | plan | historical; citations need verification | 2026-11-05 |
+| docs/plan/research-plan.md | Earlier research plan | plan | historical | 2026-11-05 |
+| docs/plan/thinking.md | Earlier planning notes | plan | historical | 2026-11-05 |
+| docs/plan/visual-overview.md | Earlier visual overview | plan | historical | 2026-11-05 |
+| docs/design/00-art-direction.md | Art direction | P5 | approved direction; acceptance pending | 2026-11-05 |
+| docs/design/01-design-tokens.md | Token specification | P5 | approved direction; acceptance pending | 2026-11-05 |
+| docs/design/02-icon-and-badge-system.md | Icon specification | P5 | approved direction; acceptance pending | 2026-11-05 |
+| docs/design/03-3d-world-spec.md | World specification | P5 | approved direction; acceptance pending | 2026-11-05 |
+| docs/design/04-ui-screens-spec.md | Screen specification | P5 | approved direction; acceptance pending | 2026-11-05 |
+| docs/design/05-performance-and-quality-tiers.md | Performance targets | P5 | not measured on real devices | 2026-11-05 |
+| docs/design/06-design-qa-checklist.md | Design acceptance checks | P5 | incomplete | 2026-11-05 |
+| docs/design/07-look-dev-lab-spec.md | Lab specification | P5 | incomplete | 2026-11-05 |
+| docs/design/tooling.md | Tool decisions | P3 | historical; estimates not measurements | 2026-11-05 |
+| docs/design/research-log.md | Research notes | P4 | contains unverified leads | 2026-11-05 |
+| docs/progress/TASKS.md | Earlier progress ledger | R0 | superseded by .agent/TASKS.md | 2026-11-05 |
+| docs/progress/milestone-ledger.md | Earlier milestone claims | P2 | not current acceptance evidence | 2026-11-05 |
+| docs/progress/bug-audit.md | Twelve independently verified F7 follow-up findings | F7 | remediation open | 2026-11-05 |
+| docs/progress/recovery-report.md | Earlier recovery report | R5 | historical; corrections in current STATE | 2026-11-05 |
+| docs/progress/skills-routing.md | Skill routing inventory | P1 | historical; reread skill before use | 2026-11-05 |
+| docs/progress/AUDIT_PLAN.md | Audit plan moved from root | R-cleanup | retained | 2026-11-05 |
+| docs/progress/AUDIT_REPORT.md | Audit report moved from root | R-cleanup | retained | 2026-11-05 |
+| docs/progress/screenshots/login-1280.png | Login screenshot | F3a | capture exists; not course validation | 2026-11-05 |
+| docs/progress/screenshots/login-360.png | Login screenshot | F3a | capture exists; not course validation | 2026-11-05 |
+| docs/progress/screenshots/lab-360.png | Lab screenshot | F7 | review pending | 2026-11-05 |
+| docs/progress/screenshots/lab-768.png | Lab screenshot | F7 | review pending | 2026-11-05 |
+| docs/progress/screenshots/lab-1280.png | Lab screenshot | F7 | review pending | 2026-11-05 |
+| docs/progress/screenshots/lab-1920.png | Lab screenshot | F7 | review pending | 2026-11-05 |
+| docs/design/lab-captures/star-lab-1280.png | Star Lab screenshot | F3 | historical visual evidence only | 2026-11-05 |
+| docs/design/lab-captures/planet-terrestrial-1280.png | Terrestrial preset screenshot | F4 | historical visual evidence only | 2026-11-05 |
+| docs/design/lab-captures/planet-gas_giant-1280.png | Gas preset screenshot | F4 | distinct archetype behavior not established | 2026-11-05 |
+| docs/design/lab-captures/planet-ice_world-1280.png | Ice preset screenshot | F4 | historical visual evidence only | 2026-11-05 |
+| docs/design/lab-captures/planet-volcanic-1280.png | Volcanic preset screenshot | F4 | historical visual evidence only | 2026-11-05 |
+| docs/design/lab-captures/planet-oceanic-1280.png | Ocean preset screenshot | F4 | historical visual evidence only | 2026-11-05 |
+| docs/design/lab-captures/planet-crystalline-1280.png | Crystal preset screenshot | F4 | historical visual evidence only | 2026-11-05 |
+| docs/design/lab-captures/planet-desert-1280.png | Desert preset screenshot | F4 | historical visual evidence only | 2026-11-05 |
+| docs/design/lab-captures/planet-nebula_station-1280.png | Nebula preset screenshot | F4 | historical visual evidence only | 2026-11-05 |
+| docs/design/lab-captures/shuttle-flight-1280.png | Shuttle Lab screenshot | F5 | does not prove live route arrival | 2026-11-05 |
+| docs/design/lab-captures/station-checkpoint-1280.png | Checkpoint screenshot | F6 | historical visual evidence only | 2026-11-05 |
+| docs/design/lab-captures/station-station-1280.png | Station screenshot | F6 | historical visual evidence only | 2026-11-05 |
+| docs/design/lab-captures/station-boss-1280.png | Boss screenshot | F6 | historical visual evidence only | 2026-11-05 |
