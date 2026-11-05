@@ -1,15 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
+import { MemoryRouter, useLocation, useNavigate } from 'react-router-dom';
+import * as THREE from 'three';
 
-// ── mocks (same pattern as the passing CourseSpaceJourney3D tests) ──
-vi.mock('three', () => ({
-  Vector2: class {}, Vector3: class { constructor() { this.x = 0; this.y = 0; this.z = 0; } lerp() { return this; } },
-  Color: class {},
-  Quaternion: class { constructor() {} },
-  Raycaster: class { constructor() {} },
-  ShaderMaterial: class { constructor(_p) { this.uniforms = {}; } },
-  AdditiveBlending: 'additive', BackSide: 'backside', DoubleSide: 'doubleside', NormalBlending: 'normal',
+const runtime = vi.hoisted(() => ({ arrivals: [], frames: new Set(), camera: null, startIndex: null, failCanvas: false }));
+vi.mock('three', async (importOriginal) => ({
+  ...await importOriginal(),
   AgXToneMapping: 5, ACESFilmicToneMapping: 4,
 }));
 
@@ -28,7 +25,14 @@ vi.mock('../src/cosmic/PlanetSurface', () => ({
 vi.mock('../src/cosmic/Shuttle', () => ({
   __esModule: true,
   default: function MockShuttle(p) {
-    React.useEffect(() => { if (p.apiRef) p.apiRef.current = { flyTo: () => {} }; }, []);
+    React.useImperativeHandle(p.apiRef, () => ({
+      flyTo(index, onArrival) {
+        runtime.arrivals.push(() => onArrival?.(index));
+        return true;
+      },
+      cancel() {},
+    }), []);
+    React.useEffect(() => { runtime.startIndex = p.startIndex; }, [p.startIndex]);
     return React.createElement('div', { 'data-testid': 'shuttle' });
   },
 }));
@@ -52,6 +56,7 @@ vi.mock('@react-three/fiber', () => ({
       lastGl = gl;
       props.onCreated && props.onCreated({ gl });
     }, []);
+    if (runtime.failCanvas) throw new Error('Renderer creation failed');
     return React.createElement('div', {
       'data-testid': 'r3f-canvas',
       'data-camera': JSON.stringify(props.camera),
@@ -61,8 +66,13 @@ vi.mock('@react-three/fiber', () => ({
       'data-gltonemapping': props.gl?.toneMapping,
     }, props.children); // pass children: Canvas normally renders them into the scene
   },
-  useFrame: () => null,
-  useThree: () => ({ camera: { position: { lerp() {} }, lookAt() {} } }),
+  useFrame: (callback) => {
+    React.useEffect(() => {
+      runtime.frames.add(callback);
+      return () => { runtime.frames.delete(callback); };
+    }, [callback]);
+  },
+  useThree: () => ({ camera: runtime.camera }),
 }));
 
 vi.mock('@react-three/drei', () => ({
@@ -84,11 +94,15 @@ vi.mock('postprocessing', () => ({ ToneMappingMode: { AGX: 7, ACES_FILMIC: 6 } }
 
 vi.mock('r3f-perf', () => ({ Perf: () => null }));
 
-// matchMedia stub, controllable per test
 let reducedMotion = false;
+const motionListeners = new Set();
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation((q) => ({ matches: q.includes('reduce') ? reducedMotion : false })),
+  value: vi.fn().mockImplementation(() => ({
+    get matches() { return reducedMotion; },
+    addEventListener(_event, listener) { motionListeners.add(listener); },
+    removeEventListener(_event, listener) { motionListeners.delete(listener); },
+  })),
 });
 Object.defineProperty(navigator, 'hardwareConcurrency', { writable: true, value: 8 });
 Object.defineProperty(navigator, 'deviceMemory', { writable: true, value: 8 });
@@ -96,16 +110,73 @@ Object.defineProperty(navigator, 'deviceMemory', { writable: true, value: 8 });
 HTMLCanvasElement.prototype.getContext = () => ({});
 globalThis.performance = { now: () => Date.now() };
 
-import CourseSpaceJourneyWorld, { stationKindForIndex } from '../src/cosmic/CourseSpaceJourneyWorld';
+import CourseSpaceJourneyWorld, { JourneyCamera, stationKindForIndex } from '../src/cosmic/CourseSpaceJourneyWorld';
 
 const MODULES = [
   { _id: 'm1', title: 'Module One' },
   { _id: 'm2', title: 'Module Two' },
 ];
 
-beforeEach(() => { reducedMotion = false; lastGl = null; });
+beforeEach(() => {
+  reducedMotion = false;
+  lastGl = null;
+  runtime.arrivals = [];
+  runtime.startIndex = null;
+  runtime.frames.clear();
+  runtime.camera = new THREE.PerspectiveCamera();
+  runtime.failCanvas = false;
+});
+afterEach(() => vi.restoreAllMocks());
 
 describe('CourseSpaceJourneyWorld (F1 scene shell)', () => {
+  it('keeps the current route until arrival then navigates to the selected lesson', () => {
+    function JourneyRoute() {
+      const location = useLocation();
+      const navigate = useNavigate();
+      return <>
+        <output data-testid="current-route">{location.pathname}</output>
+        <CourseSpaceJourneyWorld key={location.pathname} courseId="c1" modules={MODULES} selectedModuleId="m1" onSelectModule={(module) => navigate(`/courses/c1/learn/${module._id}`)} />
+      </>;
+    }
+    render(<MemoryRouter initialEntries={['/courses/c1/learn/m1']}><JourneyRoute /></MemoryRouter>);
+    act(() => screen.getByRole('button', { name: /Module Two/ }).click());
+    expect(screen.getByTestId('current-route').textContent).toBe('/courses/c1/learn/m1');
+    act(() => runtime.arrivals[0]());
+    expect(screen.getByTestId('current-route').textContent).toBe('/courses/c1/learn/m2');
+  });
+
+  it('ignores stale arrivals after a newer selection or a switch to 2D', () => {
+    const select = vi.fn();
+    render(<CourseSpaceJourneyWorld courseId="c1" modules={MODULES} onSelectModule={select} />);
+    act(() => screen.getByRole('button', { name: /Module Two/ }).click());
+    act(() => screen.getByRole('button', { name: /Module One/ }).click());
+    act(() => runtime.arrivals[0]());
+    expect(select).not.toHaveBeenCalled();
+    act(() => screen.getByRole('button', { name: /2D map/i }).click());
+    act(() => runtime.arrivals[1]());
+    expect(select).not.toHaveBeenCalled();
+  });
+
+  it('damps camera follow without moving on zero-delta frames', () => {
+    render(<JourneyCamera shuttlePosRef={{ current: new THREE.Vector3(5, 2, -1) }} active reducedMotion={false} />);
+    const frame = [...runtime.frames][0];
+    frame({}, 0);
+    expect(runtime.camera.position.toArray()).toEqual([0, 0, 0]);
+    frame({}, 1 / 60);
+    expect(runtime.camera.position.x).toBeGreaterThan(0);
+    expect(runtime.camera.position.x).toBeLessThan(11);
+  });
+
+  it('does not compete with idle orbit controls', () => {
+    render(<JourneyCamera shuttlePosRef={{ current: new THREE.Vector3(5, 2, -1) }} active={false} reducedMotion={false} />);
+    [...runtime.frames][0]({}, 1 / 60);
+    expect(runtime.camera.position.toArray()).toEqual([0, 0, 0]);
+  });
+
+  it('initializes the shuttle at the lesson selected by a deep link', () => {
+    render(<CourseSpaceJourneyWorld courseId="c1" modules={MODULES} selectedModuleId="m2" />);
+    expect(runtime.startIndex).toBe(1);
+  });
   it('renders the 3D canvas at high tier with camera + fov props', () => {
     const { container } = render(
       <CourseSpaceJourneyWorld courseId="c1" courseTitle="Deep Space" modules={MODULES} onSelectModule={() => {}} selectedModuleId="m1" />
@@ -133,6 +204,45 @@ describe('CourseSpaceJourneyWorld (F1 scene shell)', () => {
     act(() => { el.dispatchEvent(evt); });
     expect(evt.defaultPrevented).toBe(true);
     expect(screen.getByText(/context lost/i)).toBeTruthy();
+  });
+
+  it.each(['null', 'throw'])('keeps lesson navigation usable when WebGL detection returns %s', (failure) => {
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(() => {
+      if (failure === 'throw') throw new Error('WebGL unavailable');
+      return null;
+    });
+    const selected = vi.fn();
+    render(<CourseSpaceJourneyWorld courseId="c1" modules={MODULES} onSelectModule={selected} />);
+    const toggle = screen.getByRole('button', { name: /3D view/i });
+    act(() => toggle.click());
+    expect(screen.queryByTestId('r3f-canvas')).toBeNull();
+    act(() => screen.getByRole('button', { name: /Module Two/ }).click());
+    expect(selected).toHaveBeenCalledExactlyOnceWith(MODULES[1]);
+  });
+
+  it('recovers locally if renderer creation fails after capability detection', () => {
+    runtime.failCanvas = true;
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    expect(() => render(<CourseSpaceJourneyWorld courseId="c1" modules={MODULES} />)).not.toThrow();
+    expect(screen.getByRole('button', { name: /Module Two/ })).toBeTruthy();
+  });
+
+  it('responds to live motion preference changes and preserves a manual 2D choice', () => {
+    const { unmount } = render(<CourseSpaceJourneyWorld courseId="c1" modules={MODULES} />);
+    const changeMotion = (value) => act(() => {
+      reducedMotion = value;
+      motionListeners.forEach((listener) => listener());
+    });
+    changeMotion(true);
+    expect(screen.queryByTestId('r3f-canvas')).toBeNull();
+    changeMotion(false);
+    expect(screen.getByTestId('r3f-canvas')).toBeTruthy();
+    act(() => screen.getByRole('button', { name: /2D map/i }).click());
+    changeMotion(true);
+    changeMotion(false);
+    expect(screen.queryByTestId('r3f-canvas')).toBeNull();
+    unmount();
+    expect(motionListeners.size).toBe(0);
   });
 
   it('falls back to a keyboard-navigable 2D list when reduced motion is set', async () => {

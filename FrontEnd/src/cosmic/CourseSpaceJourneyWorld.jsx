@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Component, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Html, Float } from '@react-three/drei';
 import * as THREE from 'three';
@@ -10,7 +10,7 @@ import TwinkleBackdrop from './twinkleBackdrop';
 import PlanetSurface from './PlanetSurface';
 import Shuttle from './Shuttle';
 import Station from './Station';
-import { layoutToPosition, damp3 } from './travel';
+import { layoutToPosition, smoothDampFactor } from './travel';
 import { generatePlanetLayout, ARCHETYPE_LABELS } from './PlanetGenerator';
 
 /**
@@ -109,16 +109,18 @@ function PlanetNode({ layout, index, active, onSelect, reducedMotion }) {
 }
 
 /** Damped chase camera: follows the shuttle, looks at it. Reduced motion: fixed orbit. */
-function JourneyCamera({ shuttlePosRef, reducedMotion }) {
+export function JourneyCamera({ shuttlePosRef, reducedMotion, active }) {
   const { camera } = useThree();
-  const lookRef = useRef(new THREE.Vector3(0, 0, 0));
-  useFrame((state, delta) => {
-    if (reducedMotion) return;
-    const target = shuttlePosRef?.current;
+  const lookRef = useRef(new THREE.Vector3());
+  const desiredRef = useRef(new THREE.Vector3());
+  useFrame((_, delta) => {
+    if (!active || reducedMotion || !Number.isFinite(delta) || delta <= 0) return;
+    const target = shuttlePosRef.current;
     if (!target) return;
-    const desired = new THREE.Vector3(target.x + 6, target.y + 4, target.z + 9);
-    camera.position.lerp(desired, damp3([1, 1, 1], [1, 1, 1], 0, 0)[0] || 1 - Math.exp(-3 * delta));
-    lookRef.current.lerp(target, 1 - Math.exp(-5 * delta));
+    const dt = Math.min(delta, 0.1);
+    desiredRef.current.set(target.x + 6, target.y + 4, target.z + 9);
+    camera.position.lerp(desiredRef.current, smoothDampFactor(3, dt));
+    lookRef.current.lerp(target, smoothDampFactor(5, dt));
     camera.lookAt(lookRef.current);
   });
   return null;
@@ -157,11 +159,32 @@ function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedMo
   const post = POST_TIERS.has(tier);
   const shuttleApiRef = useRef(null);
   const shuttlePosRef = useRef(null);
+  const requestRef = useRef(0);
+  const [travelling, setTravelling] = useState(false);
+  const startIndex = Math.max(0, modules.findIndex((module) => String(module._id || module.id) === String(selectedModuleId)));
 
-  // Planet click -> shuttle flies there, then the app navigates on arrival
-  const handleSelect = (idx) => {
-    shuttleApiRef.current?.flyTo?.(idx);
-    onSelectModule && onSelectModule(modules[idx]);
+  useEffect(() => () => {
+    requestRef.current++;
+    shuttleApiRef.current?.cancel();
+  }, [layouts]);
+
+  const handleSelect = (index) => {
+    const module = modules[index];
+    if (!module) return;
+    const request = ++requestRef.current;
+    if (reducedMotion || !shuttleApiRef.current) {
+      shuttleApiRef.current?.cancel();
+      onSelectModule?.(module);
+      return;
+    }
+    setTravelling(true);
+    const accepted = shuttleApiRef.current.flyTo(index, () => {
+      if (request !== requestRef.current) return;
+      requestRef.current++;
+      setTravelling(false);
+      onSelectModule?.(module);
+    });
+    if (!accepted) setTravelling(false);
   };
 
   return (
@@ -169,8 +192,8 @@ function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedMo
       <color attach="background" args={['#020617']} />
       <ambientLight intensity={0.7} />
       <directionalLight position={[10, 20, 15]} intensity={1.5} />
-      <StarfieldBackdrop count={tier === 'ultra' ? 8000 : 4000} radius={200} depth={100} />
-      <TwinkleBackdrop seed={0x42} density={400} speed={0.3} />
+      <StarfieldBackdrop count={tier === 'ultra' ? 8000 : 4000} radius={200} motion={reducedMotion ? 0 : 1} />
+      <TwinkleBackdrop motion={reducedMotion ? 0 : 1} />
       <CentralStar title={courseTitle} />
       {layouts.map((layout, i) => (
         <PlanetNode
@@ -182,12 +205,12 @@ function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedMo
           reducedMotion={reducedMotion}
         />
       ))}
-      <Shuttle layouts={layouts} startIndex={0} reducedMotion={reducedMotion} apiRef={shuttleApiRef} />
+      <Shuttle layouts={layouts} startIndex={startIndex} reducedMotion={reducedMotion} apiRef={shuttleApiRef} positionRef={shuttlePosRef} />
       {layouts.map((layout, i) => (
         <StationNode key={`st-${i}`} layout={layout} index={i} total={layouts.length} reducedMotion={reducedMotion} />
       ))}
-      <JourneyCamera shuttlePosRef={shuttlePosRef} reducedMotion={reducedMotion} />
-      <OrbitControls enablePan={false} minDistance={8} maxDistance={35} autoRotate={reducedMotion ? false : true} autoRotateSpeed={0.5} />
+      <JourneyCamera shuttlePosRef={shuttlePosRef} reducedMotion={reducedMotion} active={travelling} />
+      <OrbitControls enabled={!travelling} enablePan={false} minDistance={8} maxDistance={35} autoRotate={!reducedMotion && !travelling} autoRotateSpeed={0.5} />
       {post && (
         <EffectComposer>
           <Bloom intensity={0.5} luminanceThreshold={0.6} luminanceSmoothing={0.2} mipmapBlur />
@@ -203,7 +226,7 @@ function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedMo
 }
 
 /** 2D fallback: same node topology as the 3D map, fully keyboard + SR usable. */
-function Map2D({ modules, onSelectModule, selectedModuleId }) {
+function Map2D({ courseId, modules, onSelectModule, selectedModuleId }) {
   return (
     <div className="w-full h-full flex flex-col p-6 bg-slate-950" role="region" aria-label="Course level map, 2D">
       <h3 className="text-lg font-bold text-slate-100 mb-1">Level map</h3>
@@ -222,7 +245,7 @@ function Map2D({ modules, onSelectModule, selectedModuleId }) {
                 }`}
               >
                 <span className="block text-[10px] font-mono uppercase tracking-widest text-slate-500">
-                  Level {i + 1} · {ARCHETYPE_LABELS[generatePlanetLayout({ courseId: 'c', moduleId: String(m._id || m.id || i) }).archetype] || 'Planet'}
+                  Level {i + 1} · {ARCHETYPE_LABELS[generatePlanetLayout({ courseId, moduleId: String(m._id || m.id || i) }).archetype] || 'Planet'}
                 </span>
                 <span className="block text-sm font-semibold text-slate-100 mt-1">{m.title || `Module ${i + 1}`}</span>
               </button>
@@ -234,18 +257,22 @@ function Map2D({ modules, onSelectModule, selectedModuleId }) {
   );
 }
 
+class SceneBoundary extends Component {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidCatch() { this.props.onError(); }
+  render() { return this.state.failed ? this.props.fallback : this.props.children; }
+}
+
 export default function CourseSpaceJourneyWorld({ courseId, courseTitle, modules = [], onSelectModule, selectedModuleId }) {
-  const tier = useQualityTier();
-  const [override, setOverride] = useState(null); // '3d' | '2d' | null (null = auto)
+  const { tier, supported, reducedMotion } = useQualityTier();
+  const [override, setOverride] = useState(null);
+  const [rendererFailed, setRendererFailed] = useState(false);
   const [ctxLost, setCtxLost] = useState(false);
   const detachRef = useRef(null);
-
-  const reducedMotion = useMemo(
-    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    []
-  );
   const auto2d = tier === 'low' || reducedMotion;
-  const viewMode = override || (auto2d ? '2d' : '3d');
+  const viewMode = !supported || rendererFailed ? '2d' : override || (auto2d ? '2d' : '3d');
+  const onRendererError = useCallback(() => setRendererFailed(true), []);
 
   // R3F 9 passes RootState to onCreated (renderer = state.gl). Context-loss
   // listeners attach there (works regardless of when R3F finishes configuring)
@@ -277,6 +304,7 @@ export default function CourseSpaceJourneyWorld({ courseId, courseTitle, modules
         <div className="h-4 w-px bg-slate-700" />
         <button
           type="button"
+          disabled={!supported || rendererFailed}
           onClick={() => setOverride(viewMode === '3d' ? '2d' : '3d')}
           className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-600/80 hover:bg-indigo-500 text-white transition-all shadow focus-visible:outline-2 focus-visible:outline-cyan-400"
         >
@@ -291,7 +319,9 @@ export default function CourseSpaceJourneyWorld({ courseId, courseTitle, modules
       )}
 
       {viewMode === '3d' ? (
+        <SceneBoundary onError={onRendererError} fallback={<Map2D courseId={courseId} modules={modules} onSelectModule={onSelectModule} selectedModuleId={selectedModuleId} />}>
         <Canvas
+          frameloop={reducedMotion || ctxLost ? 'demand' : 'always'}
           camera={{ position: [0, 10, 18], fov: 60 }}
           dpr={[1, TIER_DPR[tier] || 1.5]}
           gl={{ antialias: true, powerPreference: 'high-performance', toneMapping: THREE.AgXToneMapping }}
@@ -309,8 +339,9 @@ export default function CourseSpaceJourneyWorld({ courseId, courseTitle, modules
             />
           </Suspense>
         </Canvas>
+        </SceneBoundary>
       ) : (
-        <Map2D modules={modules} onSelectModule={onSelectModule} selectedModuleId={selectedModuleId} />
+        <Map2D courseId={courseId} modules={modules} onSelectModule={onSelectModule} selectedModuleId={selectedModuleId} />
       )}
     </div>
   );

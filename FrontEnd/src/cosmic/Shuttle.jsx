@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { layoutToPosition, easeInOutCubic, arcMidpoint, parkOffset, add3, travelDuration } from './travel';
@@ -76,97 +76,107 @@ function buildHull() {
 
 const MAX_TRAIL = 48;
 
-export default function Shuttle({ layouts, startIndex = 0, reducedMotion = false, apiRef }) {
-  const groupRef = useRef();
-  const nozzleRef = useRef();
-  const trailRef = useRef();
+export default function Shuttle({ layouts, startIndex = 0, reducedMotion = false, apiRef, positionRef }) {
+  const scene = useMemo(() => {
+    const root = new THREE.Group();
+    const hull = buildHull();
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(MAX_TRAIL * 3), 3));
+    geometry.setDrawRange(0, 0);
+    const trail = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: '#7ac8ff', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+    trail.frustumCulled = false;
+    root.add(hull, trail);
+    return { root, hull, trail };
+  }, []);
+  const state = useRef(null);
+  if (state.current === null) state.current = {
+    pos: new THREE.Vector3(), quat: new THREE.Quaternion(), tangent: new THREE.Vector3(),
+    forward: new THREE.Vector3(0, 0, 1), desired: new THREE.Quaternion(),
+    flight: null, active: false, thrust: 0, trailCount: 0,
+  };
 
-  const state = useRef({
-    flight: null, // { curve: CatmullRomCurve3, t, dur }
-    trail: [],
-    pos: new THREE.Vector3(...parkOffset((layouts[startIndex]?.size || 1) * 0.8)),
-    quat: new THREE.Quaternion(),
-    thrust: 0,
-    flyTo: null,
-  });
-
-  const hull = useMemo(() => buildHull(), []);
-
-  const trailGeo = useMemo(() => {
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(MAX_TRAIL * 3), 3));
-    geo.setDrawRange(0, 0);
-    return geo;
+  const cancel = useCallback(() => {
+    state.current.flight = null;
+    state.current.thrust = 0;
   }, []);
 
-  // imperative flight API — exposed via apiRef prop (works under mocked R3F in
-  // tests) and callable as shuttleApi.flyTo(i) from the world.
-  const flyTo = (index) => {
-    const layout = layouts[index];
-    if (!layout) return;
+  useEffect(() => {
     const st = state.current;
-    const target = new THREE.Vector3(...add3(layoutToPosition(layout, index), parkOffset(layout.size * 0.8)));
-    const mid = new THREE.Vector3(...arcMidpoint(st.pos.toArray(), target.toArray(), 2.5));
-    st.flight = {
-      curve: new THREE.CatmullRomCurve3([st.pos.clone(), mid, target]),
-      t: 0,
-      dur: travelDuration(st.pos.distanceTo(target)),
+    const layout = layouts[startIndex];
+    st.pos.set(...(layout ? add3(layoutToPosition(layout, startIndex), parkOffset(layout.size * 0.8)) : [0, 0, 0]));
+    st.active = true;
+    st.flight = null;
+    st.trailCount = 0;
+    scene.hull.position.copy(st.pos);
+    if (positionRef) positionRef.current = st.pos;
+    return () => {
+      st.active = false;
+      cancel();
+      if (positionRef?.current === st.pos) positionRef.current = null;
     };
-  };
-  state.current.flyTo = flyTo;
-  if (apiRef) apiRef.current = { flyTo };
+  }, [layouts, startIndex, positionRef, scene, cancel]);
 
-  useFrame((s, delta) => {
+  useEffect(() => () => {
+    const geometries = new Set();
+    const materials = new Set();
+    scene.root.traverse((object) => {
+      if (object.geometry) geometries.add(object.geometry);
+      if (object.material) materials.add(object.material);
+    });
+    geometries.forEach((geometry) => geometry.dispose());
+    materials.forEach((material) => material.dispose());
+  }, [scene]);
+
+  const flyTo = useCallback((index, onArrival) => {
+    const layout = layouts[index];
     const st = state.current;
-    if (st.flight && !reducedMotion) {
-      st.flight.t += delta / st.flight.dur;
-      const k = easeInOutCubic(st.flight.t);
-      const p = st.flight.curve.getPointAt(Math.min(k, 1));
-      // orientation: face along tangent (slerped for banking)
-      const tan = st.flight.curve.getTangentAt(Math.min(k, 1));
-      const m = new THREE.Matrix4().lookAt(new THREE.Vector3(0, 0, 0), tan, new THREE.Vector3(0, 1, 0));
-      const targetQuat = new THREE.Quaternion().setFromRotationMatrix(m);
-      st.quat.slerp(targetQuat, 1 - Math.exp(-6 * delta));
-      st.pos.copy(p);
+    if (!layout || !st.active) return false;
+    const target = new THREE.Vector3(...add3(layoutToPosition(layout, index), parkOffset(layout.size * 0.8)));
+    if (![target.x, target.y, target.z].every(Number.isFinite)) return false;
+    if (reducedMotion || st.pos.distanceToSquared(target) < 0.000001) {
+      cancel();
+      st.pos.copy(target);
+      scene.hull.position.copy(target);
+      onArrival?.(index);
+      return true;
+    }
+    const mid = new THREE.Vector3(...arcMidpoint(st.pos.toArray(), target.toArray(), 2.5));
+    st.flight = { curve: new THREE.CatmullRomCurve3([st.pos.clone(), mid, target]), t: 0, dur: travelDuration(st.pos.distanceTo(target)), target, index, onArrival };
+    return true;
+  }, [layouts, reducedMotion, scene, cancel]);
+
+  useImperativeHandle(apiRef, () => ({ flyTo, cancel, position: state.current.pos }), [flyTo, cancel]);
+
+  useFrame((_, delta) => {
+    const st = state.current;
+    if (!st.active || !Number.isFinite(delta) || delta <= 0) return;
+    const flight = st.flight;
+    const dt = Math.min(delta, 0.1);
+    if (flight) {
+      flight.t = reducedMotion ? 1 : Math.min(1, flight.t + dt / flight.dur);
+      const t = easeInOutCubic(flight.t);
+      flight.curve.getPointAt(t, st.pos);
+      flight.curve.getTangentAt(t, st.tangent);
+      if (st.tangent.lengthSq() > 0) st.desired.setFromUnitVectors(st.forward, st.tangent.normalize());
+      st.quat.slerp(st.desired, 1 - Math.exp(-6 * dt));
       st.thrust = 1;
-      if (st.flight.t >= 1) st.flight = null;
+      const attribute = scene.trail.geometry.attributes.position;
+      if (st.trailCount === MAX_TRAIL) attribute.array.copyWithin(0, 3);
+      else st.trailCount++;
+      attribute.setXYZ(st.trailCount - 1, st.pos.x, st.pos.y, st.pos.z);
+      attribute.needsUpdate = true;
+      scene.trail.geometry.setDrawRange(0, st.trailCount);
     } else {
-      st.thrust = Math.max(0, st.thrust - delta * 3);
+      st.thrust = Math.max(0, st.thrust - dt * 3);
     }
-    if (groupRef.current) {
-      if (groupRef.current.position) groupRef.current.position.copy(st.pos);
-      if (groupRef.current.quaternion) groupRef.current.quaternion.copy(st.quat);
+    scene.hull.position.copy(st.pos);
+    scene.hull.quaternion.copy(st.quat);
+    scene.trail.material.opacity = reducedMotion ? 0 : st.thrust * 0.55;
+    if (flight?.t === 1 && st.flight === flight) {
+      st.flight = null;
+      flight.onArrival?.(flight.index);
     }
-    if (nozzleRef.current) {
-      const e = 0.6 + st.thrust * 1.6;
-      if (nozzleRef.current.material) nozzleRef.current.material.emissiveIntensity = e * 2.2;
-      if (nozzleRef.current.scale?.setScalar) nozzleRef.current.scale.setScalar(0.7 + st.thrust * 0.8);
-    }
-    // trail — guard trailGeo.attributes.position (mock geometries may lack it)
-    st.trail.push(st.pos.clone());
-    if (st.trail.length > MAX_TRAIL) st.trail.shift();
-    const attr = trailGeo.attributes && trailGeo.attributes.position;
-    if (attr) {
-      const arr = attr.array;
-      st.trail.forEach((p, i) => { arr[i * 3] = p.x; arr[i * 3 + 1] = p.y; arr[i * 3 + 2] = p.z; });
-      attr.needsUpdate = true;
-      trailGeo.setDrawRange(0, st.trail.length);
-    }
-    if (trailRef.current) trailRef.current.geometry = trailGeo;
   });
 
-  return (
-    <group>
-      <group ref={groupRef}>
-        <primitive object={hull} />
-        <mesh ref={nozzleRef} position={[0, 0, -1.15]}>
-          <sphereGeometry args={[0.09, 10, 8]} />
-          <meshBasicMaterial color="#ffb066" transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} />
-        </mesh>
-      </group>
-      <line ref={trailRef} geometry={trailGeo} frustumCulled={false}>
-        <lineBasicMaterial color="#7ac8ff" transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </line>
-    </group>
-  );
+  return <primitive object={scene.root} />;
 }

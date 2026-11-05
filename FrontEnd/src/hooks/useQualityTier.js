@@ -1,46 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 
-/**
- * useQualityTier — detects device capability and exposes a tier string for
- * the V3 quality-tier budget system. Coarse-grained (hardware + OS + viewport)
- * so the R3F scene can conditionally render the heavy postprocessing stack or
- * fall back to a lighter scene material.
- *
- * Tiers: 'ultra' | 'high' | 'medium' | 'low'
- * 'low'  = weak GPU + small viewport → 2D SVG map + no postprocessing
- * 'low  | '2d' = power saver, reduced motion, or WebGL unavailable → DOM fallback
- * 'low' | '2d' = disabled GPU caps + aggressive polygon cap
- */
+function subscribeMotion(listener) {
+  const media = typeof window !== 'undefined' ? window.matchMedia?.('(prefers-reduced-motion: reduce)') : null;
+  media?.addEventListener?.('change', listener);
+  return () => media?.removeEventListener?.('change', listener);
+}
+
+function motionSnapshot() {
+  return typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+}
+
 export default function useQualityTier() {
-  const [tier, setTier] = useState('high');
+  const reducedMotion = useSyncExternalStore(subscribeMotion, motionSnapshot, () => false);
+  const [capability, setCapability] = useState({ supported: false, tier: 'low' });
 
   useEffect(() => {
-    // hardwareConcurrency / deviceMemory are NUMBERS (not functions) in browsers.
-    const cores = typeof navigator !== 'undefined' && navigator.hardwareConcurrency ? navigator.hardwareConcurrency : 4;
-    const memory = (typeof navigator !== 'undefined' && navigator.deviceMemory) || 4; // GB
-    let hasWebGL = false;
+    let supported;
     try {
-      hasWebGL = typeof document !== 'undefined' && !!document.createElement('canvas').getContext('webgl2');
-    } catch { hasWebGL = false; }
-
-    // Mobile / small viewport hint
-    const w = window.innerWidth || 0;
-    const h = window.innerHeight || 0;
-    const isSmallViewport = Math.min(w, h) < 600;
-
-    // Reduced motion OS preference wins over device capability
-    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    let computed = 'high';
-    if (!hasWebGL || prefersReducedMotion || (isSmallViewport && memory < 4)) {
-      computed = 'low';
-    } else if (cores < 4 || memory < 4) {
-      computed = 'medium';
-    } else if (isSmallViewport || memory < 8) {
-      computed = 'medium';
-    }
-    setTier(computed);
+      const context = document.createElement('canvas').getContext('webgl2');
+      supported = !!context;
+      context?.getExtension?.('WEBGL_lose_context')?.loseContext();
+    } catch { supported = false; }
+    const cores = navigator.hardwareConcurrency || 4;
+    const memory = navigator.deviceMemory || 4;
+    const small = Math.min(window.innerWidth, window.innerHeight) < 600;
+    const tier = !supported || (small && memory < 4) ? 'low'
+      : cores < 4 || memory < 8 || small ? 'medium' : 'high';
+    setCapability({ supported, tier });
   }, []);
 
-  return tier;
+  return { supported: capability.supported, tier: reducedMotion ? 'low' : capability.tier, reducedMotion };
 }

@@ -50,7 +50,7 @@ export default function StarfieldBackdrop({ count = 8000, radius = 200, seed = 0
   }), [motion]);
 
   useFrame((state) => {
-    if (matRef.current) matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+    if (matRef.current && motion > 0) matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
   });
 
   return (
