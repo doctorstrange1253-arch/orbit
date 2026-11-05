@@ -142,20 +142,20 @@ function yesterdayUTC() {
 // The engine reads from the DB; the constants below are defaults so the
 // service can still return reasonable names if a catalog row is missing.
 const ACHIEVEMENT_DEFAULTS = Object.freeze({
-    FIRST_LESSON:  { title: "First Liftoff",   icon: "🚀", rarity: "common",  xpReward: 25 },
-    FIRST_COURSE:  { title: "Course Crusader", icon: "🎓", rarity: "common",  xpReward: 50 },
-    STREAK_3:      { title: "Steady Pulse",    icon: "✨", rarity: "common",  xpReward: 30 },
-    STREAK_7:      { title: "Habitual Orbit",  icon: "🔥", rarity: "rare",    xpReward: 75 },
-    STREAK_30:     { title: "Lunar Lock",      icon: "🌙", rarity: "epic",    xpReward: 200 },
-    STREAK_100:    { title: "Deep Space",      icon: "🛰️", rarity: "mythic", xpReward: 500 },
-    LEVEL_10:      { title: "Quasar Mind",     icon: "🌀", rarity: "rare",    xpReward: 50 },
-    LEVEL_25:      { title: "Pulsar Soul",     icon: "💫", rarity: "epic",    xpReward: 200 },
-    LEVEL_50:      { title: "Singularity",     icon: "🕳️", rarity: "mythic", xpReward: 1000 },
-    COURSE_5:      { title: "Constellation",   icon: "🌌", rarity: "epic",    xpReward: 300 },
-    QUIZ_PERFECT:  { title: "Sharp Shooter",   icon: "🎯", rarity: "rare",    xpReward: 50 },
-    SESSION_1:     { title: "First Call",      icon: "📞", rarity: "common",  xpReward: 30 },
-    PEER_SWAP_1:   { title: "First Trade",     icon: "🤝", rarity: "common",  xpReward: 30 },
-    SPEEDRUN:      { title: "Speedrunner",     icon: "⚡", rarity: "rare",    xpReward: 100 },
+    FIRST_LESSON:  { title: "First Liftoff",   icon: "rocket", rarity: "common",  xpReward: 25 },
+    FIRST_COURSE:  { title: "Course Crusader", icon: "graduation-cap", rarity: "common",  xpReward: 50 },
+    STREAK_3:      { title: "Steady Pulse",    icon: "sparkle", rarity: "common",  xpReward: 30 },
+    STREAK_7:      { title: "Habitual Orbit",  icon: "flame", rarity: "rare",    xpReward: 75 },
+    STREAK_30:     { title: "Lunar Lock",      icon: "moon", rarity: "epic",    xpReward: 200 },
+    STREAK_100:    { title: "Deep Space",      icon: "satellite", rarity: "mythic", xpReward: 500 },
+    LEVEL_10:      { title: "Quasar Mind",     icon: "quasar", rarity: "rare",    xpReward: 50 },
+    LEVEL_25:      { title: "Pulsar Soul",     icon: "pulsar", rarity: "epic",    xpReward: 200 },
+    LEVEL_50:      { title: "Singularity",     icon: "black-hole", rarity: "mythic", xpReward: 1000 },
+    COURSE_5:      { title: "Constellation",   icon: "constellation", rarity: "epic",    xpReward: 300 },
+    QUIZ_PERFECT:  { title: "Sharp Shooter",   icon: "target", rarity: "rare",    xpReward: 50 },
+    SESSION_1:     { title: "First Call",      icon: "phone", rarity: "common",  xpReward: 30 },
+    PEER_SWAP_1:   { title: "First Trade",     icon: "handshake", rarity: "common",  xpReward: 30 },
+    SPEEDRUN:      { title: "Speedrunner",     icon: "bolt", rarity: "rare",    xpReward: 100 },
 });
 
 // ── Streak tick (pure) ────────────────────────────────────────────────────

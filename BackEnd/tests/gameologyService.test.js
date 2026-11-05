@@ -6,6 +6,8 @@
  * `awardXp` writer is integration-tested via the route suite (see
  * gameologyRoutes.test.js) since it needs Mongo + socket.
  */
+jest.mock('dotenv', () => ({ config: jest.fn() }));
+
 const {
     computeLevel,
     xpForLevel,
@@ -14,7 +16,49 @@ const {
     todayUTC,
     tickStreak,
     XP_VALUES,
+    ACHIEVEMENT_DEFAULTS,
 } = require("../services/gameologyService");
+const Achievement = require("../models/Achievement");
+const mongoose = require("mongoose");
+
+const CATALOG_REWARDS = [25, 50, 30, 75, 200, 500, 50, 200, 1000, 300, 50, 30, 30, 100];
+
+describe('achievement icon compatibility', () => {
+    it('uses a semantic default without rejecting existing stored icon strings', () => {
+        const legacy = String.fromCodePoint(0x1f680);
+        expect(new Achievement({ key: 'A', title: 'A' }).icon).toBe('achievement');
+        expect(new Achievement({ key: 'B', title: 'B', icon: legacy }).icon).toBe(legacy);
+    });
+
+    it('keeps achievement rewards while supplying semantic icon identifiers', () => {
+        const defaults = Object.values(ACHIEVEMENT_DEFAULTS);
+        expect(defaults.map((entry) => entry.xpReward)).toEqual(CATALOG_REWARDS);
+        defaults.forEach((entry) => expect(entry.icon).toMatch(/^[a-z][a-z-]*$/));
+    });
+
+    it('builds the same keyed catalog upserts without connecting to a database', async () => {
+        const uri = process.env.MONGO_URI;
+        process.env.MONGO_URI = 'mongodb://127.0.0.1/unused-test';
+        const connect = jest.spyOn(mongoose, 'connect').mockResolvedValue(mongoose);
+        const write = jest.spyOn(Achievement, 'bulkWrite').mockResolvedValue({ upsertedCount: 14, modifiedCount: 0, matchedCount: 0 });
+        try {
+            await require('../scripts/seedAchievements')();
+            const operations = write.mock.calls[0][0];
+            expect(operations.map((operation) => operation.updateOne.update.$set.xpReward)).toEqual(CATALOG_REWARDS);
+            expect(operations.map((operation) => operation.updateOne.filter.key)).toEqual(Object.keys(ACHIEVEMENT_DEFAULTS));
+            operations.forEach(({ updateOne }) => {
+                expect(updateOne.upsert).toBe(true);
+                expect(updateOne.update.$set.icon).toBe(ACHIEVEMENT_DEFAULTS[updateOne.filter.key].icon);
+                expect(updateOne.update.$set.icon).toMatch(/^[a-z][a-z-]*$/);
+            });
+        } finally {
+            connect.mockRestore();
+            write.mockRestore();
+            if (uri === undefined) delete process.env.MONGO_URI;
+            else process.env.MONGO_URI = uri;
+        }
+    });
+});
 
 describe("gameologyService — level curve", () => {
     it("L1 starts at 0 XP", () => {

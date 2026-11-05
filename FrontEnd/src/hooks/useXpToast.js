@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { createElement, useEffect, useRef } from 'react';
+import { Sparkle } from '../cosmic/itemIcons';
+import AchievementIcon from '../cosmic/AchievementIcon';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { connectSocket } from '../services/socket';
@@ -43,13 +45,13 @@ export function useXpToast() {
             });
             if (payload?.leveledUp) {
                 toast(`Level up! You're level ${payload.level} now.`, {
-                    icon: '🚀',
+                    icon: createElement(Sparkle, { size: 20, color: 'var(--accent)' }),
                     duration: 5000,
                 });
             }
             for (const key of payload?.newAchievements || []) {
                 toast(`Achievement unlocked: ${key.replace(/_/g, ' ').toLowerCase()}`, {
-                    icon: '🏅',
+                    icon: createElement(AchievementIcon, { achievement: { key }, size: 20 }),
                     duration: 5500,
                 });
             }

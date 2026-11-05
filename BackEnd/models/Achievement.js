@@ -15,7 +15,7 @@ const AchievementSchema = new mongoose.Schema({
     key:         { type: String, required: true, unique: true }, // "FIRST_LESSON", "STREAK_7"
     title:       { type: String, required: true },               // "First Liftoff"
     description: { type: String, default: "" },
-    icon:        { type: String, default: "🏅" },                // emoji or asset key
+    icon:        { type: String, default: "achievement" },
     rarity:      { type: String, enum: ["common", "rare", "epic", "mythic"], default: "common" },
     xpReward:    { type: Number, default: 0 },
     rule:        { type: String, default: "" },                  // human-readable; engine uses key

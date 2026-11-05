@@ -1,5 +1,5 @@
-// Human-readable labels for every XP event the Gameology engine can fire.
-// Drives useXpToast + the history feed on /gameology.
+import { BookOpen, CheckCircle, Target, GraduationCap, Phone, Handshake, MessageCircle, Flame } from 'lucide-react';
+import { Ribbon } from '../../cosmic/itemIcons';
 
 export const XP_EVENT_LABELS = {
     lesson_completed:     'Lesson complete',
@@ -14,13 +14,13 @@ export const XP_EVENT_LABELS = {
 };
 
 export const XP_EVENT_ICONS = {
-    lesson_completed:     '📚',
-    quiz_passed:          '✅',
-    quiz_perfect:         '🎯',
-    course_completed:     '🎓',
-    session_completed:    '📞',
-    peer_swap_completed:  '🤝',
-    peer_help_posted:     '💬',
-    streak_bonus:         '🔥',
-    achievement_unlocked: '🏅',
+    lesson_completed: BookOpen,
+    quiz_passed: CheckCircle,
+    quiz_perfect: Target,
+    course_completed: GraduationCap,
+    session_completed: Phone,
+    peer_swap_completed: Handshake,
+    peer_help_posted: MessageCircle,
+    streak_bonus: Flame,
+    achievement_unlocked: Ribbon,
 };

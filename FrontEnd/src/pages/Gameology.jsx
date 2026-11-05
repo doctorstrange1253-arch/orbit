@@ -5,6 +5,7 @@ import { Sparkles, Trophy, Award, History, BookOpen, GraduationCap, Lock } from 
 import { useGameologyMe, useMyAchievements, useGameologyHistory } from '../hooks/useGameology';
 import { useStreak } from '../hooks/useStreak';
 import { XP_EVENT_LABELS, XP_EVENT_ICONS } from '../components/cosmic/xpEventLabels';
+import AchievementIcon from '../cosmic/AchievementIcon';
 import LevelBadge from '../components/cosmic/LevelBadge';
 import StreakFlame from '../components/cosmic/StreakFlame';
 import LeagueTable from '../components/cosmic/LeagueTable';
@@ -149,7 +150,7 @@ const Gameology = () => {
                                         rarity={a.unlocked ? a.rarity : 'common'}
                                         className={`p-3 text-center relative overflow-hidden transition ${!a.unlocked ? 'grayscale opacity-50' : ''}`}
                                     >
-                                        <div className="text-3xl mb-1">{a.icon || '🏅'}</div>
+                                        <div className="mb-1"><AchievementIcon achievement={a} /></div>
                                         <div className="text-xs font-bold text-text-primary line-clamp-1">{a.title}</div>
                                         <div className="text-[10px] text-text-muted line-clamp-2 mt-0.5">{a.description}</div>
                                         {a.unlocked && a.xpReward > 0 && (
@@ -191,7 +192,7 @@ const Gameology = () => {
                                 const label = XP_EVENT_LABELS[h.event] || h.event;
                                 return (
                                     <li key={i} className="flex items-center gap-3 p-3">
-                                        <Icon className="w-4 h-4 text-accent flex-shrink-0" />
+                                        <span className="text-accent flex-shrink-0"><Icon size={16} color="currentColor" aria-hidden="true" /></span>
                                         <div className="flex-1 min-w-0">
                                             <div className="text-sm font-semibold text-text-primary">{label}</div>
                                             <div className="text-[10px] text-text-muted">

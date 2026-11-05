@@ -16,20 +16,20 @@ const { ACHIEVEMENT_DEFAULTS } = require("../services/gameologyService");
 // Stories: each achievement has a cosmic-themed title (the "First Liftoff"
 // style — name them after Orbit lore, not raw unlocks).
 const CATALOG = [
-    { key: "FIRST_LESSON",  title: "First Liftoff",   description: "Complete your first course lesson.",                            icon: "🚀", rarity: "common",  xpReward: 25 },
-    { key: "FIRST_COURSE",  title: "Course Crusader", description: "Finish your first course end-to-end.",                          icon: "🎓", rarity: "common",  xpReward: 50 },
-    { key: "STREAK_3",      title: "Steady Pulse",    description: "3-day learning streak.",                                       icon: "✨", rarity: "common",  xpReward: 30 },
-    { key: "STREAK_7",      title: "Habitual Orbit",  description: "7-day learning streak.",                                       icon: "🔥", rarity: "rare",    xpReward: 75 },
-    { key: "STREAK_30",     title: "Lunar Lock",      description: "30-day learning streak — the moon is in step with you.",       icon: "🌙", rarity: "epic",    xpReward: 200 },
-    { key: "STREAK_100",    title: "Deep Space",      description: "100-day learning streak. You are a fixed point in the sky.",    icon: "🛰️", rarity: "mythic", xpReward: 500 },
-    { key: "LEVEL_10",      title: "Quasar Mind",     description: "Reach Level 10 in Gameology.",                                 icon: "🌀", rarity: "rare",    xpReward: 50 },
-    { key: "LEVEL_25",      title: "Pulsar Soul",     description: "Reach Level 25 — the engine of a collapsed star.",             icon: "💫", rarity: "epic",    xpReward: 200 },
-    { key: "LEVEL_50",      title: "Singularity",     description: "Reach Level 50 — the final, dense, irreducible point.",         icon: "🕳️", rarity: "mythic", xpReward: 1000 },
-    { key: "COURSE_5",      title: "Constellation",   description: "Complete 5 courses.",                                          icon: "🌌", rarity: "epic",    xpReward: 300 },
-    { key: "QUIZ_PERFECT",  title: "Sharp Shooter",   description: "Score 100% on a quiz on your first try.",                      icon: "🎯", rarity: "rare",    xpReward: 50 },
-    { key: "SESSION_1",     title: "First Call",      description: "Complete your first paid 1-on-1 session.",                     icon: "📞", rarity: "common",  xpReward: 30 },
-    { key: "PEER_SWAP_1",   title: "First Trade",     description: "Complete your first peer skill swap.",                         icon: "🤝", rarity: "common",  xpReward: 30 },
-    { key: "SPEEDRUN",      title: "Speedrunner",     description: "Complete 5 lessons in a single day.",                          icon: "⚡", rarity: "rare",    xpReward: 100 },
+    { key: "FIRST_LESSON",  title: "First Liftoff",   description: "Complete your first course lesson.",                            icon: "rocket", rarity: "common",  xpReward: 25 },
+    { key: "FIRST_COURSE",  title: "Course Crusader", description: "Finish your first course end-to-end.",                          icon: "graduation-cap", rarity: "common",  xpReward: 50 },
+    { key: "STREAK_3",      title: "Steady Pulse",    description: "3-day learning streak.",                                       icon: "sparkle", rarity: "common",  xpReward: 30 },
+    { key: "STREAK_7",      title: "Habitual Orbit",  description: "7-day learning streak.",                                       icon: "flame", rarity: "rare",    xpReward: 75 },
+    { key: "STREAK_30",     title: "Lunar Lock",      description: "30-day learning streak — the moon is in step with you.",       icon: "moon", rarity: "epic",    xpReward: 200 },
+    { key: "STREAK_100",    title: "Deep Space",      description: "100-day learning streak. You are a fixed point in the sky.",    icon: "satellite", rarity: "mythic", xpReward: 500 },
+    { key: "LEVEL_10",      title: "Quasar Mind",     description: "Reach Level 10 in Gameology.",                                 icon: "quasar", rarity: "rare",    xpReward: 50 },
+    { key: "LEVEL_25",      title: "Pulsar Soul",     description: "Reach Level 25 — the engine of a collapsed star.",             icon: "pulsar", rarity: "epic",    xpReward: 200 },
+    { key: "LEVEL_50",      title: "Singularity",     description: "Reach Level 50 — the final, dense, irreducible point.",         icon: "black-hole", rarity: "mythic", xpReward: 1000 },
+    { key: "COURSE_5",      title: "Constellation",   description: "Complete 5 courses.",                                          icon: "constellation", rarity: "epic",    xpReward: 300 },
+    { key: "QUIZ_PERFECT",  title: "Sharp Shooter",   description: "Score 100% on a quiz on your first try.",                      icon: "target", rarity: "rare",    xpReward: 50 },
+    { key: "SESSION_1",     title: "First Call",      description: "Complete your first paid 1-on-1 session.",                     icon: "phone", rarity: "common",  xpReward: 30 },
+    { key: "PEER_SWAP_1",   title: "First Trade",     description: "Complete your first peer skill swap.",                         icon: "handshake", rarity: "common",  xpReward: 30 },
+    { key: "SPEEDRUN",      title: "Speedrunner",     description: "Complete 5 lessons in a single day.",                          icon: "bolt", rarity: "rare",    xpReward: 100 },
 ];
 
 async function main(opts = {}) {
