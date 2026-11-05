@@ -9,6 +9,7 @@ import StarfieldBackdrop from '../cosmic/StarfieldBackdrop';
 import TwinkleBackdrop from '../cosmic/twinkleBackdrop';
 import PlanetSurface from '../cosmic/PlanetSurface';
 import Shuttle from '../cosmic/Shuttle';
+import Station from '../cosmic/Station';
 import { generatePlanetLayout, layoutToPosition, PLANET_ARCHETYPES } from '../cosmic/PlanetGenerator';
 // layoutToPosition is re-exported from PlanetGenerator (from travel.js) so the
 // Lab and the world share one position formula.
@@ -29,6 +30,7 @@ const TABS = [
   { id: 'milkyway', label: 'Nebula' },
   { id: 'planet', label: 'Planet' },
   { id: 'shuttle', label: 'Shuttle' },
+  { id: 'station', label: 'Station' },
   { id: 'postprocess', label: 'PostFX' },
 ];
 
@@ -98,6 +100,20 @@ function AutoFly({ apiRef, target, onDone }) {
   return null;
 }
 
+function StationLabScene({ variant, seed }) {
+  return (
+    <>
+      <color attach="background" args={['#020617']} />
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[6, 8, 4]} intensity={1.2} />
+      <TwinkleBackdrop radius={300} motion={1} />
+      <StarfieldBackdrop count={2000} radius={200} seed={7} motion={1} />
+      <Station variant={variant} seed={seed} position={[0, 0, 0]} scale={1.4} motion={1} />
+      <OrbitControls enablePan={false} minDistance={4} maxDistance={30} autoRotate={false} />
+    </>
+  );
+}
+
 export default function LookDevLab() {
   const [tab, setTab] = useState('starfield');
 
@@ -119,14 +135,21 @@ export default function LookDevLab() {
     spin: { value: 0.2, min: 0, max: 1, step: 0.05 },
   }, { collapsed: false });
 
+  const stationControls = useControls('Station lab', {
+    variant: { value: 'station', options: ['checkpoint', 'station', 'boss'] },
+    seed: { value: 777, min: 1, max: 999999, step: 1 },
+  }, { collapsed: false });
+
   const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const scene = useMemo(() => tab === 'planet' ? (
     <PlanetLabScene archetype={planetControls.archetype} seed={planetControls.seed} spin={planetControls.spin} />
   ) : tab === 'shuttle' ? (
     <ShuttleLabScene spin={shuttleControls.spin} />
+  ) : tab === 'station' ? (
+    <StationLabScene variant={stationControls.variant} seed={stationControls.seed} />
   ) : (
     <StarLabScene starCount={starControls.count} seed={starControls.seed} mwOn={starControls.milkyway} />
-  ), [tab, starControls.count, starControls.seed, starControls.milkyway, planetControls.archetype, planetControls.seed, planetControls.spin, shuttleControls.spin]);
+  ), [tab, starControls.count, starControls.seed, starControls.milkyway, planetControls.archetype, planetControls.seed, planetControls.spin, shuttleControls.spin, stationControls.variant, stationControls.seed]);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100" data-testid="look-dev-lab">

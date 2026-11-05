@@ -27,7 +27,17 @@ vi.mock('leva', () => ({
     ? { archetype: 'terrestrial', seed: 12345, spin: 0.1 }
     : name === 'Shuttle lab'
       ? { thrust: 1.0, spin: 0.2 }
-      : { count: 4000, seed: 49236, milkyway: true, showPerf: false },
+      : name === 'Station lab'
+        ? { variant: 'station', seed: 777 }
+        : { count: 4000, seed: 49236, milkyway: true, showPerf: false },
+}));
+
+vi.mock('../src/cosmic/Station', () => ({
+  __esModule: true,
+  STATION_VARIANTS: ['checkpoint', 'station', 'boss'],
+  default: function MockStation(p) {
+    return React.createElement('div', { 'data-testid': 'station', 'data-variant': p.variant });
+  },
 }));
 
 vi.mock('../src/cosmic/Shuttle', () => ({
@@ -57,6 +67,7 @@ describe('LookDevLab (F3)', () => {
     expect(screen.getByRole('button', { name: 'Nebula' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Planet' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Shuttle' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Station' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'PostFX' })).toBeTruthy();
   });
 });

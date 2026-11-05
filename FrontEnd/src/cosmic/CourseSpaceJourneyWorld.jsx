@@ -9,6 +9,7 @@ import StarfieldBackdrop from './StarfieldBackdrop';
 import TwinkleBackdrop from './twinkleBackdrop';
 import PlanetSurface from './PlanetSurface';
 import Shuttle from './Shuttle';
+import Station from './Station';
 import { layoutToPosition, damp3 } from './travel';
 import { generatePlanetLayout, ARCHETYPE_LABELS } from './PlanetGenerator';
 
@@ -123,6 +124,27 @@ function JourneyCamera({ shuttlePosRef, reducedMotion }) {
   return null;
 }
 
+export function stationKindForIndex(i, total) {
+  if (total >= 4 && i === total - 1) return 'boss';
+  if (i % 3 === 2) return 'station';
+  return 'checkpoint';
+}
+
+function StationNode({ layout, index, total, reducedMotion }) {
+  const [x, y, z] = layoutToPosition(layout, index);
+  const kind = stationKindForIndex(index, total);
+  const orbitR = layout.size * 0.8 + 1.1;
+  return (
+    <Station
+      variant={kind}
+      seed={layout.seed}
+      position={[x + orbitR, y + 0.4, z]}
+      scale={kind === 'boss' ? 1.4 : 0.9}
+      motion={reducedMotion ? 0 : 1}
+    />
+  );
+}
+
 function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedModuleId, tier, reducedMotion }) {
   const layouts = useMemo(
     () => modules.map((m, i) => generatePlanetLayout({
@@ -161,6 +183,9 @@ function WorldScene({ courseId, courseTitle, modules, onSelectModule, selectedMo
         />
       ))}
       <Shuttle layouts={layouts} startIndex={0} reducedMotion={reducedMotion} apiRef={shuttleApiRef} />
+      {layouts.map((layout, i) => (
+        <StationNode key={`st-${i}`} layout={layout} index={i} total={layouts.length} reducedMotion={reducedMotion} />
+      ))}
       <JourneyCamera shuttlePosRef={shuttlePosRef} reducedMotion={reducedMotion} />
       <OrbitControls enablePan={false} minDistance={8} maxDistance={35} autoRotate={reducedMotion ? false : true} autoRotateSpeed={0.5} />
       {post && (

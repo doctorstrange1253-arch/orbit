@@ -33,6 +33,14 @@ vi.mock('../src/cosmic/Shuttle', () => ({
   },
 }));
 
+vi.mock('../src/cosmic/Station', () => ({
+  __esModule: true,
+  STATION_VARIANTS: ['checkpoint', 'station', 'boss'],
+  default: function MockStation(p) {
+    return React.createElement('div', { 'data-testid': 'station', 'data-variant': p.variant });
+  },
+}));
+
 let lastGl = null;
 vi.mock('@react-three/fiber', () => ({
   Canvas: (props) => {
@@ -88,7 +96,7 @@ Object.defineProperty(navigator, 'deviceMemory', { writable: true, value: 8 });
 HTMLCanvasElement.prototype.getContext = () => ({});
 globalThis.performance = { now: () => Date.now() };
 
-import CourseSpaceJourneyWorld from '../src/cosmic/CourseSpaceJourneyWorld';
+import CourseSpaceJourneyWorld, { stationKindForIndex } from '../src/cosmic/CourseSpaceJourneyWorld';
 
 const MODULES = [
   { _id: 'm1', title: 'Module One' },
@@ -156,6 +164,28 @@ describe('CourseSpaceJourneyWorld (F1 scene shell)', () => {
     expect(first).toBeTruthy();
     expect(Number(surfaces[0].getAttribute('data-seed'))).toBeGreaterThan(0);
     expect(Number(surfaces[0].getAttribute('data-detail'))).toBe(16);
+  });
+
+  it('renders one Station per module with boss on the last when >=4 modules', () => {
+    const mods = [
+      { _id: 'a' }, { _id: 'b' }, { _id: 'c' }, { _id: 'd' },
+    ];
+    const { container } = render(
+      <CourseSpaceJourneyWorld courseId="c1" courseTitle="T" modules={mods} onSelectModule={() => {}} />
+    );
+    const stations = container.querySelectorAll('[data-testid="station"]');
+    expect(stations.length).toBe(4);
+    const variants = [...stations].map((s) => s.getAttribute('data-variant'));
+    expect(variants[3]).toBe('boss');
+    expect(variants).toContain('checkpoint');
+  });
+
+  it('stationKindForIndex rules: boss only when >=4 and last, station every 3rd, else checkpoint', () => {
+    expect(stationKindForIndex(0, 4)).toBe('checkpoint');
+    expect(stationKindForIndex(2, 4)).toBe('station');
+    expect(stationKindForIndex(3, 4)).toBe('boss');
+    expect(stationKindForIndex(2, 3)).toBe('station');
+    expect(stationKindForIndex(1, 3)).toBe('checkpoint');
   });
 
   it('view toggle switches between 3D canvas and 2D map', async () => {
