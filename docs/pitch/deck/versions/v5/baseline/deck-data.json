@@ -1,0 +1,492 @@
+{
+  "product": "Orbit",
+  "tagline": "Learn the skills students actually request.",
+  "version": 0,
+  "deadline": {
+    "cutoff": "2026-11-14T23:30:00+05:30",
+    "status": "ASSUMED pending founder confirmation",
+    "content_freeze": "21:30 IST",
+    "qa_export": "22:15 IST",
+    "submit_target": "22:45 IST"
+  },
+  "palette": {
+    "paper": "#FBF8F2",
+    "ink": "#182C35",
+    "muted": "#52646B",
+    "primary": "#0876AF",
+    "warm": "#A64B29",
+    "line": "#D8DED9",
+    "tint": "#EAF2EF"
+  },
+  "fonts": {
+    "headline": "Georgia",
+    "body": "Arial"
+  },
+  "facts": {
+    "team": null,
+    "survey": null,
+    "interviews": null,
+    "commitments": null,
+    "actual_costs": null,
+    "official_campus_population": null,
+    "current_demo": null
+  },
+  "economics": {
+    "currency": "INR",
+    "core_price": 599,
+    "higher_price": 1199,
+    "price_status": "Proposed targets; not live prices",
+    "platform_share": 0.2,
+    "mentor_share": 0.8,
+    "session_fee": 0.15,
+    "gst_scenario": 0.18,
+    "gst_status": "Illustrative tax-inclusive scenario; professional confirmation required",
+    "gateway_rate": 0.02,
+    "gateway_tax": 0.18,
+    "fx_inr_usd": 85,
+    "fx_status": "ESTIMATE, not an exchange-rate quote",
+    "video_delivery_usd_per_1000_minutes": 1,
+    "video_storage_usd_per_1000_minutes": 5,
+    "stored_minutes": 500,
+    "allocation_students": 50,
+    "core_watch_minutes": 120,
+    "higher_watch_minutes": 240,
+    "core_ai": 10,
+    "higher_ai": 20,
+    "core_support": 8,
+    "higher_support": 12,
+    "session_price": 1000,
+    "session_rtc": 10,
+    "session_support": 15,
+    "fixed_monthly": 15000,
+    "opening_cash": 0,
+    "opening_cash_status": "FILL actual opening cash; 0 used only as model scenario",
+    "core_mix": 0.8,
+    "base_paying_students": [
+      0,
+      0,
+      10,
+      25,
+      50,
+      80,
+      120,
+      180,
+      260,
+      350,
+      450,
+      550
+    ],
+    "conservative_paying_students": [
+      0,
+      0,
+      5,
+      10,
+      20,
+      35,
+      50,
+      65,
+      80,
+      100,
+      120,
+      150
+    ],
+    "status": "ESTIMATE inputs, not bills or forecasts"
+  },
+  "funding": [
+    {
+      "category": "Infrastructure + AI",
+      "amount": 50000,
+      "month": "1-3",
+      "buys": "Capped video and compute pilot",
+      "milestone": "Measured cost per active learner",
+      "status": "ESTIMATE allocation; quotes required"
+    },
+    {
+      "category": "Mentors + first courses",
+      "amount": 50000,
+      "month": "1-2",
+      "buys": "Reviewed pilot-course incentives",
+      "milestone": "2 reviewed courses + 5 mentor commitments",
+      "status": "ESTIMATE allocation; no commitments yet"
+    },
+    {
+      "category": "Campus activation",
+      "amount": 30000,
+      "month": "2-3",
+      "buys": "Clubs, ambassadors and targeted trials",
+      "milestone": "30 activated learners; conversion measured",
+      "status": "ESTIMATE allocation"
+    },
+    {
+      "category": "Recording equipment",
+      "amount": 20000,
+      "month": "2",
+      "buys": "Borrow-first microphone/light kit",
+      "milestone": "Repeatable creator workflow",
+      "status": "FILL owned hardware/quotes"
+    },
+    {
+      "category": "Legal + payments",
+      "amount": 10000,
+      "month": "1",
+      "buys": "Professional scope and payment review",
+      "milestone": "Checkout/privacy release checklist",
+      "status": "ESTIMATE allowance, not legal quote"
+    },
+    {
+      "category": "Testing + security",
+      "amount": 20000,
+      "month": "1-3",
+      "buys": "Pilot reliability and review",
+      "milestone": "No unresolved pilot-critical defects",
+      "status": "ESTIMATE allowance"
+    },
+    {
+      "category": "Contingency",
+      "amount": 20000,
+      "month": "1-3",
+      "buys": "Unspent reserve for verified needs",
+      "milestone": "Funding discipline",
+      "status": "ESTIMATE allocation"
+    }
+  ],
+  "funding_ladder": [
+    {
+      "amount": 100000,
+      "unlock": "Minimum two-course campus pilot",
+      "allocation": {
+        "Infrastructure + AI": 30000,
+        "Mentors + first courses": 35000,
+        "Campus activation": 10000,
+        "Recording equipment": 0,
+        "Legal + payments": 10000,
+        "Testing + security": 10000,
+        "Contingency": 5000
+      }
+    },
+    {
+      "amount": 150000,
+      "unlock": "Second request-to-launch cycle",
+      "allocation": {
+        "Infrastructure + AI": 40000,
+        "Mentors + first courses": 45000,
+        "Campus activation": 25000,
+        "Recording equipment": 0,
+        "Legal + payments": 10000,
+        "Testing + security": 15000,
+        "Contingency": 15000
+      }
+    },
+    {
+      "amount": 200000,
+      "unlock": "Equipment + resilience reserve",
+      "allocation": {
+        "Infrastructure + AI": 50000,
+        "Mentors + first courses": 50000,
+        "Campus activation": 30000,
+        "Recording equipment": 20000,
+        "Legal + payments": 10000,
+        "Testing + security": 20000,
+        "Contingency": 20000
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "PRODUCT",
+      "type": "OURS_SOURCE_ONLY",
+      "source": "docs/pitch/product-facts.md P05,P07,P11,P14,P41-P42",
+      "year": 2026
+    },
+    {
+      "id": "FOUNDER",
+      "type": "FOUNDER_REPORTED",
+      "source": ".agent/side/shark-tank/FACTS.md F19-F23",
+      "year": 2026
+    },
+    {
+      "id": "FORM",
+      "type": "FOUNDER_SUPPLIED_SCREENSHOTS",
+      "source": "docs/pitch/competition-brief.md and images2-6",
+      "year": 2026
+    },
+    {
+      "id": "RZP",
+      "type": "PUBLISHED",
+      "source": "Razorpay standard pricing",
+      "url": "https://razorpay.com/pricing/",
+      "year": 2026,
+      "accessed": "2026-11-14",
+      "qualification": "Published baseline, merchant terms may differ"
+    },
+    {
+      "id": "CF",
+      "type": "PUBLISHED",
+      "source": "Cloudflare Stream pricing",
+      "url": "https://developers.cloudflare.com/stream/pricing/",
+      "year": 2026,
+      "accessed": "2026-11-14",
+      "qualification": "USD billing; INR conversion is assumed"
+    },
+    {
+      "id": "JORDAN",
+      "type": "PUBLISHED",
+      "source": "Katy Jordan, MOOC completion rates revisited",
+      "url": "https://www.irrodl.org/index.php/irrodl/article/download/2112/3340?inline=1",
+      "year": 2015,
+      "qualification": "Historical non-India course-level convenience sample, not our survey"
+    }
+  ],
+  "slides": [
+    {
+      "number": 1,
+      "topic": "Cover",
+      "layout": "cover",
+      "headline": "Learn the skills students actually request.",
+      "body": [
+        "Orbit",
+        "A learner-led course platform in development.",
+        "[FILL: participating team]",
+        "TBI-GEU"
+      ],
+      "image": "assets/journey-crop.png",
+      "footnote": "Prototype capture with test data; not current paid traction.",
+      "sources": [
+        "PRODUCT"
+      ],
+      "seconds": 20,
+      "notes": "Orbit starts with a question: what if the next course began with a skill students actually requested? We are developing a learner-led platform connecting demand with mentors and a visible learning journey. It is a prototype. We will separate source-visible work, proposed milestones and what remains unproven."
+    },
+    {
+      "number": 2,
+      "topic": "01 Problem",
+      "layout": "problem",
+      "headline": "A missing course should not end a student's ambition.",
+      "body": [
+        "18+ college learners seeking one practical skill.",
+        "Finding the right course. Continuing without feedback.",
+        "[FILL: a specific recent learning episode]"
+      ],
+      "footnote": "Founder/friends experience; problem prevalence not validated.",
+      "sources": [
+        "FOUNDER"
+      ],
+      "seconds": 25,
+      "notes": "Our first problem hypothesis concerns adult college learners seeking a practical skill. Finding relevant instruction and continuing without feedback can be difficult. The founder and friends experienced this, but we have no validated prevalence figure. We still need a specific dated example. Our first test should address one skill and a clearly defined learner group, not everyone."
+    },
+    {
+      "number": 3,
+      "topic": "02 Customer insight",
+      "layout": "discovery",
+      "headline": "Our next proof is commitment, not a market forecast.",
+      "body": [
+        "[FILL: student responses]",
+        "[FILL: mentor conversations]",
+        "[FILL: permitted verbatim quote]"
+      ],
+      "footnote": "No primary dataset supplied. Record n, who, how, when and sample limits.",
+      "sources": [
+        "FOUNDER"
+      ],
+      "seconds": 25,
+      "notes": "Customer evidence is our largest weakness. No one-to-one interviews or primary survey dataset has been supplied. We have prepared an adult student micro-survey and mentor conversations. Targets are not results: only actual responses will enter the deck with n, population, date and method. Real course requests and written pilot commitments matter more than favorable opinions."
+    },
+    {
+      "number": 4,
+      "topic": "03 Solution",
+      "layout": "loop",
+      "headline": "Let learner demand guide what mentors build.",
+      "body": [
+        "Request a topic",
+        "Validate demand",
+        "Mentor commits",
+        "Build the course"
+      ],
+      "footnote": "Proposed loop. Request/vote/claim source exists; advanced mentor waves are next.",
+      "sources": [
+        "PRODUCT"
+      ],
+      "seconds": 30,
+      "notes": "The proposed loop is request, validate demand, mentor commitment and course creation. Students name an unmet topic, others support it, and a mentor decides whether that demand justifies building. We are not claiming the first such idea or dismissing existing catalogs. We want to test relevance and a closer mentor relationship. Advanced confidence-ranked notification waves are still next."
+    },
+    {
+      "number": 5,
+      "topic": "04 How it works",
+      "layout": "product",
+      "headline": "One topic becomes a clear path from request to practice.",
+      "body": [
+        "1 Request",
+        "2 Mentor response",
+        "3 Lesson journey",
+        "4 Quiz + feedback"
+      ],
+      "image": "assets/journey-crop.png",
+      "footnote": "Intended workflow; full request-to-completion integration unverified.",
+      "sources": [
+        "PRODUCT"
+      ],
+      "seconds": 25,
+      "notes": "The intended path connects a request and mentor response to finite video lessons, a visible journey, quizzes and feedback. This image is a real historical prototype capture using test data. It is not a current paid course or proof of learning improvement. Before pitch day, the team must identify and rehearse only flows it can personally repeat."
+    },
+    {
+      "number": 6,
+      "topic": "05 Progress",
+      "layout": "progress",
+      "headline": "The prototype exists; the integrated pilot is unproven.",
+      "body": [
+        "Built in source: requests, journey UI, recorder UI.",
+        "Next: integrated pilot, checkout, paid settlement.",
+        "Unproven: demand, completion lift, conversion."
+      ],
+      "image": "assets/recorder-crop.png",
+      "footnote": "Source-verified components, not a certified current live service.",
+      "sources": [
+        "PRODUCT"
+      ],
+      "seconds": 30,
+      "notes": "Source-visible prototype work includes requests and votes, course journey interfaces and mentor recording and review controls. The integrated pilot remains unproven. Recurring checkout, actual bank settlement and stronger AI review and mentor-wave workflows still need integration. These are material limitations, not hidden polish items. Our next proof is an integrated pilot measuring demand, usability and commercial readiness."
+    },
+    {
+      "number": 7,
+      "topic": "06 Market",
+      "layout": "market",
+      "headline": "Start with one campus, one skill, and adults who need it.",
+      "body": [
+        "GEU beachhead [PROPOSED]",
+        "[FILL: relevant official student count]",
+        "100 paying students in 12 months [TARGET]"
+      ],
+      "footnote": "Serviceable = relevant population x reach x demonstrated need; inputs pending.",
+      "sources": [
+        "FOUNDER"
+      ],
+      "seconds": 25,
+      "notes": "We propose starting with adult GEU students in selected years and branches who need one practical skill. The founder must confirm this beachhead and its relevant official population. Serviceable demand is population multiplied by reachable share and demonstrated need. One hundred paying students in twelve months is a target, not a forecast. Initial mentors need teachable proof and time to pilot."
+    },
+    {
+      "number": 8,
+      "topic": "07 Business model",
+      "layout": "economics",
+      "headline": "Mentor earnings and platform margin are separate.",
+      "body": [
+        "Subscriptions: 20% platform / 80% mentor pool.",
+        "Optional 1-on-1: separate 15% platform fee.",
+        "Core Rs 599 / Premium Rs 1,199 [PROPOSED]"
+      ],
+      "footnote": "Illustrative cost scenario; tax basis and actual bills require confirmation.",
+      "sources": [
+        "PRODUCT",
+        "RZP",
+        "CF"
+      ],
+      "seconds": 35,
+      "notes": "Subscriptions target twenty percent for the platform and an eighty-percent pool for mentors of the learner's enrolled courses. One-to-one sessions have a separate fifteen-percent platform fee. Core599 and Premium1199 are proposed targets, not live prices. Our illustrative model deducts gateway, video, AI and support costs. Actual bills, tax basis, usage and refund rules determine margin; scenarios are not profit promises."
+    },
+    {
+      "number": 9,
+      "topic": "08 Action plan",
+      "layout": "timeline",
+      "headline": "Ninety days should prove a repeatable course-launch cycle.",
+      "body": [
+        "Days 1-30: 5 mentors, 2 reviewed courses.",
+        "Days 31-60: first cycle, 10 paid conversions.",
+        "Days 61-90: second cycle, 25 paying learners."
+      ],
+      "footnote": "All proposed targets; paid milestones only after checkout readiness. Owners [FILL].",
+      "sources": [
+        "PRODUCT"
+      ],
+      "seconds": 30,
+      "notes": "In the first month, proposed targets are five genuine mentor commitments, two reviewed courses and thirty activated learners. By day sixty, we aim to complete one request-to-launch cycle and test ten paid conversions only after checkout is ready. By day ninety, the target is a second cycle and twenty-five paying learners. Clubs, ambassadors and mentor outreach are channels to test; every milestone needs a named owner."
+    },
+    {
+      "number": 10,
+      "topic": "09 Team",
+      "layout": "team",
+      "headline": "Give each milestone a named owner and proof of skill.",
+      "body": [
+        "[FILL: engineering owner + contribution]",
+        "[FILL: mentoring owner + proof]",
+        "[FILL: customer owner + proof]"
+      ],
+      "footnote": "A team is founder-confirmed; names, roles, count and photos pending.",
+      "sources": [
+        "FOUNDER"
+      ],
+      "seconds": 25,
+      "notes": "A team exists, but names, roles and contributions must be supplied. We will not invent credentials or assign all repository work to an unnamed founder. Engineering owns integration, the content lead owns mentors and course quality, and customer development owns discovery and campus activation. People can hold multiple roles; we should disclose capacity honestly. Photos and advisors appear only if genuine."
+    },
+    {
+      "number": 11,
+      "topic": "10 The ask",
+      "layout": "funding",
+      "headline": "Up to Rs 2,00,000 funds a measured campus pilot.",
+      "body": [
+        "Rs 1,00,000: minimum pilot.",
+        "Next Rs 50,000: second course-launch cycle.",
+        "Final Rs 50,000: equipment + resilience."
+      ],
+      "footnote": "Proposed allocation, quotes pending; support amount and terms decided live.",
+      "sources": [
+        "FORM"
+      ],
+      "seconds": 30,
+      "notes": "We propose up to two lakh rupees, subject to the panel's decision. Infrastructure and first-course mentor work take priority, then activation, professional review, testing, equipment and contingency. These are allocations awaiting quotes. The first lakh supports a minimum pilot; the next fifty thousand adds a second cycle. We borrow equipment and cut paid campaigns first if funding is smaller. Beyond money, we need mentor introductions and pilot access."
+    },
+    {
+      "number": 12,
+      "topic": "Backup (for Q&A)",
+      "layout": "model-detail",
+      "headline": "Unit economics are assumptions to test.",
+      "body": [
+        "Core, higher-tier and session scenarios",
+        "Separate fee, tax and cost bases",
+        "Break-even and runway change with actual bills"
+      ],
+      "footnote": "Model formulas are editable; scenario inputs are not actual costs.",
+      "sources": [
+        "RZP",
+        "CF",
+        "PRODUCT"
+      ],
+      "seconds": 0,
+      "notes": "Backup: show model assumptions, sensitivity and separate subscription/session formulas. Source fallback prices differ from working Core/Premium intent and were not changed. Check tax inclusivity, payout eligibility, refund reserve and regulated provider terms before release."
+    },
+    {
+      "number": 13,
+      "topic": "Backup (for Q&A)",
+      "layout": "method",
+      "headline": "Small samples need honest limits.",
+      "body": [
+        "Report n, who, how and when.",
+        "Separate opinion, signup and real commitment.",
+        "[FILL: duplicates, missing data and quote permission]"
+      ],
+      "footnote": "No primary dataset supplied. Published research never becomes our survey.",
+      "sources": [
+        "FOUNDER",
+        "JORDAN"
+      ],
+      "seconds": 0,
+      "notes": "Backup: survey convenience samples cannot establish population prevalence. Jordan2015 reports historical course-level completion with different definitions, not current Indian learners or our effectiveness. Use anonymized results, not contact details; quote only with permission."
+    },
+    {
+      "number": 14,
+      "topic": "Backup (for Q&A)",
+      "layout": "risks",
+      "headline": "Name the risks before promising scale.",
+      "body": [
+        "Demand: prove real requests.",
+        "Mentors: prove delivery capacity.",
+        "Commerce: prove checkout + settlement.",
+        "Safety: complete adult-pilot release review."
+      ],
+      "footnote": "Catalogs, free video and individual mentoring are credible alternatives.",
+      "sources": [
+        "PRODUCT"
+      ],
+      "seconds": 0,
+      "notes": "Backup: no validated moat yet. Request-to-launch reliability, mentor quality and a trusted local learner relationship are hypotheses to build, not defensibility already earned. AI correctness, privacy, paid room integration and refund authority remain release conditions. No blanket statutory-compliance or learning-outcome claim."
+    }
+  ]
+}

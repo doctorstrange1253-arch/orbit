@@ -1,0 +1,13 @@
+{
+  "status": "ESTIMATE scenario;notactualbills",
+  "coreCM": 50.69,
+  "higherCM": 114.02,
+  "weightedCM": 63.36,
+  "breakEvenStudents": 237,
+  "baseFirstPositiveMonth": 9,
+  "conservativeFirstPositiveMonth": null,
+  "fundingTotal": 200000,
+  "workbookRows": 93,
+  "formulaCount": 181,
+  "officeRecalculation": "NOT_RUN"
+}

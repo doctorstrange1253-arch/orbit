@@ -1,0 +1,2137 @@
+{
+  "runId": "iw-a2-20261109-bc5341f4",
+  "startedAt": "2026-11-09T06:00:02.349Z",
+  "synthetic": true,
+  "note": "Local current-frontend UI evidence only. These accounts, amounts, grades, records and role states are fixtures, not production authorization or real outcomes.",
+  "mode": "smoke",
+  "screenshots": [
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/student-universe-360.png",
+      "bytes": 102322,
+      "sha256": "e6e232beb3317d4fe37cb3f65293094399d871871967d48eaf6651f727e9ecc7",
+      "slug": "student-universe",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 1194,
+      "actualPath": "/student/universe",
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1194,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 13608218
+      },
+      "requestedRoute": "/student/universe",
+      "errors": [],
+      "crash": false
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/student-learning-360.png",
+      "bytes": 84146,
+      "sha256": "d15d4492ca76e85679fb3b9dc154c7407245d5e783745c25a63229bf1f2fcde1",
+      "slug": "student-learning",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 1438,
+      "actualPath": "/student/learning",
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1438,
+        "title": "My Learning · Orbit",
+        "headings": [
+          "Everything you are learning",
+          "In progress",
+          "Finished",
+          "Not started"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nSTUDENT · THE LEDGER\nEverything you are learning\n\nOne line per course, in the order you last touched it. The percentage is lessons completed, not time spent.\n\nI\nIn progress\n\nOpen, partly done, waiting for you.\n\nAlgebra foundations (fixture)\nMENTOR FIXTURE\n2/6 LESSONS\n1/3\n33%\nTOUCHED TODAY\nRESUME →\nII\nFinished\n\nCompleted end to end. The certificate is yours.\n\nGeometry practice (fixture)\nMENTOR FIXTURE\n6/6 LESSONS\n3/3\n100%\nTOUCHED TODAY\nCERTIFIED\nCERTIFICATE →\nIII\nNot started\n\nEnrolled but untouched. No judgement — the sky is patient.\n\nComputing basics (fixture)\nMENTOR FIXTURE\n0/6 LESSONS\n0/3\n0%\nTOUCHED TODAY\nBEGIN →",
+        "memory": 13468717
+      },
+      "requestedRoute": "/student/learning",
+      "errors": [],
+      "crash": false
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/student-certificates-360.png",
+      "bytes": 98072,
+      "sha256": "6f88d5a38aea1402d7dad506157d669b164436356c97753b404fabca46287cce",
+      "slug": "student-certificates",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 937,
+      "actualPath": "/student/certificates",
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 937,
+        "title": "Certificates · Orbit",
+        "headings": [
+          "What you finished",
+          "Earned"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nSTUDENT · THE RECORD\nWhat you finished\n\nA certificate is issued the moment a course reaches one hundred percent. Each one is signed, dated, and shareable.\n\nCERTIFICATES\n1\nLESSONS BEHIND THEM\n6\nNEAR THE FINISH\n0\nI\nEarned\nGeometry practice (fixture)\nMENTOR FIXTURE\n1 November 2026\nCERTIFICATE-FIXTURE\nVIEW →",
+        "memory": 13386182
+      },
+      "requestedRoute": "/student/certificates",
+      "errors": [],
+      "crash": false
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/mentor-observatory-360.png",
+      "bytes": 225016,
+      "sha256": "62c54d19eb26de0f10c6cc6e6a4db30e3a0941bd0f225008ce6e6d698cffb1d2",
+      "slug": "mentor-observatory",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 3036,
+      "actualPath": "/mentor/observatory",
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 3036,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "The Observatory",
+          "Your group this week"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          },
+          {
+            "width": 1200,
+            "height": 520
+          }
+        ],
+        "text": "⌘K\nMENTOR · THE OBSERVATORY\nThe Observatory\n\n2 students on your map. Their movements draw the sky you watch over.\n\nLIVE MENTOR\nNEW COURSE\nTHE MENTOR PACT\nYou stand among the adept.\n\nYou have found your rhythm. Steady now.\n\nSIX DIVISIONS\nONE COVENANT\nTIER I\nInitiate\nTIER II\nAdept\nTIER III\nMentor\nTIER IV\nSage\nTIER V\nLuminary\nTIER VI\nOracle\nADEPT\n2 COURSES\n\nYour signature, sized by the students you have taught, colored by the division you hold.\n\nHONOURS\n0 IN ALL\n0\nBEACON\n0\nCOMET\n0\nSUPERNOVA\nIV · THE SKY TONIGHT\n2 POINTS OF LIGHT\n2 ACTIVE · 2 TOTAL\nV · THE ROLL\nYour group this week\nFULL PACT ROLL\nTHE ROLL · WEEK FIXTURE-WEEK\n12 MENTORS\nMentor fixture 1\nPROMOTION ZONE\nPROFILE →\n240\n02\nMentor fixture 2\nPROMOTION ZONE\nPROFILE →\n230\n03\nMentor fixture 3\nPROMOTION ZONE\nPROFILE →\n220\n04\nMentor fixture 4\nPROMOTION ZONE\nPROFILE →\n210\n05\nMentor fixture 5\nPROMOTION ZONE\nPROFILE →\n200\n06\nMentor fixture 6\nPROMOTION ZONE\nPROFILE →\n190\n07\nMentor fixture 7\nPROMOTION ZONE\nPROFILE →\n180\n08\nYou\nRELEGATION ZONE\n170\n09\nMentor fixture 9\nRELEGATION ZONE\nPROFILE →\n160\n10\nMentor fixture 10\nRELEGATION ZONE\nPROFILE →\n150\n11\nMentor fixture 11\nRELEGATION ZONE\nPROFILE →\n140\n12\nMentor fixture 12\nRELEGATION ZONE\nPROFILE →\n130\nTOP 7 PROMOTE\n·\nMIDDLE HOLD\n·\nBOTTOM 7 RELEGATE\nVI · THE PULSE\nTHE PACT PULSE · HOLD\n\nRIVALS\nFOUR CLOSEST\nVII · YOUR WORKSHOP\nMy courses\nPublic profile\nEdit profile",
+        "memory": 13927293
+      },
+      "requestedRoute": "/mentor/observatory",
+      "errors": [],
+      "crash": false
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/peer-dashboard-360.png",
+      "bytes": 83199,
+      "sha256": "bc89a09d50cc866f389405c4904305446145eb701cf3b3f9c8400affb6761321",
+      "slug": "peer-dashboard",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 1722,
+      "actualPath": "/peer/dashboard",
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1722,
+        "title": "My Orbit | Orbit",
+        "headings": [
+          "Good morning, UI."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nMY ORBIT\nEDITED BY YOU\nGood morning, UI.\n\n1 lesson this week.\n\n1 kept.\n\nWEEKLY XPearned so far\n\n0\nXP\n\nA clean slate. The first point is the slowest; the rest come faster.\n\nAdd Skill\nUF\n\nUI Fixture\n\nEnglish\n82\n⇄\n\nSynthetic skill archive entry.\n\nintermediate\n1 day ago\n0\nSWAPS\n1\nLESSONS\n1\nSKILLS CARRIED\n0\nXP\nMON\n9\nMON\n9\nLesson\n11:30a\nM\nTUE\n10\nTUE\n10\nQuiet day.\nT\nWED\n11\nWED\n11\nQuiet day.\nW\nTHU\n12\nTHU\n12\nQuiet day.\nT\nFRI\n13\nFRI\n13\nQuiet day.\nF\nSAT\n14\nSAT\n14\nQuiet day.\nS\nSUN\n15\nSUN\n15\nQuiet day.\nS\n\nToday is your busiest day so far.\n\nNo one here yet. The first connection is the slowest; every one after is faster.\n\n“The teacher who never learns stops being a teacher.”\n\n— ORBIT\n\nEND OF ISSUE. NEXT ISSUE: TUESDAY, 10 NOV.\n\nORBIT · AN EDITORIAL OF ONE.",
+        "memory": 14645880
+      },
+      "requestedRoute": "/peer/dashboard",
+      "errors": [],
+      "crash": false
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/student-universe-768.png",
+      "bytes": 112122,
+      "sha256": "41f28b63b80b93a785432a46d3511c174b2b21fe36ef12ef1c4fbf1fc5e48af6",
+      "slug": "student-universe",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1032,
+      "actualPath": "/student/universe",
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1032,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 13814914
+      },
+      "requestedRoute": "/student/universe",
+      "errors": [],
+      "crash": false
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/student-learning-768.png",
+      "bytes": 90801,
+      "sha256": "876773a4998c363de51020c0ca6321d61d33efdbbd5324c1cb764b2db18de3f7",
+      "slug": "student-learning",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1089,
+      "actualPath": "/student/learning",
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1089,
+        "title": "My Learning · Orbit",
+        "headings": [
+          "Everything you are learning",
+          "In progress",
+          "Finished",
+          "Not started"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT · THE LEDGER\nEverything you are learning\n\nOne line per course, in the order you last touched it. The percentage is lessons completed, not time spent.\n\nI\nIn progress\n\nOpen, partly done, waiting for you.\n\nAlgebra foundations (fixture)\nMENTOR FIXTURE\n2/6 LESSONS\n1/3\n33%\nTOUCHED TODAY\nRESUME →\nII\nFinished\n\nCompleted end to end. The certificate is yours.\n\nGeometry practice (fixture)\nMENTOR FIXTURE\n6/6 LESSONS\n3/3\n100%\nTOUCHED TODAY\nCERTIFIED\nCERTIFICATE →\nIII\nNot started\n\nEnrolled but untouched. No judgement — the sky is patient.\n\nComputing basics (fixture)\nMENTOR FIXTURE\n0/6 LESSONS\n0/3\n0%\nTOUCHED TODAY\nBEGIN →",
+        "memory": 13731802
+      },
+      "requestedRoute": "/student/learning",
+      "errors": [],
+      "crash": false
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/student-certificates-768.png",
+      "bytes": 95157,
+      "sha256": "a1dabf15f362ef4c7bd2f8c0918ebf6eee35453203a36732049cb715bb5bfef1",
+      "slug": "student-certificates",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/student/certificates",
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Certificates · Orbit",
+        "headings": [
+          "What you finished",
+          "Earned"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT · THE RECORD\nWhat you finished\n\nA certificate is issued the moment a course reaches one hundred percent. Each one is signed, dated, and shareable.\n\nCERTIFICATES\n1\nLESSONS BEHIND THEM\n6\nNEAR THE FINISH\n0\nI\nEarned\nGeometry practice (fixture)\nMENTOR FIXTURE\n1 November 2026\nCERTIFICATE-FIXTURE\nVIEW →",
+        "memory": 13728055
+      },
+      "requestedRoute": "/student/certificates",
+      "errors": [],
+      "crash": false
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/mentor-observatory-768.png",
+      "bytes": 341500,
+      "sha256": "c7f481c5e3eb47eba139cab17d4f12f90d86b51ea8640cd3789b88a0baefcc07",
+      "slug": "mentor-observatory",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 2435,
+      "actualPath": "/mentor/observatory",
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 2435,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "The Observatory",
+          "Your group this week"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          },
+          {
+            "width": 1200,
+            "height": 520
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nMENTOR · THE OBSERVATORY\nThe Observatory\n\n2 students on your map. Their movements draw the sky you watch over.\n\nLIVE MENTOR\nNEW COURSE\nTHE MENTOR PACT\nYou stand among the adept.\n\nYou have found your rhythm. Steady now.\n\nSIX DIVISIONS\nONE COVENANT\nTIER I\nInitiate\nTIER II\nAdept\nTIER III\nMentor\nTIER IV\nSage\nTIER V\nLuminary\nTIER VI\nOracle\nADEPT\n2 COURSES\n\nYour signature, sized by the students you have taught, colored by the division you hold.\n\nHONOURS\n0 IN ALL\n0\nBEACON\n0\nCOMET\n0\nSUPERNOVA\nIV · THE SKY TONIGHT\n2 POINTS OF LIGHT\n2 ACTIVE · 2 TOTAL\nTAP A STAR TO OPEN THEIR PROFILE\nV · THE ROLL\nYour group this week\nFULL PACT ROLL\nTHE ROLL · WEEK FIXTURE-WEEK\n12 MENTORS\nMentor fixture 1\nPROMOTION ZONE\nADEPT\nPROFILE →\n240\n02\nMentor fixture 2\nPROMOTION ZONE\nADEPT\nPROFILE →\n230\n03\nMentor fixture 3\nPROMOTION ZONE\nADEPT\nPROFILE →\n220\n04\nMentor fixture 4\nPROMOTION ZONE\nADEPT\nPROFILE →\n210\n05\nMentor fixture 5\nPROMOTION ZONE\nADEPT\nPROFILE →\n200\n06\nMentor fixture 6\nPROMOTION ZONE\nADEPT\nPROFILE →\n190\n07\nMentor fixture 7\nPROMOTION ZONE\nADEPT\nPROFILE →\n180\n08\nYou\nRELEGATION ZONE\nADEPT\n170\n09\nMentor fixture 9\nRELEGATION ZONE\nADEPT\nPROFILE →\n160\n10\nMentor fixture 10\nRELEGATION ZONE\nADEPT\nPROFILE →\n150\n11\nMentor fixture 11\nRELEGATION ZONE\nADEPT\nPROFILE →\n140\n12\nMentor fixture 12\nRELEGATION ZONE\nADEPT\nPROFILE →\n130\nTOP 7 PROMOTE\n·\nMIDDLE HOLD\n·\nBOTTOM 7 RELEGATE\nVI · THE PULSE\nTHE PACT PULSE · HOLD\n\nRIVALS\nFOUR CLOSEST\nVII · YOUR WORKSHOP\nMy courses\nPublic profile\nEdit profile",
+        "memory": 14226694
+      },
+      "requestedRoute": "/mentor/observatory",
+      "errors": [],
+      "crash": false
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/peer-dashboard-768.png",
+      "bytes": 104195,
+      "sha256": "0528f420af69583257d6ea138bbcdda0c2fe720811f0f8d126b13350efc94d03",
+      "slug": "peer-dashboard",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1463,
+      "actualPath": "/peer/dashboard",
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1463,
+        "title": "My Orbit | Orbit",
+        "headings": [
+          "Good morning, UI."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nMY ORBIT\nMon · 9 Nov 2026\nISSUE 46 · 2026\nEDITED BY YOU\nGood morning, UI.\n\n1 lesson this week.\n\n1 kept.\n\nWEEKLY XPearned so far\n\n0\nXP\n\nA clean slate. The first point is the slowest; the rest come faster.\n\nAdd Skill\nUF\n\nUI Fixture\n\nEnglish\n82\n⇄\n\nSynthetic skill archive entry.\n\nintermediate\n1 day ago\n0\nSWAPS\n1\nLESSONS\n1\nSKILLS CARRIED\n0\nXP\nMON\n9\nMON\n9\nLesson\n11:31a\nM\nTUE\n10\nTUE\n10\nQuiet day.\nT\nWED\n11\nWED\n11\nQuiet day.\nW\nTHU\n12\nTHU\n12\nQuiet day.\nT\nFRI\n13\nFRI\n13\nQuiet day.\nF\nSAT\n14\nSAT\n14\nQuiet day.\nS\nSUN\n15\nSUN\n15\nQuiet day.\nS\n\nToday is your busiest day so far.\n\nNo one here yet. The first connection is the slowest; every one after is faster.\n\n“The teacher who never learns stops being a teacher.”\n\n— ORBIT\n\nEND OF ISSUE. NEXT ISSUE: TUESDAY, 10 NOV.\n\nORBIT · AN EDITORIAL OF ONE.",
+        "memory": 14960613
+      },
+      "requestedRoute": "/peer/dashboard",
+      "errors": [],
+      "crash": false
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/student-universe-1280.png",
+      "bytes": 138850,
+      "sha256": "6f1d16a8a56b69e71e5a465032a4b869cd02cdf7fdce717d91a408054bed8403",
+      "slug": "student-universe",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 1114,
+      "actualPath": "/student/universe",
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1114,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 14151491
+      },
+      "requestedRoute": "/student/universe",
+      "errors": [],
+      "crash": false,
+      "axe": {
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "nodes": [
+              {
+                "target": [
+                  "div:nth-child(1) > .outline-none.focus-visible\\:ring-2.focus-visible\\:ring-white\\/40 > .text-center.max-w-\\[120px\\] > .tracking-\\[0\\.18em\\].text-\\[9px\\].uppercase"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.76 (foreground color: #6a6b70, background color: #060810, font size: 6.8pt (9px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "div:nth-child(2) > .outline-none.focus-visible\\:ring-2.focus-visible\\:ring-white\\/40 > .text-center.max-w-\\[120px\\] > .tracking-\\[0\\.18em\\].text-\\[9px\\].uppercase"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.76 (foreground color: #6a6b70, background color: #060810, font size: 6.8pt (9px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "div:nth-child(3) > .outline-none.focus-visible\\:ring-2.focus-visible\\:ring-white\\/40 > .text-center.max-w-\\[120px\\] > .tracking-\\[0\\.18em\\].text-\\[9px\\].uppercase"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.76 (foreground color: #6a6b70, background color: #060810, font size: 6.8pt (9px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          },
+          {
+            "id": "label-content-name-mismatch",
+            "impact": "serious",
+            "help": "Elements must have their visible text as part of their accessible name",
+            "nodes": [
+              {
+                "target": [
+                  "a[title=\"3,200 Photons\"]"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".lg\\:inline-flex"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".gap-1"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  "div:nth-child(1) > .outline-none.focus-visible\\:ring-2.focus-visible\\:ring-white\\/40"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  "div:nth-child(2) > .outline-none.focus-visible\\:ring-2.focus-visible\\:ring-white\\/40"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  "div:nth-child(3) > .outline-none.focus-visible\\:ring-2.focus-visible\\:ring-white\\/40"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              }
+            ]
+          },
+          {
+            "id": "nested-interactive",
+            "impact": "serious",
+            "help": "Interactive controls must not be nested",
+            "nodes": [
+              {
+                "target": [
+                  "svg[width=\"40\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has focusable descendants. Move them outside of the element, or remove them."
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  "canvas"
+                ],
+                "summary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "impact": "serious"
+          }
+        ],
+        "passes": 38
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/student-learning-1280.png",
+      "bytes": 124233,
+      "sha256": "374014f89d7184eda123fd1daafff688bfd4afceca8caae99d873716e160c395",
+      "slug": "student-learning",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 1170,
+      "actualPath": "/student/learning",
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1170,
+        "title": "My Learning · Orbit",
+        "headings": [
+          "Everything you are learning",
+          "In progress",
+          "Finished",
+          "Not started"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nSTUDENT · THE LEDGER\nEverything you are learning\n\nOne line per course, in the order you last touched it. The percentage is lessons completed, not time spent.\n\nI\nIn progress\n\nOpen, partly done, waiting for you.\n\nAlgebra foundations (fixture)\nMENTOR FIXTURE\n2/6 LESSONS\n1/3\n33%\nTOUCHED TODAY\nRESUME →\nII\nFinished\n\nCompleted end to end. The certificate is yours.\n\nGeometry practice (fixture)\nMENTOR FIXTURE\n6/6 LESSONS\n3/3\n100%\nTOUCHED TODAY\nCERTIFIED\nCERTIFICATE →\nIII\nNot started\n\nEnrolled but untouched. No judgement — the sky is patient.\n\nComputing basics (fixture)\nMENTOR FIXTURE\n0/6 LESSONS\n0/3\n0%\nTOUCHED TODAY\nBEGIN →",
+        "memory": 14089853
+      },
+      "requestedRoute": "/student/learning",
+      "errors": [],
+      "crash": false,
+      "axe": {
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "nodes": [
+              {
+                "target": [
+                  "section:nth-child(3) > div:nth-child(3) > article > .items-start.gap-4.flex > .flex-1.min-w-0 > .mt-2\\.5.flex-wrap.gap-3 > span:nth-child(3)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "section:nth-child(4) > div:nth-child(3) > article > .items-start.gap-4.flex > .flex-1.min-w-0 > .mt-2\\.5.flex-wrap.gap-3 > span:nth-child(3)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          },
+          {
+            "id": "label-content-name-mismatch",
+            "impact": "serious",
+            "help": "Elements must have their visible text as part of their accessible name",
+            "nodes": [
+              {
+                "target": [
+                  "a[title=\"3,200 Photons\"]"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".lg\\:inline-flex"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".gap-1"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              }
+            ]
+          },
+          {
+            "id": "nested-interactive",
+            "impact": "serious",
+            "help": "Interactive controls must not be nested",
+            "nodes": [
+              {
+                "target": [
+                  "svg[width=\"40\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has focusable descendants. Move them outside of the element, or remove them."
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  "canvas"
+                ],
+                "summary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "aria-prohibited-attr",
+            "impact": "serious"
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious"
+          }
+        ],
+        "passes": 38
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/student-certificates-1280.png",
+      "bytes": 140174,
+      "sha256": "fa0722702430a5d9cfbee047c12bdf28672238b1a19bae4169b8a6af83591096",
+      "slug": "student-certificates",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/student/certificates",
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "Certificates · Orbit",
+        "headings": [
+          "What you finished",
+          "Earned"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nSTUDENT · THE RECORD\nWhat you finished\n\nA certificate is issued the moment a course reaches one hundred percent. Each one is signed, dated, and shareable.\n\nCERTIFICATES\n1\nLESSONS BEHIND THEM\n6\nNEAR THE FINISH\n0\nI\nEarned\nGeometry practice (fixture)\nMENTOR FIXTURE\n1 November 2026\nCERTIFICATE-FIXTURE\nVIEW →",
+        "memory": 14032688
+      },
+      "requestedRoute": "/student/certificates",
+      "errors": [],
+      "crash": false,
+      "axe": {
+        "violations": [
+          {
+            "id": "label-content-name-mismatch",
+            "impact": "serious",
+            "help": "Elements must have their visible text as part of their accessible name",
+            "nodes": [
+              {
+                "target": [
+                  "a[title=\"3,200 Photons\"]"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".lg\\:inline-flex"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".gap-1"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              }
+            ]
+          },
+          {
+            "id": "nested-interactive",
+            "impact": "serious",
+            "help": "Interactive controls must not be nested",
+            "nodes": [
+              {
+                "target": [
+                  "svg[width=\"40\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has focusable descendants. Move them outside of the element, or remove them."
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  "canvas"
+                ],
+                "summary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "impact": "serious"
+          }
+        ],
+        "passes": 38
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/mentor-observatory-1280.png",
+      "bytes": 468392,
+      "sha256": "43b8a739072956f8a14cf7454818fee7f1abb1491c057e055193899f6af2d34d",
+      "slug": "mentor-observatory",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 2720,
+      "actualPath": "/mentor/observatory",
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2720,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "The Observatory",
+          "Your group this week"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 1200,
+            "height": 520
+          }
+        ],
+        "text": "Orbit\nMENTOR\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nOBSERVATORY\nCOURSES\nRECORD\nMEDIA\nSTUDENTS\nSESSIONS\nANALYTICS\nEARNINGS\nPACT\nREVIEW\nMENTOR · THE OBSERVATORY\nThe Observatory\n\n2 students on your map. Their movements draw the sky you watch over.\n\nLIVE MENTOR\nNEW COURSE\nTHE MENTOR PACT\nYou stand among the adept.\n\nYou have found your rhythm. Steady now.\n\nSIX DIVISIONS\nONE COVENANT\nTIER I\nInitiate\nTIER II\nAdept\nTIER III\nMentor\nTIER IV\nSage\nTIER V\nLuminary\nTIER VI\nOracle\nADEPT\n2 COURSES\n\nYour signature, sized by the students you have taught, colored by the division you hold.\n\nHONOURS\n0 IN ALL\n0\nBEACON\n0\nCOMET\n0\nSUPERNOVA\nIV · THE SKY TONIGHT\n2 POINTS OF LIGHT\n2 ACTIVE · 2 TOTAL\nTAP A STAR TO OPEN THEIR PROFILE\nV · THE ROLL\nYour group this week\nFULL PACT ROLL\nTHE ROLL · WEEK FIXTURE-WEEK\n12 MENTORS\nMentor fixture 1\nPROMOTION ZONE\nADEPT\nPROFILE →\n240\n02\nMentor fixture 2\nPROMOTION ZONE\nADEPT\nPROFILE →\n230\n03\nMentor fixture 3\nPROMOTION ZONE\nADEPT\nPROFILE →\n220\n04\nMentor fixture 4\nPROMOTION ZONE\nADEPT\nPROFILE →\n210\n05\nMentor fixture 5\nPROMOTION ZONE\nADEPT\nPROFILE →\n200\n06\nMentor fixture 6\nPROMOTION ZONE\nADEPT\nPROFILE →\n190\n07\nMentor fixture 7\nPROMOTION ZONE\nADEPT\nPROFILE →\n180\n08\nYou\nRELEGATION ZONE\nADEPT\n170\n09\nMentor fixture 9\nRELEGATION ZONE\nADEPT\nPROFILE →\n160\n10\nMentor fixture 10\nRELEGATION ZONE\nADEPT\nPROFILE →\n150\n11\nMentor fixture 11\nRELEGATION ZONE\nADEPT\nPROFILE →\n140\n12\nMentor fixture 12\nRELEGATION ZONE\nADEPT\nPROFILE →\n130\nTOP 7 PROMOTE\n·\nMIDDLE HOLD\n·\nBOTTOM 7 RELEGATE\nVI · THE PULSE\nTHE PACT PULSE · HOLD\n\nRIVALS\nFOUR CLOSEST\nVII · YOUR WORKSHOP\nMy courses\nPublic profile\nEdit profile",
+        "memory": 13936339
+      },
+      "requestedRoute": "/mentor/observatory",
+      "errors": [],
+      "crash": false,
+      "axe": {
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "nodes": [
+              {
+                "target": [
+                  ".flex-wrap.mb-4.items-baseline > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.76 (foreground color: #6a6b70, background color: #060810, font size: 6.7pt (8.96px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".flex-wrap.mb-4.items-baseline > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.76 (foreground color: #6a6b70, background color: #060810, font size: 6.7pt (8.96px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".items-baseline.gap-1\\.5.inline-flex:nth-child(1) > span:nth-child(3)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.51 (foreground color: #2e3036, background color: #060810, font size: 6.7pt (8.96px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".items-baseline.gap-1\\.5.inline-flex:nth-child(2) > span:nth-child(3)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.51 (foreground color: #2e3036, background color: #060810, font size: 6.7pt (8.96px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".items-baseline.gap-1\\.5.inline-flex:nth-child(3) > span:nth-child(3)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.51 (foreground color: #2e3036, background color: #060810, font size: 6.7pt (8.96px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".mb-2.justify-between.flex > .uppercase.font-mono:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".gap-1\\.5.inline-flex[href$=\"pact\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.22 (foreground color: #727377, background color: #060810, font size: 7.2pt (9.6px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".pb-3 > .uppercase.font-mono:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.22 (foreground color: #727377, background color: #060810, font size: 7.4pt (9.92px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-0\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-1\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-2\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-3\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-4\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-5\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-6\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-8\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-9\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-10\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "a[href$=\"mentor-row-11\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".pb-2\\.5 > .uppercase.font-mono:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.54 (foreground color: #66676c, background color: #060810, font size: 7.0pt (9.28px), font weight: bold). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          },
+          {
+            "id": "label-content-name-mismatch",
+            "impact": "serious",
+            "help": "Elements must have their visible text as part of their accessible name",
+            "nodes": [
+              {
+                "target": [
+                  "a[title=\"3,200 Photons\"]"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".lg\\:inline-flex"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".gap-1"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              }
+            ]
+          },
+          {
+            "id": "nested-interactive",
+            "impact": "serious",
+            "help": "Interactive controls must not be nested",
+            "nodes": [
+              {
+                "target": [
+                  "svg[width=\"40\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has focusable descendants. Move them outside of the element, or remove them."
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  ".h-full"
+                ],
+                "summary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "impact": "serious"
+          }
+        ],
+        "passes": 41
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/peer-dashboard-1280.png",
+      "bytes": 139901,
+      "sha256": "cd94b8837eb6cae3a2a931dc1ebca31ea8a8310eac83ea8420a48f81589c5944",
+      "slug": "peer-dashboard",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 1600,
+      "actualPath": "/peer/dashboard",
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1600,
+        "title": "My Orbit | Orbit",
+        "headings": [
+          "Good morning, UI."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nPEER\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nMY ORBIT\nMon · 9 Nov 2026\nISSUE 46 · 2026\nEDITED BY YOU\nGood morning, UI.\n\n1 lesson this week.\n\n1 kept.\n\nWEEKLY XPearned so far\n\n0\nXP\n\nA clean slate. The first point is the slowest; the rest come faster.\n\nAdd Skill\nUF\n\nUI Fixture\n\nEnglish\n82\n⇄\n\nSynthetic skill archive entry.\n\nintermediate\n1 day ago\n0\nSWAPS\n1\nLESSONS\n1\nSKILLS CARRIED\n0\nXP\nMON\n9\nMON\n9\nLesson\n11:35a\nM\nTUE\n10\nTUE\n10\nQuiet day.\nT\nWED\n11\nWED\n11\nQuiet day.\nW\nTHU\n12\nTHU\n12\nQuiet day.\nT\nFRI\n13\nFRI\n13\nQuiet day.\nF\nSAT\n14\nSAT\n14\nQuiet day.\nS\nSUN\n15\nSUN\n15\nQuiet day.\nS\n\nToday is your busiest day so far.\n\nNo one here yet. The first connection is the slowest; every one after is faster.\n\n“The teacher who never learns stops being a teacher.”\n\n— ORBIT\n\nEND OF ISSUE. NEXT ISSUE: TUESDAY, 10 NOV.\n\nORBIT · AN EDITORIAL OF ONE.",
+        "memory": 15222134
+      },
+      "requestedRoute": "/peer/dashboard",
+      "errors": [],
+      "crash": false,
+      "axe": {
+        "violations": [
+          {
+            "id": "button-name",
+            "impact": "critical",
+            "help": "Buttons must have discernible text",
+            "nodes": [
+              {
+                "target": [
+                  ".p-1\\.5"
+                ],
+                "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+              }
+            ]
+          },
+          {
+            "id": "label-content-name-mismatch",
+            "impact": "serious",
+            "help": "Elements must have their visible text as part of their accessible name",
+            "nodes": [
+              {
+                "target": [
+                  "a[title=\"3,200 Photons\"]"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".lg\\:inline-flex"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".text-\\[10px\\]"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".btn-gradient"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  "button[aria-label=\"Show Monday 9's events\"]"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".items-stretch.flex-col.flex:nth-child(2) > .relative > .focus\\:outline-none.focus-visible\\:ring-2.focus-visible\\:ring-offset-2"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".items-stretch.flex-col.flex:nth-child(3) > .relative > .focus\\:outline-none.focus-visible\\:ring-2.focus-visible\\:ring-offset-2"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".items-stretch.flex-col.flex:nth-child(4) > .relative > .focus\\:outline-none.focus-visible\\:ring-2.focus-visible\\:ring-offset-2"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".items-stretch.flex-col.flex:nth-child(5) > .relative > .focus\\:outline-none.focus-visible\\:ring-2.focus-visible\\:ring-offset-2"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".items-stretch.flex-col.flex:nth-child(6) > .relative > .focus\\:outline-none.focus-visible\\:ring-2.focus-visible\\:ring-offset-2"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              },
+              {
+                "target": [
+                  ".items-stretch.flex-col.flex:nth-child(7) > .relative > .focus\\:outline-none.focus-visible\\:ring-2.focus-visible\\:ring-offset-2"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              }
+            ]
+          },
+          {
+            "id": "landmark-banner-is-top-level",
+            "impact": "moderate",
+            "help": "Banner landmark should not be contained in another landmark",
+            "nodes": [
+              {
+                "target": [
+                  ".pb-3"
+                ],
+                "summary": "Fix any of the following:\n  The banner landmark is contained in another landmark."
+              }
+            ]
+          },
+          {
+            "id": "landmark-no-duplicate-banner",
+            "impact": "moderate",
+            "help": "Document should not have more than one banner landmark",
+            "nodes": [
+              {
+                "target": [
+                  "header"
+                ],
+                "summary": "Fix any of the following:\n  Document has more than one banner landmark"
+              }
+            ]
+          },
+          {
+            "id": "landmark-unique",
+            "impact": "moderate",
+            "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+            "nodes": [
+              {
+                "target": [
+                  "header"
+                ],
+                "summary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+              }
+            ]
+          },
+          {
+            "id": "nested-interactive",
+            "impact": "serious",
+            "help": "Interactive controls must not be nested",
+            "nodes": [
+              {
+                "target": [
+                  "svg[width=\"40\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element has focusable descendants. Move them outside of the element, or remove them."
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  "canvas"
+                ],
+                "summary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "impact": "serious"
+          }
+        ],
+        "passes": 40
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/pact/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": false
+    },
+    {
+      "path": "/pact/hall",
+      "configured": true
+    },
+    {
+      "path": "/pact/pulse",
+      "configured": true
+    },
+    {
+      "path": "/pact/rivals",
+      "configured": true
+    },
+    {
+      "path": "/courses/mentor/learners",
+      "configured": true
+    },
+    {
+      "path": "/courses",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": false
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": false
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections",
+      "configured": true
+    },
+    {
+      "path": "/ratings/received",
+      "configured": true
+    },
+    {
+      "path": "/gameology/history",
+      "configured": true
+    },
+    {
+      "path": "/skills/my",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/pact/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": false
+    },
+    {
+      "path": "/pact/hall",
+      "configured": true
+    },
+    {
+      "path": "/pact/pulse",
+      "configured": true
+    },
+    {
+      "path": "/pact/rivals",
+      "configured": true
+    },
+    {
+      "path": "/courses/mentor/learners",
+      "configured": true
+    },
+    {
+      "path": "/courses",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": false
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": false
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections",
+      "configured": true
+    },
+    {
+      "path": "/ratings/received",
+      "configured": true
+    },
+    {
+      "path": "/gameology/history",
+      "configured": true
+    },
+    {
+      "path": "/skills/my",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/pact/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": false
+    },
+    {
+      "path": "/pact/hall",
+      "configured": true
+    },
+    {
+      "path": "/pact/pulse",
+      "configured": true
+    },
+    {
+      "path": "/pact/rivals",
+      "configured": true
+    },
+    {
+      "path": "/courses/mentor/learners",
+      "configured": true
+    },
+    {
+      "path": "/courses",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": false
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": false
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections",
+      "configured": true
+    },
+    {
+      "path": "/ratings/received",
+      "configured": true
+    },
+    {
+      "path": "/gameology/history",
+      "configured": true
+    },
+    {
+      "path": "/skills/my",
+      "configured": true
+    }
+  ],
+  "missingFixtures": [
+    "/sessions/mentors/account-fixture/honours"
+  ],
+  "blocked": [
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:59217/socket.io/?EIO=4&transport=websocket"
+    }
+  ],
+  "fonts": [
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v23/pxiByp8kv8JHgFVrLCz7Z1xlFd2JQEk.woff2",
+      "bytes": 7848,
+      "sha256": "197a3cbd7290c242c5c765268cdd69a9a39867fdc80cd13071f243a81c56fb76"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap",
+      "bytes": 8078,
+      "sha256": "760eddf4dac8f25b68d32e2dcbb3fcf771c9100749cfa6b200691cd4c45b6907"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0C4n.ttf",
+      "bytes": 122116,
+      "sha256": "47ed1cfaa7ffca04a04ab850b2938fd52c09d1b44cfa3e2980878e166b0cbd87"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiDyp8kv8JHgFVrJJLmy15lEA.ttf",
+      "bytes": 172720,
+      "sha256": "733b74494c0b5856045e34eea8b899f02458ca8e0b7ebd2a887a86b64d99b0d0"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsgH1y4n.ttf",
+      "bytes": 122060,
+      "sha256": "733eb93b167e6d45de09aa768f6c0355647c2c26f5416dbc7407a08ed41e81c6"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8L6tjPQ.ttf",
+      "bytes": 112092,
+      "sha256": "a1d92abc6b02a87faed23d98067ab1027e8e95242fd7c9978a072ea383b89d1a"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLDD4V1s.ttf",
+      "bytes": 149072,
+      "sha256": "5e8a5c3c2a56c3bc1b135645ca9637b9b64dc3fed5fbf85cb5ed144e06bb6d48"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPQ.ttf",
+      "bytes": 112172,
+      "sha256": "44ce4a84f20d60f24539bd0cef11f79c29e38609e0f8adf18551c9794a5d9dc3"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjr0C4n.ttf",
+      "bytes": 122264,
+      "sha256": "05f24e5e4d738b9f8e8643809ebed4800287d61a75d19ac2716f12b5d26279dd"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLCz7V1s.ttf",
+      "bytes": 150292,
+      "sha256": "1984efdda0fbe207d7ac20feac2ba7c2768c92a90094b02a206c9d58cc30ff2e"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsiH0C4n.ttf",
+      "bytes": 122104,
+      "sha256": "afdae82811cf046213e1f65db56ffd21e01a7fb0e5d6194c34717df15535338b"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsg-1y4n.ttf",
+      "bytes": 122132,
+      "sha256": "75367e6da7d914eaed87883ba51b2a2b5816b5cdbb39f96ec5c81a5b032bfd5a"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memQYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWq8tWZ0Pw86hd0Rk8ZkaVc.ttf",
+      "bytes": 127392,
+      "sha256": "1bc0594a83762b2c25d38915a34464b7fec6088298ca22d151757bf98d6700ec"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiGyp8kv8JHgFVrJJLedw.ttf",
+      "bytes": 178112,
+      "sha256": "d455310e3d1e4393723dbe5836cb27c351751123b89a74c7034ec60c861d5556"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8FqtjPQ.ttf",
+      "bytes": 112160,
+      "sha256": "df54dbfafba61d4911eb3dab9bba2d20531fb009f01d64dd42fa96ab862584d8"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8-qxjPQ.ttf",
+      "bytes": 112204,
+      "sha256": "3386a05f6ece969e4537de6be894170d20558e82f7d56c8c5d332972ef172160"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiDyp8kv8JHgFVrJJLmg1hlEA.ttf",
+      "bytes": 176504,
+      "sha256": "cc581d84062e9ae77b33cc42c3eadc79e44ea845bf8bcf86af4c6f78dea20284"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiEyp8kv8JHgFVrFJA.ttf",
+      "bytes": 154628,
+      "sha256": "cdedb1729acac414ed01744a11da7badb86adf13108e7bd3fa161b9323f7fe54"
+    }
+  ],
+  "interactions": [],
+  "stress": [],
+  "failures": [
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    }
+  ],
+  "buildRoot": "D:\\orbit-main\\orbit-main\\.agent\\scratch\\iw-a2-20261108-be84ac1c\\build",
+  "base": "http://127.0.0.1:59217",
+  "browser": "156.0.8078.4",
+  "status": "completed-with-observations",
+  "finishedAt": "2026-11-09T06:05:08.551Z"
+}

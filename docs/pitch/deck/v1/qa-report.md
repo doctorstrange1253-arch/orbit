@@ -1,0 +1,34 @@
+# Deck v1 QA — draft, not final approval
+
+Written for TBI-GEU founder review;14slides cover+10topics+3Q&Abackups. Completev0retained;v1PPTX/PDFexisting.
+
+## Verified build
+- SNexporter14/14converted,0failed; PPTX580743bytes beforelaterregeneration, PDF2104274bytes.
+-14speaker-note parts;1nativeeditableEChart; minimumexportfont12pt,0below12pt. HTMLhead/body/footer88/48/32px =>33/18/12pt.
+-14PDFpages fromexactbrowserPNG; image-backedPDFnoteditabletext. PPTXOfficerenderNOT_RUN, thereforepixelparitynotcertified.
+-300secondallocation,647mainnoteswords; target650-750slightlyshort, realisticfive-minuterehearsalstillfounder-owned.
+-Body sourceitems<=25words; labels/tables/FILL/citationsaddwords, deliberatehonestyexceptions.
+-Geometry0outside/horizontalcandidateissues, butpixelreviewfoundoverlapsnotcaughtbythatchecker; nozero-defectclaim.
+-2chartcolorsvalidatedallhardgates. Paper/inkcontrastcomputedpendingfinalreport; noallUIWCAGcertification.
+-Realhistoricalcropsused; noAI/stockimages,contacts/tokens/realfaces. Fixturestatsaretestdata,nottraction.
+
+## Pass 1: initialpixelreview10flaws + mathissue
+1Coverimageoverlapheadline;2imageoutsiderightmargin;3imagecaptiondarkonblack;4processimageoverlapheading;5progressimageoverlapheading;6imageextendsintofeet;7teamannotation/footercollision;8methodtablelastrow/footercollision;9riskfootercollision;10fundlabelsclipped/categorywrapoverlap. Correctedboundedimages/captions/tablegaps/labelguttersandregeneratedv1. Sessiontaxbasiswrong101.40CMcorrectedto78.52; Core50.69unchanged.
+
+## Pass 2: freshv1pixelreview
+Image/headlineandfooterhardissuesmostlyresolved, fundingnumbersnowlegible. Remainingactualissues:1mojibakeheadline(discovery)fromWindowsencoding—datafixedASCII;2backupunitlastrow/estimatecollision;3marketICPannotation/reachlabelcollision. Fixesrequestedforfinalv2. Do notinvent10newflawswhenthreegenuineonesremain; thirdpassverifiesfinalpixelsandmayreportfewer.
+Additionalcontentlimits,notvisualfabrications:4noactualprimarydata;5teamnamesmissing;6actualcostsmissing;7officialcampuscountmissing;8currentdemounverified;9equipmentquotesmissing;10fundingrunwaymustnotdoublecountone-offallocations;11too-smallrealcropmetadata;12sourcechart/tablechoiceweighedforevidencevs5secondreadability. Theseareownerholds,nottentruevisualdefectscorrected.
+
+## Acceptance atdraftG1
+-Structure/topicorder:PASS.
+-Discovery:PASSdraftplaceholders;FAILfinalrealdatarequirement.
+-BottomupsharpICP:PARTIALproposedadultGEU;populationFILL,notgenericTAM.
+-20/80vs15accounting:PASS;actualunitcost/profitrunway:ESTIMATE/UNVERIFIED.
+-90day/fundsitemization/ladder:PASSproposeddirections;ownersquotesFILL.
+-BuiltvsNext/challenges:PASSsourcequalified;currentdemoUNVERIFIED.
+-Premiumlightconsistent:PARTIALuntilv2pixelreview.
+-PDF/PPTX/notes/contactsheet/formulas:PASSexistence;Officerender/recalcNOT_RUN.
+-No secrets/respondentcontacts/appchanges:scopecheckpendingfinalbaseline.
+
+## Unresolved
+Founderanswersneeded; nofinalG2approval, noexternalupload/submission. InstalledSNexporterdependenciesstill2auditissues(trustedlocalinputsonly); noforce/majorupgradeperformed. Mainprojectparkedandgatesunchanged. LocalGitexcludeaskednotanswered/notwritten.

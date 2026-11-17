@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "assets": [
+    {
+      "path": "assets/journey-crop.png",
+      "origin": "attachment",
+      "source_url": null,
+      "source_path": "D:/orbit-main/orbit-main/docs/progress/screenshots/identity-worlds/iw-a2-20261109-bc5341f4/student-universe-1280.png",
+      "generator_model": null,
+      "prompt": null,
+      "parent_asset": null,
+      "material_asset_type": null,
+      "status": "unassigned"
+    },
+    {
+      "path": "assets/recorder-crop.png",
+      "origin": "attachment",
+      "source_url": null,
+      "source_path": "D:/orbit-main/orbit-main/docs/progress/screenshots/identity-worlds/iw-a2-20261109-35f63857/mentor-recorder-1280.png",
+      "generator_model": null,
+      "prompt": null,
+      "parent_asset": null,
+      "material_asset_type": null,
+      "status": "unassigned"
+    }
+  ]
+}

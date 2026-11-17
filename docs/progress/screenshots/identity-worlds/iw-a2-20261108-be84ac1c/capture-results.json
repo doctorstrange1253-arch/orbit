@@ -1,0 +1,25 @@
+{
+  "runId": "iw-a2-20261108-be84ac1c",
+  "startedAt": "2026-11-08T19:11:59.028Z",
+  "synthetic": true,
+  "note": "Local current-frontend UI evidence only. These accounts, amounts, grades, records and role states are fixtures, not production authorization or real outcomes.",
+  "mode": "smoke",
+  "screenshots": [],
+  "requests": [],
+  "missingFixtures": [],
+  "blocked": [],
+  "fonts": [],
+  "interactions": [],
+  "stress": [],
+  "failures": [
+    {
+      "kind": "terminal",
+      "message": "Cannot read properties of undefined (reading 'launch')",
+      "stack": "TypeError: Cannot read properties of undefined (reading 'launch')\n    at runCapture (file:///D:/orbit-main/orbit-main/scripts/agent/identity-ui-capture.mjs:185:30)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///D:/orbit-main/orbit-main/scripts/agent/identity-ui-capture.mjs:339:85"
+    }
+  ],
+  "buildRoot": "D:\\orbit-main\\orbit-main\\.agent\\scratch\\iw-a2-20261108-be84ac1c\\build",
+  "base": "http://127.0.0.1:64778",
+  "status": "failed",
+  "finishedAt": "2026-11-08T19:12:40.319Z"
+}

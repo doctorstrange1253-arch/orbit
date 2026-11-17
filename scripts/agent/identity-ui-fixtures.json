@@ -1,0 +1,105 @@
+{
+  "synthetic": true,
+  "purpose": "Local current-frontend UI evidence only. These accounts, amounts, grades, records and role states are fixtures, not production authorization or real outcomes.",
+  "account": {
+    "_id": "account-fixture",
+    "name": "UI Fixture",
+    "email": "ui-fixture@example.test",
+    "avatar": null,
+    "roles": ["peer_learner", "mentor", "student"],
+    "rolesVersion": 1,
+    "languages": ["English"],
+    "bio": "Synthetic account for local interface inspection.",
+    "country": "India",
+    "city": "Fixture City",
+    "gameology": {"level": 7, "xp": 3850, "weeklyXp": 620, "leagueId": "comet", "currentStreak": 4, "longestStreak": 8},
+    "orbit": {"photons": 3200, "stardust": 3200, "cosmetics": {}},
+    "pact": {"divisionId": "adept", "weekScore": 155, "rank": 8, "steadyShieldWeeks": 2},
+    "trustScore": 82
+  },
+  "mentor": {
+    "_id": "mentor-fixture",
+    "userId": "account-fixture",
+    "name": "Mentor Fixture",
+    "avatar": null,
+    "applicationStatus": "approved",
+    "headline": "Mathematics learning support",
+    "bio": "Synthetic teaching profile used only for interface inspection.",
+    "languages": ["English"],
+    "skills": ["Algebra", "Geometry"],
+    "specialties": ["Mathematics"],
+    "genres": ["mathematics"],
+    "rateInr": 600,
+    "priceInr": 600,
+    "ratingAvg": 4.8,
+    "avgRating": 4.8,
+    "ratingCount": 12,
+    "reviewsCount": 12,
+    "sessionsCompleted": 18,
+    "availability": [],
+    "payoutMultiplier": 1
+  },
+  "course": {
+    "_id": "course-fixture",
+    "title": "Algebra foundations (fixture)",
+    "subtitle": "From equations to practical reasoning",
+    "description": "A synthetic six-lesson course for layout and navigation evidence.",
+    "category": "mathematics",
+    "genreSlug": "mathematics",
+    "genre": "mathematics",
+    "level": "beginner",
+    "language": "English",
+    "tags": ["algebra", "equations"],
+    "mentorId": "mentor-fixture",
+    "mentor": {"_id": "mentor-fixture", "name": "Mentor Fixture", "avatar": null, "avgRating": 4.8},
+    "isPublished": true,
+    "priceInr": 599,
+    "ratingAvg": 4.7,
+    "ratingCount": 8,
+    "enrollmentCount": 24,
+    "lessonsCount": 6,
+    "thumbnail": {"url": "", "publicId": ""},
+    "stages": [],
+    "lessons": [
+      {"_id": "lesson-1", "title": "Linear equations", "description": "Fixture lesson description.", "order": 1, "durationSec": 120, "videoUrl": "", "videoPublicId": "", "resources": [], "hasQuiz": false, "isBoss": false, "isFree": true, "conceptSlugs": ["linear-equations"], "quiz": {"passingScore": 70, "questions": []}},
+      {"_id": "lesson-2", "title": "Working with variables", "order": 2, "durationSec": 180, "videoUrl": "", "resources": [], "hasQuiz": false, "isBoss": false, "isFree": false, "conceptSlugs": ["variables"], "quiz": {"passingScore": 70, "questions": []}},
+      {"_id": "lesson-3", "title": "Patterns and relations", "order": 3, "durationSec": 240, "videoUrl": "", "resources": [], "hasQuiz": false, "isBoss": false, "isFree": false, "conceptSlugs": ["patterns"], "quiz": {"passingScore": 70, "questions": []}},
+      {"_id": "lesson-4", "title": "Graphs and coordinates", "order": 4, "durationSec": 180, "videoUrl": "", "resources": [], "hasQuiz": false, "isBoss": false, "isFree": false, "conceptSlugs": ["coordinates"], "quiz": {"passingScore": 70, "questions": []}},
+      {"_id": "lesson-5", "title": "Applying algebra", "order": 5, "durationSec": 300, "videoUrl": "", "resources": [], "hasQuiz": false, "isBoss": false, "isFree": false, "conceptSlugs": ["applications"], "quiz": {"passingScore": 70, "questions": []}},
+      {"_id": "lesson-6", "title": "Course reflection", "order": 6, "durationSec": 150, "videoUrl": "", "resources": [], "hasQuiz": false, "isBoss": false, "isFree": false, "conceptSlugs": ["reflection"], "quiz": {"passingScore": 70, "questions": []}}
+    ]
+  },
+  "enrollments": [
+    {"_id": "enrollment-active", "courseId": "course-fixture", "progressPct": 33, "completedLessonIds": ["lesson-1", "lesson-2"], "completedAt": null},
+    {"_id": "enrollment-finished", "courseId": "course-finished", "courseTitle": "Geometry practice (fixture)", "progressPct": 100, "completedLessonIds": ["lesson-1", "lesson-2", "lesson-3", "lesson-4", "lesson-5", "lesson-6"], "completedAt": "2026-11-01T12:00:00.000Z", "certificateId": "certificate-fixture"},
+    {"_id": "enrollment-new", "courseId": "course-new", "courseTitle": "Computing basics (fixture)", "progressPct": 0, "completedLessonIds": [], "completedAt": null}
+  ],
+  "peers": [
+    {"_id": "peer-one", "name": "Peer One", "avatar": null, "roles": ["peer_learner"], "languages": ["English"], "country": "India", "city": "Fixture City", "gameology": {"level": 4, "xp": 1400, "leagueId": "meteor"}, "orbit": {"cosmetics": {}}, "trustScore": 76},
+    {"_id": "peer-two", "name": "Peer Two", "avatar": null, "roles": ["peer_learner"], "languages": ["English"], "country": "India", "city": "Fixture City", "gameology": {"level": 5, "xp": 1900, "leagueId": "comet"}, "orbit": {"cosmetics": {}}, "trustScore": 84}
+  ],
+  "skills": [
+    {"_id": "skill-one", "name": "Algebra", "title": "Algebra", "skillOffered": "Algebra", "skillWanted": "Python basics", "description": "Synthetic skill archive entry.", "category": "mathematics", "level": "intermediate", "type": "offered", "userId": "account-fixture", "languages": ["English"]},
+    {"_id": "skill-two", "name": "Python basics", "title": "Python basics", "skillOffered": "Python basics", "skillWanted": "Writing", "description": "Synthetic computing skill.", "category": "computing", "level": "beginner", "type": "offered", "userId": "peer-one", "languages": ["English"]},
+    {"_id": "skill-three", "name": "Writing", "title": "Writing", "skillOffered": "Writing", "skillWanted": "Algebra", "description": "Synthetic peer skill.", "category": "languages", "level": "advanced", "type": "offered", "userId": "peer-two", "languages": ["English"]}
+  ],
+  "history": [
+    {"_id": "history-one", "event": "lesson_completed", "type": "lesson_completed", "xp": 20, "metadata": {"courseTitle": "Algebra foundations (fixture)", "lessonTitle": "Linear equations"}},
+    {"_id": "history-two", "event": "quiz_passed", "type": "quiz_passed", "xp": 30, "metadata": {"courseTitle": "Algebra foundations (fixture)"}},
+    {"_id": "history-three", "event": "swap_completed", "type": "swap_completed", "xp": 25, "metadata": {"skillName": "Python basics"}},
+    {"_id": "history-four", "event": "lesson_completed", "type": "lesson_completed", "xp": 20, "metadata": {"courseTitle": "Geometry practice (fixture)"}}
+  ],
+  "achievements": [
+    {"_id": "achievement-one", "key": "first_lesson", "name": "First lesson", "description": "Fixture earned record.", "icon": "book", "unlocked": true, "unlockedAt": "2026-11-01T12:00:00.000Z"},
+    {"_id": "achievement-two", "key": "course_complete", "name": "Course complete", "description": "Fixture locked record.", "icon": "trophy", "unlocked": false, "unlockedAt": null}
+  ],
+  "catalog": [
+    {"key": "glow_cyan", "name": "Cyan glow", "type": "name_glow", "slot": "name_glow", "cost": 120, "price": 120, "rarity": "common", "owned": false, "equipped": false, "affordable": true, "description": "Synthetic cosmetic catalog entry."},
+    {"key": "bg_pulsar", "name": "Pulsar field", "type": "background", "slot": "background", "cost": 250, "price": 250, "rarity": "rare", "owned": true, "equipped": false, "affordable": true, "description": "Synthetic owned cosmetic."}
+  ],
+  "pact": {"divisionId": "adept", "weekScore": 155, "rank": 8, "groupSize": 30, "steadyShieldWeeks": 2, "avgRating": 4.8, "lastResult": null},
+  "plans": [
+    {"key": "free", "name": "Free", "seats": 0, "priceMinor": 0, "interval": "month", "taxInclusive": true, "taxRatePct": 0, "platformCutPct": 0, "blurb": "Synthetic free-plan record."},
+    {"key": "orbit_two", "name": "Orbit Two", "seats": 2, "priceMinor": 59900, "interval": "month", "taxInclusive": true, "taxRatePct": 18, "platformCutPct": 20, "blurb": "Synthetic existing plan-ladder record; not approved new pricing implementation."}
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "inputs": 125,
+  "coveredInputs": 125,
+  "atomicRows": 394,
+  "counts": {
+    "CONFIRMED": 337,
+    "UNVERIFIED": 20,
+    "CORRECTED": 14,
+    "STALE": 23
+  },
+  "missing": [],
+  "errors": [
+    {
+      "type": "read-timeout",
+      "path": "D:/orbit-main/orbit-main",
+      "message": "Recursive CLAUDE.md Glob timed out. One narrower root-pattern retry located project CLAUDE.md; no dependency contents opened."
+    },
+    {
+      "type": "missing-path",
+      "path": "D:/orbit-main/orbit-main/BackEnd/services/aiQuiz.js",
+      "message": "Missing on initial read and one smaller retry. Actual cited client opened at D:/orbit-main/orbit-main/FrontEnd/src/services/aiQuiz.js."
+    },
+    {
+      "type": "missing-path",
+      "path": "D:/orbit-main/orbit-main/BackEnd/payment/index.js",
+      "message": "Missing on initial read and one smaller retry. Actual source opened at D:/orbit-main/orbit-main/BackEnd/services/payment/index.js."
+    },
+    {
+      "type": "missing-path",
+      "path": "D:/orbit-main/orbit-main/BackEnd/services/binaryStars.js",
+      "message": "Missing on initial read and one smaller retry. Actual BinaryStar controller imports D:/orbit-main/orbit-main/BackEnd/services/binaryStarEngine.js, which was opened."
+    },
+    {
+      "operation": "Broad CLAUDE.md Glob",
+      "error": "Search timed out after 20 seconds.",
+      "retry": "One narrowed repository search succeeded; root CLAUDE.md opened."
+    },
+    {
+      "operation": "Read D:/orbit-main/orbit-main/docs/progress/checkpoints/v3/CP-IDX.md",
+      "error": "File does not exist.",
+      "retry": "Narrow checkpoint Glob found D:/orbit-main/orbit-main/docs/progress/checkpoints/CP-IDX.md; opened it."
+    },
+    {
+      "operation": "Glob D:/orbit-main/orbit-main/worker",
+      "error": "Directory does not exist.",
+      "retry": "Bounded manifest search identified D:/orbit-main/orbit-main/BackEnd/worker.js; opened it."
+    },
+    {
+      "operation": "Glob D:/orbit-main/orbit-main/FrontEnd/android/app/src/main/assets",
+      "error": "Directory does not exist.",
+      "retry": "Narrow Android configuration search found no generated capacitor.config.json; installed-package proof remains absent."
+    },
+    {
+      "operation": "Coverage scope count",
+      "error": "TITLE_STATUS matched zero records.",
+      "retry": "Bounded coverage rows showed the stored label TITLE; its count was 93."
+    },
+    {
+      "operation": "Glob **/CLAUDE.md",
+      "path": "D:/orbit-main/orbit-main",
+      "error": "Ripgrep search timed out after20seconds.",
+      "resolution": "One narrower CLAUDE.md search returned the project file; no dependency contents read."
+    },
+    {
+      "operation": "Read",
+      "path": "D:/orbit-main/orbit-main/.agent/index/CAPABILITIES.md",
+      "error": "File does not exist.",
+      "resolution": "Smaller cited-source read succeeded at D:/orbit-main/orbit-main/.agent/CAPABILITIES.md:18-27."
+    },
+    {
+      "operation": "Read",
+      "path": "D:/orbit-main/orbit-main/.agent/main-snapshot.md",
+      "error": "File does not exist.",
+      "resolution": "Smaller source read succeeded at D:/orbit-main/orbit-main/.agent/side/main-snapshot.md:19-28."
+    },
+    {
+      "operation": "Read offset102",
+      "path": "D:/orbit-main/orbit-main/CLAUDE.md",
+      "error": "File has101lines; requested offset exceeded length.",
+      "resolution": "No later override exists in that file; current bounded STATE section supplies the saved authority record."
+    },
+    {
+      "operation": "Read",
+      "path": "D:/orbit-main/orbit-main/FrontEnd/src/hooks/useRecorder.js",
+      "error": "File does not exist; smaller one-line retry also failed.",
+      "resolution": "Recorder lifecycle is defined directly in D:/orbit-main/orbit-main/FrontEnd/src/pages/mentor/Recorder.jsx; no claim depends on the missing path."
+    },
+    {
+      "operation": "Read",
+      "path": "D:/orbit-main/orbit-main/FrontEnd/src/components/studio/RecorderReview.jsx",
+      "error": "File does not exist; smaller one-line read failed.",
+      "resolution": "Grep identified import; read succeeded at D:/orbit-main/orbit-main/FrontEnd/src/components/mentor/RecorderReview.jsx."
+    },
+    {
+      "type": "missing-path",
+      "path": "D:/orbit-main/orbit-main/.agent/RUN_JOURNAL.ndjson",
+      "resolution": "Located and read bounded D:/orbit-main/orbit-main/.agent/RUN_JOURNAL.md passages."
+    },
+    {
+      "type": "missing-path",
+      "path": "D:/orbit-main/orbit-main/FrontEnd/src/studio/RecorderReview.jsx",
+      "resolution": "Located and read D:/orbit-main/orbit-main/FrontEnd/src/components/mentor/RecorderReview.jsx."
+    },
+    {
+      "type": "missing-path",
+      "path": "D:/orbit-main/orbit-main/docs/design/03-3d-universe-spec.md",
+      "resolution": "Read actual D:/orbit-main/orbit-main/docs/design/03-3d-world-spec.md."
+    },
+    {
+      "type": "missing-path",
+      "path": "D:/orbit-main/orbit-main/docs/design/v3/02-world-design.md",
+      "resolution": "Read actual D:/orbit-main/orbit-main/docs/design/v3/02-world-bible.md."
+    },
+    {
+      "type": "missing-path",
+      "path": "D:/orbit-main/orbit-main/docs/plan/01-subscription-tiers.md",
+      "resolution": "Read actual D:/orbit-main/orbit-main/docs/plan/03-subscription-architecture.md."
+    }
+  ],
+  "acceptance": "RETURNED_CONTRACT_CHECKED; coordinator evidence spot-check pending"
+}

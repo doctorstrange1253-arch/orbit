@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { createRequire } from 'node:module';
+const require=createRequire(import.meta.url);
+const dir='D:/orbit-main/orbit-main/docs/pitch/deck';
+const candidate=fs.existsSync(dir+'/native/contracts.mjs')?await import('./contracts.mjs'):{};
+test('grid rejects panels occupying an already-used cell',()=>{assert.equal(typeof candidate.validateGrid,'function'); assert.throws(()=>candidate.validateGrid([{c:1,r:1,cs:5,rs:3},{c:5,r:1,cs:4,rs:3}]),/overlap/);});
+test('grid rejects a panel extending beyond the twelve columns',()=>{assert.equal(typeof candidate.validateGrid,'function'); assert.throws(()=>candidate.validateGrid([{c:11,r:1,cs:3,rs:3}]),/grid/);});
+test('grid measures six-panel coverage and hero area',()=>{assert.equal(typeof candidate.validateGrid,'function');const p=[{c:1,r:1,cs:5,rs:3,hero:true},{c:6,r:1,cs:4,rs:3},{c:10,r:1,cs:3,rs:3},{c:1,r:4,cs:4,rs:3},{c:5,r:4,cs:4,rs:3},{c:9,r:4,cs:4,rs:3}];const r=candidate.validateGrid(p);assert.ok(r.coverage>0.93);assert.ok(r.heroArea>0.18);assert.ok(Math.abs(r.rects[0].w-5.19375)<0.00001);});
+test('unknown source ID stops content acceptance',()=>{assert.equal(typeof candidate.validateSources,'function');assert.throws(()=>candidate.validateSources([{source:['NOT_A_SOURCE']}],{F:{}}),/source/);});
+test('fixed-font slots reject excessive characters',()=>{assert.equal(typeof candidate.checkText,'function');assert.throws(()=>candidate.checkText('a'.repeat(301),{maxChars:300,maxHeight:1,height:0.2}),/characters/);});
+test('fixed-font slots reject excessive rendered height',()=>{assert.equal(typeof candidate.checkText,'function');assert.throws(()=>candidate.checkText('two lines',{maxChars:300,maxHeight:0.1,height:0.4}),/height/);});
+test('Core contribution applies share after illustrative tax and separate gateway deductions',()=>{assert.equal(typeof candidate.unitEconomics,'function');const r=candidate.unitEconomics({price:599,gst:0.18,platform:0.2,gateway:0.02,gatewayTax:0.18,fx:85,watch:120,storageUsd:5,storageLearners:50,ai:10,support:8});assert.equal(r.contribution.toFixed(2),'50.69');assert.equal(r.mentorPool.toFixed(2),'406.10');assert.equal(r.gateway.toFixed(2),'14.14');});
+test('break-even rounds upward rather than claiming a fractional payer',()=>{assert.equal(typeof candidate.breakEven,'function');assert.equal(candidate.breakEven(15000,63.49525423728814),237);assert.throws(()=>candidate.breakEven(15000,0),/positive/);});
+test('future version refuses to overwrite an existing PPTX',()=>{assert.equal(typeof candidate.assertFreshVersion,'function');assert.throws(()=>candidate.assertFreshVersion(dir+'/v4','v4'),/preserve/i);});

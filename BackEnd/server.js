@@ -95,6 +95,18 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+// ---- Security hardening: reject startup if critical secrets are missing ----
+const REQUIRED_SECRETS = ["JWT_SECRET", "SESSION_SECRET"];
+const missing = REQUIRED_SECRETS.filter((key) => !process.env[key]);
+if (missing.length) {
+  console.error(
+    "\n[ERROR] Fatal startup failure: Missing required environment variables:\n  " +
+    missing.map((k) => `    ${k}`).join("\n") +
+    "\n\nPlease set these in .env or your deployment platform. Refer to .env.example for examples.\n"
+  );
+  process.exit(1);
+}
+
 // Socket.IO setup
 const io = new Server(server, {
     cors: {
@@ -676,7 +688,18 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(mongoSanitize); // Use custom sanitizer for Express 5 compatibility
 app.use(hpp()); // Protect against HTTP Parameter Pollution attacks
 app.use(generalLimiter); // Apply general rate limiter
-app.use(require('express-session')({ secret: process.env.SESSION_SECRET || process.env.JWT_SECRET || 'secret', resave: false, saveUninitialized: false }));
+// Session signing: prefer SESSION_SECRET over JWT_SECRET; never fall back to weak defaults.
+const sessionSecret = process.env.SESSION_SECRET || process.env.JWT_SECRET || null;
+if (!sessionSecret) {
+  // Should already have exited at the startup guard above, but belt-and-braces against pre-middleware checks
+  console.error("FATAL: Session secret not configured.");
+  process.exit(1);
+}
+app.use(require('express-session')({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false
+}));
 app.use(require('./config/passport').initialize());
 
 // Lightweight health check — no DB/Redis hit, so the keep-warm self-ping

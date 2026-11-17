@@ -1,0 +1,3798 @@
+{
+  "runId": "iw-a2-20261109-0c7f4bfb",
+  "startedAt": "2026-11-09T07:54:31.011Z",
+  "synthetic": true,
+  "note": "Local current-frontend UI evidence only. These accounts, amounts, grades, records and role states are fixtures, not production authorization or real outcomes.",
+  "inputs": {
+    "fixtureSha256": "263d595849453bc54eeca0d8756fb6c6cc830e07a07c2e31b5f288d76e36810c",
+    "helperSha256": "09cb3a4937875e86113071b5898b25bd550c52cd2cc8c38c6557232bbe6837a0"
+  },
+  "mode": "states-only",
+  "selection": {
+    "screens": [],
+    "widths": [
+      360,
+      768,
+      1280
+    ],
+    "viewportOnly": false,
+    "extras": true,
+    "stress": true
+  },
+  "screenshots": [
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/student-empty-360.png",
+      "bytes": 54771,
+      "sha256": "4e357570b47836b355f35a276176e4a7eb6a3077c85046e8df631b05272171cf",
+      "slug": "student-empty",
+      "width": 360,
+      "captureMode": "full-page",
+      "pngWidth": 360,
+      "pngHeight": 918,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 918,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 12935073
+      },
+      "errors": [],
+      "options": {
+        "empty": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/student-failed-360.png",
+      "bytes": 54771,
+      "sha256": "4e357570b47836b355f35a276176e4a7eb6a3077c85046e8df631b05272171cf",
+      "slug": "student-failed",
+      "width": 360,
+      "captureMode": "full-page",
+      "pngWidth": 360,
+      "pngHeight": 918,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 918,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 13414450
+      },
+      "errors": [],
+      "options": {
+        "fail": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/mentor-pending-360.png",
+      "bytes": 84515,
+      "sha256": "7dfd287603a3a67c4cc7cc8ef2121866a08a68d40ebbabb1987e748cacf5298c",
+      "slug": "mentor-pending",
+      "width": 360,
+      "captureMode": "full-page",
+      "pngWidth": 360,
+      "pngHeight": 740,
+      "actualPath": "/mentor/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "Application under review."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nMENTOR · THE OBSERVATORY\nApplication under review.\n\nYour observatory unlocks once your mentor application is approved.\n\nPENDING REVIEW\n\nOnce approved, your students will appear as points of light here, and your Luminosity Star will rise.\n\nOPEN MENTOR HUB",
+        "memory": 13190541
+      },
+      "errors": [],
+      "options": {
+        "pending": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/mentor-locked-360.png",
+      "bytes": 36572,
+      "sha256": "95e95b2385998698ac336bb5fe76ec8b4d2b25e4339f412070275aaac371b697",
+      "slug": "mentor-locked",
+      "width": 360,
+      "captureMode": "full-page",
+      "pngWidth": 360,
+      "pngHeight": 740,
+      "actualPath": "/mentor/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "This area needs an extra role"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nThis area needs an extra role\n\nYour account is signed in, but it doesn't currently hold \"mentor\". You can add the role from Settings — it only takes a second.\n\nOpen Settings\nBack to your home",
+        "memory": 12718475
+      },
+      "errors": [],
+      "options": {
+        "single": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/student-light-360.png",
+      "bytes": 103867,
+      "sha256": "90a1d0ee930c2588a557fb59af74645b7ef782f769569b9f6cb97785fa1e7dc3",
+      "slug": "student-light",
+      "width": 360,
+      "captureMode": "full-page",
+      "pngWidth": 360,
+      "pngHeight": 1194,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1194,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [],
+        "text": "⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 13026116
+      },
+      "errors": [],
+      "options": {
+        "light": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/mentor-light-360.png",
+      "bytes": 199927,
+      "sha256": "efbbdcfdbf676f5f80d9443b2cfc86734a0e073197061d450579cb027286bd20",
+      "slug": "mentor-light",
+      "width": 360,
+      "captureMode": "full-page",
+      "pngWidth": 360,
+      "pngHeight": 3036,
+      "actualPath": "/mentor/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 3036,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "The Observatory",
+          "Your group this week"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1200,
+            "height": 520
+          }
+        ],
+        "text": "⌘K\nMENTOR · THE OBSERVATORY\nThe Observatory\n\n2 students on your map. Their movements draw the sky you watch over.\n\nLIVE MENTOR\nNEW COURSE\nTHE MENTOR PACT\nYou stand among the adept.\n\nYou have found your rhythm. Steady now.\n\nSIX DIVISIONS\nONE COVENANT\nTIER I\nInitiate\nTIER II\nAdept\nTIER III\nMentor\nTIER IV\nSage\nTIER V\nLuminary\nTIER VI\nOracle\nADEPT\n2 COURSES\n\nYour signature, sized by the students you have taught, colored by the division you hold.\n\nHONOURS\n0 IN ALL\n0\nBEACON\n0\nCOMET\n0\nSUPERNOVA\nIV · THE SKY TONIGHT\n2 POINTS OF LIGHT\n2 ACTIVE · 2 TOTAL\nV · THE ROLL\nYour group this week\nFULL PACT ROLL\nTHE ROLL · WEEK FIXTURE-WEEK\n12 MENTORS\nMentor fixture 1\nPROMOTION ZONE\nPROFILE →\n240\n02\nMentor fixture 2\nPROMOTION ZONE\nPROFILE →\n230\n03\nMentor fixture 3\nPROMOTION ZONE\nPROFILE →\n220\n04\nMentor fixture 4\nPROMOTION ZONE\nPROFILE →\n210\n05\nMentor fixture 5\nPROMOTION ZONE\nPROFILE →\n200\n06\nMentor fixture 6\nPROMOTION ZONE\nPROFILE →\n190\n07\nMentor fixture 7\nPROMOTION ZONE\nPROFILE →\n180\n08\nYou\nRELEGATION ZONE\n170\n09\nMentor fixture 9\nRELEGATION ZONE\nPROFILE →\n160\n10\nMentor fixture 10\nRELEGATION ZONE\nPROFILE →\n150\n11\nMentor fixture 11\nRELEGATION ZONE\nPROFILE →\n140\n12\nMentor fixture 12\nRELEGATION ZONE\nPROFILE →\n130\nTOP 7 PROMOTE\n·\nMIDDLE HOLD\n·\nBOTTOM 7 RELEGATE\nVI · THE PULSE\nTHE PACT PULSE · HOLD\n\nRIVALS\nFOUR CLOSEST\nVII · YOUR WORKSHOP\nMy courses\nPublic profile\nEdit profile",
+        "memory": 13513974
+      },
+      "errors": [],
+      "options": {
+        "light": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/switcher-open-attempt-360.png",
+      "bytes": 113620,
+      "sha256": "b6ebf0afd3936b31708d5779c6537bf5ab4a9dc368397c838f263f3249c35b3e",
+      "slug": "switcher-open-attempt",
+      "width": 360,
+      "captureMode": "full-page",
+      "pngWidth": 360,
+      "pngHeight": 1194,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1194,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nUF\nUI\n3,200\n4\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 15413172
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/student-empty-768.png",
+      "bytes": 79727,
+      "sha256": "5a0437edf7a78068f430e98386d43f655038d7ee7552ff9853df513844b30897",
+      "slug": "student-empty",
+      "width": 768,
+      "captureMode": "full-page",
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 12955748
+      },
+      "errors": [],
+      "options": {
+        "empty": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/student-failed-768.png",
+      "bytes": 81468,
+      "sha256": "cb535ba302e9d9f56a0592bd79087975a78944e8d0a1872226b84b54d90af4fb",
+      "slug": "student-failed",
+      "width": 768,
+      "captureMode": "full-page",
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 13673743
+      },
+      "errors": [],
+      "options": {
+        "fail": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/mentor-pending-768.png",
+      "bytes": 121530,
+      "sha256": "a922a9466178f42aa12296672cca35144766ab738ebe37164bb7e2ae38584e3a",
+      "slug": "mentor-pending",
+      "width": 768,
+      "captureMode": "full-page",
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/mentor/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "Application under review."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nMENTOR · THE OBSERVATORY\nApplication under review.\n\nYour observatory unlocks once your mentor application is approved.\n\nPENDING REVIEW\n\nOnce approved, your students will appear as points of light here, and your Luminosity Star will rise.\n\nOPEN MENTOR HUB",
+        "memory": 13442279
+      },
+      "errors": [],
+      "options": {
+        "pending": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/mentor-locked-768.png",
+      "bytes": 58069,
+      "sha256": "bdcc9976bce68e3655d5cf21b42ea96cc31941815c6b67192f526b276c9b5e62",
+      "slug": "mentor-locked",
+      "width": 768,
+      "captureMode": "full-page",
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/mentor/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "This area needs an extra role"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nThis area needs an extra role\n\nYour account is signed in, but it doesn't currently hold \"mentor\". You can add the role from Settings — it only takes a second.\n\nOpen Settings\nBack to your home",
+        "memory": 12975625
+      },
+      "errors": [],
+      "options": {
+        "single": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/student-light-768.png",
+      "bytes": 114232,
+      "sha256": "d6344abb0abd192a1d84965fdcc9bffa4ff54b3c1e9929f8304787b78cde0023",
+      "slug": "student-light",
+      "width": 768,
+      "captureMode": "full-page",
+      "pngWidth": 768,
+      "pngHeight": 1032,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1032,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 13019441
+      },
+      "errors": [],
+      "options": {
+        "light": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/mentor-light-768.png",
+      "bytes": 311463,
+      "sha256": "b811bd58571321626652e1ec64ef713096daed452450e3fe938ab1cae7feeaa8",
+      "slug": "mentor-light",
+      "width": 768,
+      "captureMode": "full-page",
+      "pngWidth": 768,
+      "pngHeight": 2435,
+      "actualPath": "/mentor/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 2435,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "The Observatory",
+          "Your group this week"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1200,
+            "height": 520
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nMENTOR · THE OBSERVATORY\nThe Observatory\n\n2 students on your map. Their movements draw the sky you watch over.\n\nLIVE MENTOR\nNEW COURSE\nTHE MENTOR PACT\nYou stand among the adept.\n\nYou have found your rhythm. Steady now.\n\nSIX DIVISIONS\nONE COVENANT\nTIER I\nInitiate\nTIER II\nAdept\nTIER III\nMentor\nTIER IV\nSage\nTIER V\nLuminary\nTIER VI\nOracle\nADEPT\n2 COURSES\n\nYour signature, sized by the students you have taught, colored by the division you hold.\n\nHONOURS\n0 IN ALL\n0\nBEACON\n0\nCOMET\n0\nSUPERNOVA\nIV · THE SKY TONIGHT\n2 POINTS OF LIGHT\n2 ACTIVE · 2 TOTAL\nTAP A STAR TO OPEN THEIR PROFILE\nV · THE ROLL\nYour group this week\nFULL PACT ROLL\nTHE ROLL · WEEK FIXTURE-WEEK\n12 MENTORS\nMentor fixture 1\nPROMOTION ZONE\nADEPT\nPROFILE →\n240\n02\nMentor fixture 2\nPROMOTION ZONE\nADEPT\nPROFILE →\n230\n03\nMentor fixture 3\nPROMOTION ZONE\nADEPT\nPROFILE →\n220\n04\nMentor fixture 4\nPROMOTION ZONE\nADEPT\nPROFILE →\n210\n05\nMentor fixture 5\nPROMOTION ZONE\nADEPT\nPROFILE →\n200\n06\nMentor fixture 6\nPROMOTION ZONE\nADEPT\nPROFILE →\n190\n07\nMentor fixture 7\nPROMOTION ZONE\nADEPT\nPROFILE →\n180\n08\nYou\nRELEGATION ZONE\nADEPT\n170\n09\nMentor fixture 9\nRELEGATION ZONE\nADEPT\nPROFILE →\n160\n10\nMentor fixture 10\nRELEGATION ZONE\nADEPT\nPROFILE →\n150\n11\nMentor fixture 11\nRELEGATION ZONE\nADEPT\nPROFILE →\n140\n12\nMentor fixture 12\nRELEGATION ZONE\nADEPT\nPROFILE →\n130\nTOP 7 PROMOTE\n·\nMIDDLE HOLD\n·\nBOTTOM 7 RELEGATE\nVI · THE PULSE\nTHE PACT PULSE · HOLD\n\nRIVALS\nFOUR CLOSEST\nVII · YOUR WORKSHOP\nMy courses\nPublic profile\nEdit profile",
+        "memory": 13874549
+      },
+      "errors": [],
+      "options": {
+        "light": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/switcher-open-attempt-768.png",
+      "bytes": 120350,
+      "sha256": "b77d00c12e8d620caf5ff8dc2a947d75e1c1b77bb99372dcfb52075fbda12012",
+      "slug": "switcher-open-attempt",
+      "width": 768,
+      "captureMode": "full-page",
+      "pngWidth": 768,
+      "pngHeight": 1032,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1032,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nUF\nUI\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 15693020
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/student-empty-1280.png",
+      "bytes": 106362,
+      "sha256": "f38525249075e46716bffa07acb699b460409c4e6a76cc427d96b05c5b710065",
+      "slug": "student-empty",
+      "width": 1280,
+      "captureMode": "full-page",
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 13312004
+      },
+      "errors": [],
+      "options": {
+        "empty": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/student-failed-1280.png",
+      "bytes": 100078,
+      "sha256": "ef976aa9d2a330d51f09e670ec2abf15a678c4af8f73163bafcd0f4c888d9a16",
+      "slug": "student-failed",
+      "width": 1280,
+      "captureMode": "full-page",
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 13871621
+      },
+      "errors": [],
+      "options": {
+        "fail": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/mentor-pending-1280.png",
+      "bytes": 166929,
+      "sha256": "f728ef076ec8b8685e232d8e2b782c297198ffc7132911ebbb110ecf16bddfc3",
+      "slug": "mentor-pending",
+      "width": 1280,
+      "captureMode": "full-page",
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/mentor/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "Application under review."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nMENTOR\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nOBSERVATORY\nCOURSES\nRECORD\nMEDIA\nSTUDENTS\nSESSIONS\nANALYTICS\nEARNINGS\nPACT\nREVIEW\nMENTOR · THE OBSERVATORY\nApplication under review.\n\nYour observatory unlocks once your mentor application is approved.\n\nPENDING REVIEW\n\nOnce approved, your students will appear as points of light here, and your Luminosity Star will rise.\n\nOPEN MENTOR HUB",
+        "memory": 13718680
+      },
+      "errors": [],
+      "options": {
+        "pending": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/mentor-locked-1280.png",
+      "bytes": 67837,
+      "sha256": "32f45b8c57a0e20b51efd8df39e3dd4fedd8a1163780f1daa544dcc13b59e84c",
+      "slug": "mentor-locked",
+      "width": 1280,
+      "captureMode": "full-page",
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/mentor/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "This area needs an extra role"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nMENTOR\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nOBSERVATORY\nCOURSES\nRECORD\nMEDIA\nSTUDENTS\nSESSIONS\nANALYTICS\nEARNINGS\nPACT\nREVIEW\nThis area needs an extra role\n\nYour account is signed in, but it doesn't currently hold \"mentor\". You can add the role from Settings — it only takes a second.\n\nOpen Settings\nBack to your home",
+        "memory": 13192243
+      },
+      "errors": [],
+      "options": {
+        "single": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/student-light-1280.png",
+      "bytes": 141500,
+      "sha256": "ce2abc131dbed320e9cdfc3f35e114749870938b0079d9fb8e9c1db17e888428",
+      "slug": "student-light",
+      "width": 1280,
+      "captureMode": "full-page",
+      "pngWidth": 1280,
+      "pngHeight": 1114,
+      "actualPath": "/student/universe",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1114,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 13027316
+      },
+      "errors": [],
+      "options": {
+        "light": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/mentor-light-1280.png",
+      "bytes": 428741,
+      "sha256": "1cdc8a534868e4d70a1e3d4f51c17632c976aee7dcebd6b493c9d8412e119dd6",
+      "slug": "mentor-light",
+      "width": 1280,
+      "captureMode": "full-page",
+      "pngWidth": 1280,
+      "pngHeight": 2720,
+      "actualPath": "/mentor/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2720,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "The Observatory",
+          "Your group this week"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1200,
+            "height": 520
+          }
+        ],
+        "text": "Orbit\nMENTOR\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nOBSERVATORY\nCOURSES\nRECORD\nMEDIA\nSTUDENTS\nSESSIONS\nANALYTICS\nEARNINGS\nPACT\nREVIEW\nMENTOR · THE OBSERVATORY\nThe Observatory\n\n2 students on your map. Their movements draw the sky you watch over.\n\nLIVE MENTOR\nNEW COURSE\nTHE MENTOR PACT\nYou stand among the adept.\n\nYou have found your rhythm. Steady now.\n\nSIX DIVISIONS\nONE COVENANT\nTIER I\nInitiate\nTIER II\nAdept\nTIER III\nMentor\nTIER IV\nSage\nTIER V\nLuminary\nTIER VI\nOracle\nADEPT\n2 COURSES\n\nYour signature, sized by the students you have taught, colored by the division you hold.\n\nHONOURS\n0 IN ALL\n0\nBEACON\n0\nCOMET\n0\nSUPERNOVA\nIV · THE SKY TONIGHT\n2 POINTS OF LIGHT\n2 ACTIVE · 2 TOTAL\nTAP A STAR TO OPEN THEIR PROFILE\nV · THE ROLL\nYour group this week\nFULL PACT ROLL\nTHE ROLL · WEEK FIXTURE-WEEK\n12 MENTORS\nMentor fixture 1\nPROMOTION ZONE\nADEPT\nPROFILE →\n240\n02\nMentor fixture 2\nPROMOTION ZONE\nADEPT\nPROFILE →\n230\n03\nMentor fixture 3\nPROMOTION ZONE\nADEPT\nPROFILE →\n220\n04\nMentor fixture 4\nPROMOTION ZONE\nADEPT\nPROFILE →\n210\n05\nMentor fixture 5\nPROMOTION ZONE\nADEPT\nPROFILE →\n200\n06\nMentor fixture 6\nPROMOTION ZONE\nADEPT\nPROFILE →\n190\n07\nMentor fixture 7\nPROMOTION ZONE\nADEPT\nPROFILE →\n180\n08\nYou\nRELEGATION ZONE\nADEPT\n170\n09\nMentor fixture 9\nRELEGATION ZONE\nADEPT\nPROFILE →\n160\n10\nMentor fixture 10\nRELEGATION ZONE\nADEPT\nPROFILE →\n150\n11\nMentor fixture 11\nRELEGATION ZONE\nADEPT\nPROFILE →\n140\n12\nMentor fixture 12\nRELEGATION ZONE\nADEPT\nPROFILE →\n130\nTOP 7 PROMOTE\n·\nMIDDLE HOLD\n·\nBOTTOM 7 RELEGATE\nVI · THE PULSE\nTHE PACT PULSE · HOLD\n\nRIVALS\nFOUR CLOSEST\nVII · YOUR WORKSHOP\nMy courses\nPublic profile\nEdit profile",
+        "memory": 13513654
+      },
+      "errors": [],
+      "options": {
+        "light": true
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/switcher-open-attempt-1280.png",
+      "bytes": 184282,
+      "sha256": "8ca14609c4a0d57f93c6364c66e968ee44bb80aa6f64b7e9ee24f8c0fe59e0e1",
+      "slug": "switcher-open-attempt",
+      "width": 1280,
+      "captureMode": "full-page",
+      "pngWidth": 1280,
+      "pngHeight": 2690,
+      "actualPath": "/profile",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2690,
+        "title": "Your Profile | Orbit",
+        "headings": [
+          "Profile Settings",
+          "Your Active Windows",
+          "Cosmic Standing",
+          "Basic Info",
+          "Social Links",
+          "Reviews"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nProfile Settings\n\nYour public persona on Orbit.\n\nYOUR ACTIVE WINDOWS\n\nYou have 3 of 3 roles on Orbit. Switch between them anytime.\n\nYOU’RE IN STUDENT\nPeer Learner\nACTIVE\n\nFree skill-swap worldwide.\n\nOpen\nMentor\nACTIVE\n\nGet paid for 1-on-1 video sessions.\n\nOpen\nStudent\nACTIVE\nYOU’RE HERE\n\nBook mentors, learn live, rate them.\n\nOpen\nMENTOR WINDOW\nPENDING PAYOUT\n₹510\nTOTAL EARNED\n₹1,530\nUPCOMING SESSIONS\n1\nSTUDENT WINDOW\nUPCOMING\n1\nPAST SESSIONS\n1\nPEER WINDOW\nPENDING REQUESTS\n0\nACTIVE MATCHES\n2\n\nYou also have Peer Learner + Mentor enabled.\n\nOpen Peer Learner window\nUF\n\nUI Fixture\n\nui-fixture@example.test\n\nTrust Score: 82/100\nHow it works\nCosmic Standing\nMoon IV — The Deimos\nCosmicScore 1200\nProgress to next tier\n25%\n\nCosmicScore = how well you teach (your local leaderboard standing). Trust Score = how dependable you are as a member. They’re separate.\n\nHow your CosmicScore works\nBasic Info\nFULL NAME\nBIO\nLOCATION\nSPOKEN LANGUAGES (search and pick up to 5)\nEnglish\n1/5 selected\nSocial Links\nGITHUB URL\nLINKEDIN URL\nPERSONAL WEBSITE\nSave Changes\nReviews\nReceived\nGiven\n\nNo reviews received yet.",
+        "memory": 15546678
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/journey-1-levels-1280.png",
+      "bytes": 335931,
+      "sha256": "d5b1068acd2023647cbfe57b11b134036e55c88bf8d4c551d6d7ddf48e27ab23",
+      "slug": "journey-1-levels",
+      "width": 1280,
+      "captureMode": "viewport-only",
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/courses/course-fixture/learn/lesson-1",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1250,
+        "title": "",
+        "headings": [
+          "1 lessons",
+          "Fixture lesson 1",
+          "Fixture lesson description."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 878,
+            "height": 648
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nBack to course\nI · ECLIPSE\n1/1\n1 STAGE · 1 VIDEO\nA single sitting\nI\nFINALE\nEclipse\n1/1\n+50 XP\n1 LESSONS\nFixture lesson 1\nAlgebra foundations (fixture)\nTIER: HIGH\n2D map\n1. Fixture lesson 1\nFixture lesson 1\nLesson 1 of 1\nIN THE NEXT FEW MINUTES\nFixture lesson description.\nBEGIN",
+        "memory": 22532103
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/journey-30-levels-1280.png",
+      "bytes": 534439,
+      "sha256": "1b03afd7e0a50cec483155161e4aa49514efe5834d3fc3dcb76b58caaf5af363",
+      "slug": "journey-30-levels",
+      "width": 1280,
+      "captureMode": "viewport-only",
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/courses/course-fixture/learn/lesson-1",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2285,
+        "title": "",
+        "headings": [
+          "30 lessons",
+          "Fixture lesson 1",
+          "Fixture lesson description."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 878,
+            "height": 648
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nBack to course\nI · IGNITION\n1/6\n5 STAGES · 30 VIDEOS\nAn expedition\nI\nIgnition\n2/6\n+50 XP\n\nThe first spark. Nothing is expected of you yet.\n\nII\nAscent\n0/6\n+75 XP\nIII\nOrbit\n0/6\n+100 XP\nIV\nTransit\n0/6\n+125 XP\nV\nFINALE\nEclipse\n0/6\n+150 XP\n30 LESSONS\nFixture lesson 1\nFixture lesson 2\n3\nFixture lesson 3\n4\nFixture lesson 4\n5\nFixture lesson 5\n6\nFixture lesson 6\n7\nFixture lesson 7\n8\nFixture lesson 8\n9\nFixture lesson 9\n10\nFixture lesson 10\n11\nFixture lesson 11\n12\nFixture lesson 12\n13\nFixture lesson 13\n14\nFixture lesson 14\n15\nFixture lesson 15\n16\nFixture lesson 16\n17\nFixture lesson 17\n18\nFixture lesson 18\n19\nFixture lesson 19\n20\nFixture lesson 20\n21\nFixture lesson 21\n22\nFixture lesson 22\n23\nFixture lesson 23\n24\nFixture lesson 24\n25\nFixture lesson 25\n26\nFixture lesson 26\n27\nFixture lesson 27\n28\nFixture lesson 28\n29\nFixture lesson 29\n30\nFixture lesson 30\nAlgebra foundations (fixture)\nTIER: HIGH\n2D map\n1. Fixture lesson 1\n2. Fixture lesson 2\n3. Fixture lesson 3\n4. Fixture lesson 4\n5. Fixture lesson 5\n6. Fixture lesson 6\n7. Fixture lesson 7\n8. Fixture lesson 8\n9. Fixture lesson 9\n10. Fixture lesson 10\n11. Fixture lesson 11\n12. Fixture lesson 12\n13. Fixture lesson 13\n14. Fixture lesson 14\n15. Fixture lesson 15\n16. Fixture lesson 16\n17. Fixture lesson 17\n18. Fixture lesson 18\n19. Fixture lesson 19\n20. Fixture lesson 20\n21. Fixture lesson 21\n22. Fixture lesson 22\n23. Fixture lesson 23\n24. Fixture lesson 24\n25. Fixture lesson 25\n26. Fixture lesson 26\n27. Fixture lesson 27\n28. Fixture lesson 28\n29. Fixture lesson 29\n30. Fixture lesson 30\nFixture lesson 1\nLesson 1 of 30\nIN THE NEXT FEW MINUTES\nFixture lesson description.\nBEGIN",
+        "memory": 53284692
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/journey-100-levels-1280.png",
+      "bytes": 841875,
+      "sha256": "46aaef3490f62277408dbbe0ffaf0a7e098c8e9fd6f663bb07cf902e8048d3ca",
+      "slug": "journey-100-levels",
+      "width": 1280,
+      "captureMode": "viewport-only",
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/courses/course-fixture/learn/lesson-1",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 5693,
+        "title": "",
+        "headings": [
+          "100 lessons",
+          "Fixture lesson 1",
+          "Fixture lesson description."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 878,
+            "height": 648
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nBack to course\nI · IGNITION\n1/16\n6 STAGES · 100 VIDEOS\nAn epic\nI\nIgnition\n2/16\n+50 XP\n\nThe first spark. Nothing is expected of you yet.\n\nII\nAscent\n0/16\n+75 XP\nIII\nOrbit\n0/17\n+100 XP\nIV\nTransit\n0/17\n+125 XP\nV\nApex\n0/17\n+150 XP\nVI\nFINALE\nEclipse\n0/17\n+175 XP\n100 LESSONS\nFixture lesson 1\nFixture lesson 2\n3\nFixture lesson 3\n4\nFixture lesson 4\n5\nFixture lesson 5\n6\nFixture lesson 6\n7\nFixture lesson 7\n8\nFixture lesson 8\n9\nFixture lesson 9\n10\nFixture lesson 10\n11\nFixture lesson 11\n12\nFixture lesson 12\n13\nFixture lesson 13\n14\nFixture lesson 14\n15\nFixture lesson 15\n16\nFixture lesson 16\n17\nFixture lesson 17\n18\nFixture lesson 18\n19\nFixture lesson 19\n20\nFixture lesson 20\n21\nFixture lesson 21\n22\nFixture lesson 22\n23\nFixture lesson 23\n24\nFixture lesson 24\n25\nFixture lesson 25\n26\nFixture lesson 26\n27\nFixture lesson 27\n28\nFixture lesson 28\n29\nFixture lesson 29\n30\nFixture lesson 30\n31\nFixture lesson 31\n32\nFixture lesson 32\n33\nFixture lesson 33\n34\nFixture lesson 34\n35\nFixture lesson 35\n36\nFixture lesson 36\n37\nFixture lesson 37\n38\nFixture lesson 38\n39\nFixture lesson 39\n40\nFixture lesson 40\n41\nFixture lesson 41\n42\nFixture lesson 42\n43\nFixture lesson 43\n44\nFixture lesson 44\n45\nFixture lesson 45\n46\nFixture lesson 46\n47\nFixture lesson 47\n48\nFixture lesson 48\n49\nFixture lesson 49\n50\nFixture lesson 50\n51\nFixture lesson 51\n52\nFixture lesson 52\n53\nFixture lesson 53\n54\nFixture lesson 54\n55\nFixture lesson 55\n56\nFixture lesson 56\n57\nFixture lesson 57\n58\nFixture lesson 58\n59\nFixture lesson 59\n60\nFixture lesson 60\n61\nFixture lesson 61\n62\nFixture lesson 62\n63\nFixture lesson 63\n64\nFixture lesson 64\n65\nFixture lesson 65\n66\nFixture lesson 66\n67\nFixture lesson 67\n68\nFixture les",
+        "memory": 100792151
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-0c7f4bfb/journey-300-levels-1280.png",
+      "bytes": 904135,
+      "sha256": "35e7b4e6fd0cf77c634b3eed919a3e96c75ae2c2a572fe8481b6b2f84afbd335",
+      "slug": "journey-300-levels",
+      "width": 1280,
+      "captureMode": "viewport-only",
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/courses/course-fixture/learn/lesson-1",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 15493,
+        "title": "",
+        "headings": [
+          "300 lessons",
+          "Fixture lesson 1",
+          "Fixture lesson description."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 878,
+            "height": 648
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nBack to course\nI · IGNITION\n1/50\n6 STAGES · 300 VIDEOS\nAn epic\nI\nIgnition\n2/50\n+50 XP\n\nThe first spark. Nothing is expected of you yet.\n\nII\nAscent\n0/50\n+75 XP\nIII\nOrbit\n0/50\n+100 XP\nIV\nTransit\n0/50\n+125 XP\nV\nApex\n0/50\n+150 XP\nVI\nFINALE\nEclipse\n0/50\n+175 XP\n300 LESSONS\nFixture lesson 1\nFixture lesson 2\n3\nFixture lesson 3\n4\nFixture lesson 4\n5\nFixture lesson 5\n6\nFixture lesson 6\n7\nFixture lesson 7\n8\nFixture lesson 8\n9\nFixture lesson 9\n10\nFixture lesson 10\n11\nFixture lesson 11\n12\nFixture lesson 12\n13\nFixture lesson 13\n14\nFixture lesson 14\n15\nFixture lesson 15\n16\nFixture lesson 16\n17\nFixture lesson 17\n18\nFixture lesson 18\n19\nFixture lesson 19\n20\nFixture lesson 20\n21\nFixture lesson 21\n22\nFixture lesson 22\n23\nFixture lesson 23\n24\nFixture lesson 24\n25\nFixture lesson 25\n26\nFixture lesson 26\n27\nFixture lesson 27\n28\nFixture lesson 28\n29\nFixture lesson 29\n30\nFixture lesson 30\n31\nFixture lesson 31\n32\nFixture lesson 32\n33\nFixture lesson 33\n34\nFixture lesson 34\n35\nFixture lesson 35\n36\nFixture lesson 36\n37\nFixture lesson 37\n38\nFixture lesson 38\n39\nFixture lesson 39\n40\nFixture lesson 40\n41\nFixture lesson 41\n42\nFixture lesson 42\n43\nFixture lesson 43\n44\nFixture lesson 44\n45\nFixture lesson 45\n46\nFixture lesson 46\n47\nFixture lesson 47\n48\nFixture lesson 48\n49\nFixture lesson 49\n50\nFixture lesson 50\n51\nFixture lesson 51\n52\nFixture lesson 52\n53\nFixture lesson 53\n54\nFixture lesson 54\n55\nFixture lesson 55\n56\nFixture lesson 56\n57\nFixture lesson 57\n58\nFixture lesson 58\n59\nFixture lesson 59\n60\nFixture lesson 60\n61\nFixture lesson 61\n62\nFixture lesson 62\n63\nFixture lesson 63\n64\nFixture lesson 64\n65\nFixture lesson 65\n66\nFixture lesson 66\n67\nFixture lesson 67\n68\nFixture les",
+        "memory": 247949922
+      }
+    }
+  ],
+  "captureAttempts": [
+    {
+      "slug": "student-empty",
+      "width": 360,
+      "captureMode": "full-page",
+      "startedAt": 1794210873710,
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 918,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 12935073
+      },
+      "saved": true,
+      "finishedAt": 1794210874153
+    },
+    {
+      "slug": "student-failed",
+      "width": 360,
+      "captureMode": "full-page",
+      "startedAt": 1794210879141,
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 918,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 13414450
+      },
+      "saved": true,
+      "finishedAt": 1794210879328
+    },
+    {
+      "slug": "mentor-pending",
+      "width": 360,
+      "captureMode": "full-page",
+      "startedAt": 1794210880989,
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "Application under review."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nMENTOR · THE OBSERVATORY\nApplication under review.\n\nYour observatory unlocks once your mentor application is approved.\n\nPENDING REVIEW\n\nOnce approved, your students will appear as points of light here, and your Luminosity Star will rise.\n\nOPEN MENTOR HUB",
+        "memory": 13190541
+      },
+      "saved": true,
+      "finishedAt": 1794210881063
+    },
+    {
+      "slug": "mentor-locked",
+      "width": 360,
+      "captureMode": "full-page",
+      "startedAt": 1794210882281,
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "This area needs an extra role"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nThis area needs an extra role\n\nYour account is signed in, but it doesn't currently hold \"mentor\". You can add the role from Settings — it only takes a second.\n\nOpen Settings\nBack to your home",
+        "memory": 12718475
+      },
+      "saved": true,
+      "finishedAt": 1794210882389
+    },
+    {
+      "slug": "student-light",
+      "width": 360,
+      "captureMode": "full-page",
+      "startedAt": 1794210883861,
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1194,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [],
+        "text": "⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 13026116
+      },
+      "saved": true,
+      "finishedAt": 1794210884216
+    },
+    {
+      "slug": "mentor-light",
+      "width": 360,
+      "captureMode": "full-page",
+      "startedAt": 1794210886396,
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 3036,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "The Observatory",
+          "Your group this week"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1200,
+            "height": 520
+          }
+        ],
+        "text": "⌘K\nMENTOR · THE OBSERVATORY\nThe Observatory\n\n2 students on your map. Their movements draw the sky you watch over.\n\nLIVE MENTOR\nNEW COURSE\nTHE MENTOR PACT\nYou stand among the adept.\n\nYou have found your rhythm. Steady now.\n\nSIX DIVISIONS\nONE COVENANT\nTIER I\nInitiate\nTIER II\nAdept\nTIER III\nMentor\nTIER IV\nSage\nTIER V\nLuminary\nTIER VI\nOracle\nADEPT\n2 COURSES\n\nYour signature, sized by the students you have taught, colored by the division you hold.\n\nHONOURS\n0 IN ALL\n0\nBEACON\n0\nCOMET\n0\nSUPERNOVA\nIV · THE SKY TONIGHT\n2 POINTS OF LIGHT\n2 ACTIVE · 2 TOTAL\nV · THE ROLL\nYour group this week\nFULL PACT ROLL\nTHE ROLL · WEEK FIXTURE-WEEK\n12 MENTORS\nMentor fixture 1\nPROMOTION ZONE\nPROFILE →\n240\n02\nMentor fixture 2\nPROMOTION ZONE\nPROFILE →\n230\n03\nMentor fixture 3\nPROMOTION ZONE\nPROFILE →\n220\n04\nMentor fixture 4\nPROMOTION ZONE\nPROFILE →\n210\n05\nMentor fixture 5\nPROMOTION ZONE\nPROFILE →\n200\n06\nMentor fixture 6\nPROMOTION ZONE\nPROFILE →\n190\n07\nMentor fixture 7\nPROMOTION ZONE\nPROFILE →\n180\n08\nYou\nRELEGATION ZONE\n170\n09\nMentor fixture 9\nRELEGATION ZONE\nPROFILE →\n160\n10\nMentor fixture 10\nRELEGATION ZONE\nPROFILE →\n150\n11\nMentor fixture 11\nRELEGATION ZONE\nPROFILE →\n140\n12\nMentor fixture 12\nRELEGATION ZONE\nPROFILE →\n130\nTOP 7 PROMOTE\n·\nMIDDLE HOLD\n·\nBOTTOM 7 RELEGATE\nVI · THE PULSE\nTHE PACT PULSE · HOLD\n\nRIVALS\nFOUR CLOSEST\nVII · YOUR WORKSHOP\nMy courses\nPublic profile\nEdit profile",
+        "memory": 13513974
+      },
+      "saved": true,
+      "finishedAt": 1794210887441
+    },
+    {
+      "slug": "switcher-open-attempt",
+      "width": 360,
+      "captureMode": "full-page",
+      "startedAt": 1794210889775,
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1194,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nUF\nUI\n3,200\n4\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 15413172
+      },
+      "saved": true,
+      "finishedAt": 1794210890743
+    },
+    {
+      "slug": "student-empty",
+      "width": 768,
+      "captureMode": "full-page",
+      "startedAt": 1794210893092,
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 12955748
+      },
+      "saved": true,
+      "finishedAt": 1794210893165
+    },
+    {
+      "slug": "student-failed",
+      "width": 768,
+      "captureMode": "full-page",
+      "startedAt": 1794210898255,
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 13673743
+      },
+      "saved": true,
+      "finishedAt": 1794210900706
+    },
+    {
+      "slug": "mentor-pending",
+      "width": 768,
+      "captureMode": "full-page",
+      "startedAt": 1794210905955,
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "Application under review."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nMENTOR · THE OBSERVATORY\nApplication under review.\n\nYour observatory unlocks once your mentor application is approved.\n\nPENDING REVIEW\n\nOnce approved, your students will appear as points of light here, and your Luminosity Star will rise.\n\nOPEN MENTOR HUB",
+        "memory": 13442279
+      },
+      "saved": true,
+      "finishedAt": 1794210907023
+    },
+    {
+      "slug": "mentor-locked",
+      "width": 768,
+      "captureMode": "full-page",
+      "startedAt": 1794210912764,
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "This area needs an extra role"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nThis area needs an extra role\n\nYour account is signed in, but it doesn't currently hold \"mentor\". You can add the role from Settings — it only takes a second.\n\nOpen Settings\nBack to your home",
+        "memory": 12975625
+      },
+      "saved": true,
+      "finishedAt": 1794210912967
+    },
+    {
+      "slug": "student-light",
+      "width": 768,
+      "captureMode": "full-page",
+      "startedAt": 1794210914263,
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1032,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 13019441
+      },
+      "saved": true,
+      "finishedAt": 1794210914683
+    },
+    {
+      "slug": "mentor-light",
+      "width": 768,
+      "captureMode": "full-page",
+      "startedAt": 1794210916991,
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 2435,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "The Observatory",
+          "Your group this week"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1200,
+            "height": 520
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nMENTOR · THE OBSERVATORY\nThe Observatory\n\n2 students on your map. Their movements draw the sky you watch over.\n\nLIVE MENTOR\nNEW COURSE\nTHE MENTOR PACT\nYou stand among the adept.\n\nYou have found your rhythm. Steady now.\n\nSIX DIVISIONS\nONE COVENANT\nTIER I\nInitiate\nTIER II\nAdept\nTIER III\nMentor\nTIER IV\nSage\nTIER V\nLuminary\nTIER VI\nOracle\nADEPT\n2 COURSES\n\nYour signature, sized by the students you have taught, colored by the division you hold.\n\nHONOURS\n0 IN ALL\n0\nBEACON\n0\nCOMET\n0\nSUPERNOVA\nIV · THE SKY TONIGHT\n2 POINTS OF LIGHT\n2 ACTIVE · 2 TOTAL\nTAP A STAR TO OPEN THEIR PROFILE\nV · THE ROLL\nYour group this week\nFULL PACT ROLL\nTHE ROLL · WEEK FIXTURE-WEEK\n12 MENTORS\nMentor fixture 1\nPROMOTION ZONE\nADEPT\nPROFILE →\n240\n02\nMentor fixture 2\nPROMOTION ZONE\nADEPT\nPROFILE →\n230\n03\nMentor fixture 3\nPROMOTION ZONE\nADEPT\nPROFILE →\n220\n04\nMentor fixture 4\nPROMOTION ZONE\nADEPT\nPROFILE →\n210\n05\nMentor fixture 5\nPROMOTION ZONE\nADEPT\nPROFILE →\n200\n06\nMentor fixture 6\nPROMOTION ZONE\nADEPT\nPROFILE →\n190\n07\nMentor fixture 7\nPROMOTION ZONE\nADEPT\nPROFILE →\n180\n08\nYou\nRELEGATION ZONE\nADEPT\n170\n09\nMentor fixture 9\nRELEGATION ZONE\nADEPT\nPROFILE →\n160\n10\nMentor fixture 10\nRELEGATION ZONE\nADEPT\nPROFILE →\n150\n11\nMentor fixture 11\nRELEGATION ZONE\nADEPT\nPROFILE →\n140\n12\nMentor fixture 12\nRELEGATION ZONE\nADEPT\nPROFILE →\n130\nTOP 7 PROMOTE\n·\nMIDDLE HOLD\n·\nBOTTOM 7 RELEGATE\nVI · THE PULSE\nTHE PACT PULSE · HOLD\n\nRIVALS\nFOUR CLOSEST\nVII · YOUR WORKSHOP\nMy courses\nPublic profile\nEdit profile",
+        "memory": 13874549
+      },
+      "saved": true,
+      "finishedAt": 1794210919665
+    },
+    {
+      "slug": "switcher-open-attempt",
+      "width": 768,
+      "captureMode": "full-page",
+      "startedAt": 1794210921675,
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1032,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nUF\nUI\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 15693020
+      },
+      "saved": true,
+      "finishedAt": 1794210922695
+    },
+    {
+      "slug": "student-empty",
+      "width": 1280,
+      "captureMode": "full-page",
+      "startedAt": 1794210925310,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 13312004
+      },
+      "saved": true,
+      "finishedAt": 1794210925397
+    },
+    {
+      "slug": "student-failed",
+      "width": 1280,
+      "captureMode": "full-page",
+      "startedAt": 1794210930241,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Your universe is dark. Enroll in a course to light your first star."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nSTUDENT · MY UNIVERSE\nYour universe\n\nNothing is in orbit yet. Enrol in a course and the first planet appears here.\n\nMY UNIVERSE\nYour universe is dark. Enroll in a course to light your first star.\n\nEach course you enroll in becomes a planet. The more you learn, the more it reveals.\n\nBrowse courses\nBrowse mentors",
+        "memory": 13871621
+      },
+      "saved": true,
+      "finishedAt": 1794210934309
+    },
+    {
+      "slug": "mentor-pending",
+      "width": 1280,
+      "captureMode": "full-page",
+      "startedAt": 1794210941885,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "Application under review."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nMENTOR\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nOBSERVATORY\nCOURSES\nRECORD\nMEDIA\nSTUDENTS\nSESSIONS\nANALYTICS\nEARNINGS\nPACT\nREVIEW\nMENTOR · THE OBSERVATORY\nApplication under review.\n\nYour observatory unlocks once your mentor application is approved.\n\nPENDING REVIEW\n\nOnce approved, your students will appear as points of light here, and your Luminosity Star will rise.\n\nOPEN MENTOR HUB",
+        "memory": 13718680
+      },
+      "saved": true,
+      "finishedAt": 1794210943027
+    },
+    {
+      "slug": "mentor-locked",
+      "width": 1280,
+      "captureMode": "full-page",
+      "startedAt": 1794210951781,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "This area needs an extra role"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nMENTOR\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nOBSERVATORY\nCOURSES\nRECORD\nMEDIA\nSTUDENTS\nSESSIONS\nANALYTICS\nEARNINGS\nPACT\nREVIEW\nThis area needs an extra role\n\nYour account is signed in, but it doesn't currently hold \"mentor\". You can add the role from Settings — it only takes a second.\n\nOpen Settings\nBack to your home",
+        "memory": 13192243
+      },
+      "saved": true,
+      "finishedAt": 1794210951973
+    },
+    {
+      "slug": "student-light",
+      "width": 1280,
+      "captureMode": "full-page",
+      "startedAt": 1794210953179,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1114,
+        "title": "My Universe · Orbit",
+        "headings": [
+          "Your universe",
+          "Patterns and relations"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nSTUDENT · MY UNIVERSE\nYour universe\n\n3 planets in your sky. The atmosphere clears as you learn.\n\nNEXT UP\nPatterns and relations\nALGEBRA FOUNDATIONS (FIXTURE) · 33% COMPLETE\nRESUME →\nCOURSES\n3\nIN PROGRESS\n1\nFINISHED\n1\nLESSONS DONE\n8\nAlgebra foundations (fixture)\n33%\nGeometry practice (fixture)\n100%\nComputing basics (fixture)\n0%",
+        "memory": 13027316
+      },
+      "saved": true,
+      "finishedAt": 1794210953709
+    },
+    {
+      "slug": "mentor-light",
+      "width": 1280,
+      "captureMode": "full-page",
+      "startedAt": 1794210955516,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2720,
+        "title": "The Observatory | Orbit",
+        "headings": [
+          "The Observatory",
+          "Your group this week"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1200,
+            "height": 520
+          }
+        ],
+        "text": "Orbit\nMENTOR\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nOBSERVATORY\nCOURSES\nRECORD\nMEDIA\nSTUDENTS\nSESSIONS\nANALYTICS\nEARNINGS\nPACT\nREVIEW\nMENTOR · THE OBSERVATORY\nThe Observatory\n\n2 students on your map. Their movements draw the sky you watch over.\n\nLIVE MENTOR\nNEW COURSE\nTHE MENTOR PACT\nYou stand among the adept.\n\nYou have found your rhythm. Steady now.\n\nSIX DIVISIONS\nONE COVENANT\nTIER I\nInitiate\nTIER II\nAdept\nTIER III\nMentor\nTIER IV\nSage\nTIER V\nLuminary\nTIER VI\nOracle\nADEPT\n2 COURSES\n\nYour signature, sized by the students you have taught, colored by the division you hold.\n\nHONOURS\n0 IN ALL\n0\nBEACON\n0\nCOMET\n0\nSUPERNOVA\nIV · THE SKY TONIGHT\n2 POINTS OF LIGHT\n2 ACTIVE · 2 TOTAL\nTAP A STAR TO OPEN THEIR PROFILE\nV · THE ROLL\nYour group this week\nFULL PACT ROLL\nTHE ROLL · WEEK FIXTURE-WEEK\n12 MENTORS\nMentor fixture 1\nPROMOTION ZONE\nADEPT\nPROFILE →\n240\n02\nMentor fixture 2\nPROMOTION ZONE\nADEPT\nPROFILE →\n230\n03\nMentor fixture 3\nPROMOTION ZONE\nADEPT\nPROFILE →\n220\n04\nMentor fixture 4\nPROMOTION ZONE\nADEPT\nPROFILE →\n210\n05\nMentor fixture 5\nPROMOTION ZONE\nADEPT\nPROFILE →\n200\n06\nMentor fixture 6\nPROMOTION ZONE\nADEPT\nPROFILE →\n190\n07\nMentor fixture 7\nPROMOTION ZONE\nADEPT\nPROFILE →\n180\n08\nYou\nRELEGATION ZONE\nADEPT\n170\n09\nMentor fixture 9\nRELEGATION ZONE\nADEPT\nPROFILE →\n160\n10\nMentor fixture 10\nRELEGATION ZONE\nADEPT\nPROFILE →\n150\n11\nMentor fixture 11\nRELEGATION ZONE\nADEPT\nPROFILE →\n140\n12\nMentor fixture 12\nRELEGATION ZONE\nADEPT\nPROFILE →\n130\nTOP 7 PROMOTE\n·\nMIDDLE HOLD\n·\nBOTTOM 7 RELEGATE\nVI · THE PULSE\nTHE PACT PULSE · HOLD\n\nRIVALS\nFOUR CLOSEST\nVII · YOUR WORKSHOP\nMy courses\nPublic profile\nEdit profile",
+        "memory": 13513654
+      },
+      "saved": true,
+      "finishedAt": 1794210957736
+    },
+    {
+      "slug": "switcher-open-attempt",
+      "width": 1280,
+      "captureMode": "full-page",
+      "startedAt": 1794210961051,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2690,
+        "title": "Your Profile | Orbit",
+        "headings": [
+          "Profile Settings",
+          "Your Active Windows",
+          "Cosmic Standing",
+          "Basic Info",
+          "Social Links",
+          "Reviews"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nProfile Settings\n\nYour public persona on Orbit.\n\nYOUR ACTIVE WINDOWS\n\nYou have 3 of 3 roles on Orbit. Switch between them anytime.\n\nYOU’RE IN STUDENT\nPeer Learner\nACTIVE\n\nFree skill-swap worldwide.\n\nOpen\nMentor\nACTIVE\n\nGet paid for 1-on-1 video sessions.\n\nOpen\nStudent\nACTIVE\nYOU’RE HERE\n\nBook mentors, learn live, rate them.\n\nOpen\nMENTOR WINDOW\nPENDING PAYOUT\n₹510\nTOTAL EARNED\n₹1,530\nUPCOMING SESSIONS\n1\nSTUDENT WINDOW\nUPCOMING\n1\nPAST SESSIONS\n1\nPEER WINDOW\nPENDING REQUESTS\n0\nACTIVE MATCHES\n2\n\nYou also have Peer Learner + Mentor enabled.\n\nOpen Peer Learner window\nUF\n\nUI Fixture\n\nui-fixture@example.test\n\nTrust Score: 82/100\nHow it works\nCosmic Standing\nMoon IV — The Deimos\nCosmicScore 1200\nProgress to next tier\n25%\n\nCosmicScore = how well you teach (your local leaderboard standing). Trust Score = how dependable you are as a member. They’re separate.\n\nHow your CosmicScore works\nBasic Info\nFULL NAME\nBIO\nLOCATION\nSPOKEN LANGUAGES (search and pick up to 5)\nEnglish\n1/5 selected\nSocial Links\nGITHUB URL\nLINKEDIN URL\nPERSONAL WEBSITE\nSave Changes\nReviews\nReceived\nGiven\n\nNo reviews received yet.",
+        "memory": 15546678
+      },
+      "saved": true,
+      "finishedAt": 1794210964521
+    },
+    {
+      "slug": "journey-1-levels",
+      "width": 1280,
+      "captureMode": "viewport-only",
+      "startedAt": 1794210997752,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1250,
+        "title": "",
+        "headings": [
+          "1 lessons",
+          "Fixture lesson 1",
+          "Fixture lesson description."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 878,
+            "height": 648
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nBack to course\nI · ECLIPSE\n1/1\n1 STAGE · 1 VIDEO\nA single sitting\nI\nFINALE\nEclipse\n1/1\n+50 XP\n1 LESSONS\nFixture lesson 1\nAlgebra foundations (fixture)\nTIER: HIGH\n2D map\n1. Fixture lesson 1\nFixture lesson 1\nLesson 1 of 1\nIN THE NEXT FEW MINUTES\nFixture lesson description.\nBEGIN",
+        "memory": 22532103
+      },
+      "saved": true,
+      "finishedAt": 1794211012767
+    },
+    {
+      "slug": "journey-30-levels",
+      "width": 1280,
+      "captureMode": "viewport-only",
+      "startedAt": 1794211039546,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2285,
+        "title": "",
+        "headings": [
+          "30 lessons",
+          "Fixture lesson 1",
+          "Fixture lesson description."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 878,
+            "height": 648
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nBack to course\nI · IGNITION\n1/6\n5 STAGES · 30 VIDEOS\nAn expedition\nI\nIgnition\n2/6\n+50 XP\n\nThe first spark. Nothing is expected of you yet.\n\nII\nAscent\n0/6\n+75 XP\nIII\nOrbit\n0/6\n+100 XP\nIV\nTransit\n0/6\n+125 XP\nV\nFINALE\nEclipse\n0/6\n+150 XP\n30 LESSONS\nFixture lesson 1\nFixture lesson 2\n3\nFixture lesson 3\n4\nFixture lesson 4\n5\nFixture lesson 5\n6\nFixture lesson 6\n7\nFixture lesson 7\n8\nFixture lesson 8\n9\nFixture lesson 9\n10\nFixture lesson 10\n11\nFixture lesson 11\n12\nFixture lesson 12\n13\nFixture lesson 13\n14\nFixture lesson 14\n15\nFixture lesson 15\n16\nFixture lesson 16\n17\nFixture lesson 17\n18\nFixture lesson 18\n19\nFixture lesson 19\n20\nFixture lesson 20\n21\nFixture lesson 21\n22\nFixture lesson 22\n23\nFixture lesson 23\n24\nFixture lesson 24\n25\nFixture lesson 25\n26\nFixture lesson 26\n27\nFixture lesson 27\n28\nFixture lesson 28\n29\nFixture lesson 29\n30\nFixture lesson 30\nAlgebra foundations (fixture)\nTIER: HIGH\n2D map\n1. Fixture lesson 1\n2. Fixture lesson 2\n3. Fixture lesson 3\n4. Fixture lesson 4\n5. Fixture lesson 5\n6. Fixture lesson 6\n7. Fixture lesson 7\n8. Fixture lesson 8\n9. Fixture lesson 9\n10. Fixture lesson 10\n11. Fixture lesson 11\n12. Fixture lesson 12\n13. Fixture lesson 13\n14. Fixture lesson 14\n15. Fixture lesson 15\n16. Fixture lesson 16\n17. Fixture lesson 17\n18. Fixture lesson 18\n19. Fixture lesson 19\n20. Fixture lesson 20\n21. Fixture lesson 21\n22. Fixture lesson 22\n23. Fixture lesson 23\n24. Fixture lesson 24\n25. Fixture lesson 25\n26. Fixture lesson 26\n27. Fixture lesson 27\n28. Fixture lesson 28\n29. Fixture lesson 29\n30. Fixture lesson 30\nFixture lesson 1\nLesson 1 of 30\nIN THE NEXT FEW MINUTES\nFixture lesson description.\nBEGIN",
+        "memory": 53284692
+      },
+      "saved": true,
+      "finishedAt": 1794211045383
+    },
+    {
+      "slug": "journey-100-levels",
+      "width": 1280,
+      "captureMode": "viewport-only",
+      "startedAt": 1794211059701,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 5693,
+        "title": "",
+        "headings": [
+          "100 lessons",
+          "Fixture lesson 1",
+          "Fixture lesson description."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 878,
+            "height": 648
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nBack to course\nI · IGNITION\n1/16\n6 STAGES · 100 VIDEOS\nAn epic\nI\nIgnition\n2/16\n+50 XP\n\nThe first spark. Nothing is expected of you yet.\n\nII\nAscent\n0/16\n+75 XP\nIII\nOrbit\n0/17\n+100 XP\nIV\nTransit\n0/17\n+125 XP\nV\nApex\n0/17\n+150 XP\nVI\nFINALE\nEclipse\n0/17\n+175 XP\n100 LESSONS\nFixture lesson 1\nFixture lesson 2\n3\nFixture lesson 3\n4\nFixture lesson 4\n5\nFixture lesson 5\n6\nFixture lesson 6\n7\nFixture lesson 7\n8\nFixture lesson 8\n9\nFixture lesson 9\n10\nFixture lesson 10\n11\nFixture lesson 11\n12\nFixture lesson 12\n13\nFixture lesson 13\n14\nFixture lesson 14\n15\nFixture lesson 15\n16\nFixture lesson 16\n17\nFixture lesson 17\n18\nFixture lesson 18\n19\nFixture lesson 19\n20\nFixture lesson 20\n21\nFixture lesson 21\n22\nFixture lesson 22\n23\nFixture lesson 23\n24\nFixture lesson 24\n25\nFixture lesson 25\n26\nFixture lesson 26\n27\nFixture lesson 27\n28\nFixture lesson 28\n29\nFixture lesson 29\n30\nFixture lesson 30\n31\nFixture lesson 31\n32\nFixture lesson 32\n33\nFixture lesson 33\n34\nFixture lesson 34\n35\nFixture lesson 35\n36\nFixture lesson 36\n37\nFixture lesson 37\n38\nFixture lesson 38\n39\nFixture lesson 39\n40\nFixture lesson 40\n41\nFixture lesson 41\n42\nFixture lesson 42\n43\nFixture lesson 43\n44\nFixture lesson 44\n45\nFixture lesson 45\n46\nFixture lesson 46\n47\nFixture lesson 47\n48\nFixture lesson 48\n49\nFixture lesson 49\n50\nFixture lesson 50\n51\nFixture lesson 51\n52\nFixture lesson 52\n53\nFixture lesson 53\n54\nFixture lesson 54\n55\nFixture lesson 55\n56\nFixture lesson 56\n57\nFixture lesson 57\n58\nFixture lesson 58\n59\nFixture lesson 59\n60\nFixture lesson 60\n61\nFixture lesson 61\n62\nFixture lesson 62\n63\nFixture lesson 63\n64\nFixture lesson 64\n65\nFixture lesson 65\n66\nFixture lesson 66\n67\nFixture lesson 67\n68\nFixture les",
+        "memory": 100792151
+      },
+      "saved": true,
+      "finishedAt": 1794211071406
+    },
+    {
+      "slug": "journey-300-levels",
+      "width": 1280,
+      "captureMode": "viewport-only",
+      "startedAt": 1794211089617,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 15493,
+        "title": "",
+        "headings": [
+          "300 lessons",
+          "Fixture lesson 1",
+          "Fixture lesson description."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 878,
+            "height": 648
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nBack to course\nI · IGNITION\n1/50\n6 STAGES · 300 VIDEOS\nAn epic\nI\nIgnition\n2/50\n+50 XP\n\nThe first spark. Nothing is expected of you yet.\n\nII\nAscent\n0/50\n+75 XP\nIII\nOrbit\n0/50\n+100 XP\nIV\nTransit\n0/50\n+125 XP\nV\nApex\n0/50\n+150 XP\nVI\nFINALE\nEclipse\n0/50\n+175 XP\n300 LESSONS\nFixture lesson 1\nFixture lesson 2\n3\nFixture lesson 3\n4\nFixture lesson 4\n5\nFixture lesson 5\n6\nFixture lesson 6\n7\nFixture lesson 7\n8\nFixture lesson 8\n9\nFixture lesson 9\n10\nFixture lesson 10\n11\nFixture lesson 11\n12\nFixture lesson 12\n13\nFixture lesson 13\n14\nFixture lesson 14\n15\nFixture lesson 15\n16\nFixture lesson 16\n17\nFixture lesson 17\n18\nFixture lesson 18\n19\nFixture lesson 19\n20\nFixture lesson 20\n21\nFixture lesson 21\n22\nFixture lesson 22\n23\nFixture lesson 23\n24\nFixture lesson 24\n25\nFixture lesson 25\n26\nFixture lesson 26\n27\nFixture lesson 27\n28\nFixture lesson 28\n29\nFixture lesson 29\n30\nFixture lesson 30\n31\nFixture lesson 31\n32\nFixture lesson 32\n33\nFixture lesson 33\n34\nFixture lesson 34\n35\nFixture lesson 35\n36\nFixture lesson 36\n37\nFixture lesson 37\n38\nFixture lesson 38\n39\nFixture lesson 39\n40\nFixture lesson 40\n41\nFixture lesson 41\n42\nFixture lesson 42\n43\nFixture lesson 43\n44\nFixture lesson 44\n45\nFixture lesson 45\n46\nFixture lesson 46\n47\nFixture lesson 47\n48\nFixture lesson 48\n49\nFixture lesson 49\n50\nFixture lesson 50\n51\nFixture lesson 51\n52\nFixture lesson 52\n53\nFixture lesson 53\n54\nFixture lesson 54\n55\nFixture lesson 55\n56\nFixture lesson 56\n57\nFixture lesson 57\n58\nFixture lesson 58\n59\nFixture lesson 59\n60\nFixture lesson 60\n61\nFixture lesson 61\n62\nFixture lesson 62\n63\nFixture lesson 63\n64\nFixture lesson 64\n65\nFixture lesson 65\n66\nFixture lesson 66\n67\nFixture lesson 67\n68\nFixture les",
+        "memory": 247949922
+      },
+      "saved": true,
+      "finishedAt": 1794211106572
+    }
+  ],
+  "requests": [
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210872279,
+      "fulfilledAt": 1794210872383
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210872300,
+      "fulfilledAt": 1794210872384
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210872301,
+      "fulfilledAt": 1794210872384
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210872301,
+      "fulfilledAt": 1794210872384
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210872302,
+      "fulfilledAt": 1794210872384
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210872303,
+      "fulfilledAt": 1794210872384
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794210872392,
+      "fulfilledAt": 1794210872463
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210874726,
+      "fulfilledAt": 1794210874739
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210874728,
+      "fulfilledAt": 1794210874739
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210874728,
+      "fulfilledAt": 1794210874739
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210874729,
+      "fulfilledAt": 1794210874739
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210874730,
+      "fulfilledAt": 1794210874739
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210874731,
+      "fulfilledAt": 1794210874739
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210879755,
+      "fulfilledAt": 1794210879769
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210879756,
+      "fulfilledAt": 1794210879769
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210879756,
+      "fulfilledAt": 1794210879769
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210879756,
+      "fulfilledAt": 1794210879769
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210879757,
+      "fulfilledAt": 1794210879769
+    },
+    {
+      "path": "/pact/me",
+      "configured": true,
+      "requestedAt": 1794210879757,
+      "fulfilledAt": 1794210879769
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210879759,
+      "fulfilledAt": 1794210879770
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true,
+      "requestedAt": 1794210879995,
+      "fulfilledAt": 1794210879996
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210881459,
+      "fulfilledAt": 1794210881560
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210881460,
+      "fulfilledAt": 1794210881560
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210881461,
+      "fulfilledAt": 1794210881561
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210881462,
+      "fulfilledAt": 1794210881561
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210881463,
+      "fulfilledAt": 1794210881562
+    },
+    {
+      "path": "/pact/me",
+      "configured": true,
+      "requestedAt": 1794210881463,
+      "fulfilledAt": 1794210881562
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210881464,
+      "fulfilledAt": 1794210881562
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210882749,
+      "fulfilledAt": 1794210882759
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210882749,
+      "fulfilledAt": 1794210882759
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210882751,
+      "fulfilledAt": 1794210882759
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210882751,
+      "fulfilledAt": 1794210882759
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210882751,
+      "fulfilledAt": 1794210882759
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210882752,
+      "fulfilledAt": 1794210882759
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794210882996,
+      "fulfilledAt": 1794210882997
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210884700,
+      "fulfilledAt": 1794210884725
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210884701,
+      "fulfilledAt": 1794210884725
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210884702,
+      "fulfilledAt": 1794210884725
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210884702,
+      "fulfilledAt": 1794210884726
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210884702,
+      "fulfilledAt": 1794210884726
+    },
+    {
+      "path": "/pact/me",
+      "configured": true,
+      "requestedAt": 1794210884703,
+      "fulfilledAt": 1794210884726
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210884703,
+      "fulfilledAt": 1794210884726
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true,
+      "requestedAt": 1794210884947,
+      "fulfilledAt": 1794210884949
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": true,
+      "requestedAt": 1794210885001,
+      "fulfilledAt": 1794210885035
+    },
+    {
+      "path": "/pact/hall",
+      "configured": true,
+      "requestedAt": 1794210885004,
+      "fulfilledAt": 1794210885035
+    },
+    {
+      "path": "/pact/pulse",
+      "configured": true,
+      "requestedAt": 1794210885004,
+      "fulfilledAt": 1794210885035
+    },
+    {
+      "path": "/pact/rivals",
+      "configured": true,
+      "requestedAt": 1794210885005,
+      "fulfilledAt": 1794210885036
+    },
+    {
+      "path": "/courses/mentor/learners",
+      "configured": true,
+      "requestedAt": 1794210885005,
+      "fulfilledAt": 1794210885036
+    },
+    {
+      "path": "/courses",
+      "configured": true,
+      "requestedAt": 1794210885005,
+      "fulfilledAt": 1794210885036
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210888484,
+      "fulfilledAt": 1794210888495
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210888485,
+      "fulfilledAt": 1794210888495
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210888486,
+      "fulfilledAt": 1794210888495
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210888487,
+      "fulfilledAt": 1794210888495
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210888488,
+      "fulfilledAt": 1794210888495
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210888488,
+      "fulfilledAt": 1794210888496
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794210888730,
+      "fulfilledAt": 1794210888731
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210892173,
+      "fulfilledAt": 1794210892182
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210892173,
+      "fulfilledAt": 1794210892182
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210892174,
+      "fulfilledAt": 1794210892182
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210892174,
+      "fulfilledAt": 1794210892182
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210892175,
+      "fulfilledAt": 1794210892182
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210892175,
+      "fulfilledAt": 1794210892182
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794210892402,
+      "fulfilledAt": 1794210892404
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210893549,
+      "fulfilledAt": 1794210893556
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210893551,
+      "fulfilledAt": 1794210893557
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210893551,
+      "fulfilledAt": 1794210893557
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210893552,
+      "fulfilledAt": 1794210893557
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210893552,
+      "fulfilledAt": 1794210893557
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210893552,
+      "fulfilledAt": 1794210893557
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210903437,
+      "fulfilledAt": 1794210903448
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210903437,
+      "fulfilledAt": 1794210903449
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210903438,
+      "fulfilledAt": 1794210903449
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210903438,
+      "fulfilledAt": 1794210903449
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210903439,
+      "fulfilledAt": 1794210903449
+    },
+    {
+      "path": "/pact/me",
+      "configured": true,
+      "requestedAt": 1794210903439,
+      "fulfilledAt": 1794210903449
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210903439,
+      "fulfilledAt": 1794210903449
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true,
+      "requestedAt": 1794210903648,
+      "fulfilledAt": 1794210903649
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210911978,
+      "fulfilledAt": 1794210911982
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210911978,
+      "fulfilledAt": 1794210911983
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210911978,
+      "fulfilledAt": 1794210911983
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210911978,
+      "fulfilledAt": 1794210911984
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210911979,
+      "fulfilledAt": 1794210911984
+    },
+    {
+      "path": "/pact/me",
+      "configured": true,
+      "requestedAt": 1794210911979,
+      "fulfilledAt": 1794210911984
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210911980,
+      "fulfilledAt": 1794210911984
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210913462,
+      "fulfilledAt": 1794210913472
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210913462,
+      "fulfilledAt": 1794210913472
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210913463,
+      "fulfilledAt": 1794210913472
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210913463,
+      "fulfilledAt": 1794210913472
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210913464,
+      "fulfilledAt": 1794210913472
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210913468,
+      "fulfilledAt": 1794210913475
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794210913698,
+      "fulfilledAt": 1794210913700
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210915355,
+      "fulfilledAt": 1794210915370
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210915355,
+      "fulfilledAt": 1794210915371
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210915356,
+      "fulfilledAt": 1794210915371
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210915356,
+      "fulfilledAt": 1794210915371
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210915361,
+      "fulfilledAt": 1794210915371
+    },
+    {
+      "path": "/pact/me",
+      "configured": true,
+      "requestedAt": 1794210915362,
+      "fulfilledAt": 1794210915371
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210915362,
+      "fulfilledAt": 1794210915371
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true,
+      "requestedAt": 1794210915582,
+      "fulfilledAt": 1794210915598
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": true,
+      "requestedAt": 1794210915605,
+      "fulfilledAt": 1794210915613
+    },
+    {
+      "path": "/pact/hall",
+      "configured": true,
+      "requestedAt": 1794210915606,
+      "fulfilledAt": 1794210915614
+    },
+    {
+      "path": "/pact/pulse",
+      "configured": true,
+      "requestedAt": 1794210915606,
+      "fulfilledAt": 1794210915614
+    },
+    {
+      "path": "/pact/rivals",
+      "configured": true,
+      "requestedAt": 1794210915607,
+      "fulfilledAt": 1794210915614
+    },
+    {
+      "path": "/courses/mentor/learners",
+      "configured": true,
+      "requestedAt": 1794210915608,
+      "fulfilledAt": 1794210915614
+    },
+    {
+      "path": "/courses",
+      "configured": true,
+      "requestedAt": 1794210915608,
+      "fulfilledAt": 1794210915614
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210920464,
+      "fulfilledAt": 1794210920475
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210920465,
+      "fulfilledAt": 1794210920475
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210920466,
+      "fulfilledAt": 1794210920475
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210920468,
+      "fulfilledAt": 1794210920475
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210920468,
+      "fulfilledAt": 1794210920475
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210920469,
+      "fulfilledAt": 1794210920475
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794210920700,
+      "fulfilledAt": 1794210920713
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210924445,
+      "fulfilledAt": 1794210924453
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210924446,
+      "fulfilledAt": 1794210924453
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210924447,
+      "fulfilledAt": 1794210924453
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210924447,
+      "fulfilledAt": 1794210924453
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210924447,
+      "fulfilledAt": 1794210924453
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210924449,
+      "fulfilledAt": 1794210924453
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794210924672,
+      "fulfilledAt": 1794210924675
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210925865,
+      "fulfilledAt": 1794210925875
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210925867,
+      "fulfilledAt": 1794210925875
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210925869,
+      "fulfilledAt": 1794210925875
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210925869,
+      "fulfilledAt": 1794210925875
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210925870,
+      "fulfilledAt": 1794210925875
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210925870,
+      "fulfilledAt": 1794210925875
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210938136,
+      "fulfilledAt": 1794210938149
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210938136,
+      "fulfilledAt": 1794210938149
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210938140,
+      "fulfilledAt": 1794210938149
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210938140,
+      "fulfilledAt": 1794210938149
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210938141,
+      "fulfilledAt": 1794210938149
+    },
+    {
+      "path": "/pact/me",
+      "configured": true,
+      "requestedAt": 1794210938142,
+      "fulfilledAt": 1794210938149
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210938145,
+      "fulfilledAt": 1794210938150
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true,
+      "requestedAt": 1794210938359,
+      "fulfilledAt": 1794210938361
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210950993,
+      "fulfilledAt": 1794210951000
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210950994,
+      "fulfilledAt": 1794210951000
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210950994,
+      "fulfilledAt": 1794210951000
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210950995,
+      "fulfilledAt": 1794210951000
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210950995,
+      "fulfilledAt": 1794210951001
+    },
+    {
+      "path": "/pact/me",
+      "configured": true,
+      "requestedAt": 1794210950995,
+      "fulfilledAt": 1794210951001
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210950996,
+      "fulfilledAt": 1794210951001
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210952394,
+      "fulfilledAt": 1794210952401
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210952395,
+      "fulfilledAt": 1794210952401
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210952395,
+      "fulfilledAt": 1794210952401
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210952396,
+      "fulfilledAt": 1794210952401
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210952396,
+      "fulfilledAt": 1794210952401
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210952398,
+      "fulfilledAt": 1794210952401
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794210952606,
+      "fulfilledAt": 1794210952608
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210954300,
+      "fulfilledAt": 1794210954309
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210954301,
+      "fulfilledAt": 1794210954309
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210954302,
+      "fulfilledAt": 1794210954309
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210954303,
+      "fulfilledAt": 1794210954309
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210954303,
+      "fulfilledAt": 1794210954309
+    },
+    {
+      "path": "/pact/me",
+      "configured": true,
+      "requestedAt": 1794210954305,
+      "fulfilledAt": 1794210954309
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210954306,
+      "fulfilledAt": 1794210954309
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true,
+      "requestedAt": 1794210954521,
+      "fulfilledAt": 1794210954522
+    },
+    {
+      "path": "/sessions/mentors/account-fixture/honours",
+      "configured": true,
+      "requestedAt": 1794210954550,
+      "fulfilledAt": 1794210954552
+    },
+    {
+      "path": "/pact/hall",
+      "configured": true,
+      "requestedAt": 1794210954553,
+      "fulfilledAt": 1794210954554
+    },
+    {
+      "path": "/pact/pulse",
+      "configured": true,
+      "requestedAt": 1794210954564,
+      "fulfilledAt": 1794210954565
+    },
+    {
+      "path": "/pact/rivals",
+      "configured": true,
+      "requestedAt": 1794210954577,
+      "fulfilledAt": 1794210954581
+    },
+    {
+      "path": "/courses/mentor/learners",
+      "configured": true,
+      "requestedAt": 1794210954584,
+      "fulfilledAt": 1794210954588
+    },
+    {
+      "path": "/courses",
+      "configured": true,
+      "requestedAt": 1794210954604,
+      "fulfilledAt": 1794210954607
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210958559,
+      "fulfilledAt": 1794210958750
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210958560,
+      "fulfilledAt": 1794210958750
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210958561,
+      "fulfilledAt": 1794210958751
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210958561,
+      "fulfilledAt": 1794210958751
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210958562,
+      "fulfilledAt": 1794210958752
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210958562,
+      "fulfilledAt": 1794210958752
+    },
+    {
+      "path": "/courses/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794210958877,
+      "fulfilledAt": 1794210958976
+    },
+    {
+      "path": "/user/profile",
+      "configured": true,
+      "requestedAt": 1794210959922,
+      "fulfilledAt": 1794210959952
+    },
+    {
+      "path": "/trust/ratings/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210959923,
+      "fulfilledAt": 1794210959953
+    },
+    {
+      "path": "/trust/my-given",
+      "configured": true,
+      "requestedAt": 1794210959924,
+      "fulfilledAt": 1794210959953
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true,
+      "requestedAt": 1794210959925,
+      "fulfilledAt": 1794210959954
+    },
+    {
+      "path": "/sessions/mentor/bookings",
+      "configured": true,
+      "requestedAt": 1794210959925,
+      "fulfilledAt": 1794210959954
+    },
+    {
+      "path": "/sessions/me",
+      "configured": true,
+      "requestedAt": 1794210959926,
+      "fulfilledAt": 1794210959954
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true,
+      "requestedAt": 1794210959927,
+      "fulfilledAt": 1794210959955
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true,
+      "requestedAt": 1794210959927,
+      "fulfilledAt": 1794210959955
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794210971760,
+      "fulfilledAt": 1794210971770
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794210971760,
+      "fulfilledAt": 1794210971770
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794210971761,
+      "fulfilledAt": 1794210971770
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210971761,
+      "fulfilledAt": 1794210971770
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210971762,
+      "fulfilledAt": 1794210971770
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210971764,
+      "fulfilledAt": 1794210971770
+    },
+    {
+      "path": "/courses/course-fixture",
+      "configured": true,
+      "requestedAt": 1794210971983,
+      "fulfilledAt": 1794210972020
+    },
+    {
+      "path": "/courses/course-fixture/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794210971984,
+      "fulfilledAt": 1794210972033
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794210988045,
+      "fulfilledAt": 1794210988103
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794210996836,
+      "fulfilledAt": 1794210996850
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794211010305,
+      "fulfilledAt": 1794211010307
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794211018124,
+      "fulfilledAt": 1794211018133
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794211018126,
+      "fulfilledAt": 1794211018134
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794211018127,
+      "fulfilledAt": 1794211018134
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794211018127,
+      "fulfilledAt": 1794211018134
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794211018128,
+      "fulfilledAt": 1794211018134
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794211018129,
+      "fulfilledAt": 1794211018134
+    },
+    {
+      "path": "/courses/course-fixture",
+      "configured": true,
+      "requestedAt": 1794211018503,
+      "fulfilledAt": 1794211018509
+    },
+    {
+      "path": "/courses/course-fixture/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794211018504,
+      "fulfilledAt": 1794211018509
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794211039548,
+      "fulfilledAt": 1794211039549
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794211043323,
+      "fulfilledAt": 1794211043325
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794211050395,
+      "fulfilledAt": 1794211050408
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794211050397,
+      "fulfilledAt": 1794211050408
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794211050399,
+      "fulfilledAt": 1794211050408
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794211050401,
+      "fulfilledAt": 1794211050408
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794211050402,
+      "fulfilledAt": 1794211050408
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794211050403,
+      "fulfilledAt": 1794211050408
+    },
+    {
+      "path": "/courses/course-fixture",
+      "configured": true,
+      "requestedAt": 1794211050809,
+      "fulfilledAt": 1794211050815
+    },
+    {
+      "path": "/courses/course-fixture/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794211050811,
+      "fulfilledAt": 1794211050815
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794211065583,
+      "fulfilledAt": 1794211065585
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794211076278,
+      "fulfilledAt": 1794211076427
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794211076282,
+      "fulfilledAt": 1794211076427
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794211076285,
+      "fulfilledAt": 1794211076427
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794211076288,
+      "fulfilledAt": 1794211076427
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794211076292,
+      "fulfilledAt": 1794211076427
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794211076299,
+      "fulfilledAt": 1794211076427
+    },
+    {
+      "path": "/courses/course-fixture",
+      "configured": true,
+      "requestedAt": 1794211076718,
+      "fulfilledAt": 1794211076733
+    },
+    {
+      "path": "/courses/course-fixture/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794211076723,
+      "fulfilledAt": 1794211076733
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794211091636,
+      "fulfilledAt": 1794211091638
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794211103069,
+      "fulfilledAt": 1794211103071
+    }
+  ],
+  "missingFixtures": [],
+  "blocked": [
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:64853/socket.io/?EIO=4&transport=websocket"
+    }
+  ],
+  "fonts": [
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v23/pxiByp8kv8JHgFVrLCz7Z1xlFd2JQEk.woff2",
+      "bytes": 7848,
+      "sha256": "197a3cbd7290c242c5c765268cdd69a9a39867fdc80cd13071f243a81c56fb76"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap",
+      "bytes": 8078,
+      "sha256": "760eddf4dac8f25b68d32e2dcbb3fcf771c9100749cfa6b200691cd4c45b6907"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiDyp8kv8JHgFVrJJLmy15lEA.ttf",
+      "bytes": 172720,
+      "sha256": "733b74494c0b5856045e34eea8b899f02458ca8e0b7ebd2a887a86b64d99b0d0"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0C4n.ttf",
+      "bytes": 122116,
+      "sha256": "47ed1cfaa7ffca04a04ab850b2938fd52c09d1b44cfa3e2980878e166b0cbd87"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsgH1y4n.ttf",
+      "bytes": 122060,
+      "sha256": "733eb93b167e6d45de09aa768f6c0355647c2c26f5416dbc7407a08ed41e81c6"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8L6tjPQ.ttf",
+      "bytes": 112092,
+      "sha256": "a1d92abc6b02a87faed23d98067ab1027e8e95242fd7c9978a072ea383b89d1a"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLDD4V1s.ttf",
+      "bytes": 149072,
+      "sha256": "5e8a5c3c2a56c3bc1b135645ca9637b9b64dc3fed5fbf85cb5ed144e06bb6d48"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsg-1y4n.ttf",
+      "bytes": 122132,
+      "sha256": "75367e6da7d914eaed87883ba51b2a2b5816b5cdbb39f96ec5c81a5b032bfd5a"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLCz7V1s.ttf",
+      "bytes": 150292,
+      "sha256": "1984efdda0fbe207d7ac20feac2ba7c2768c92a90094b02a206c9d58cc30ff2e"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjr0C4n.ttf",
+      "bytes": 122264,
+      "sha256": "05f24e5e4d738b9f8e8643809ebed4800287d61a75d19ac2716f12b5d26279dd"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPQ.ttf",
+      "bytes": 112172,
+      "sha256": "44ce4a84f20d60f24539bd0cef11f79c29e38609e0f8adf18551c9794a5d9dc3"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLEj6V1s.ttf",
+      "bytes": 151516,
+      "sha256": "dae40ca7b35fe7501bda2e4140a6860b1db47330be5d3c8ab6971fd83a70e9a5"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLBT5V1s.ttf",
+      "bytes": 147708,
+      "sha256": "3a05787fc423c4d73c2846beebb56378092f17ac6698ed54765b6ca11fabccc0"
+    }
+  ],
+  "interactions": [
+    {
+      "kind": "switcher-open",
+      "width": 360,
+      "visible": false,
+      "before": "/student/universe",
+      "after": "/student/universe",
+      "menuVisible": false,
+      "focus": {
+        "tag": "BUTTON",
+        "text": ""
+      }
+    },
+    {
+      "kind": "keyboard-focus",
+      "width": 360,
+      "active": {
+        "tag": "A",
+        "text": "My Universe",
+        "outline": "rgb(247, 247, 247) auto 1px"
+      }
+    },
+    {
+      "kind": "switcher-open",
+      "width": 768,
+      "visible": false,
+      "before": "/student/universe",
+      "after": "/student/universe",
+      "menuVisible": false,
+      "focus": {
+        "tag": "BUTTON",
+        "text": ""
+      }
+    },
+    {
+      "kind": "keyboard-focus",
+      "width": 768,
+      "active": {
+        "tag": "A",
+        "text": "My Universe",
+        "outline": "rgb(247, 247, 247) auto 1px"
+      }
+    },
+    {
+      "kind": "switcher-open",
+      "width": 1280,
+      "visible": true,
+      "before": "/student/universe",
+      "after": "/profile",
+      "menuVisible": false,
+      "focus": {
+        "tag": "BODY",
+        "text": "Orbitstudent3,2004Search⌘K\n        @keyframes orbitSigilSpin {\n          from { transform: rotate(0d"
+      }
+    },
+    {
+      "kind": "keyboard-focus",
+      "width": 1280,
+      "active": {
+        "tag": "A",
+        "text": "Orbitstudent",
+        "outline": "rgb(16, 16, 16) auto 1px"
+      }
+    }
+  ],
+  "stress": [
+    {
+      "levels": 1,
+      "has3d": true,
+      "loadAndSampleMs": 41318,
+      "frames": {
+        "frames": 8,
+        "elapsed": 2028.800000011921
+      },
+      "memory": 22532103,
+      "canvases": [
+        {
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "width": 878,
+          "height": 648
+        }
+      ],
+      "errors": []
+    },
+    {
+      "levels": 30,
+      "has3d": false,
+      "loadAndSampleMs": 27594,
+      "frames": {
+        "frames": 7,
+        "elapsed": 5568.300000011921
+      },
+      "memory": 53284692,
+      "canvases": [
+        {
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "width": 878,
+          "height": 648
+        }
+      ],
+      "errors": []
+    },
+    {
+      "levels": 100,
+      "has3d": false,
+      "loadAndSampleMs": 21329,
+      "frames": {
+        "frames": 8,
+        "elapsed": 5238.700000047684
+      },
+      "memory": 100792151,
+      "canvases": [
+        {
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "width": 878,
+          "height": 648
+        }
+      ],
+      "errors": []
+    },
+    {
+      "levels": 300,
+      "has3d": false,
+      "loadAndSampleMs": 30614,
+      "frames": {
+        "frames": 8,
+        "elapsed": 4476.5
+      },
+      "memory": 247949922,
+      "canvases": [
+        {
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "width": 878,
+          "height": 648
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "failures": [
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    }
+  ],
+  "buildRoot": "D:\\orbit-main\\orbit-main\\.agent\\scratch\\iw-a2-20261108-be84ac1c\\build",
+  "base": "http://127.0.0.1:64853",
+  "browser": "156.0.8078.4",
+  "status": "completed-with-observations",
+  "finishedAt": "2026-11-09T07:58:34.162Z"
+}

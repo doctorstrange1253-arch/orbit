@@ -1,0 +1,20 @@
+# Published evidence update for D1
+Access date: 2026-11-16. Six original read-only returns from wmcaq3fou / wf_011c1ed3-993 were recovered without replay. Numbers below are secondary context, not our survey, traction or product results.
+
+| ID | Claim / number | Population / sample / year | Method and limitation | URL / returned status |
+|---|---|---|---|---|
+| J15 | Historical MOOC median completion12.6%; range0.7%-52.1% |129courses with completion figures from221collected; study2015, no additions afterNov2013 | Public-data convenience collection; course-level median, heterogeneous definitions; not currentIndia or pooled learner completion | https://www.irrodl.org/index.php/irrodl/article/download/2112/3340?inline=1 ; fetched passage returned |
+| F19 | Corrective feedback changed retrieval-effort pattern; no adopted effect size |36UCLAstudents,36wordpairs, seven-day delay;2019 | Laboratory retrieval and consecutive feedback tests; no Orbit/India/course-completion efficacy claim | https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2019.01863/full ; fetched passage returned |
+| CP26 | CourseraPlus INR2099monthly after7daytrial | India-localized officialpage; notstudy | Tax/finalcheckout unspecified; observation not willingness-to-pay | https://www.coursera.org/courseraplus ; fetched2026-11-16 |
+| CA26 | CourseraPlus INR7499upfront introductory12months; regular13999annualrenewal plus applicabletax | NewIndiaresidentPlus subscribers,one/person; offerthroughNov30,2026 23:59UTC | Eligibility/promotionrestrictions; introductorytax treatment unverified | Same officialpage; fetched2026-11-16 |
+| BI26 | BrilliantIndividual INR812.50monthly-equivalent, annualone-paymentrenewal | INRrenderedofficialpage; notstudy | Not a monthlyinstallment quote; upfronttotal/tax/residency not established | https://brilliant.org/premium/ ; fetched2026-11-16 |
+| BF26 | BrilliantFamily INR1650monthly-equivalent, annualonepayment,6seats | INRrenderedofficialpage; notstudy | Sameannual/tax/residency limits; not used as studentdemand proof | Sameofficialpage; fetched2026-11-16 |
+| SG26 | No adoptable India course-finding/skill-gap prevalence number | Population/sample/year unavailable | Wheeboxpage placeholder; smallerhomepage retry no qualifyingreport; do not forcea number | https://wheebox.com/india-skills-report.htm ; UNVERIFIED |
+| WP26 | Student willingness-to-pay remains unknown | No qualifyingpopulation/sample/pricecontext | Search unavailable; candidatePDF content-blocked; noalternative-routebypass or inventedpercentage | https://assets.kpmg.com/content/dam/kpmg/in/pdf/2017/05/Online-Education-in-India-2021.pdf ; UNVERIFIED |
+| UE26 | Current Udemy instructor commission/channel percentages withheld | Individual-courseinstructors; policyyearunverified | Officialpolicy403; nobody/percentage/change scheduleaccepted | https://support.udemy.com/hc/en-us/articles/229605008-Instructor-Revenue-Share ; UNVERIFIED |
+| GE26 | Relevant local enrollment unknown | GraphicEraDeemedUniversity,notHillUniversity; firstinstitutionnotchosen | OfficialNIRFnavigationlisted2026submission; PDFcontent-blocked; no enrollmentnumberused | https://geu.ac.in/quick-links/nirf ; navigationonly, countUNVERIFIED |
+
+## Deck treatment
+Use only J15as historical completion context, plus datedCP26/BI26 price observations if needed. No blocked number ships. No India-wide unmet-course, purchase-intent or localpopulation statistic is invented. Bottom-upreach/conversion/price and cost models are explicit ESTIMATEscenarios, not measured forecasts.
+Knownfounderfacts: team exists; founder/friends origin; noone-to-one interviews or primarysurveydata supplied. Memberdetails, targetcampus/branch/year, actualcosts, livedepisode, livedemo, traction, deadline/uploadlimit/contact remain founder-owned unknowns. Use methods/verification/riskmodules, notfakequotes or FILLtext, in the draft.
+Retainedvendorcostbaselines remain separately qualified: Razorpay2%fee plusGSTonfee andCloudflareStream USDminute pricing; not actualmerchantinvoice, productGSTclearance or all-incost.

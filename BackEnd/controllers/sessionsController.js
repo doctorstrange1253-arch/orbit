@@ -549,10 +549,35 @@ exports.rate = async (req, res) => {
 };
 
 // ── POST /api/sessions/webhook  (mounted with express.raw before json) ─────
+const WebhookEvent = require("../models/WebhookEvent");
+
 exports.webhook = async (req, res) => {
     try {
         const sig = req.get("x-razorpay-signature");
         const { event, payload } = payment.handleWebhook(req.body, sig);
+
+        // Derive unique eventId for idempotency check (payment/refund entity ID + event)
+        const entityId = payload?.payment?.entity?.id || payload?.refund?.entity?.id || req.get("x-razorpay-event-id");
+        const eventId = entityId ? `${event}:${entityId}` : null;
+
+        if (eventId) {
+            try {
+                // Atomic insert; fails if eventId already processed
+                await WebhookEvent.create({
+                    eventId,
+                    provider: "razorpay",
+                    event,
+                    payloadSummary: { entityId }
+                });
+            } catch (dupErr) {
+                if (dupErr.code === 11000) {
+                    // Duplicate event caught — return 200 immediately to acknowledge gateway retry
+                    return res.json({ ok: true, duplicate: true, message: "Event already processed" });
+                }
+                throw dupErr;
+            }
+        }
+
         // Idempotent dispatch on the live payment object.
         if (event === "payment.captured") {
             const id = payload?.payment?.entity?.id;

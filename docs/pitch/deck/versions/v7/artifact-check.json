@@ -1,0 +1,31 @@
+{
+  "editable": {
+    "slides": 10,
+    "notes": 10,
+    "nativeTextRuns": 735,
+    "nativeShapes": 897,
+    "fontSizes": [
+      8.0,
+      10.0,
+      10.5,
+      24.0,
+      28.0,
+      56.0,
+      72.0
+    ],
+    "bytes": 2173555
+  },
+  "_presentation-safe": {
+    "slides": 10,
+    "notes": 10,
+    "nativeTextRuns": 0,
+    "nativeShapes": 0,
+    "fontSizes": [],
+    "bytes": 3613591
+  },
+  "checks": {
+    "failures": [],
+    "status": "PASS",
+    "scope": "Native count/text/fonts/fixed-slot bounds and declared density; visual and founder facts separate"
+  }
+}

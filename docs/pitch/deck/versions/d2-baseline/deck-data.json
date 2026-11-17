@@ -1,0 +1,1537 @@
+{
+  "product": "Orbit",
+  "version": 5,
+  "audience": "TBI-GEU shortlisting judges",
+  "deadline": null,
+  "deadlineStatus": "Actual submission deadline and upload limit not supplied",
+  "economics": {
+    "corePrice": 599,
+    "premiumPrice": 1199,
+    "gst": 0.18,
+    "platform": 0.2,
+    "mentor": 0.8,
+    "gateway": 0.02,
+    "gatewayTax": 0.18,
+    "fx": 85,
+    "watchCore": 120,
+    "watchPremium": 240,
+    "storageUsd": 5,
+    "storageLearners": 50,
+    "aiCore": 10,
+    "aiPremium": 20,
+    "supportCore": 8,
+    "supportPremium": 12,
+    "fixedMonthly": 15000,
+    "coreMix": 0.8,
+    "sessionPrice": 1000,
+    "sessionFee": 0.15,
+    "status": "Illustrative estimate; working prices, to be validated; tax and accounting basis unapproved"
+  },
+  "funding": [
+    {
+      "label": "Infrastructure + support",
+      "amount": 45000,
+      "basis": "INR15,000 x 3 months",
+      "milestone": "Metered 90-day pilot",
+      "month": "1-3"
+    },
+    {
+      "label": "Two course incentives",
+      "amount": 20000,
+      "basis": "INR10,000 x 2 courses",
+      "milestone": "2 reviewed courses",
+      "month": "1-2"
+    },
+    {
+      "label": "Campus activation",
+      "amount": 8000,
+      "basis": "4 actions x INR2,000",
+      "milestone": "30 activated learners",
+      "month": "1-3"
+    },
+    {
+      "label": "Professional review",
+      "amount": 7000,
+      "basis": "One estimated allowance",
+      "milestone": "Payment/privacy release scope",
+      "month": "1"
+    },
+    {
+      "label": "Testing + reliability",
+      "amount": 10000,
+      "basis": "Two INR5,000 checks",
+      "milestone": "Pilot-critical gates reviewed",
+      "month": "1-3"
+    },
+    {
+      "label": "Borrow-first capture kit",
+      "amount": 2000,
+      "basis": "One capped allowance",
+      "milestone": "Repeatable creator capture",
+      "month": "2"
+    },
+    {
+      "label": "Contingency reserve",
+      "amount": 8000,
+      "basis": "8% of proposal",
+      "milestone": "Spend only for verified need",
+      "month": "1-3"
+    }
+  ],
+  "slides": [
+    {
+      "number": 1,
+      "topic": "TITLE",
+      "headline": "Start with the course a learner needs.",
+      "seconds": 25,
+      "speech": "Orbit starts with the skill a learner needs, not just the catalog already available. We are developing a request-led course platform connecting learner demand, mentor response and a visible learning journey. This is a prototype with sample screens, not a proven paid service. We are seeking support for a bounded validation cycle.",
+      "question": "Is the product already live?",
+      "answer": "Source-visible components and sample-data interfaces exist. A current integrated paid service and learning outcomes are not verified.",
+      "panels": [
+        {
+          "title": "ORBIT / EDTECH",
+          "type": "cover",
+          "source": [
+            "F",
+            "P",
+            "C"
+          ],
+          "value": "Orbit",
+          "subtitle": "Learners request. Mentors build. Practice becomes a visible journey.",
+          "text": "Learner-requested courses. Mentor response. A visible path to practice.\nTBI-GEU Pitch Deck · In development"
+        },
+        {
+          "title": "A REAL PROTOTYPE SCREEN",
+          "type": "image",
+          "source": [
+            "V"
+          ],
+          "images": [
+            {
+              "name": "journey",
+              "caption": "Finite lesson selector · sample data"
+            }
+          ],
+          "text": "1 Select a lesson · 2 See the current step · 3 Follow a finite path. This capture does not prove video playback, persisted completion or the new world redesign."
+        },
+        {
+          "title": "SOURCE-VISIBLE, NOT LIVE PROOF",
+          "type": "table",
+          "source": [
+            "P"
+          ],
+          "headers": [
+            "Component",
+            "Scope"
+          ],
+          "rows": [
+            [
+              "Requests + votes",
+              "Partial"
+            ],
+            [
+              "Lessons + studio",
+              "Partial"
+            ],
+            [
+              "Paid checkout",
+              "Unavailable"
+            ]
+          ],
+          "text": ""
+        },
+        {
+          "title": "THE INTENDED LOOP",
+          "type": "flow",
+          "source": [
+            "P",
+            "E"
+          ],
+          "steps": [
+            "Request",
+            "Threshold",
+            "Signal",
+            "Build",
+            "Learn + rate"
+          ],
+          "text": "Intended loop; integrated pilot unproven."
+        },
+        {
+          "title": "THE VALIDATION CASE",
+          "type": "table",
+          "source": [
+            "F",
+            "E"
+          ],
+          "headers": [
+            "Known",
+            "Not yet supplied"
+          ],
+          "rows": [
+            [
+              "Team exists",
+              "People + proof unknown"
+            ],
+            [
+              "Personal origin",
+              "No counted discovery"
+            ],
+            [
+              "Prototype",
+              "No paid-service proof"
+            ]
+          ],
+          "text": ""
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "topic": "PROBLEM",
+      "headline": "A catalog cannot answer every learner's next need.",
+      "seconds": 30,
+      "speech": "The founder and friends experienced unmet learning needs. That is the origin of this product, not a representative customer study. Historical MOOC research reported a twelve-point-six percent course-level median completion rate, with wide variation. It is not current Indian dropout data. We will test one practical skill and whether relevant instruction and feedback actually matter to a narrow adult learner group.",
+      "question": "How many students have this problem?",
+      "answer": "We have no measured local prevalence. The next sprint is designed to establish that without substituting a published MOOC statistic for our own customers.",
+      "panels": [
+        {
+          "title": "HISTORICAL CONTEXT, NOT OUR DROPOUT",
+          "type": "hero",
+          "source": [
+            "J15"
+          ],
+          "value": "12.6%",
+          "subtitle": "Median completion across 129 reported MOOCs",
+          "text": "2015: 129 of 221 collected courses reported completion; range 0.7%-52.1%. Public-data course-level median, no additions after Nov 2013. Not pooled learners, current India or Orbit outcomes.",
+          "mini": [
+            "Public data",
+            "Course median",
+            "No causal claim"
+          ]
+        },
+        {
+          "title": "THE LIVED ORIGIN / EVIDENCE LEDGER",
+          "type": "table",
+          "source": [
+            "F",
+            "E"
+          ],
+          "headers": [
+            "Evidence",
+            "What it supports"
+          ],
+          "rows": [
+            [
+              "Founder + friends",
+              "Problem origin only"
+            ],
+            [
+              "0 interviews",
+              "No customer insight yet"
+            ],
+            [
+              "No survey data",
+              "No prevalence estimate"
+            ],
+            [
+              "14-day sprint",
+              "Proposed next proof"
+            ]
+          ],
+          "text": "The exact recent episode and number of friends were not supplied. We will not invent a quote, failed purchase or representative pain score."
+        },
+        {
+          "title": "THREE JOBS TO TEST",
+          "type": "flow",
+          "source": [
+            "E"
+          ],
+          "steps": [
+            "Find the skill",
+            "Get feedback",
+            "Finish a useful task"
+          ],
+          "text": "For proposed learners aged 18+, test relevance, support and practical use separately. A missing catalog item does not automatically mean willingness to pay."
+        },
+        {
+          "title": "TODAY'S ALTERNATIVES",
+          "type": "table",
+          "source": [
+            "E"
+          ],
+          "headers": [
+            "Route",
+            "Question to test"
+          ],
+          "rows": [
+            [
+              "Broad catalogs",
+              "Is the exact topic available?"
+            ],
+            [
+              "Open video",
+              "Can learners get feedback?"
+            ],
+            [
+              "Direct mentoring",
+              "Does time + price fit?"
+            ],
+            [
+              "Peer help",
+              "Is support dependable?"
+            ]
+          ],
+          "text": "Credible alternatives; these limits are hypotheses to test, not competitor findings."
+        },
+        {
+          "title": "PROPOSED DISCOVERY DESIGN",
+          "type": "table",
+          "source": [
+            "E"
+          ],
+          "headers": [
+            "Sample target",
+            "Method"
+          ],
+          "rows": [
+            [
+              "12 learner interviews",
+              "Recent task + alternative"
+            ],
+            [
+              "60 adult responses",
+              "Need + price context"
+            ],
+            [
+              "6 mentor conversations",
+              "Time + delivery proof"
+            ]
+          ],
+          "text": "Over 14 days, record who, how and when. A convenience sample would remain nonrepresentative; targets are not completed research."
+        },
+        {
+          "title": "THE DECISION, NOT THE HYPE",
+          "type": "flow",
+          "source": [
+            "E"
+          ],
+          "steps": [
+            "One campus",
+            "One skill",
+            "One repeatable cycle"
+          ],
+          "text": "By day 45, stop if fewer than 3 mentors commit or fewer than 10 learners activate. These predeclared thresholds are proposals, not measured demand or approved pilot policy."
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "topic": "CUSTOMERS",
+      "headline": "Ask for commitment, not compliments.",
+      "seconds": 30,
+      "speech": "No one-to-one interviews or primary survey dataset has been supplied. Our proposed fourteen-day sprint targets twelve learner interviews, sixty responses and six mentor conversations. We will test behaviors rather than compliments: a recent unmet skill, a real course request, usable feedback and a mentor's time commitment. Stop rules and sample limits will be stated before collecting results.",
+      "question": "Do you have validated product-market fit?",
+      "answer": "No. Personal experience and source work do not establish fit. Written commitments, observed activation and later paid conversion would be stronger evidence.",
+      "panels": [
+        {
+          "title": "CUSTOMER RESEARCH TODAY",
+          "type": "hero",
+          "source": [
+            "F",
+            "E"
+          ],
+          "value": "0",
+          "subtitle": "One-to-one customer interviews reported",
+          "text": "No primary survey data supplied. Personal/friends experience is origin, not respondents. Proposed 14 days: 12 learner interviews, 60 adult responses, 6 mentor conversations. No recruitment performed.",
+          "mini": [
+            "Opinion",
+            "Observed action",
+            "Written commitment"
+          ]
+        },
+        {
+          "title": "SIX HYPOTHESES / NEXT EVIDENCE",
+          "type": "table",
+          "source": [
+            "E"
+          ],
+          "headers": [
+            "Hypothesis",
+            "Test / stop signal"
+          ],
+          "rows": [
+            [
+              "Specific topic missing",
+              "Recent alternative + gap"
+            ],
+            [
+              "Need repeats",
+              "Task recurs, not curiosity"
+            ],
+            [
+              "Feedback matters",
+              "Use a reviewed exercise"
+            ],
+            [
+              "Course intent exists",
+              "Request + follow-through"
+            ],
+            [
+              "Mentor can deliver",
+              "Time + teaching proof"
+            ],
+            [
+              "20% / 80% accepted",
+              "Terms reviewed, not assumed"
+            ]
+          ],
+          "text": "Unvalidated hypotheses, not commitments."
+        },
+        {
+          "title": "14-DAY PROPOSED SPRINT",
+          "type": "flow",
+          "source": [
+            "E"
+          ],
+          "steps": [
+            "Days 1-4: recruit",
+            "Days 5-10: observe",
+            "Days 11-14: decide"
+          ],
+          "text": "Ask about the last task, alternatives, cost, feedback and completion. Survey themes cover topic, urgency, schedule, format, support, price, commitment and consent."
+        },
+        {
+          "title": "EVIDENCE BEFORE A GROWTH CLAIM",
+          "type": "table",
+          "source": [
+            "E"
+          ],
+          "headers": [
+            "Signal",
+            "Required boundary"
+          ],
+          "rows": [
+            [
+              "60 response target",
+              "Deduplicate; disclose n"
+            ],
+            [
+              "5 mentor commitments target",
+              "Written time + scope"
+            ],
+            [
+              "30 activation target",
+              "Defined meaningful action"
+            ],
+            [
+              "10 paid conversion target",
+              "Only after checkout clears"
+            ]
+          ],
+          "text": "Waitlists, willingness and completed payments are distinct. No respondent contacts belong in the repository."
+        },
+        {
+          "title": "CHANGE-OUR-MIND RULES",
+          "type": "table",
+          "source": [
+            "E"
+          ],
+          "headers": [
+            "At day 45",
+            "Action"
+          ],
+          "rows": [
+            [
+              "Fewer than 3 mentors",
+              "Rework supply or stop"
+            ],
+            [
+              "Fewer than 10 activations",
+              "Rework demand or stop"
+            ],
+            [
+              "No repeated skill need",
+              "Choose a narrower topic"
+            ],
+            [
+              "Uncleared commerce",
+              "Do not charge learners"
+            ]
+          ],
+          "text": "Kill criteria are proposed discipline, not certainty. Record contradictions instead of selectively quoting supporters."
+        },
+        {
+          "title": "WHAT CAN BE CLAIMED NEXT",
+          "type": "flow",
+          "source": [
+            "F",
+            "E"
+          ],
+          "steps": [
+            "Define sample",
+            "Collect honestly",
+            "Publish aggregate only"
+          ],
+          "text": "Report population, n, date, sampling and missing values. Quotes require permission. Until this happens, customer fit remains unvalidated; secondary studies cannot become our survey."
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "topic": "SOLUTION · HOW IT WORKS",
+      "headline": "Demand first. Mentor response. A finite learning path.",
+      "seconds": 30,
+      "speech": "The intended loop is request, threshold, signal, build, then learn and rate. Request and vote source exists, but the separate Signal Flare system and richer mentor waves are not one verified lifecycle. The product keeps Student Multiverse, Mentor Dimensions and Peer Space. Finite lessons, feedback and optional mentoring should serve a real skill, not award mastery for animation.",
+      "question": "What is actually different from a catalog?",
+      "answer": "The intended demand-to-mentor-production loop is our positioning. It is not proven novel or superior; we must demonstrate it reliably and compare actual customer alternatives.",
+      "panels": [
+        {
+          "title": "ONE INTENDED REQUEST-TO-LEARNING LOOP",
+          "type": "hero",
+          "source": [
+            "P",
+            "E"
+          ],
+          "value": "5",
+          "subtitle": "Steps to connect demand with useful practice",
+          "text": "Request, threshold, signal, build, learn + rate. Source requests/votes exist; integrated delivery, stronger waves and course reviews remain unproven. Animation does not establish mastery.",
+          "mini": [
+            "Learner need",
+            "Mentor response",
+            "Finite learning"
+          ]
+        },
+        {
+          "title": "ACTORS / ACTION / CURRENT SCOPE",
+          "type": "table",
+          "source": [
+            "P"
+          ],
+          "headers": [
+            "Step + actor",
+            "Current scope"
+          ],
+          "rows": [
+            [
+              "1 Learner requests",
+              "Request API: partial"
+            ],
+            [
+              "2 Peers support",
+              "Votes: partial"
+            ],
+            [
+              "3 Mentor responds",
+              "Notification: partial"
+            ],
+            [
+              "4 Mentor builds",
+              "Editor + studio: partial"
+            ],
+            [
+              "5 Learner practices",
+              "Journey + quiz: partial"
+            ]
+          ],
+          "text": "Claims of publication, completion and delivered notifications need exact runtime evidence."
+        },
+        {
+          "title": "FINITE COURSE INTERFACE",
+          "type": "image",
+          "source": [
+            "V",
+            "P"
+          ],
+          "images": [
+            {
+              "name": "journey",
+              "caption": "Prototype screen · sample data"
+            }
+          ],
+          "text": "One selected lesson route is visible. This screen does not demonstrate real playback, server grading, persisted progress or a completed learner outcome."
+        },
+        {
+          "title": "THREE IDENTITIES / SEPARATE PURPOSES",
+          "type": "flow",
+          "source": [
+            "P"
+          ],
+          "steps": [
+            "Student: Multiverse",
+            "Peer: Space",
+            "Mentor: Dimensions"
+          ],
+          "text": "Retain 8 Student tiers and 6 Mentor divisions without inventing new names. Selected world redesign and five-or-six-thought destination transitions remain gated intent, not shipped features."
+        },
+        {
+          "title": "WHAT THE LEARNER SHOULD RECEIVE",
+          "type": "table",
+          "source": [
+            "E",
+            "P"
+          ],
+          "headers": [
+            "Promise to test",
+            "Pilot evidence"
+          ],
+          "rows": [
+            [
+              "1 practical task / 18+ pilot",
+              "Topic + practical task"
+            ],
+            [
+              "2 reviewed first courses",
+              "Mentor agrees scope"
+            ],
+            [
+              "5-step finite pathway",
+              "Lessons + graded practice"
+            ],
+            [
+              "14-day discovery sprint",
+              "Real demand, not vote alone"
+            ]
+          ],
+          "text": "Request support is not a delivery guarantee. Confirm mentor capacity and a realistic launch window; current request and notification lifecycles need integration."
+        },
+        {
+          "title": "FOUR MECHANISMS TO VALIDATE",
+          "type": "table",
+          "source": [
+            "P",
+            "E"
+          ],
+          "headers": [
+            "Mechanism",
+            "Evidence needed"
+          ],
+          "rows": [
+            [
+              "Demand-led supply",
+              "Request becomes course"
+            ],
+            [
+              "Finite learning path",
+              "Content + progress persist"
+            ],
+            [
+              "Reviewed feedback",
+              "Server grading + quality"
+            ],
+            [
+              "Optional 1-to-1",
+              "Separate 15% platform fee"
+            ]
+          ],
+          "text": "Catalogs, peer help and direct mentors remain credible alternatives; this combination is positioning, not a first-ever claim."
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "topic": "PROGRESS",
+      "headline": "Four screens show interface work—not traction.",
+      "seconds": 30,
+      "speech": "We have four inspected sample-data captures from a retained frontend build: lesson journey, course editing, student universe and an idle recorder. External traffic was blocked and no backend or payments were run. The source inventory is substantial, but checkout is unavailable and queued payouts are not bank transfers. Our next milestone is an integrated pilot, not a claim of users or revenue.",
+      "question": "Can you demonstrate recording and paid completion now?",
+      "answer": "Not from these captures. The recorder is idle; real media capture, paid checkout, bank settlement and end-to-end learning were not executed.",
+      "panels": [
+        {
+          "title": "INSPECTED INTERFACES / BOUNDED PROOF",
+          "type": "hero",
+          "source": [
+            "V",
+            "P"
+          ],
+          "value": "4",
+          "subtitle": "Sample-data screens captured on 16 Nov 2026",
+          "text": "Journey, editor, student universe and idle studio: 3840×2160 originals, retained build, 16 Nov 2026. External traffic blocked; no backend/DB/media/provider operation. Screens are not traction.",
+          "mini": [
+            "Retained build",
+            "Synthetic data",
+            "No paid operation"
+          ]
+        },
+        {
+          "title": "JOURNEY + AUTHORING MOSAIC",
+          "type": "image",
+          "source": [
+            "V"
+          ],
+          "images": [
+            {
+              "name": "journey",
+              "caption": "Finite lesson selection"
+            },
+            {
+              "name": "course",
+              "caption": "Course editor / sample stages"
+            }
+          ],
+          "text": "Sample data: selected lesson and course-authoring rows. No playback, publication or persisted-completion proof."
+        },
+        {
+          "title": "STUDENT + IDLE STUDIO",
+          "type": "image",
+          "source": [
+            "V"
+          ],
+          "images": [
+            {
+              "name": "student",
+              "caption": "Synthetic enrollment universe"
+            },
+            {
+              "name": "studio",
+              "caption": "Idle recording controls"
+            }
+          ],
+          "text": "Sample data: student universe and idle recorder. Not users or successful media capture."
+        },
+        {
+          "title": "12 FEATURES / SOURCE STATUS",
+          "type": "table",
+          "source": [
+            "P"
+          ],
+          "headers": [
+            "Component",
+            "Status"
+          ],
+          "rows": [
+            [
+              "Requests / votes / claim",
+              "Partial / partial / partial"
+            ],
+            [
+              "Journey / quiz / editor",
+              "Partial / partial / partial"
+            ],
+            [
+              "Recorder / Board / ratings",
+              "Partial / partial / partial"
+            ],
+            [
+              "Waves / new worlds / AI quiz",
+              "Planned / planned / unmounted"
+            ]
+          ],
+          "text": "Partial means source/wiring, not a percentage complete. No live operational certification is implied."
+        },
+        {
+          "title": "PROTOTYPE PROOF / NEXT DEMONSTRATION",
+          "type": "table",
+          "source": [
+            "I",
+            "P"
+          ],
+          "headers": [
+            "Recorded measure",
+            "Boundary"
+          ],
+          "rows": [
+            [
+              "4 rendered interfaces",
+              "Sample data only"
+            ],
+            [
+              "12 scoped feature groups",
+              "Partial or planned"
+            ],
+            [
+              "2 pilot courses targeted",
+              "Not published proof"
+            ],
+            [
+              "503 / 501 status codes",
+              "Checkout unavailable"
+            ]
+          ],
+          "text": "Interface work is visible. Next reproduce request → mentor response → reviewed course → persisted practice. No fresh full application suite, learning outcomes or bank settlement proven."
+        },
+        {
+          "title": "THREE NEXT PROOF BLOCKS",
+          "type": "flow",
+          "source": [
+            "P",
+            "E"
+          ],
+          "steps": [
+            "Day 30: reviewed course",
+            "Day 60: integrated cycle",
+            "Day 90: repeat + measure"
+          ],
+          "text": "Traction, bank payouts and completion lift are unverified. A 25-payer day-90 target is conditional on commercial clearance; it is not revenue already earned."
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "topic": "MARKET",
+      "headline": "One campus and one skill before a national story.",
+      "seconds": 30,
+      "speech": "We propose a narrow adult campus pilot, but the first institution, cohort and skill still need founder confirmation. We have no adopted official local enrollment count. The base planning scenario gives nineteen-point-two expected payers from six hundred potential learners, forty percent reach and eight percent conversion. These are synthetic assumptions, not market measurement. Competitor prices provide context, never willingness-to-pay proof.",
+      "question": "What is your addressable market?",
+      "answer": "The local relevant cohort is still unknown. We show the bottom-up method and assumption sensitivity, not an unsupported national TAM.",
+      "panels": [
+        {
+          "title": "BASE PLANNING SCENARIO / NOT A FORECAST",
+          "type": "hero",
+          "source": [
+            "E",
+            "M"
+          ],
+          "value": "19.2",
+          "subtitle": "Expected payers under synthetic base inputs",
+          "text": "600 potential ×40% reach ×8% conversion =19.2 expected payers. Working INR 599 ×12 months gives INR 138,009.60 gross scenario. Fractional expectation is not people acquired; actual cohort count unknown.",
+          "mini": [
+            "600 potential",
+            "240 reached",
+            "19.2 expected"
+          ]
+        },
+        {
+          "title": "TWO PROPOSED CUSTOMER PROFILES",
+          "type": "table",
+          "source": [
+            "E",
+            "F"
+          ],
+          "headers": [
+            "Profile",
+            "Qualification to test"
+          ],
+          "rows": [
+            [
+              "Learner aged 18+",
+              "One urgent practical skill"
+            ],
+            [
+              "Campus cohort",
+              "Branch + year unselected"
+            ],
+            [
+              "Mentor",
+              "Teaching proof + time"
+            ],
+            [
+              "Pilot scope",
+              "2 reviewed courses first"
+            ]
+          ],
+          "text": "Neither profile is a verified segment. First campus, city and skill must be selected before local recruitment or population claims."
+        },
+        {
+          "title": "DELIBERATELY OUTSIDE THE FIRST PILOT",
+          "type": "flow",
+          "source": [
+            "E"
+          ],
+          "steps": [
+            "No minors by default",
+            "No nationwide promise",
+            "No all-subject catalog"
+          ],
+          "text": "Proposed boundaries reduce scope; they do not certify compliance. Test 1 campus, 1 skill and 2 launch cycles before expansion, with professional release review."
+        },
+        {
+          "title": "DATED PRICE ANCHORS / DIFFERENT PRODUCTS",
+          "type": "table",
+          "source": [
+            "CP26",
+            "BI26",
+            "M"
+          ],
+          "headers": [
+            "Observed or working price",
+            "Billing boundary"
+          ],
+          "rows": [
+            [
+              "Coursera Plus INR2,099",
+              "Monthly; after 7-day trial"
+            ],
+            [
+              "Brilliant INR812.50",
+              "Monthly equivalent; annual pay"
+            ],
+            [
+              "Orbit INR599 / INR1,199",
+              "Working monthly points"
+            ]
+          ],
+          "text": "Official pages observed 16 Nov 2026. Taxes and checkout specifics are not fully established. Different scope/billing means this is not affordability, quality or purchase-intent evidence."
+        },
+        {
+          "title": "THREE SYNTHETIC BOTTOM-UP CASES",
+          "type": "table",
+          "source": [
+            "E",
+            "M"
+          ],
+          "headers": [
+            "Case: cohort × reach × convert",
+            "Expected payers"
+          ],
+          "rows": [
+            [
+              "Low: 300 × 30% × 5%",
+              "4.5"
+            ],
+            [
+              "Base: 600 × 40% × 8%",
+              "19.2"
+            ],
+            [
+              "High: 1,000 × 50% × 10%",
+              "50.0"
+            ]
+          ],
+          "text": "All assume INR599 and 12 paid months, not observed retention. Base 19.2 expected payers is independent of the ambitious 25-payer day-90 target. Replace inputs with observed data before forecasting."
+        },
+        {
+          "title": "CONVERSION SENSITIVITY / SAME COHORT",
+          "type": "bars",
+          "source": [
+            "E"
+          ],
+          "labels": [
+            "5% conversion",
+            "8% conversion",
+            "10% conversion"
+          ],
+          "values": [
+            12,
+            19.2,
+            24
+          ],
+          "unit": "expected payers",
+          "text": "600 ×40% reach; conversion unmeasured. Sensitivity is not demand."
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "topic": "MONEY",
+      "headline": "Mentor allocation is not platform profit.",
+      "seconds": 35,
+      "speech": "Working monthly price points are five ninety-nine and eleven ninety-nine, to be validated. Subscriptions retain twenty percent for the platform and eighty percent for eligible enrolled-course mentors; sessions have a separate fifteen-percent fee. Under an illustrative tax and cost scenario, Core contribution is fifty-point-six-nine rupees. At the modeled tier mix, fifteen thousand fixed monthly cost needs two hundred thirty-seven payers. No actual invoice, tax basis or profit date is claimed.",
+      "question": "When do you break even?",
+      "answer": "The model gives237payers only under stated price, mix, usage and cost assumptions. Actual bills, refunds, eligibility and accounting must be validated; there is no promised profit date.",
+      "panels": [
+        {
+          "title": "CORE CONTRIBUTION / ILLUSTRATIVE SCENARIO",
+          "type": "hero",
+          "source": [
+            "M",
+            "RZP",
+            "CF"
+          ],
+          "value": "50.69",
+          "subtitle": "INR per payer per month after modeled variable costs",
+          "text": "Working INR 599 / illustrative 1.18 tax base =INR 507.63;20% platform =101.53. Deductions:gateway 14.14, video 10.20, storage 8.50, AI 10, support 8. Tax, costs and allocation remain unapproved estimates.",
+          "mini": [
+            "20% platform",
+            "80% mentor pool",
+            "Not net profit"
+          ]
+        },
+        {
+          "title": "WORKING PRICE POINTS, TO BE VALIDATED",
+          "type": "table",
+          "source": [
+            "M",
+            "P"
+          ],
+          "headers": [
+            "Plan / policy",
+            "Working intent"
+          ],
+          "rows": [
+            [
+              "Core / Premium monthly",
+              "INR599 / INR1,199"
+            ],
+            [
+              "Subscription allocation",
+              "20% platform / 80% mentors"
+            ],
+            [
+              "Source fallback catalog",
+              "599 / 1,299 / 2,199"
+            ],
+            [
+              "Optional 1-to-1",
+              "Separate 15% platform fee"
+            ]
+          ],
+          "text": "Only mentors of eligible enrolled courses share that learner's pool. Source pricing copy conflicts; no live catalog, paid invoice or checkout success is asserted."
+        },
+        {
+          "title": "CORE VARIABLE-COST WATERFALL",
+          "type": "waterfall",
+          "source": [
+            "M"
+          ],
+          "labels": [
+            "Platform",
+            "Gateway",
+            "Video",
+            "Storage",
+            "AI",
+            "Support",
+            "CM"
+          ],
+          "values": [
+            101.52542372881356,
+            -14.1364,
+            -10.2,
+            -8.5,
+            -10,
+            -8,
+            50.68902372881357
+          ],
+          "text": "INR per payer. Totals and deductions; contribution before fixed costs."
+        },
+        {
+          "title": "COST-TO-SERVE / BASELINES + ESTIMATES",
+          "type": "table",
+          "source": [
+            "CF",
+            "RZP",
+            "M"
+          ],
+          "headers": [
+            "Input",
+            "Scenario"
+          ],
+          "rows": [
+            [
+              "Gateway baseline",
+              "2% + 18% tax on fee"
+            ],
+            [
+              "Stream storage / delivery",
+              "USD5 / USD1 per 1,000 min"
+            ],
+            [
+              "FX / storage allocation",
+              "INR85/USD / 50 learners"
+            ],
+            [
+              "Core / Premium watch",
+              "120 / 240 min"
+            ],
+            [
+              "AI + support Core / Premium",
+              "INR18 / INR32"
+            ]
+          ],
+          "text": "500 stored minutes still uses one 1,000 minute block; actual bills differ."
+        },
+        {
+          "title": "BREAK-EVEN / THREE FIXED-COST CASES",
+          "type": "bars",
+          "source": [
+            "M"
+          ],
+          "labels": [
+            "INR10,000 fixed",
+            "INR15,000 fixed",
+            "INR20,000 fixed"
+          ],
+          "values": [
+            158,
+            237,
+            316
+          ],
+          "unit": "Modeled break-even payers, rounded up",
+          "text": "80% Core / 20% Premium learner mix. CM 63.36/month; Premium 114.02. Fixed costs / CM; no profit date."
+        },
+        {
+          "title": "MENTOR POOL + SESSION / SEPARATE BASES",
+          "type": "table",
+          "source": [
+            "M",
+            "P"
+          ],
+          "headers": [
+            "Illustrative example",
+            "Before further deductions"
+          ],
+          "rows": [
+            [
+              "Core enrolled mentor pool",
+              "INR406.10 on ex-tax base"
+            ],
+            [
+              "Conditional 60% / 40% pool",
+              "INR243.66 / INR162.44"
+            ],
+            [
+              "INR1,000 session price",
+              "15% platform = INR150"
+            ],
+            [
+              "Session remainder",
+              "INR850 before tax/fees"
+            ]
+          ],
+          "text": "Not guaranteed take-home. Eligibility, unit weights, refunds, rounding and provider contracts require approval; queued ledger intent is not bank transfer."
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "topic": "PLAN",
+      "headline": "Ninety days should buy two testable launch cycles.",
+      "seconds": 30,
+      "speech": "Day one starts only after the owner approves launch. In the first month we target discovery, five mentor commitments, two reviewed courses and thirty learner activations. By day sixty we test one integrated cycle and ten paid learners only if checkout clears. By day ninety we target a second cycle and twenty-five paid learners. If supply or activation is too weak at day forty-five, we stop or redesign.",
+      "question": "Are these committed outcomes?",
+      "answer": "No. They are proposed targets with defined gates. Owners and actual start date are unassigned; paid targets remain conditional on commercial release.",
+      "panels": [
+        {
+          "title": "PROPOSED PILOT / RELATIVE START, NOT A DATE",
+          "type": "hero",
+          "source": [
+            "E"
+          ],
+          "value": "90",
+          "subtitle": "Days to test two request-to-launch cycles",
+          "text": "Proposed day30: 12 interviews, 60 responses, 6 mentor talks, 5 commitments, 2 courses, 30 prototype activations. Day60: 10 paid learners; day90: 25 and 2 cycles. Paid targets require cleared checkout; calendar start unselected.",
+          "mini": [
+            "Days 1-30",
+            "Days 31-60",
+            "Days 61-90"
+          ]
+        },
+        {
+          "title": "THREE-LANE GANTT / PROPOSED TARGETS",
+          "type": "gantt",
+          "source": [
+            "E"
+          ],
+          "tasks": [
+            {
+              "label": "Product: integrate + verify",
+              "start": 1,
+              "end": 60
+            },
+            {
+              "label": "Supply: 5 mentors / 2 courses",
+              "start": 1,
+              "end": 30
+            },
+            {
+              "label": "Demand: discover + 2 cycles",
+              "start": 1,
+              "end": 90
+            }
+          ],
+          "text": "Integration before charging; no actions executed."
+        },
+        {
+          "title": "CHANNELS / CAPPED EXPERIMENTS",
+          "type": "table",
+          "source": [
+            "E"
+          ],
+          "headers": [
+            "Proposed action",
+            "Target / budget"
+          ],
+          "rows": [
+            [
+              "Club demonstration",
+              "2 sessions"
+            ],
+            [
+              "Mentor introductions",
+              "6 conversations"
+            ],
+            [
+              "Campus cohort invitation",
+              "60 responses"
+            ],
+            [
+              "Activation experiments",
+              "4 × INR2,000 cap"
+            ]
+          ],
+          "text": "Function unassigned. No outreach or partner agreement."
+        },
+        {
+          "title": "EIGHT KPIs / DEFINITIONS BEFORE COUNTS",
+          "type": "table",
+          "source": [
+            "E"
+          ],
+          "headers": [
+            "Metric pair",
+            "Target / boundary"
+          ],
+          "rows": [
+            [
+              "Interviews / responses",
+              "12 / 60; actual sample"
+            ],
+            [
+              "Mentor talks / commitments",
+              "6 / 5; written scope"
+            ],
+            [
+              "Reviewed courses / prototype activation",
+              "2 / 30; meaningful action"
+            ],
+            [
+              "Paid learners / launch cycles",
+              "25 / 2 at day 90"
+            ]
+          ],
+          "text": "Measure completion, repeat use and cost separately. Current values are unknown unless explicitly reported; paid targets require payment clearance."
+        },
+        {
+          "title": "DAY 45 / STOP OR REDESIGN",
+          "type": "table",
+          "source": [
+            "E",
+            "P"
+          ],
+          "headers": [
+            "Risk / trigger",
+            "Proposed response"
+          ],
+          "rows": [
+            [
+              "Fewer than 3 commitments",
+              "Rework supply or stop"
+            ],
+            [
+              "Fewer than 10 activations",
+              "Rework demand or stop"
+            ],
+            [
+              "Failed paid release gate",
+              "Do not accept charges"
+            ],
+            [
+              "Quiz/progress mismatch",
+              "Repair before outcome claims"
+            ],
+            [
+              "Content/privacy uncertainty",
+              "Professional + mentor review"
+            ]
+          ],
+          "text": ""
+        },
+        {
+          "title": "FUNDING GATES / NOT UNCONDITIONAL SPEND",
+          "type": "flow",
+          "source": [
+            "E",
+            "M"
+          ],
+          "steps": [
+            "45k: first validation",
+            "35k: cleared cycle",
+            "20k: repeat + reserve"
+          ],
+          "text": "The INR100,000 proposal is staged across three tranches. At each gate, inspect receipts, usage and evidence. Unspent reserve stays unspent; exact dates and named owners remain unassigned."
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "topic": "TEAM",
+      "headline": "Attach people and proof to every milestone.",
+      "seconds": 30,
+      "speech": "The founder confirms a team, but names, roles, hours and individual contributions have not been supplied. We will not manufacture a team slide. This page defines the capabilities and proof each milestone needs: engineering, mentor and content quality, customer discovery and commercial release. Source work belongs to the project until individual attribution is confirmed. We also need professional and mentor introductions, not invented advisors.",
+      "question": "Who on the team can execute this?",
+      "answer": "Team existence is confirmed, but person-level evidence remains a founder-owned gap. Names, contribution demos and weekly capacity are required before final submission.",
+      "panels": [
+        {
+          "title": "TEAM EXISTS / PERSON-LEVEL PROOF PENDING",
+          "type": "hero",
+          "source": [
+            "F",
+            "E"
+          ],
+          "value": "TEAM",
+          "subtitle": "No names, credentials, hours or count invented",
+          "text": "A team is founder-reported. Member count, names, contributions and hours unknown. Four capability areas are functions, not fourpeople. Verify ownership and capacity before the 90 daylaunch.",
+          "mini": [
+            "Name the owner",
+            "Show contribution",
+            "Declare capacity"
+          ]
+        },
+        {
+          "title": "CAPABILITY / REQUIRED PROOF",
+          "type": "table",
+          "source": [
+            "E",
+            "F"
+          ],
+          "headers": [
+            "Function",
+            "Proof before final"
+          ],
+          "rows": [
+            [
+              "Product engineering",
+              "Reproduce one integrated flow"
+            ],
+            [
+              "Mentor + content",
+              "Teaching sample + review"
+            ],
+            [
+              "Customer discovery",
+              "Sample + observed action"
+            ],
+            [
+              "Commercial operations",
+              "Release + reconciliation plan"
+            ]
+          ],
+          "text": "Functions unassigned; source work is not individual attribution."
+        },
+        {
+          "title": "THREE SOURCE LAYERS / REAL LIMITS",
+          "type": "flow",
+          "source": [
+            "P",
+            "I"
+          ],
+          "steps": [
+            "Frontend interfaces",
+            "Backend routes",
+            "Shared contracts"
+          ],
+          "text": "AI quiz router is unmounted; recurring checkout returns 503/501. Source has 3 identity paths, 8 Student tiers and 6 Mentor divisions, not proof of operational completeness."
+        },
+        {
+          "title": "90-DAY RESPONSIBILITY LEDGER",
+          "type": "table",
+          "source": [
+            "E"
+          ],
+          "headers": [
+            "Function / milestone",
+            "Owner status"
+          ],
+          "rows": [
+            [
+              "Discovery: 12 interviews / 60 responses",
+              "Unassigned"
+            ],
+            [
+              "Supply: 6 talks / 5 commitments",
+              "Unassigned"
+            ],
+            [
+              "Content: 2 reviewed courses",
+              "Unassigned"
+            ],
+            [
+              "Product: 30 activations / 2 cycles",
+              "Unassigned"
+            ],
+            [
+              "Commerce: 25 payers, conditional",
+              "Unassigned"
+            ]
+          ],
+          "text": ""
+        },
+        {
+          "title": "CAPABILITY GAPS / HOW TO FILL THEM",
+          "type": "table",
+          "source": [
+            "E"
+          ],
+          "headers": [
+            "Gap",
+            "Proposed support"
+          ],
+          "rows": [
+            [
+              "Content quality",
+              "2 teaching reviews"
+            ],
+            [
+              "Payment + privacy",
+              "1 professional scope review"
+            ],
+            [
+              "Pilot reliability",
+              "2 independent checks"
+            ],
+            [
+              "Campus access",
+              "1 permissioned cohort"
+            ]
+          ],
+          "text": "Mentor introductions and qualified reviews are requested. No advisor appointment, partnership or endorsement has been made."
+        },
+        {
+          "title": "THREE TEAM READINESS TESTS",
+          "type": "flow",
+          "source": [
+            "E",
+            "F"
+          ],
+          "steps": [
+            "Demo contribution",
+            "Own a milestone",
+            "State weekly hours"
+          ],
+          "text": "Before the day-1 launch gate, verify names, roles, contribution proof and availability. No invented biographies, photographs, credentials or institutional affiliation replace missing founder information."
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "topic": "ASK",
+      "headline": "INR100,000 to validate—not to assume scale.",
+      "seconds": 30,
+      "speech": "Our proposal is one lakh rupees for a ninety-day validation pilot, derived from seven estimated cost lines rather than the two-lakh support ceiling. Forty-five thousand covers recurring infrastructure and support; twenty thousand supports two courses; the rest covers activation, review, testing, a borrowed-first kit and reserve. We also need mentor introductions and pilot access. Quotes, actual cash and funding terms still need confirmation.",
+      "question": "Why this amount, and what if you receive less?",
+      "answer": "It is a cost-derived estimate, not an approved budget. Stage45k/35k/20k against evidence; cut kit and activation first, then narrow the second cycle rather than hide a shortfall.",
+      "panels": [
+        {
+          "title": "COST-DERIVED FUNDING PROPOSAL",
+          "type": "hero",
+          "source": [
+            "M",
+            "C"
+          ],
+          "value": "100k",
+          "subtitle": "INR for a bounded 90-day validation pilot",
+          "text": "7 estimates:infra/support 45 k, courses 20 k, activation 8 k, review 7 k, testing 10 k, kit 2 k, reserve 8 k. No quotes/spending approval. Possible 200 k organizer ceiling is not an award.",
+          "mini": [
+            "Validate need",
+            "Prove one cycle",
+            "Repeat + measure"
+          ]
+        },
+        {
+          "title": "USE OF FUNDS / ESTIMATES, NOT QUOTES",
+          "type": "fundbars",
+          "source": [
+            "M"
+          ],
+          "text": ""
+        },
+        {
+          "title": "CASH / KNOWN VS SCENARIO",
+          "type": "table",
+          "source": [
+            "M",
+            "F"
+          ],
+          "headers": [
+            "Item",
+            "Boundary"
+          ],
+          "rows": [
+            [
+              "Actual cash / burn",
+              "Unknown / unknown"
+            ],
+            [
+              "Opening cash / revenue",
+              "0 / 0 model only"
+            ],
+            [
+              "90-day planned outflow",
+              "INR100,000 estimate"
+            ],
+            [
+              "Recurring allowance",
+              "15,000 × 3 months"
+            ]
+          ],
+          "text": "Zero-cash scenario: unfunded."
+        },
+        {
+          "title": "THREE TRANCHES / EVIDENCE BEFORE RELEASE",
+          "type": "table",
+          "source": [
+            "M",
+            "E"
+          ],
+          "headers": [
+            "Proposed tranche",
+            "Gate"
+          ],
+          "rows": [
+            [
+              "INR45,000 first",
+              "Discovery + release scope"
+            ],
+            [
+              "INR35,000 second",
+              "Reviewed course + cleared cycle"
+            ],
+            [
+              "INR20,000 last",
+              "Repeat cycle + reserve"
+            ],
+            [
+              "First cuts",
+              "Kit, activation, then scope"
+            ]
+          ],
+          "text": "45 k +35 k +20 k =100 k. No spending approved."
+        },
+        {
+          "title": "NON-MONEY SUPPORT WE NEED",
+          "type": "flow",
+          "source": [
+            "E"
+          ],
+          "steps": [
+            "Mentor introductions",
+            "Campus pilot access",
+            "Payment/privacy review"
+          ],
+          "text": "Proposed introductions support 6 mentor conversations and 2 reviewed courses. Permissioned access to 1 adult cohort matters more than assumed nationwide reach. No partnerships are claimed."
+        },
+        {
+          "title": "THE DECISION WE SEEK",
+          "type": "table",
+          "source": [
+            "E",
+            "M",
+            "F"
+          ],
+          "headers": [
+            "Requested support",
+            "Conditional outcome"
+          ],
+          "rows": [
+            [
+              "INR100,000 proposal",
+              "90-day bounded pilot"
+            ],
+            [
+              "2 reviewed courses",
+              "5 mentor commitments target"
+            ],
+            [
+              "2 launch cycles",
+              "25 paid learners target"
+            ],
+            [
+              "1 adult campus cohort",
+              "Permission + real demand"
+            ]
+          ],
+          "text": "Team, cohort, quotes and terms still need confirmation. Support is a proposal, not an award or spending approval."
+        }
+      ]
+    }
+  ]
+}

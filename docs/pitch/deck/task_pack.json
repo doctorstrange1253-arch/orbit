@@ -1,0 +1,73 @@
+{
+  "schema_version": "ppt_task_v2",
+  "deck_id": "TBI-GEU-Orbit",
+  "deck_dir": "D:/orbit-main/orbit-main/docs/pitch/deck",
+  "workspace_root": "/d/orbit-main",
+  "ppt_mode": "standard",
+  "params": {
+    "role": "student founders",
+    "audience": "TBI-GEU founder and industry judges",
+    "scene": "five-minute startup pitch",
+    "page_count": 10,
+    "language": "en",
+    "image_source": "verified-local-product-only",
+    "infographic_source": "native-editable"
+  },
+  "request": {
+    "query": "Exactly10 dense native-editable READ slides; sources, model, three QA passes and two read-only PNG critics; D1 STOP, no submission. Actual deadline unknown.",
+    "source_files": [
+      "D:/orbit-main/orbit-main/docs/pitch/product-facts.md",
+      "D:/orbit-main/orbit-main/docs/pitch/evidence-pack.md",
+      "D:/orbit-main/orbit-main/docs/pitch/competition-brief.md",
+      "D:/orbit-main/orbit-main/.agent/side/shark-tank/FACTS.md"
+    ]
+  },
+  "choices": {
+    "execution_depth": "draft",
+    "output": "native_pptx",
+    "design_richness": "restrained",
+    "static_postprocess": []
+  },
+  "state": {
+    "status": "waiting_for_d1_review_with_holds",
+    "current_stage": "D1",
+    "completed_stages": [
+      "entry",
+      "story",
+      "v0",
+      "visual-pass1",
+      "visual-pass2",
+      "visual-pass3",
+      "v4-export",
+      "native10",
+      "three-preview-passes",
+      "two-png-critics",
+      "v12-full-pipeline"
+    ],
+    "research": {
+      "required": true,
+      "executor": "retained-six-return-only-readers",
+      "mode": "bounded",
+      "status": "returned-qualified",
+      "unverified": "blocked numbers excluded"
+    },
+    "capabilities": {},
+    "artifacts": {
+      "pptx": "D:/orbit-main/orbit-main/docs/pitch/deck/versions/v12/Deck_v12.pptx",
+      "pdf": "D:/orbit-main/orbit-main/docs/pitch/deck/versions/v12/Deck_v12.pdf",
+      "contact_sheet": "D:/orbit-main/orbit-main/docs/pitch/deck/versions/v12/contact-sheet.png",
+      "qa_report": "D:/orbit-main/orbit-main/docs/pitch/deck/versions/v12/qa-report.md",
+      "speaker_notes": "D:/orbit-main/orbit-main/docs/pitch/deck/versions/v12/speaker-notes.md",
+      "preview": "D:\\orbit-main\\orbit-main\\docs\\pitch\\deck\\present.html",
+      "model": "D:/orbit-main/orbit-main/docs/pitch/deck/../models/launch-budget.xlsx",
+      "outline": "D:/orbit-main/orbit-main/docs/pitch/deck/outline.md",
+      "research_report": "D:/orbit-main/orbit-main/docs/pitch/published-evidence-update.md",
+      "presentation_safe": "D:/orbit-main/orbit-main/docs/pitch/deck/versions/v12/Deck_v12_presentation-safe.pptx",
+      "checkpoint": "D:/orbit-main/orbit-main/docs/pitch/deck/../checkpoints/D1.md"
+    },
+    "last_error": "No technical export failure; strictinternal-empty-area/fullresolutionreview andfounderproof remainopenD1holds",
+    "updated_at": "2026-11-16T16:40:15.824Z"
+  },
+  "created_at": "2026-11-14T15:10:00Z",
+  "path_override": "Explicit user requires docs/pitch/deck; this overrides skill ppt_decks default. One canonical directory, no alternative output tree."
+}

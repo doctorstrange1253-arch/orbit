@@ -2,7 +2,7 @@ const P = require("../services/billingPlans");
 const S = require("../services/billingSettlement");
 
 const GST = 18;
-const CUT = 25;
+const CUT = 20;
 
 function plan({ priceMinor, seats, taxInclusive = true, taxRatePct = GST, platformCutPct = CUT, interval = "month", intervalCount = 1 }) {
     return { key: "t", name: "T", priceMinor, seats, taxInclusive, taxRatePct, platformCutPct, interval, intervalCount };
@@ -63,7 +63,7 @@ describe("the shipped plan ladder", () => {
         expect(byKey.orbit_ten.seats).toBe(10);
     });
 
-    it("prices every paid tier GST-inclusive at 18% with a 25% platform cut", () => {
+    it("prices every paid tier GST-inclusive at 18% with a 20% platform cut", () => {
         for (const key of ["orbit_two", "orbit_five", "orbit_ten", "orbit_two_year", "orbit_five_year", "orbit_ten_year"]) {
             expect(byKey[key].taxInclusive).toBe(true);
             expect(byKey[key].taxRatePct).toBe(GST);
@@ -110,8 +110,8 @@ describe("period economics", () => {
         const e = P.periodEconomics(plan({ priceMinor: 129900, seats: 5 }), 129900);
         expect(e.netMinor).toBe(110085);
         expect(e.taxMinor).toBe(19815);
-        expect(e.platformCutMinor).toBe(27521);
-        expect(e.poolMinor).toBe(82564);
+        expect(e.platformCutMinor).toBe(22017);
+        expect(e.poolMinor).toBe(88068);
         expect(e.taxMinor + e.platformCutMinor + e.poolMinor).toBe(129900);
     });
 

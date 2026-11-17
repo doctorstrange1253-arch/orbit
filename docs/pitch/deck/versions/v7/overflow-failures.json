@@ -1,0 +1,34 @@
+[
+  {
+    "slide": 2,
+    "kind": "body",
+    "text": "These are credible options. Comparative limits are hypotheses to ask customers, not findings that competitors fail.",
+    "measured": 0.53375,
+    "available": 0.4662499999999996,
+    "message": "Text height exceeds slot"
+  },
+  {
+    "slide": 7,
+    "kind": "body",
+    "text": "80%Core /20%Premium learner mix: monthlyCM63.36;Premium114.02. Fixed monthly costs / CM, rounded up. No profit date.",
+    "measured": 0.53375,
+    "available": 0.38999999999999924,
+    "message": "Text height exceeds slot"
+  },
+  {
+    "slide": 8,
+    "kind": "body",
+    "text": "Safety and release gates cannot be waived.",
+    "measured": 0.17791666666666667,
+    "available": 0.15091666666666637,
+    "message": "Text height exceeds slot"
+  },
+  {
+    "slide": 9,
+    "kind": "body",
+    "text": "Owners + hours required before launch.",
+    "measured": 0.17791666666666667,
+    "available": 0.15091666666666637,
+    "message": "Text height exceeds slot"
+  }
+]

@@ -1,0 +1,54 @@
+{
+  "user_query": "Exactly10 dense native-editable READ slides; sources, model, three QA passes and two read-only PNG critics; D1 STOP, no submission. Actual deadline unknown.",
+  "user_assets": {
+    "reference_images": [
+      "C:/Users/Dell/AppData/Local/Temp/claude/ac7f0577a98d1ce8/ee8b5ae4-93d5-4acd-b6a5-57001f402a3e/images/2.png",
+      "C:/Users/Dell/AppData/Local/Temp/claude/ac7f0577a98d1ce8/ee8b5ae4-93d5-4acd-b6a5-57001f402a3e/images/3.png",
+      "C:/Users/Dell/AppData/Local/Temp/claude/ac7f0577a98d1ce8/ee8b5ae4-93d5-4acd-b6a5-57001f402a3e/images/4.png",
+      "C:/Users/Dell/AppData/Local/Temp/claude/ac7f0577a98d1ce8/ee8b5ae4-93d5-4acd-b6a5-57001f402a3e/images/5.png",
+      "C:/Users/Dell/AppData/Local/Temp/claude/ac7f0577a98d1ce8/ee8b5ae4-93d5-4acd-b6a5-57001f402a3e/images/6.png"
+    ],
+    "reference_image_captions": {},
+    "reference_docs": [
+      "D:/orbit-main/orbit-main/docs/pitch/product-facts.md",
+      "D:/orbit-main/orbit-main/docs/pitch/evidence-pack.md",
+      "D:/orbit-main/orbit-main/docs/pitch/competition-brief.md",
+      "D:/orbit-main/orbit-main/.agent/side/shark-tank/FACTS.md"
+    ],
+    "reference_docs_failed": []
+  },
+  "document_digest": {
+    "topic_summary": "Orbit is developing a learner-led mentor/course platform. Request/vote/claim APIs, finite course journey UI, mentor recorder and gamification are source-visible; integrated demo, checkout/payout, advanced waves and specialized AI are unverified or planned. No actual primary discovery or traction dataset supplied.",
+    "key_sections": [
+      "Problem and adult student ICP",
+      "Honest discovery gap",
+      "Request-signal-build concept",
+      "Prototype versus next",
+      "Bottom-up campus pilot hypothesis",
+      "Separate subscription/session economics",
+      "90-day proposed validation plan",
+      "Team placeholders",
+      "Up to INR200000 ask and priority ladder"
+    ],
+    "key_points": [
+      "Subscription20%platform/80%learner-enrolled-coursementors; sessions15%platform separate.",
+      "Core599/Premium1199 are later business intent; source fallback Two599/Five1299/Ten2199 not silently reconciled.",
+      "Founder has a team but names/roles/count unknown; personal/friends experience, noone-to-oneinterviews.",
+      "No invented surveyed users, revenue, orders, commitments, model performance or novelty.",
+      "Six earlier screenshots establish registration by14Nov, mandatorycoaching10-14Nov, finale20Nov,10topic/five-minute guidance, four unweighted criteria; exact deck cutoff/format/size absent."
+    ],
+    "data_highlights": [],
+    "conflicts": [
+      "Working599/1199 differs from source599/1299/2199; no live prices",
+      "Actual submission deadline, team details and opening cash unknown",
+      "Sample screens use retained build, not approved new worlds or live paid learning"
+    ],
+    "open_questions": [
+      "Founder-owned facts not supplied; honest fallback panels retained"
+    ],
+    "inherited_tables": [],
+    "inherited_images": []
+  },
+  "raw_documents": null,
+  "research_report": "D:/orbit-main/orbit-main/docs/pitch/published-evidence-update.md"
+}

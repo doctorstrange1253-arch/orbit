@@ -1,0 +1,16 @@
+{
+  "version": "v4",
+  "slides": 14,
+  "notes": 14,
+  "nativeCharts": 1,
+  "minimumExportedFont": 12.0,
+  "fontBelow12pt": 0,
+  "geometryIssues": 0,
+  "pptxBytes": 580759,
+  "pdfBytes": 2083629,
+  "primaryData": "NOT_PROVIDED",
+  "actualCosts": "NOT_PROVIDED",
+  "officePptxRender": "NOT_RUN",
+  "pdfType": "image-backed exact browser slide render",
+  "screenFacts": "FILL/ESTIMATE intentionally retained"
+}

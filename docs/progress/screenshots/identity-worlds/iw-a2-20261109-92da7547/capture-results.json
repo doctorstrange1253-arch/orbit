@@ -1,0 +1,251 @@
+{
+  "runId": "iw-a2-20261109-92da7547",
+  "startedAt": "2026-11-09T07:30:29.000Z",
+  "synthetic": true,
+  "note": "Local current-frontend UI evidence only. These accounts, amounts, grades, records and role states are fixtures, not production authorization or real outcomes.",
+  "inputs": {
+    "fixtureSha256": "263d595849453bc54eeca0d8756fb6c6cc830e07a07c2e31b5f288d76e36810c",
+    "helperSha256": "09cb3a4937875e86113071b5898b25bd550c52cd2cc8c38c6557232bbe6837a0"
+  },
+  "mode": "batch",
+  "selection": {
+    "screens": [
+      {
+        "slug": "course-detail",
+        "route": "/courses/course-fixture"
+      }
+    ],
+    "widths": [
+      1280
+    ],
+    "viewportOnly": true,
+    "extras": false,
+    "stress": false
+  },
+  "screenshots": [
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-92da7547/course-detail-1280.png",
+      "bytes": 366879,
+      "sha256": "ecdbbebacdbcd0075bf72149194a82bbe32e52714ee924247b30ff2c97f24086",
+      "slug": "course-detail",
+      "width": 1280,
+      "captureMode": "viewport-only",
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/courses/course-fixture",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 4491,
+        "title": "",
+        "headings": [
+          "Algebra foundations (fixture)",
+          "Course Map",
+          "Q&A"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nMATHEMATICS\nAlgebra foundations (fixture)\n\nFrom equations to practical reasoning\n\nA synthetic six-lesson course for layout and navigation evidence.\n\n6 lessons\n· 19m 30s\n24 enrolled\nM\nMentor Fixture\nCourse mentor\nView profile →\nCONTINUE LEARNING\n3 STAGES · 6 VIDEOS\nA full arc\nI\nIgnition\n2/2\n+50 XP\nII\nAscent\n0/2\n+75 XP\n\nYou are climbing now. The ground is further than it looks.\n\nIII\nFINALE\nEclipse\n0/2\n+100 XP\nTHE TRAJECTORY · 2/6 CLEARED\nA full arc\nII · ASCENT\nIII · ECLIPSE\n01\nLinear equations\n02\nWorking with variables\n03\nPatterns and relations\n04\nGraphs and coordinates\n05\nApplying algebra\n06\nCourse reflection\nCourse Map\n01\nLinear equations\n02\nWorking with variables\n03\nPatterns and relations\n04\nGraphs and coordinates\n05\nApplying algebra\nMODULE 2\n06\nCourse reflection\nQ&A",
+        "memory": 15012680
+      },
+      "requestedRoute": "/courses/course-fixture",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 7833
+      }
+    }
+  ],
+  "captureAttempts": [
+    {
+      "slug": "course-detail",
+      "width": 1280,
+      "captureMode": "viewport-only",
+      "startedAt": 1794209432013,
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 4491,
+        "title": "",
+        "headings": [
+          "Algebra foundations (fixture)",
+          "Course Map",
+          "Q&A"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nMATHEMATICS\nAlgebra foundations (fixture)\n\nFrom equations to practical reasoning\n\nA synthetic six-lesson course for layout and navigation evidence.\n\n6 lessons\n· 19m 30s\n24 enrolled\nM\nMentor Fixture\nCourse mentor\nView profile →\nCONTINUE LEARNING\n3 STAGES · 6 VIDEOS\nA full arc\nI\nIgnition\n2/2\n+50 XP\nII\nAscent\n0/2\n+75 XP\n\nYou are climbing now. The ground is further than it looks.\n\nIII\nFINALE\nEclipse\n0/2\n+100 XP\nTHE TRAJECTORY · 2/6 CLEARED\nA full arc\nII · ASCENT\nIII · ECLIPSE\n01\nLinear equations\n02\nWorking with variables\n03\nPatterns and relations\n04\nGraphs and coordinates\n05\nApplying algebra\n06\nCourse reflection\nCourse Map\n01\nLinear equations\n02\nWorking with variables\n03\nPatterns and relations\n04\nGraphs and coordinates\n05\nApplying algebra\nMODULE 2\n06\nCourse reflection\nQ&A",
+        "memory": 15012680
+      },
+      "saved": true,
+      "finishedAt": 1794209437425
+    }
+  ],
+  "requests": [
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true,
+      "requestedAt": 1794209430404,
+      "fulfilledAt": 1794209430556
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true,
+      "requestedAt": 1794209430405,
+      "fulfilledAt": 1794209430556
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true,
+      "requestedAt": 1794209430410,
+      "fulfilledAt": 1794209430556
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true,
+      "requestedAt": 1794209430412,
+      "fulfilledAt": 1794209430556
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794209430477,
+      "fulfilledAt": 1794209430556
+    },
+    {
+      "path": "/notifications",
+      "configured": true,
+      "requestedAt": 1794209430478,
+      "fulfilledAt": 1794209430556
+    },
+    {
+      "path": "/courses/course-fixture/enrollments/me",
+      "configured": true,
+      "requestedAt": 1794209430558,
+      "fulfilledAt": 1794209430606
+    },
+    {
+      "path": "/courses/course-fixture",
+      "configured": true,
+      "requestedAt": 1794209430559,
+      "fulfilledAt": 1794209430607
+    },
+    {
+      "path": "/pact/user/mentor-fixture",
+      "configured": true,
+      "requestedAt": 1794209430677,
+      "fulfilledAt": 1794209430703
+    }
+  ],
+  "missingFixtures": [],
+  "blocked": [
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:65513/socket.io/?EIO=4&transport=websocket"
+    }
+  ],
+  "fonts": [
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v23/pxiByp8kv8JHgFVrLCz7Z1xlFd2JQEk.woff2",
+      "bytes": 7848,
+      "sha256": "197a3cbd7290c242c5c765268cdd69a9a39867fdc80cd13071f243a81c56fb76"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap",
+      "bytes": 8078,
+      "sha256": "760eddf4dac8f25b68d32e2dcbb3fcf771c9100749cfa6b200691cd4c45b6907"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0C4n.ttf",
+      "bytes": 122116,
+      "sha256": "47ed1cfaa7ffca04a04ab850b2938fd52c09d1b44cfa3e2980878e166b0cbd87"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiDyp8kv8JHgFVrJJLmy15lEA.ttf",
+      "bytes": 172720,
+      "sha256": "733b74494c0b5856045e34eea8b899f02458ca8e0b7ebd2a887a86b64d99b0d0"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLDD4V1s.ttf",
+      "bytes": 149072,
+      "sha256": "5e8a5c3c2a56c3bc1b135645ca9637b9b64dc3fed5fbf85cb5ed144e06bb6d48"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8L6tjPQ.ttf",
+      "bytes": 112092,
+      "sha256": "a1d92abc6b02a87faed23d98067ab1027e8e95242fd7c9978a072ea383b89d1a"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLCz7V1s.ttf",
+      "bytes": 150292,
+      "sha256": "1984efdda0fbe207d7ac20feac2ba7c2768c92a90094b02a206c9d58cc30ff2e"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsg-1y4n.ttf",
+      "bytes": 122132,
+      "sha256": "75367e6da7d914eaed87883ba51b2a2b5816b5cdbb39f96ec5c81a5b032bfd5a"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjr0C4n.ttf",
+      "bytes": 122264,
+      "sha256": "05f24e5e4d738b9f8e8643809ebed4800287d61a75d19ac2716f12b5d26279dd"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsgH1y4n.ttf",
+      "bytes": 122060,
+      "sha256": "733eb93b167e6d45de09aa768f6c0355647c2c26f5416dbc7407a08ed41e81c6"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPQ.ttf",
+      "bytes": 112172,
+      "sha256": "44ce4a84f20d60f24539bd0cef11f79c29e38609e0f8adf18551c9794a5d9dc3"
+    }
+  ],
+  "interactions": [],
+  "stress": [],
+  "failures": [
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    }
+  ],
+  "buildRoot": "D:\\orbit-main\\orbit-main\\.agent\\scratch\\iw-a2-20261108-be84ac1c\\build",
+  "base": "http://127.0.0.1:65513",
+  "browser": "156.0.8078.4",
+  "status": "completed-with-observations",
+  "finishedAt": "2026-11-09T07:30:46.456Z"
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": "ppt_task_v2",
+  "deck_id": "TBI-GEU-Orbit",
+  "deck_dir": "D:/orbit-main/orbit-main/docs/pitch/deck",
+  "workspace_root": "/d/orbit-main",
+  "ppt_mode": "standard",
+  "params": {
+    "role": "student founders",
+    "audience": "TBI-GEU founder and industry judges",
+    "scene": "five-minute startup pitch",
+    "page_count": 14,
+    "language": "en",
+    "image_source": "verified-local-product-only",
+    "infographic_source": "native-editable"
+  },
+  "request": {
+    "query": "Cover plus the 10 organizer topics, at most 3 backups; truthful prototype, primary discovery placeholders, separate 20% subscription and 15% session rules, realistic proposed economics and INR200000 maximum ask; premium light editorial style; PPTX/PDF/notes/model/QA; deadline November14 before midnight.",
+    "source_files": [
+      "D:/orbit-main/orbit-main/docs/pitch/product-facts.md",
+      "D:/orbit-main/orbit-main/docs/pitch/evidence-pack.md",
+      "D:/orbit-main/orbit-main/docs/pitch/competition-brief.md",
+      "D:/orbit-main/orbit-main/.agent/side/shark-tank/FACTS.md"
+    ]
+  },
+  "choices": {
+    "execution_depth": "draft",
+    "output": "static_html",
+    "design_richness": "restrained",
+    "static_postprocess": [
+      "pptx"
+    ]
+  },
+  "state": {
+    "status": "waiting_for_approval",
+    "current_stage": "G1",
+    "completed_stages": [
+      "entry",
+      "story",
+      "v0",
+      "visual-pass1",
+      "visual-pass2",
+      "visual-pass3",
+      "v4-export"
+    ],
+    "research": {
+      "required": false,
+      "executor": null,
+      "mode": null,
+      "skipped_reason": "Complete v0 first; existing cited evidence reused, targeted pricing supplement follows without invalidating v0."
+    },
+    "capabilities": {},
+    "artifacts": {
+      "pptx": "D:\\orbit-main\\orbit-main\\docs\\pitch\\deck\\v4\\Deck_v4.pptx",
+      "pdf": "D:\\orbit-main\\orbit-main\\docs\\pitch\\deck\\v4\\Deck_v4.pdf",
+      "contact_sheet": "D:\\orbit-main\\orbit-main\\docs\\pitch\\deck\\v4\\contact-sheet.png",
+      "qa_report": "D:\\orbit-main\\orbit-main\\docs\\pitch\\deck\\qa-report.md",
+      "speaker_notes": "D:\\orbit-main\\orbit-main\\docs\\pitch\\deck\\v4\\speaker-notes.md",
+      "preview": "D:\\orbit-main\\orbit-main\\docs\\pitch\\deck\\present.html",
+      "model": "D:\\orbit-main\\orbit-main\\docs\\pitch\\models\\pitch-model.xlsx"
+    },
+    "last_error": "Stock SN player/font pipeline not passed; explicit raster preview only. See QA limitations.",
+    "updated_at": "2026-11-14T22:50:54.381694+05:30"
+  },
+  "created_at": "2026-11-14T15:10:00Z",
+  "path_override": "Explicit user requires docs/pitch/deck; this overrides skill ppt_decks default. One canonical directory, no alternative output tree."
+}

@@ -1,0 +1,10 @@
+# Index-only continuation errors
+Canonical ERRORS.md is not writable while the different live owner holds RUNLOCK. These records are deferred, not hidden or marked canonical.
+
+| ID | Date | Failure | Cause / evidence | Working alternative / status |
+|---|---|---|---|---|
+| M0-IO-01 | 2026-11-16 | SendMessage to Identity Worlds Phase C index (fork) [f20bba] returned unreachable | Peer had exited; one fresh ListAgents result no longer lists it | Do not retry absent peer. Existing orbit-main-de owner-coordination request remains; orbit-main-ca confirmed they are not writer21156. No lock takeover or process stop. |
+| M0-IO-02 | 2026-11-16 | Native Grep using published-evidence-update.md glob returned no files | Exact new evidence deliverable not in current saved deck tree; not evidence of absent prior research | Continue with retained evidence-pack/product-facts references only after verified canonical ownership; no new deck deliverable claimed. |
+| D-IO-03 | 2026-11-16 | Read render/postmortem-v4/contact-sheet.png returned missing file | Wrong assumed contact-sheet location; directory has individual slide PNGs, not that contact sheet | One narrowed Glob found slide-01.png through slide-14.png. Read slides01/08/11 at their actual paths; existing contact sheet is v4/contact-sheet.png. No render/install replay. |
+| D-IO-04 | 2026-11-16 | Root Downloads/Desktop deck Globs returned no matching PPTX/PDF files | Negative shallow search did not establish recursive absence | One metadata-only bounded traversal found no PPTX and six unrelated Desktop PDFs; contents not read. Repository v0-v4 each has14actual slides; no new10/12slide version found in inspected locations. |
+| D-IO-05 | 2026-11-16 | Canonical deck writes blocked by different live RUNLOCK owner | PID21156/start06:59:05.9407950Z remains live; continuation20196/start11:49:07.8878510Z differs; orbit-main-ca and orbit-main-24 confirm neither owns21156 | Owner/handover request sent to orbit-main-de with idle subscription; no takeover, deletion, process stop or canonical deck write. User decision/voluntary handover required if owner cannot respond. |

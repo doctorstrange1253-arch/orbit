@@ -1,0 +1,16 @@
+{
+  "name": "orbit-pitch-deck-tools",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Isolated local pitch build and image tools; not application dependencies",
+  "dependencies": {
+    "pptxgenjs": "4.0.1",
+    "sharp": "0.35.5",
+    "exceljs": "4.4.0"
+  },
+  "overrides": {
+    "image-size": "2.0.3",
+    "uuid": "11.1.1"
+  }
+}

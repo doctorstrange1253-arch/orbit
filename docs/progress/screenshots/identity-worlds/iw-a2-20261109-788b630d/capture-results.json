@@ -1,0 +1,5752 @@
+{
+  "runId": "iw-a2-20261109-788b630d",
+  "startedAt": "2026-11-09T07:02:34.879Z",
+  "synthetic": true,
+  "note": "Local current-frontend UI evidence only. These accounts, amounts, grades, records and role states are fixtures, not production authorization or real outcomes.",
+  "inputs": {
+    "fixtureSha256": "263d595849453bc54eeca0d8756fb6c6cc830e07a07c2e31b5f288d76e36810c",
+    "helperSha256": "0042bd97c5656ebf5ff5527e21066452f184f20718d64acc17b8ada8a83a9298"
+  },
+  "mode": "batch",
+  "selection": {
+    "screens": [
+      {
+        "slug": "profile",
+        "route": "/profile"
+      },
+      {
+        "slug": "public-profile",
+        "route": "/profile/peer-one"
+      },
+      {
+        "slug": "leaderboard",
+        "route": "/leaderboard"
+      },
+      {
+        "slug": "orbit",
+        "route": "/orbit"
+      },
+      {
+        "slug": "mission-log",
+        "route": "/orbit/history"
+      },
+      {
+        "slug": "shop",
+        "route": "/shop"
+      },
+      {
+        "slug": "holobay",
+        "route": "/holobay"
+      },
+      {
+        "slug": "cosmic-observatory",
+        "route": "/observatory"
+      },
+      {
+        "slug": "tier-atlas",
+        "route": "/cosmic-atlas"
+      },
+      {
+        "slug": "peer-browse",
+        "route": "/peer/browse"
+      },
+      {
+        "slug": "peer-matches",
+        "route": "/peer/matches"
+      },
+      {
+        "slug": "peer-connections",
+        "route": "/peer/connections"
+      },
+      {
+        "slug": "peer-nearby",
+        "route": "/peer/nearby"
+      },
+      {
+        "slug": "peer-trust",
+        "route": "/peer/trust"
+      },
+      {
+        "slug": "peer-calls",
+        "route": "/peer/calls"
+      },
+      {
+        "slug": "not-found",
+        "route": "/route-fixture-not-found"
+      },
+      {
+        "slug": "courses",
+        "route": "/courses"
+      },
+      {
+        "slug": "course-detail",
+        "route": "/courses/course-fixture"
+      },
+      {
+        "slug": "skill-map",
+        "route": "/skill-map"
+      },
+      {
+        "slug": "public-skill-map",
+        "route": "/skill-map/peer-one"
+      }
+    ],
+    "widths": [
+      360,
+      768,
+      1280
+    ],
+    "extras": false,
+    "stress": false
+  },
+  "screenshots": [
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/profile-360.png",
+      "bytes": 148431,
+      "sha256": "07b59339ddcdb33b17562daa6f74be1ce9b162e196c86d7a2a037e5e08c6ad57",
+      "slug": "profile",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 2924,
+      "actualPath": "/profile",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 2924,
+        "title": "Your Profile | Orbit",
+        "headings": [
+          "Profile Settings",
+          "Your Active Windows",
+          "Cosmic Standing",
+          "Basic Info",
+          "Social Links",
+          "Reviews"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nProfile Settings\n\nYour public persona on Orbit.\n\nYOUR ACTIVE WINDOWS\n\nYou have 3 of 3 roles on Orbit. Switch between them anytime.\n\nPeer Learner\nACTIVE\nYOU’RE HERE\n\nFree skill-swap worldwide.\n\nOpen\nMentor\nACTIVE\n\nGet paid for 1-on-1 video sessions.\n\nOpen\nStudent\nACTIVE\n\nBook mentors, learn live, rate them.\n\nOpen\nMENTOR WINDOW\nPENDING PAYOUT\n—\nTOTAL EARNED\n—\nUPCOMING SESSIONS\n0\nSTUDENT WINDOW\nUPCOMING\n0\nPAST SESSIONS\n0\nPEER WINDOW\nPENDING REQUESTS\n—\nACTIVE MATCHES\n0\n\nYou also have Mentor + Student enabled.\n\nOpen Mentor window\nUF\n\nUI Fixture\n\nui-fixture@example.test\n\nTrust Score: 82/100\nHow it works\nCosmic Standing\nMoon IV — The Deimos\nCosmicScore 1200\nProgress to next tier\n25%\n\nCosmicScore = how well you teach (your local leaderboard standing). Trust Score = how dependable you are as a member. They’re separate.\n\nHow your CosmicScore works\nBasic Info\nFULL NAME\nBIO\nLOCATION\nSPOKEN LANGUAGES (search and pick up to 5)\nEnglish\n1/5 selected\nSocial Links\nGITHUB URL\nLINKEDIN URL\nPERSONAL WEBSITE\nSave Changes\nReviews\nReceived\nGiven\n\nNo reviews received yet.",
+        "memory": 14575842
+      },
+      "requestedRoute": "/profile",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 3937
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/public-profile-360.png",
+      "bytes": 54041,
+      "sha256": "bab097a126e301caac54cf32bd24324ea86e15c5ae0c3e38563f02b5f66908dc",
+      "slug": "public-profile",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 1107,
+      "actualPath": "/profile/peer-one",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1107,
+        "title": "",
+        "headings": [
+          "Peer One",
+          "Cosmic Standing",
+          "Skills",
+          "Reviews & Ratings"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nPO\nPeer One\nEnglish\n\nThis user hasn't written a bio yet.\n\n76 Trust Score\nCosmic Standing\nMoon IV — The Deimos\nCosmicScore 1200\nProgress to next tier\n25%\n\nCosmicScore = how well you teach (your local leaderboard standing). Trust Score = how dependable you are as a member. They’re separate.\n\nHow your CosmicScore works\nSkills\nPython basics\n⇄\nWriting\n\nSynthetic computing skill.\n\nBEGINNER\nReviews & Ratings\nNo reviews yet",
+        "memory": 14044923
+      },
+      "requestedRoute": "/profile/peer-one",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1418
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/leaderboard-360.png",
+      "bytes": 35200,
+      "sha256": "cdebb71d8e0b49db351e9d09e544a12102cf69d13220e9bd981752c1405b4a14",
+      "slug": "leaderboard",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 740,
+      "actualPath": "/leaderboard",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "Leaderboard · Orbit",
+        "headings": [
+          "Leaderboards",
+          "Welcome to the Leaderboard"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nLeaderboards\n\nCosmic for mentors · Gameology for learners · Pact for the head-to-head.\n\nCosmic\nGameology\nPact\n▦\nNeighborhood\n▢\nCity\n· 2\n▣\nRegion\n· 2\n◉\nCountry\n· 2\nShowing mentors Fixture City.\nPO\nPeer One\nMoon IV — The Deimos\n1200\nPT\nPeer Two\nMoon IV — The Deimos\n1100\nⓘ\nThree boards, three goals. Climb a tier, level up your learning, or hold your weekly Pact.\nWelcome to the Leaderboard\n\nThis is where local mentors are ranked by their Cosmic Score. Climb by teaching, earning great reviews, and staying active.\n\nSkip\nNext\nLEADERBOARD · 1/4",
+        "memory": 14079885
+      },
+      "requestedRoute": "/leaderboard",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1952
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/orbit-360.png",
+      "bytes": 113815,
+      "sha256": "7834ecf4cd068f997d04bdb6e9e8bd93cb9e1ae49cbd547eb881230d5c03046e",
+      "slug": "orbit",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 1881,
+      "actualPath": "/orbit",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1881,
+        "title": "Orbit · Your Streak",
+        "headings": [
+          "Orbit",
+          "Your progress — three signals",
+          "Weekly Missions",
+          "Weekly League",
+          "Binary Stars",
+          "Weekly duel",
+          "Orbit Milestones",
+          "Welcome to Your Orbit"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nOrbit\n4\nDAY ORBIT\nOrbit stable\n\nYou've stayed in orbit today.\n\nLongest 8\nReminders on\nPHOTONS\n3200\nGRAVITY ASSIST\n1/3\n+1 · 200\n\nAuto-used to bridge a missed day so a long streak survives. One free each week.\n\nYour progress — three signals\nPhotons\n\nSpend on looks — name glows & nebula backgrounds. Never buys ranking.\n\nCosmicScore\n\nYour all-time standing, earned from real reviews. Moves slowly.\n\nOrbit XP\n\nThis week's league race. Resets every Monday.\n\nWeekly Missions\nFull log\n\nNew missions in 6d 16h 57m · tap a mission for details. Complete them to earn Photons + Orbit XP.\n\nNew missions are being charted…\n\nWeekly League\nresets in 6d 23h\nAsteroid Belt\n\nTop 5 promote · bottom 5 relegate. Earn XP: swap +30, review +15, message +5, mission +40.\n\nBinary Stars\nPair up\n\nPair with a partner to start a Binary Star — a shared streak you both keep alive. Milestones pay Stardust to both of you.\n\nWeekly duel\nChallenge\n\nNo duel this week. Challenge someone you have swapped with — the winner takes \n150, and a level week still pays 40.\n\nOrbit Milestones\nWelcome to Your Orbit\n\nYour engagement hub: keep a daily streak, complete missions, and earn Photons to spend in the Nebula Store.\n\nSkip\nNext\nYOUR ORBIT · 1/4",
+        "memory": 14433070
+      },
+      "requestedRoute": "/orbit",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 2084
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/mission-log-360.png",
+      "bytes": 81216,
+      "sha256": "85c63c5e4959416a067f33c43f3670be3f1cc91ac89379869c77d1f09685ceae",
+      "slug": "mission-log",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 740,
+      "actualPath": "/orbit/history",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "Mission Log - Orbit",
+        "headings": [
+          "Mission Log",
+          "Weekly missions",
+          "Photon history"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nOrbit\nMission Log\n\nToday's quest, every weekly mission with its status and rewards, plus your full Photon history.\n\nWeekly missions\n\nNo missions are active right now. Check back after the weekly reset.\n\nEARNED\n0\nSPENT\n0\nPhoton history\n\nNo Photon activity yet. Complete a weekly mission to earn your first Photons.",
+        "memory": 13671549
+      },
+      "requestedRoute": "/orbit/history",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1226
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/shop-360.png",
+      "bytes": 123623,
+      "sha256": "1537aef52c527fd7643e8d4bf10bfb30b3d3d8e9276c4cb396f7ee83eb80063c",
+      "slug": "shop",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 1397,
+      "actualPath": "/shop",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1397,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Nebula Store",
+          "Welcome to the Nebula Store"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nNebula Store\nHolo-Bay\n3,200\nPhotons\n\nSpend your Photons on glows, nebulae and effects. Equipped looks are visible to everyone across Orbit.Collection 1/2\n\nAa\nFEATURED\nLUNAR\nCyan glow\nSynthetic cosmetic catalog entry.\n06\nD\n11\nH\n27\nM\n12\nS\n120\nAll\nName Glows\nProfile Nebulae\nAvatar Frames\nProfile Effects\nNameplates\n Owned\nFeatured\nRarity ↑\nPrice ↑\nPrice ↓\nLUNAR\nAa\nCyan glow\nSynthetic cosmetic catalog entry.\n120\nLUNAR\nOWNED\nPulsar field\nSynthetic owned cosmetic.\nEquip\nRARITY LADDER — 15 COSMIC TIERS\nLUNAR\nSTELLAR\nSOLAR\nNEBULAR\nASTRAL\nCELESTIAL\nGALACTIC\nCOSMIC\nHYPERNOVA\nBLACK HOLE\nEVENT HORIZON\nSINGULARITY\nDARK MATTER\nANTIMATTER\nMULTIVERSAL\n\nGlow intensity rises with rarity — all 15 tiers are live, from humble Lunar to the ultimate Multiversal.\n\nWelcome to the Nebula Store\n\nSpend Photons on cosmetics that appear everywhere your name and profile show up, visible to everyone, not just you.\n\nSkip\nNext\nNEBULA STORE · 1/4",
+        "memory": 14195069
+      },
+      "requestedRoute": "/shop",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 2293
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/holobay-360.png",
+      "bytes": 102144,
+      "sha256": "253647412ed3d3e0965c3a87cc4dff4f56cce285bc7e37d86617638b5b2f6734",
+      "slug": "holobay",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 1351,
+      "actualPath": "/holobay",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1351,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Holo-Bay",
+          "Welcome to the Holo-Bay"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nStore\nHolo-Bay\n3,200\n\nTry any look on a live hologram of your profile. Nothing is spent until you Buy or Equip.\n\nQuantum Shuffle\nReset to equipped\nUI Fixture\nThis is exactly how others see you\nMentor\nOrbit\nPick a glow, nebula or frame on the right to preview it here.\nNAME GLOW\nNone\nNone\nPROFILE NEBULA\nNone\nAVATAR FRAME\nNone\nPROFILE EFFECT\nNone\nNAMEPLATE\nNone\nRARITY\nLUNAR\nSTELLAR\nSOLAR\nNEBULAR\nASTRAL\nCELESTIAL\nGALACTIC\nCOSMIC\nHYPERNOVA\nBLACK HOLE\nEVENT HORIZON\nSINGULARITY\nDARK MATTER\nANTIMATTER\nMULTIVERSAL\nBrowse the full Nebula Store →\nWelcome to the Holo-Bay\n\nThis is your try-before-you-buy lab. Pick any cosmetic and it renders live on a holographic mock of your real profile.\n\nSkip\nNext\nHOLO-BAY · 1/3",
+        "memory": 13791563
+      },
+      "requestedRoute": "/holobay",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 2934
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/cosmic-observatory-360.png",
+      "bytes": 43784,
+      "sha256": "23d011ed55da02aa87aa129263026c858bfb8ecc903522b0e6253a05c0fba163",
+      "slug": "cosmic-observatory",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 824,
+      "actualPath": "/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 824,
+        "title": "The Observatory · Orbit",
+        "headings": [
+          "The Observatory"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          },
+          {
+            "width": 300,
+            "height": 150
+          }
+        ],
+        "text": "⌘K\nThe Observatory\n\nYour local sky of mentors\n\nView\n\nThe Observatory is Orbit’s hall of fame — a living star map of your city’s greatest mentors. The current #1 shines as the North Star, the month’s biggest climber earns a Supernova spotlight, and retired champions become permanent Quasar legends in the archive.\n\nThis sky is still dark\n\nNo North Star yet — be the first to shine here. As mentors earn reviews, the brightest will light up the Observatory.",
+        "memory": 13830011
+      },
+      "requestedRoute": "/observatory",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1178
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/tier-atlas-360.png",
+      "bytes": 49309,
+      "sha256": "f15d5edb0d387bd86e3ab2f04c01e6f2ce6a71ee33e36fce461763972b410a45",
+      "slug": "tier-atlas",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 740,
+      "actualPath": "/cosmic-atlas",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 7865,
+        "title": "Cosmic Tier Atlas · Orbit",
+        "headings": [
+          "Cosmic Tier Atlas",
+          "Stardust",
+          "Meteor",
+          "Asteroid",
+          "Moon",
+          "Planet",
+          "Star",
+          "Pulsar",
+          "Supernova",
+          "Galaxy",
+          "Quasar"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nBack\nCosmic Tier Atlas\n\nEvery level from Moon to Quasar — the score, requirements, and perks to reach each.\n\nYou are currently Moon IV — The Deimos · CosmicScore 1200.\n\nStardust\nThe Descent — recovery tiers; everyone can climb back.\n0 – 6\nStardust IV — The Spark\n\nA single faint ember in the dark. Every moon, planet, and star was once dust like this. Begin again.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\n6 – 12\nStardust III — The Scatter\n\nFlung wide and thin. Gather yourself.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\n12 – 18\nStardust II — The Oort\n\nFar out in the cold, drifting. The long way back begins.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\n18 – 24\nStardust I — The Zodiac\n\nScattered light along the ecliptic. You're catching the sun again.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\nMeteor\nStill burning. Turn the fall into momentum.\n24 – 30\nMeteor IV — The Orionid\n\nA faint trail. Keep moving — even falling things can rise.\n\nStill on the board, still climbing\nA warmer badge as you rise\n30 – 35\nMeteor III — The Leonid\n\nA flicker in the dark. Small, but still burning.\n\nStill on the board, still climbing\nA warmer badge as you rise\n35 – 39\nMeteor II — The Geminid\n\nA steady fall with real fire. Turn the descent into momentum.\n\nStill on the board, still climbing\nA warmer badge as you rise\n39 – 42\nMeteor I — The Perseid\n\nA bright streak across the sky — brief, but everyone looks up.\n\nStill on the board, still climbing\nA warmer badge as you rise\nAsteroid\nAlmost a moon. Gather a little more mass.\n42 – 45\nAsteroid IV — The Hygiea\n\nDark and quiet, but whole. The climb starts here.\n\nAlmost a Moon — one good or",
+        "memory": 14617445
+      },
+      "requestedRoute": "/cosmic-atlas",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1192
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-browse-360.png",
+      "bytes": 62053,
+      "sha256": "85497392b63b85a28ff66e753f7dc0540149db234094c293a7d24455bcffd634",
+      "slug": "peer-browse",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 960,
+      "actualPath": "/peer/browse",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 960,
+        "title": "Browse Skills | Orbit",
+        "headings": [
+          "Browse Skills"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nBrowse Skills\n\nDiscover what the community is teaching and learning.\n\nSort by Rating\n\nShowing 2 of 2 skills\n\nPT\n\nPeer Two\n\nEnglish\n84\nWriting\n⇄\nAlgebra\n\nSynthetic peer skill.\n\nadvanced\n1 day ago\nRatings\nConnect\nPO\n\nPeer One\n\nEnglish\n76\nPython basics\n⇄\nWriting\n\nSynthetic computing skill.\n\nbeginner\n1 day ago\nRatings\nConnect",
+        "memory": 14415226
+      },
+      "requestedRoute": "/peer/browse",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1271
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-matches-360.png",
+      "bytes": 35653,
+      "sha256": "b16945db83990815b7525dfe0bc6262bd96559ea478df440fc62b11db462b6d1",
+      "slug": "peer-matches",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 740,
+      "actualPath": "/peer/matches",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "Your Matches | Orbit",
+        "headings": [
+          "Your Matches"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nYour Matches\n\nPeople whose skills perfectly align with yours — mutual exchanges.\n\nNo matches yet\n\nAdd more skills or browse the community. Matches appear when someone offers what you want and wants what you offer.",
+        "memory": 13859436
+      },
+      "requestedRoute": "/peer/matches",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1057
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-connections-360.png",
+      "bytes": 35579,
+      "sha256": "3078134dff6ed574ef691d908523c77cb4873ee0e0358abe7ad557f1c5e366f8",
+      "slug": "peer-connections",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 740,
+      "actualPath": "/peer/connections",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "Connections | Orbit",
+        "headings": [
+          "Connections"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          },
+          {
+            "width": 300,
+            "height": 150
+          }
+        ],
+        "text": "⌘K\nConnections\n\nManage your network and connection requests.\n\nConnections\nIncoming\nSent\nSwaps\nNo connections yet\n\nAccept incoming requests or connect with people whose skills align with yours.",
+        "memory": 13958688
+      },
+      "requestedRoute": "/peer/connections",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1072
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-nearby-360.png",
+      "bytes": 61789,
+      "sha256": "436faafea1aa3649e69aad0cdbd023a6990044d81c4b3235a2c6a6bf588cb95c",
+      "slug": "peer-nearby",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 1039,
+      "actualPath": "/peer/nearby",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1039,
+        "title": "Nearby Skill Swappers | Orbit",
+        "headings": [
+          "Nearby Skills"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nNearby Skills\n\nDiscover Orbit members in your area for local learning.\n\nSet\nLocate Me\nSEARCH RADIUS\n50 km\n5\n10\n25\n50\n100\n250\n500\n5 km min\n500 km max\n\nSearching within 50 km of your location\n\nSearch Area\n\nEnter your city above or click Locate Me to find nearby skills.",
+        "memory": 13606338
+      },
+      "requestedRoute": "/peer/nearby",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1202
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-trust-360.png",
+      "bytes": 82515,
+      "sha256": "ee510ee7a49f740a61cf2317dec41d04b66461c7bfe0790dc7f19ae13fafb4f8",
+      "slug": "peer-trust",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 1435,
+      "actualPath": "/peer/trust",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1435,
+        "title": "Trust & Reputation | Orbit",
+        "headings": [
+          "Trust & Reputation"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nTrust & Reputation\n\nYour community standing based on interactions and feedback.\n\n82\n/100\nExcellent\n4.8\navg rating\n0\nreviews\nScore Breakdown\n0/100 pts\nRating Score\nStars partners leave after sessions\n0/40\n0%\nExperience\nSkill swaps you have completed\n0/20\n0%\nAccount Age\nHow long you have been on Orbit\n0/20\n0%\nActivity\nRecent logins and engagement\n0/20\n0%\n\nTop standing — keep it up!\n\nBiggest opportunity: Rating Score (+40 pts available). Deliver great sessions and ask partners to rate you.\n\nRecent Reviews\n\nNo reviews yet. Complete skill exchanges to receive feedback.",
+        "memory": 13922546
+      },
+      "requestedRoute": "/peer/trust",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1174
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-calls-360.png",
+      "bytes": 39668,
+      "sha256": "8ee6d0406d33f02981afe7f895e90e6200782c11ff518315127efe83ccc42bcb",
+      "slug": "peer-calls",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 740,
+      "actualPath": "/peer/calls",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Video Calls",
+          "Call History"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nVideo Calls\n\nDirect peer-to-peer video calls with camera and microphone.\n\nStart a Call\n\nGo to Connections and click Call next to a friend.\n\nCall History\n\nNo calls yet. Connect with someone and start a video call.",
+        "memory": 13718104
+      },
+      "requestedRoute": "/peer/calls",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1093
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/not-found-360.png",
+      "bytes": 72517,
+      "sha256": "36bacc8f8b67308fba5da538dbaae41df19c21e45e6af24935633671108b82aa",
+      "slug": "not-found",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 740,
+      "actualPath": "/route-fixture-not-found",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "404 — Page Not Found | Orbit",
+        "headings": [
+          "Page Not Found"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          },
+          {
+            "width": 300,
+            "height": 150
+          }
+        ],
+        "text": "404\nPage Not Found\n\nThe page you're looking for doesn't exist or may have been moved. Let's get you back on track.\n\nGo Home\nBrowse Skills",
+        "memory": 11964748
+      },
+      "requestedRoute": "/route-fixture-not-found",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1268
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/courses-360.png",
+      "bytes": 183645,
+      "sha256": "dd7c1f465ec80d1ef645700c8085cc97c1dc56c10a692ca17cb89e7d745306c5",
+      "slug": "courses",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 1256,
+      "actualPath": "/courses",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 1256,
+        "title": "Courses · Orbit",
+        "headings": [
+          "Learn at your orbit."
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nCOURSE LIBRARY\nLearn at your orbit.\n\nBite-sized video courses from mentors you already trust. Watch, take a quiz, finish the course — and earn a shareable certificate.\n\nAll categories\nmathematics\nAll levels\nBeginner\nIntermediate\nAdvanced\nNewest\nTop rated\nMost enrolled\n6 LESSONS\n₹599\nMATHEMATICS\nAlgebra foundations (fixture)\n\nFrom equations to practical reasoning\n\nM\nMentor Fixture\n6 LESSONS\n₹599\nMATHEMATICS\nGeometry workshop (fixture)\n\nFrom equations to practical reasoning\n\nM\nMentor Fixture",
+        "memory": 13831865
+      },
+      "requestedRoute": "/courses",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 7527
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/course-detail-360.png",
+      "bytes": 366780,
+      "sha256": "be404a6d02729c7e860fc5dd8fe15221f19bb2058fa3549f5e07405406b11bba",
+      "slug": "course-detail",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 2806,
+      "actualPath": "/courses/course-fixture",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 2806,
+        "title": "",
+        "headings": [
+          "Algebra foundations (fixture)",
+          "Course Map",
+          "Q&A"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nMATHEMATICS\nAlgebra foundations (fixture)\n\nFrom equations to practical reasoning\n\nA synthetic six-lesson course for layout and navigation evidence.\n\n6 lessons\n· 19m 30s\n24 enrolled\nM\nMentor Fixture\nCourse mentor\nView profile →\nCONTINUE LEARNING\n3 STAGES · 6 VIDEOS\nA full arc\nI\nIgnition\n2/2\n+50 XP\nII\nAscent\n0/2\n+75 XP\n\nYou are climbing now. The ground is further than it looks.\n\nIII\nFINALE\nEclipse\n0/2\n+100 XP\nTHE TRAJECTORY · 2/6 CLEARED\nA full arc\nII · ASCENT\nIII · ECLIPSE\n01\nLinear equations\n02\nWorking with variables\n03\nPatterns and relations\n04\nGraphs and coordinates\n05\nApplying algebra\n06\nCourse reflection\nCourse Map\n01\nLinear equations\n02\nWorking with variables\n03\nPatterns and relations\n04\nGraphs and coordinates\n05\nApplying algebra\nMODULE 2\n06\nCourse reflection\nQ&A",
+        "memory": 14435898
+      },
+      "requestedRoute": "/courses/course-fixture",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 3654
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/skill-map-360.png",
+      "bytes": 38557,
+      "sha256": "4600291b12b4ed00bec52d04e0e9ee46f95efa9c59a4f1c2798ddd6afeb8440e",
+      "slug": "skill-map",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 876,
+      "actualPath": "/skill-map",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 876,
+        "title": "Skill Map · Orbit",
+        "headings": [
+          "Your sky is forming."
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          }
+        ],
+        "text": "⌘K\nTHE SKILL MAP\nYour sky is forming.\n\nComplete a course and the first star appears here. Every concept you touch adds a line.\n\nShare\nComplete a course to light your first star. Every concept you touch adds a line.\nBrowse courses",
+        "memory": 13574531
+      },
+      "requestedRoute": "/skill-map",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1187
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/public-skill-map-360.png",
+      "bytes": 39937,
+      "sha256": "d1288a8579db594504b9938e15fc9c3fd3156413355e3126f0087a0f97eec270",
+      "slug": "public-skill-map",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 876,
+      "actualPath": "/skill-map/peer-one",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 876,
+        "title": "Skill Map · Orbit",
+        "headings": [
+          "A constellation of learning."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 360,
+            "height": 740
+          },
+          {
+            "width": 1200,
+            "height": 620
+          }
+        ],
+        "text": "⌘K\nTHE SKILL MAP\nA constellation of learning.\n\n0 courses completed · 0 concepts in the path.\n\n0 COURSES · 0 CONCEPTS\nBuild your own on Orbit",
+        "memory": 13541689
+      },
+      "requestedRoute": "/skill-map/peer-one",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1888
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/profile-768.png",
+      "bytes": 166457,
+      "sha256": "28b8abd45f8d15491a63624a454b830fda29430d5210eec31e53c7b9622afa78",
+      "slug": "profile",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 2668,
+      "actualPath": "/profile",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 2668,
+        "title": "Your Profile | Orbit",
+        "headings": [
+          "Profile Settings",
+          "Your Active Windows",
+          "Cosmic Standing",
+          "Basic Info",
+          "Social Links",
+          "Reviews"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nProfile Settings\n\nYour public persona on Orbit.\n\nYOUR ACTIVE WINDOWS\n\nYou have 3 of 3 roles on Orbit. Switch between them anytime.\n\nYOU’RE IN PEER LEARNER\nPeer Learner\nACTIVE\nYOU’RE HERE\n\nFree skill-swap worldwide.\n\nOpen\nMentor\nACTIVE\n\nGet paid for 1-on-1 video sessions.\n\nOpen\nStudent\nACTIVE\n\nBook mentors, learn live, rate them.\n\nOpen\nMENTOR WINDOW\nPENDING PAYOUT\n₹510\nTOTAL EARNED\n₹1,530\nUPCOMING SESSIONS\n1\nSTUDENT WINDOW\nUPCOMING\n1\nPAST SESSIONS\n1\nPEER WINDOW\nPENDING REQUESTS\n0\nACTIVE MATCHES\n2\n\nYou also have Mentor + Student enabled.\n\nOpen Mentor window\nUF\n\nUI Fixture\n\nui-fixture@example.test\n\nTrust Score: 82/100\nHow it works\nCosmic Standing\nMoon IV — The Deimos\nCosmicScore 1200\nProgress to next tier\n25%\n\nCosmicScore = how well you teach (your local leaderboard standing). Trust Score = how dependable you are as a member. They’re separate.\n\nHow your CosmicScore works\nBasic Info\nFULL NAME\nBIO\nLOCATION\nSPOKEN LANGUAGES (search and pick up to 5)\nEnglish\n1/5 selected\nSocial Links\nGITHUB URL\nLINKEDIN URL\nPERSONAL WEBSITE\nSave Changes\nReviews\nReceived\nGiven\n\nNo reviews received yet.",
+        "memory": 15184685
+      },
+      "requestedRoute": "/profile",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 3266
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/public-profile-768.png",
+      "bytes": 63058,
+      "sha256": "8c10b0769de3a7b316ca01decabce672130d34487fbc16a628ef157e7aeec75a",
+      "slug": "public-profile",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1058,
+      "actualPath": "/profile/peer-one",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1058,
+        "title": "",
+        "headings": [
+          "Peer One",
+          "Cosmic Standing",
+          "Skills",
+          "Reviews & Ratings"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nPO\nPeer One\nEnglish\n\nThis user hasn't written a bio yet.\n\n76 Trust Score\nCosmic Standing\nMoon IV — The Deimos\nCosmicScore 1200\nProgress to next tier\n25%\n\nCosmicScore = how well you teach (your local leaderboard standing). Trust Score = how dependable you are as a member. They’re separate.\n\nHow your CosmicScore works\nSkills\nPython basics\n⇄\nWriting\n\nSynthetic computing skill.\n\nBEGINNER\nReviews & Ratings\nNo reviews yet",
+        "memory": 14334003
+      },
+      "requestedRoute": "/profile/peer-one",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1318
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/leaderboard-768.png",
+      "bytes": 64027,
+      "sha256": "c5b9f7250bf6fd1f53256c7ad9f8020bb985cf5d78f56ec6b96d9ecc1de13e48",
+      "slug": "leaderboard",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/leaderboard",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Leaderboard · Orbit",
+        "headings": [
+          "Leaderboards",
+          "Welcome to the Leaderboard"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nLeaderboards\n\nCosmic for mentors · Gameology for learners · Pact for the head-to-head.\n\nCosmic\nGameology\nPact\n▦\nNeighborhood\n▢\nCity\n· 2\n▣\nRegion\n· 2\n◉\nCountry\n· 2\nShowing mentors Fixture City.\nPO\nPeer One\nMoon IV — The Deimos\n1200\nPT\nPeer Two\nMoon IV — The Deimos\n1100\nⓘ\nThree boards, three goals. Climb a tier, level up your learning, or hold your weekly Pact.\nWelcome to the Leaderboard\n\nThis is where local mentors are ranked by their Cosmic Score. Climb by teaching, earning great reviews, and staying active.\n\nSkip\nNext\nLEADERBOARD · 1/4",
+        "memory": 14310977
+      },
+      "requestedRoute": "/leaderboard",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 11093
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/orbit-768.png",
+      "bytes": 115628,
+      "sha256": "df4dd73ad54789479fa4232664771a303863fc139b542d0094ec6daf85b73e55",
+      "slug": "orbit",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1402,
+      "actualPath": "/orbit",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1402,
+        "title": "Orbit · Your Streak",
+        "headings": [
+          "Orbit",
+          "Your progress — three signals",
+          "Weekly Missions",
+          "Weekly League",
+          "Binary Stars",
+          "Weekly duel",
+          "Orbit Milestones",
+          "Welcome to Your Orbit"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nOrbit\n4\nDAY ORBIT\nOrbit stable\n\nYou've stayed in orbit today.\n\nLongest 8\nReminders on\nPHOTONS\n3200\nGRAVITY ASSIST\n1/3\n+1 · 200\n\nAuto-used to bridge a missed day so a long streak survives. One free each week.\n\nYour progress — three signals\nPhotons\n\nSpend on looks — name glows & nebula backgrounds. Never buys ranking.\n\nCosmicScore\n\nYour all-time standing, earned from real reviews. Moves slowly.\n\nOrbit XP\n\nThis week's league race. Resets every Monday.\n\nWeekly Missions\nFull log\n\nNew missions in 6d 16h 56m · tap a mission for details. Complete them to earn Photons + Orbit XP.\n\nNew missions are being charted…\n\nWeekly League\nresets in 6d 23h\nAsteroid Belt\n\nTop 5 promote · bottom 5 relegate. Earn XP: swap +30, review +15, message +5, mission +40.\n\nBinary Stars\nshared streaks with partners\nPair up\n\nPair with a partner to start a Binary Star — a shared streak you both keep alive. Milestones pay Stardust to both of you.\n\nWeekly duel\nwhoever earns more this week\nChallenge\n\nNo duel this week. Challenge someone you have swapped with — the winner takes \n150, and a level week still pays 40.\n\nOrbit Milestones\nWelcome to Your Orbit\n\nYour engagement hub: keep a daily streak, complete missions, and earn Photons to spend in the Nebula Store.\n\nSkip\nNext\nYOUR ORBIT · 1/4",
+        "memory": 14679425
+      },
+      "requestedRoute": "/orbit",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 5154
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/mission-log-768.png",
+      "bytes": 147190,
+      "sha256": "d948ce19faa0f60de647300eb29b7fe3fee44a62450247ff6a59fe79b3c428b6",
+      "slug": "mission-log",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/orbit/history",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Mission Log - Orbit",
+        "headings": [
+          "Mission Log",
+          "Weekly missions",
+          "Photon history"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nOrbit\nMission Log\n\nToday's quest, every weekly mission with its status and rewards, plus your full Photon history.\n\nWeekly missions\n\nNo missions are active right now. Check back after the weekly reset.\n\nEARNED\n0\nSPENT\n0\nPhoton history\n\nNo Photon activity yet. Complete a weekly mission to earn your first Photons.",
+        "memory": 13932332
+      },
+      "requestedRoute": "/orbit/history",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1397
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/shop-768.png",
+      "bytes": 98702,
+      "sha256": "ab387dc607d7d6cb5c94fa2e94b1f1b24fd6ae93b42dfa8dcccd8292f941ed2f",
+      "slug": "shop",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1160,
+      "actualPath": "/shop",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1351,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Nebula Store",
+          "Welcome to the Nebula Store"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nNebula Store\nHolo-Bay\n0\nPhotons\n\nSpend your Photons on glows, nebulae and effects. Equipped looks are visible to everyone across Orbit.\n\nAll\nName Glows\nProfile Nebulae\nAvatar Frames\nProfile Effects\nNameplates\n Owned\nFeatured\nRarity ↑\nPrice ↑\nPrice ↓\nRARITY LADDER — 15 COSMIC TIERS\nLUNAR\nSTELLAR\nSOLAR\nNEBULAR\nASTRAL\nCELESTIAL\nGALACTIC\nCOSMIC\nHYPERNOVA\nBLACK HOLE\nEVENT HORIZON\nSINGULARITY\nDARK MATTER\nANTIMATTER\nMULTIVERSAL\n\nGlow intensity rises with rarity — all 15 tiers are live, from humble Lunar to the ultimate Multiversal.\n\nWelcome to the Nebula Store\n\nSpend Photons on cosmetics that appear everywhere your name and profile show up, visible to everyone, not just you.\n\nSkip\nNext\nNEBULA STORE · 1/4",
+        "memory": 14179728
+      },
+      "requestedRoute": "/shop",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 8767
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/holobay-768.png",
+      "bytes": 121685,
+      "sha256": "13c51fc914afc2b7cb7b74cac61944d5274de4f1182f7eb987d0b440c756dd80",
+      "slug": "holobay",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1201,
+      "actualPath": "/holobay",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1160,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Welcome to the Holo-Bay"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nWelcome to the Holo-Bay\n\nThis is your try-before-you-buy lab. Pick any cosmetic and it renders live on a holographic mock of your real profile.\n\nSkip\nNext\nHOLO-BAY · 1/3",
+        "memory": 13955550
+      },
+      "requestedRoute": "/holobay",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 8554
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/cosmic-observatory-768.png",
+      "bytes": 67317,
+      "sha256": "ce0fbdc011c034f6cb6545ac416e2aa364d8fd57e6ce36d91082e3604784c8d1",
+      "slug": "cosmic-observatory",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "The Observatory · Orbit",
+        "headings": [
+          "The Observatory"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          },
+          {
+            "width": 300,
+            "height": 150
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nThe Observatory\n\nYour local sky of mentors\n\nView\n\nThe Observatory is Orbit’s hall of fame — a living star map of your city’s greatest mentors. The current #1 shines as the North Star, the month’s biggest climber earns a Supernova spotlight, and retired champions become permanent Quasar legends in the archive.\n\nThis sky is still dark\n\nNo North Star yet — be the first to shine here. As mentors earn reviews, the brightest will light up the Observatory.",
+        "memory": 14085932
+      },
+      "requestedRoute": "/observatory",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1282
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/tier-atlas-768.png",
+      "bytes": 605108,
+      "sha256": "854403baea1392a3c35e4f95673d05fc25a238b1cfbaf604b2d1b33081921394",
+      "slug": "tier-atlas",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 5551,
+      "actualPath": "/cosmic-atlas",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 5551,
+        "title": "Cosmic Tier Atlas · Orbit",
+        "headings": [
+          "Cosmic Tier Atlas",
+          "Stardust",
+          "Meteor",
+          "Asteroid",
+          "Moon",
+          "Planet",
+          "Star",
+          "Pulsar",
+          "Supernova",
+          "Galaxy",
+          "Quasar"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nBack\nCosmic Tier Atlas\n\nEvery level from Moon to Quasar — the score, requirements, and perks to reach each.\n\nYou are currently Moon IV — The Deimos · CosmicScore 1200.\n\nStardust\nThe Descent — recovery tiers; everyone can climb back.\n0 – 6\nStardust IV — The Spark\n\nA single faint ember in the dark. Every moon, planet, and star was once dust like this. Begin again.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\n6 – 12\nStardust III — The Scatter\n\nFlung wide and thin. Gather yourself.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\n12 – 18\nStardust II — The Oort\n\nFar out in the cold, drifting. The long way back begins.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\n18 – 24\nStardust I — The Zodiac\n\nScattered light along the ecliptic. You're catching the sun again.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\nMeteor\nStill burning. Turn the fall into momentum.\n24 – 30\nMeteor IV — The Orionid\n\nA faint trail. Keep moving — even falling things can rise.\n\nStill on the board, still climbing\nA warmer badge as you rise\n30 – 35\nMeteor III — The Leonid\n\nA flicker in the dark. Small, but still burning.\n\nStill on the board, still climbing\nA warmer badge as you rise\n35 – 39\nMeteor II — The Geminid\n\nA steady fall with real fire. Turn the descent into momentum.\n\nStill on the board, still climbing\nA warmer badge as you rise\n39 – 42\nMeteor I — The Perseid\n\nA bright streak across the sky — brief, but everyone looks up.\n\nStill on the board, still climbing\nA warmer badge as you rise\nAsteroid\nAlmost a moon. Gather a little more mass.\n42 – 45\nAsteroid IV — The Hygiea\n\nDark and quiet, but whole. The climb starts here.\n\nAlmost a Moon",
+        "memory": 14754159
+      },
+      "requestedRoute": "/cosmic-atlas",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 2757
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-browse-768.png",
+      "bytes": 83569,
+      "sha256": "84517e5398445b81c65bd9d3129410c86dd9e5fe257796271631d68afff7cb05",
+      "slug": "peer-browse",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/peer/browse",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Browse Skills | Orbit",
+        "headings": [
+          "Browse Skills"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nBrowse Skills\n\nDiscover what the community is teaching and learning.\n\nSort by Rating\n\nShowing 2 of 2 skills\n\nPT\n\nPeer Two\n\nEnglish\n84\nWriting\n⇄\nAlgebra\n\nSynthetic peer skill.\n\nadvanced\n1 day ago\nRatings\nConnect\nPO\n\nPeer One\n\nEnglish\n76\nPython basics\n⇄\nWriting\n\nSynthetic computing skill.\n\nbeginner\n1 day ago\nRatings\nConnect",
+        "memory": 14541433
+      },
+      "requestedRoute": "/peer/browse",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1716
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-matches-768.png",
+      "bytes": 59271,
+      "sha256": "d4aecbeaa428cfa8cdf501db32ad242d4a03b1ab578f2d531abf359ab696cf45",
+      "slug": "peer-matches",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/peer/matches",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Your Matches | Orbit",
+        "headings": [
+          "Your Matches"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nYour Matches\n\nPeople whose skills perfectly align with yours — mutual exchanges.\n\nNo matches yet\n\nAdd more skills or browse the community. Matches appear when someone offers what you want and wants what you offer.",
+        "memory": 14085961
+      },
+      "requestedRoute": "/peer/matches",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1207
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-connections-768.png",
+      "bytes": 61878,
+      "sha256": "f83a327a8eba6b01d4f692aa851dbb809a90fb368c47d35d52bf2ff35fe402a5",
+      "slug": "peer-connections",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/peer/connections",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Connections | Orbit",
+        "headings": [
+          "Connections"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          },
+          {
+            "width": 300,
+            "height": 150
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nConnections\n\nManage your network and connection requests.\n\nMy Connections\nIncoming Requests\nSent Requests\nCompleted Swaps\nNo connections yet\n\nAccept incoming requests or connect with people whose skills align with yours.",
+        "memory": 14227005
+      },
+      "requestedRoute": "/peer/connections",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1287
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-nearby-768.png",
+      "bytes": 89376,
+      "sha256": "c318dec92e61a1e5a6dd9dc62a82b34e23793daaed634c49c3378247b315827b",
+      "slug": "peer-nearby",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/peer/nearby",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Nearby Skill Swappers | Orbit",
+        "headings": [
+          "Nearby Skills"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nNearby Skills\n\nDiscover Orbit members in your area for local learning.\n\nSet\nLocate Me\nSEARCH RADIUS\n50 km\n5\n10\n25\n50\n100\n250\n500\n5 km min\n500 km max\n\nSearching within 50 km of your location\n\nSearch Area\n\nEnter your city above or click Locate Me to find nearby skills.",
+        "memory": 13876657
+      },
+      "requestedRoute": "/peer/nearby",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1260
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-trust-768.png",
+      "bytes": 105090,
+      "sha256": "df6eee4b94e4610d272c9a4517afd7fdf808f2947c2d4db854bbfde295ef9b01",
+      "slug": "peer-trust",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/peer/trust",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Trust & Reputation | Orbit",
+        "headings": [
+          "Trust & Reputation"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nTrust & Reputation\n\nYour community standing based on interactions and feedback.\n\n82\n/100\nExcellent\n4.8\navg rating\n0\nreviews\nScore Breakdown\n0/100 pts\nRating Score\nStars partners leave after sessions\n0/40\n0%\nExperience\nSkill swaps you have completed\n0/20\n0%\nAccount Age\nHow long you have been on Orbit\n0/20\n0%\nActivity\nRecent logins and engagement\n0/20\n0%\n\nTop standing — keep it up!\n\nBiggest opportunity: Rating Score (+40 pts available). Deliver great sessions and ask partners to rate you.\n\nRecent Reviews\n\nNo reviews yet. Complete skill exchanges to receive feedback.",
+        "memory": 14226704
+      },
+      "requestedRoute": "/peer/trust",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1879
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-calls-768.png",
+      "bytes": 59860,
+      "sha256": "16fc10b36934f3aa14d113bd1b721d711178b6152acc58e3fdafc7e530c16116",
+      "slug": "peer-calls",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/peer/calls",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Video Calls",
+          "Call History"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nVideo Calls\n\nDirect peer-to-peer video calls with camera and microphone.\n\nStart a Call\n\nGo to Connections and click Call next to a friend.\n\nCall History\n\nNo calls yet. Connect with someone and start a video call.",
+        "memory": 13972044
+      },
+      "requestedRoute": "/peer/calls",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1198
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/not-found-768.png",
+      "bytes": 139049,
+      "sha256": "8c23640280fad91f9afb1555e81d362a8c5d2dd58edf3cdf7f78c4bb526e2da6",
+      "slug": "not-found",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1024,
+      "actualPath": "/route-fixture-not-found",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "title": "404 — Page Not Found | Orbit",
+        "headings": [
+          "Page Not Found"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          },
+          {
+            "width": 300,
+            "height": 150
+          }
+        ],
+        "text": "404\nPage Not Found\n\nThe page you're looking for doesn't exist or may have been moved. Let's get you back on track.\n\nGo Home\nBrowse Skills",
+        "memory": 12093034
+      },
+      "requestedRoute": "/route-fixture-not-found",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1277
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/courses-768.png",
+      "bytes": 235374,
+      "sha256": "8f1671f6ec6a585eaf5d8e7062c46701f8755f02f4801193f69d7afd34a80bdd",
+      "slug": "courses",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1160,
+      "actualPath": "/courses",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1160,
+        "title": "Courses · Orbit",
+        "headings": [
+          "Learn at your orbit."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nCOURSE LIBRARY\nLearn at your orbit.\n\nBite-sized video courses from mentors you already trust. Watch, take a quiz, finish the course — and earn a shareable certificate.\n\nAll categories\nmathematics\nAll levels\nBeginner\nIntermediate\nAdvanced\nNewest\nTop rated\nMost enrolled\n6 LESSONS\n₹599\nMATHEMATICS\nAlgebra foundations (fixture)\n\nFrom equations to practical reasoning\n\nM\nMentor Fixture\n6 LESSONS\n₹599\nMATHEMATICS\nGeometry workshop (fixture)\n\nFrom equations to practical reasoning\n\nM\nMentor Fixture",
+        "memory": 14053769
+      },
+      "requestedRoute": "/courses",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 6449
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/course-detail-768.png",
+      "bytes": 770024,
+      "sha256": "c893ffd73ff5f8d1368e6b75e8865b315f1bc33fb483e45e3c508ad98e6d99bc",
+      "slug": "course-detail",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 3415,
+      "actualPath": "/courses/course-fixture",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 3415,
+        "title": "",
+        "headings": [
+          "Algebra foundations (fixture)",
+          "Course Map",
+          "Q&A"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nMATHEMATICS\nAlgebra foundations (fixture)\n\nFrom equations to practical reasoning\n\nA synthetic six-lesson course for layout and navigation evidence.\n\n6 lessons\n· 19m 30s\n24 enrolled\nM\nMentor Fixture\nCourse mentor\nView profile →\nCONTINUE LEARNING\n3 STAGES · 6 VIDEOS\nA full arc\nI\nIgnition\n2/2\n+50 XP\nII\nAscent\n0/2\n+75 XP\n\nYou are climbing now. The ground is further than it looks.\n\nIII\nFINALE\nEclipse\n0/2\n+100 XP\nTHE TRAJECTORY · 2/6 CLEARED\nA full arc\nII · ASCENT\nIII · ECLIPSE\n01\nLinear equations\n02\nWorking with variables\n03\nPatterns and relations\n04\nGraphs and coordinates\n05\nApplying algebra\n06\nCourse reflection\nCourse Map\n01\nLinear equations\n02\nWorking with variables\n03\nPatterns and relations\n04\nGraphs and coordinates\n05\nApplying algebra\nMODULE 2\n06\nCourse reflection\nQ&A",
+        "memory": 14546365
+      },
+      "requestedRoute": "/courses/course-fixture",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 13097
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/skill-map-768.png",
+      "bytes": 48651,
+      "sha256": "9df24ba057bc86775392a77f8b3bd858271396d04c9b39f1e58082e8092e0b75",
+      "slug": "skill-map",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1160,
+      "actualPath": "/skill-map",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1160,
+        "title": "Skill Map · Orbit",
+        "headings": [
+          "Your sky is forming."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nTHE SKILL MAP\nYour sky is forming.\n\nComplete a course and the first star appears here. Every concept you touch adds a line.\n\nShare\nComplete a course to light your first star. Every concept you touch adds a line.\nBrowse courses",
+        "memory": 13825890
+      },
+      "requestedRoute": "/skill-map",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1292
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/public-skill-map-768.png",
+      "bytes": 118531,
+      "sha256": "00755008f9622f9d20742b4f50bc6cf2b4c65e1beaa2fc1ee2d5963b2d1486d2",
+      "slug": "public-skill-map",
+      "width": 768,
+      "pngWidth": 768,
+      "pngHeight": 1160,
+      "actualPath": "/skill-map/peer-one",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1160,
+        "title": "Skill Map · Orbit",
+        "headings": [
+          "A constellation of learning."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 768,
+            "height": 1024
+          },
+          {
+            "width": 1200,
+            "height": 620
+          }
+        ],
+        "text": "Orbit\n3,200\n4\n⌘K\nTHE SKILL MAP\nA constellation of learning.\n\n0 courses completed · 0 concepts in the path.\n\n0 COURSES · 0 CONCEPTS\nTAP A STAR TO SEE THE COURSE\nBuild your own on Orbit",
+        "memory": 13793755
+      },
+      "requestedRoute": "/skill-map/peer-one",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 2431
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/profile-1280.png",
+      "bytes": 183521,
+      "sha256": "69329788d68e3959507ed3e751dc20e86bcb732614f96979c5a71aa4ffea8039",
+      "slug": "profile",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 2690,
+      "actualPath": "/profile",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2690,
+        "title": "Your Profile | Orbit",
+        "headings": [
+          "Profile Settings",
+          "Your Active Windows",
+          "Cosmic Standing",
+          "Basic Info",
+          "Social Links",
+          "Reviews"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nProfile Settings\n\nYour public persona on Orbit.\n\nYOUR ACTIVE WINDOWS\n\nYou have 3 of 3 roles on Orbit. Switch between them anytime.\n\nYOU’RE IN PEER LEARNER\nPeer Learner\nACTIVE\nYOU’RE HERE\n\nFree skill-swap worldwide.\n\nOpen\nMentor\nACTIVE\n\nGet paid for 1-on-1 video sessions.\n\nOpen\nStudent\nACTIVE\n\nBook mentors, learn live, rate them.\n\nOpen\nMENTOR WINDOW\nPENDING PAYOUT\n₹510\nTOTAL EARNED\n₹1,530\nUPCOMING SESSIONS\n1\nSTUDENT WINDOW\nUPCOMING\n1\nPAST SESSIONS\n1\nPEER WINDOW\nPENDING REQUESTS\n0\nACTIVE MATCHES\n2\n\nYou also have Mentor + Student enabled.\n\nOpen Mentor window\nUF\n\nUI Fixture\n\nui-fixture@example.test\n\nTrust Score: 82/100\nHow it works\nCosmic Standing\nMoon IV — The Deimos\nCosmicScore 1200\nProgress to next tier\n25%\n\nCosmicScore = how well you teach (your local leaderboard standing). Trust Score = how dependable you are as a member. They’re separate.\n\nHow your CosmicScore works\nBasic Info\nFULL NAME\nBIO\nLOCATION\nSPOKEN LANGUAGES (search and pick up to 5)\nEnglish\n1/5 selected\nSocial Links\nGITHUB URL\nLINKEDIN URL\nPERSONAL WEBSITE\nSave Changes\nReviews\nReceived\nGiven\n\nNo reviews received yet.",
+        "memory": 15393614
+      },
+      "requestedRoute": "/profile",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 3306
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/public-profile-1280.png",
+      "bytes": 73411,
+      "sha256": "6ae130c527af6420af6a1462e0db838c33f1e45a56e25d29bfddc5bdd4dd3506",
+      "slug": "public-profile",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 1081,
+      "actualPath": "/profile/peer-one",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1081,
+        "title": "",
+        "headings": [
+          "Peer One",
+          "Cosmic Standing",
+          "Skills",
+          "Reviews & Ratings"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nPO\nPeer One\nEnglish\n\nThis user hasn't written a bio yet.\n\n76 Trust Score\nCosmic Standing\nMoon IV — The Deimos\nCosmicScore 1200\nProgress to next tier\n25%\n\nCosmicScore = how well you teach (your local leaderboard standing). Trust Score = how dependable you are as a member. They’re separate.\n\nHow your CosmicScore works\nSkills\nPython basics\n⇄\nWriting\n\nSynthetic computing skill.\n\nBEGINNER\nReviews & Ratings\nNo reviews yet",
+        "memory": 14605874
+      },
+      "requestedRoute": "/profile/peer-one",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1513
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/leaderboard-1280.png",
+      "bytes": 59113,
+      "sha256": "b0d2ff3fed32db66a1f60e61c8b0d7dedc82457fd6170169e86f5cf8e4b64978",
+      "slug": "leaderboard",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/leaderboard",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "Leaderboard · Orbit",
+        "headings": [
+          "Leaderboards",
+          "Welcome to the Leaderboard"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nLeaderboards\n\nCosmic for mentors · Gameology for learners · Pact for the head-to-head.\n\nCosmic\nGameology\nPact\n▦\nNeighborhood\n▢\nCity\n· 2\n▣\nRegion\n· 2\n◉\nCountry\n· 2\nShowing mentors Fixture City.\nPO\nPeer One\nMoon IV — The Deimos\n1200\nPT\nPeer Two\nMoon IV — The Deimos\n1100\nⓘ\nThree boards, three goals. Climb a tier, level up your learning, or hold your weekly Pact.\nWelcome to the Leaderboard\n\nThis is where local mentors are ranked by their Cosmic Score. Climb by teaching, earning great reviews, and staying active.\n\nSkip\nNext\nLEADERBOARD · 1/4",
+        "memory": 14696605
+      },
+      "requestedRoute": "/leaderboard",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 12441
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/orbit-1280.png",
+      "bytes": 78189,
+      "sha256": "41604452fbdea67cefaa320d2b86daed52e42cead8bc6d03daa46c5d7eabf0cd",
+      "slug": "orbit",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/orbit",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Welcome to Your Orbit"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nWelcome to Your Orbit\n\nYour engagement hub: keep a daily streak, complete missions, and earn Photons to spend in the Nebula Store.\n\nSkip\nNext\nYOUR ORBIT · 1/4",
+        "memory": 14513560
+      },
+      "requestedRoute": "/orbit",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 10576
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/mission-log-1280.png",
+      "bytes": 155356,
+      "sha256": "408fdf7b26229b05adf0647174a5a504b409daddbb187a97221ddff67cdeeca0",
+      "slug": "mission-log",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/orbit/history",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "Mission Log - Orbit",
+        "headings": [
+          "Mission Log",
+          "Weekly missions",
+          "Photon history"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nOrbit\nMission Log\n\nToday's quest, every weekly mission with its status and rewards, plus your full Photon history.\n\nWeekly missions\n\nNo missions are active right now. Check back after the weekly reset.\n\nEARNED\n0\nSPENT\n0\nPhoton history\n\nNo Photon activity yet. Complete a weekly mission to earn your first Photons.",
+        "memory": 14564723
+      },
+      "requestedRoute": "/orbit/history",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1307
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/shop-1280.png",
+      "bytes": 108586,
+      "sha256": "39a44c0ead28e93e4c49bf95b10114a8e6a41f64ab31364ff60c345a71689354",
+      "slug": "shop",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 975,
+      "actualPath": "/shop",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 975,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Nebula Store",
+          "Welcome to the Nebula Store"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nNebula Store\nHolo-Bay\n3,200\nPhotons\n\nSpend your Photons on glows, nebulae and effects. Equipped looks are visible to everyone across Orbit.Collection 1/2\n\nAa\nFEATURED\nLUNAR\nCyan glow\nSynthetic cosmetic catalog entry.\n06\nD\n11\nH\n23\nM\n17\nS\n120\nAll\nName Glows\nProfile Nebulae\nAvatar Frames\nProfile Effects\nNameplates\n Owned\nFeatured\nRarity ↑\nPrice ↑\nPrice ↓\nLUNAR\nAa\nCyan glow\nSynthetic cosmetic catalog entry.\n120\nLUNAR\nOWNED\nPulsar field\nSynthetic owned cosmetic.\nEquip\nRARITY LADDER — 15 COSMIC TIERS\nLUNAR\nSTELLAR\nSOLAR\nNEBULAR\nASTRAL\nCELESTIAL\nGALACTIC\nCOSMIC\nHYPERNOVA\nBLACK HOLE\nEVENT HORIZON\nSINGULARITY\nDARK MATTER\nANTIMATTER\nMULTIVERSAL\n\nGlow intensity rises with rarity — all 15 tiers are live, from humble Lunar to the ultimate Multiversal.\n\nWelcome to the Nebula Store\n\nSpend Photons on cosmetics that appear everywhere your name and profile show up, visible to everyone, not just you.\n\nSkip\nNext\nNEBULA STORE · 1/4",
+        "memory": 15031738
+      },
+      "requestedRoute": "/shop",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 10163
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/holobay-1280.png",
+      "bytes": 95127,
+      "sha256": "6be900c1c2894d8015c0e2b463824dea53844e6e4a50da9730005b859923798d",
+      "slug": "holobay",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 975,
+      "actualPath": "/holobay",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 975,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Holo-Bay",
+          "Welcome to the Holo-Bay"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nStore\nHolo-Bay\n3,200\n\nTry any look on a live hologram of your profile. Nothing is spent until you Buy or Equip.\n\nQuantum Shuffle\nReset to equipped\nUI Fixture\nThis is exactly how others see you\nMentor\nOrbit\nPick a glow, nebula or frame on the right to preview it here.\nNAME GLOW\nNone\nNone\nPROFILE NEBULA\nNone\nAVATAR FRAME\nNone\nPROFILE EFFECT\nNone\nNAMEPLATE\nNone\nRARITY\nLUNAR\nSTELLAR\nSOLAR\nNEBULAR\nASTRAL\nCELESTIAL\nGALACTIC\nCOSMIC\nHYPERNOVA\nBLACK HOLE\nEVENT HORIZON\nSINGULARITY\nDARK MATTER\nANTIMATTER\nMULTIVERSAL\nBrowse the full Nebula Store →\nWelcome to the Holo-Bay\n\nThis is your try-before-you-buy lab. Pick any cosmetic and it renders live on a holographic mock of your real profile.\n\nSkip\nNext\nHOLO-BAY · 1/3",
+        "memory": 14451178
+      },
+      "requestedRoute": "/holobay",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 10033
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/cosmic-observatory-1280.png",
+      "bytes": 81679,
+      "sha256": "db3a8b0944fcf1f2782cb88881353b33d73244c002037f46e053c50e2f692adb",
+      "slug": "cosmic-observatory",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/observatory",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "The Observatory · Orbit",
+        "headings": [
+          "The Observatory"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 300,
+            "height": 150
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nThe Observatory\n\nYour local sky of mentors\n\nView\n\nThe Observatory is Orbit’s hall of fame — a living star map of your city’s greatest mentors. The current #1 shines as the North Star, the month’s biggest climber earns a Supernova spotlight, and retired champions become permanent Quasar legends in the archive.\n\nThis sky is still dark\n\nNo North Star yet — be the first to shine here. As mentors earn reviews, the brightest will light up the Observatory.",
+        "memory": 14302963
+      },
+      "requestedRoute": "/observatory",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1381
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/tier-atlas-1280.png",
+      "bytes": 636635,
+      "sha256": "359e3b6845a1ea6585b54463a76f022c507455c40e0894c77b8426845d33a3dd",
+      "slug": "tier-atlas",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 5570,
+      "actualPath": "/cosmic-atlas",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 5570,
+        "title": "Cosmic Tier Atlas · Orbit",
+        "headings": [
+          "Cosmic Tier Atlas",
+          "Stardust",
+          "Meteor",
+          "Asteroid",
+          "Moon",
+          "Planet",
+          "Star",
+          "Pulsar",
+          "Supernova",
+          "Galaxy",
+          "Quasar"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nMENTOR\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nBack\nCosmic Tier Atlas\n\nEvery level from Moon to Quasar — the score, requirements, and perks to reach each.\n\nYou are currently Moon IV — The Deimos · CosmicScore 1200.\n\nStardust\nThe Descent — recovery tiers; everyone can climb back.\n0 – 6\nStardust IV — The Spark\n\nA single faint ember in the dark. Every moon, planet, and star was once dust like this. Begin again.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\n6 – 12\nStardust III — The Scatter\n\nFlung wide and thin. Gather yourself.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\n12 – 18\nStardust II — The Oort\n\nFar out in the cold, drifting. The long way back begins.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\n18 – 24\nStardust I — The Zodiac\n\nScattered light along the ecliptic. You're catching the sun again.\n\nEvery mentor starts as dust — the climb begins here\nFully ranked on the local board\nMeteor\nStill burning. Turn the fall into momentum.\n24 – 30\nMeteor IV — The Orionid\n\nA faint trail. Keep moving — even falling things can rise.\n\nStill on the board, still climbing\nA warmer badge as you rise\n30 – 35\nMeteor III — The Leonid\n\nA flicker in the dark. Small, but still burning.\n\nStill on the board, still climbing\nA warmer badge as you rise\n35 – 39\nMeteor II — The Geminid\n\nA steady fall with real fire. Turn the descent into momentum.\n\nStill on the board, still climbing\nA warmer badge as you rise\n39 – 42\nMeteor I — The Perseid\n\nA bright streak across the sky — brief, but everyone looks up.\n\nStill on the board, still climbing\nA warmer badge as you rise\nAsteroid\nAlmost a moon. Gather a little more mass.\n42",
+        "memory": 14511890
+      },
+      "requestedRoute": "/cosmic-atlas",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 3308
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-browse-1280.png",
+      "bytes": 102044,
+      "sha256": "32f8f1b023f4f177fdfd29fbb934b2d5a0f1ddbef3b863f1cc4e3aad359abb03",
+      "slug": "peer-browse",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/peer/browse",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "Browse Skills | Orbit",
+        "headings": [
+          "Browse Skills"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nPEER\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nBrowse Skills\n\nDiscover what the community is teaching and learning.\n\nSort by Rating\n\nShowing 2 of 2 skills\n\nPT\n\nPeer Two\n\nEnglish\n84\nWriting\n⇄\nAlgebra\n\nSynthetic peer skill.\n\nadvanced\n1 day ago\nRatings\nConnect\nPO\n\nPeer One\n\nEnglish\n76\nPython basics\n⇄\nWriting\n\nSynthetic computing skill.\n\nbeginner\n1 day ago\nRatings\nConnect",
+        "memory": 14758135
+      },
+      "requestedRoute": "/peer/browse",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 2287
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-matches-1280.png",
+      "bytes": 69213,
+      "sha256": "104e89a24e837c25b0a03513f79c7398a1ffd9f318891e4ac4d3453ee6c168e5",
+      "slug": "peer-matches",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/peer/matches",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "Your Matches | Orbit",
+        "headings": [
+          "Your Matches"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nPEER\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nYour Matches\n\nPeople whose skills perfectly align with yours — mutual exchanges.\n\nNo matches yet\n\nAdd more skills or browse the community. Matches appear when someone offers what you want and wants what you offer.",
+        "memory": 14490762
+      },
+      "requestedRoute": "/peer/matches",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1478
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-connections-1280.png",
+      "bytes": 78004,
+      "sha256": "3afe2f74042db4f3a75099ede293bf2b12469a6bbe02bbe9b2c4e9de2539a2ea",
+      "slug": "peer-connections",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/peer/connections",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "Connections | Orbit",
+        "headings": [
+          "Connections"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 300,
+            "height": 150
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nPEER\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nConnections\n\nManage your network and connection requests.\n\nMy Connections\nIncoming Requests\nSent Requests\nCompleted Swaps\nNo connections yet\n\nAccept incoming requests or connect with people whose skills align with yours.",
+        "memory": 14663027
+      },
+      "requestedRoute": "/peer/connections",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1595
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-nearby-1280.png",
+      "bytes": 87149,
+      "sha256": "abcf7a4bbdb72f4cde492b268471b95aff027665b1eba6ac17e731e07674fb7c",
+      "slug": "peer-nearby",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 977,
+      "actualPath": "/peer/nearby",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 977,
+        "title": "Nearby Skill Swappers | Orbit",
+        "headings": [
+          "Nearby Skills"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nPEER\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nNearby Skills\n\nDiscover Orbit members in your area for local learning.\n\nSet\nLocate Me\nSEARCH RADIUS\n50 km\n5\n10\n25\n50\n100\n250\n500\n5 km min\n500 km max\n\nSearching within 50 km of your location\n\nSearch Area\n\nEnter your city above or click Locate Me to find nearby skills.",
+        "memory": 14441758
+      },
+      "requestedRoute": "/peer/nearby",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1770
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-trust-1280.png",
+      "bytes": 101262,
+      "sha256": "72830af10e356bab3114883a1a722f0d0aa37b660aed78f56f846076f78f9b1f",
+      "slug": "peer-trust",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 983,
+      "actualPath": "/peer/trust",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 983,
+        "title": "Trust & Reputation | Orbit",
+        "headings": [
+          "Trust & Reputation"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nPEER\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nTrust & Reputation\n\nYour community standing based on interactions and feedback.\n\n82\n/100\nExcellent\n4.8\navg rating\n0\nreviews\nScore Breakdown\n0/100 pts\nRating Score\nStars partners leave after sessions\n0/40\n0%\nExperience\nSkill swaps you have completed\n0/20\n0%\nAccount Age\nHow long you have been on Orbit\n0/20\n0%\nActivity\nRecent logins and engagement\n0/20\n0%\n\nTop standing — keep it up!\n\nBiggest opportunity: Rating Score (+40 pts available). Deliver great sessions and ask partners to rate you.\n\nRecent Reviews\n\nNo reviews yet. Complete skill exchanges to receive feedback.",
+        "memory": 14739281
+      },
+      "requestedRoute": "/peer/trust",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 2187
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/peer-calls-1280.png",
+      "bytes": 71586,
+      "sha256": "afd8b4af26e599c36a12aaf4d5b779712cf3154c95bee3e3a4632e89b6b23134",
+      "slug": "peer-calls",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/peer/calls",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Video Calls",
+          "Call History"
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nPEER\n3,200\n4\n⌘K\nUF\nUI\nPEER\nSKILLS\nBROWSE\nMATCHES\n2\nCONNECTIONS\nNEARBY\nCALLS\nTRUST\nORBIT\nLEADERBOARD\nSHOP\nVideo Calls\n\nDirect peer-to-peer video calls with camera and microphone.\n\nStart a Call\n\nGo to Connections and click Call next to a friend.\n\nCall History\n\nNo calls yet. Connect with someone and start a video call.",
+        "memory": 14512406
+      },
+      "requestedRoute": "/peer/calls",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1593
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/not-found-1280.png",
+      "bytes": 156524,
+      "sha256": "d59a2f0553165e41dbaf2f4bf4786efc3b7eab12cadb194182a955d08b7c5eee",
+      "slug": "not-found",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 800,
+      "actualPath": "/route-fixture-not-found",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "title": "404 — Page Not Found | Orbit",
+        "headings": [
+          "Page Not Found"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 300,
+            "height": 150
+          }
+        ],
+        "text": "404\nPage Not Found\n\nThe page you're looking for doesn't exist or may have been moved. Let's get you back on track.\n\nGo Home\nBrowse Skills",
+        "memory": 12201258
+      },
+      "requestedRoute": "/route-fixture-not-found",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1411
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/courses-1280.png",
+      "bytes": 271675,
+      "sha256": "b953f11901df06c7162784c5542173c4aacdb66bf9b190c1afac84e70098c453",
+      "slug": "courses",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 975,
+      "actualPath": "/courses",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 975,
+        "title": "Courses · Orbit",
+        "headings": [
+          "Learn at your orbit."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nCOURSE LIBRARY\nLearn at your orbit.\n\nBite-sized video courses from mentors you already trust. Watch, take a quiz, finish the course — and earn a shareable certificate.\n\nAll categories\nmathematics\nAll levels\nBeginner\nIntermediate\nAdvanced\nNewest\nTop rated\nMost enrolled\n6 LESSONS\n₹599\nMATHEMATICS\nAlgebra foundations (fixture)\n\nFrom equations to practical reasoning\n\nM\nMentor Fixture\n6 LESSONS\n₹599\nMATHEMATICS\nGeometry workshop (fixture)\n\nFrom equations to practical reasoning\n\nM\nMentor Fixture",
+        "memory": 14326481
+      },
+      "requestedRoute": "/courses",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 6345
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/skill-map-1280.png",
+      "bytes": 59650,
+      "sha256": "bbc06903837f72a510cd9a33fb9883bda90649ed060ec3ef3245588bb32f8244",
+      "slug": "skill-map",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 975,
+      "actualPath": "/skill-map",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 975,
+        "title": "Skill Map · Orbit",
+        "headings": [
+          "Your sky is forming."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nTHE SKILL MAP\nYour sky is forming.\n\nComplete a course and the first star appears here. Every concept you touch adds a line.\n\nShare\nComplete a course to light your first star. Every concept you touch adds a line.\nBrowse courses",
+        "memory": 14040488
+      },
+      "requestedRoute": "/skill-map",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 1413
+      }
+    },
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-788b630d/public-skill-map-1280.png",
+      "bytes": 185769,
+      "sha256": "68600eb021dbc8914750e7b33186a9ae6c886123b46da91901c844d1b56e9326",
+      "slug": "public-skill-map",
+      "width": 1280,
+      "pngWidth": 1280,
+      "pngHeight": 1064,
+      "actualPath": "/skill-map/peer-one",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "geometry": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1064,
+        "title": "Skill Map · Orbit",
+        "headings": [
+          "A constellation of learning."
+        ],
+        "fonts": [
+          "JetBrains Mono",
+          "JetBrains Mono",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [
+          {
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "width": 1200,
+            "height": 620
+          }
+        ],
+        "text": "Orbit\nSTUDENT\n3,200\n4\n⌘K\nUF\nUI\nSTUDENT\nMY UNIVERSE\nCOURSES\nMY LEARNING\nCERTIFICATES\nPROGRESS\nSKILL MAP\nSESSIONS\nMENTORS\nLEADERBOARD\nTHE SKILL MAP\nA constellation of learning.\n\n0 courses completed · 0 concepts in the path.\n\n0 COURSES · 0 CONCEPTS\nTAP A STAR TO SEE THE COURSE\nBuild your own on Orbit",
+        "memory": 14114705
+      },
+      "requestedRoute": "/skill-map/peer-one",
+      "errors": [],
+      "crash": false,
+      "timings": {
+        "navigationAndCaptureMs": 4134
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/user/profile",
+      "configured": true
+    },
+    {
+      "path": "/trust/ratings/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/trust/my-given",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentor/bookings",
+      "configured": true
+    },
+    {
+      "path": "/sessions/me",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/user/peer-one",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/peer-one",
+      "configured": true
+    },
+    {
+      "path": "/skills/all",
+      "configured": true
+    },
+    {
+      "path": "/trust/ratings/peer-one",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/leaderboard",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/me",
+      "configured": true
+    },
+    {
+      "path": "/orbit/league",
+      "configured": true
+    },
+    {
+      "path": "/orbit/binary-stars",
+      "configured": true
+    },
+    {
+      "path": "/orbit/duels/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/me",
+      "configured": true
+    },
+    {
+      "path": "/orbit/ledger",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/shop",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/shop",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/observatory/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/skills/all",
+      "configured": true
+    },
+    {
+      "path": "/connections/all",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/connections/all",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/all",
+      "configured": true
+    },
+    {
+      "path": "/connections/completed",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/trust/my-score",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/video/history",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/categories",
+      "configured": true
+    },
+    {
+      "path": "/courses",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/course-fixture/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/courses/course-fixture",
+      "configured": true
+    },
+    {
+      "path": "/pact/user/mentor-fixture",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/knowledge/me/skill-map",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/knowledge/peer-one/skill-map",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/user/profile",
+      "configured": true
+    },
+    {
+      "path": "/trust/ratings/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/trust/my-given",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentor/bookings",
+      "configured": true
+    },
+    {
+      "path": "/sessions/me",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/user/peer-one",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/peer-one",
+      "configured": true
+    },
+    {
+      "path": "/skills/all",
+      "configured": true
+    },
+    {
+      "path": "/trust/ratings/peer-one",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/leaderboard",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/me",
+      "configured": true
+    },
+    {
+      "path": "/orbit/league",
+      "configured": true
+    },
+    {
+      "path": "/orbit/binary-stars",
+      "configured": true
+    },
+    {
+      "path": "/orbit/duels/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/me",
+      "configured": true
+    },
+    {
+      "path": "/orbit/ledger",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/shop",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/shop",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/observatory/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/skills/all",
+      "configured": true
+    },
+    {
+      "path": "/connections/all",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/connections/all",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/all",
+      "configured": true
+    },
+    {
+      "path": "/connections/completed",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/trust/my-score",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/video/history",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/categories",
+      "configured": true
+    },
+    {
+      "path": "/courses",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/course-fixture/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/courses/course-fixture",
+      "configured": true
+    },
+    {
+      "path": "/pact/user/mentor-fixture",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/knowledge/me/skill-map",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/knowledge/peer-one/skill-map",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/user/profile",
+      "configured": true
+    },
+    {
+      "path": "/trust/ratings/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/trust/my-given",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentor/me",
+      "configured": true
+    },
+    {
+      "path": "/sessions/mentor/bookings",
+      "configured": true
+    },
+    {
+      "path": "/sessions/me",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/user/peer-one",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/peer-one",
+      "configured": true
+    },
+    {
+      "path": "/skills/all",
+      "configured": true
+    },
+    {
+      "path": "/trust/ratings/peer-one",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/leaderboard",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/me",
+      "configured": true
+    },
+    {
+      "path": "/orbit/league",
+      "configured": true
+    },
+    {
+      "path": "/orbit/binary-stars",
+      "configured": true
+    },
+    {
+      "path": "/orbit/duels/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/me",
+      "configured": true
+    },
+    {
+      "path": "/orbit/ledger",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/shop",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/orbit/shop",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/observatory/me",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/skills/all",
+      "configured": true
+    },
+    {
+      "path": "/connections/all",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/connections/all",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/all",
+      "configured": true
+    },
+    {
+      "path": "/connections/completed",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/trust/my-score",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/connections/pending",
+      "configured": true
+    },
+    {
+      "path": "/skills/matches",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/video/history",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/categories",
+      "configured": true
+    },
+    {
+      "path": "/courses",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/course-fixture/enrollments/me",
+      "configured": true
+    },
+    {
+      "path": "/courses/course-fixture",
+      "configured": true
+    },
+    {
+      "path": "/pact/user/mentor-fixture",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/knowledge/me/skill-map",
+      "configured": true
+    },
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/knowledge/peer-one/skill-map",
+      "configured": true
+    }
+  ],
+  "missingFixtures": [],
+  "blocked": [
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    },
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:57745/socket.io/?EIO=4&transport=websocket"
+    }
+  ],
+  "fonts": [
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v23/pxiByp8kv8JHgFVrLCz7Z1xlFd2JQEk.woff2",
+      "bytes": 7848,
+      "sha256": "197a3cbd7290c242c5c765268cdd69a9a39867fdc80cd13071f243a81c56fb76"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap",
+      "bytes": 8078,
+      "sha256": "760eddf4dac8f25b68d32e2dcbb3fcf771c9100749cfa6b200691cd4c45b6907"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0C4n.ttf",
+      "bytes": 122116,
+      "sha256": "47ed1cfaa7ffca04a04ab850b2938fd52c09d1b44cfa3e2980878e166b0cbd87"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiDyp8kv8JHgFVrJJLmy15lEA.ttf",
+      "bytes": 172720,
+      "sha256": "733b74494c0b5856045e34eea8b899f02458ca8e0b7ebd2a887a86b64d99b0d0"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsgH1y4n.ttf",
+      "bytes": 122060,
+      "sha256": "733eb93b167e6d45de09aa768f6c0355647c2c26f5416dbc7407a08ed41e81c6"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjr0C4n.ttf",
+      "bytes": 122264,
+      "sha256": "05f24e5e4d738b9f8e8643809ebed4800287d61a75d19ac2716f12b5d26279dd"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsg-1y4n.ttf",
+      "bytes": 122132,
+      "sha256": "75367e6da7d914eaed87883ba51b2a2b5816b5cdbb39f96ec5c81a5b032bfd5a"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLEj6V1s.ttf",
+      "bytes": 151516,
+      "sha256": "dae40ca7b35fe7501bda2e4140a6860b1db47330be5d3c8ab6971fd83a70e9a5"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLDD4V1s.ttf",
+      "bytes": 149072,
+      "sha256": "5e8a5c3c2a56c3bc1b135645ca9637b9b64dc3fed5fbf85cb5ed144e06bb6d48"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLCz7V1s.ttf",
+      "bytes": 150292,
+      "sha256": "1984efdda0fbe207d7ac20feac2ba7c2768c92a90094b02a206c9d58cc30ff2e"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsiH0C4n.ttf",
+      "bytes": 122104,
+      "sha256": "afdae82811cf046213e1f65db56ffd21e01a7fb0e5d6194c34717df15535338b"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memQYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWq8tWZ0Pw86hd0Rk8ZkaVc.ttf",
+      "bytes": 127392,
+      "sha256": "1bc0594a83762b2c25d38915a34464b7fec6088298ca22d151757bf98d6700ec"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLBT5V1s.ttf",
+      "bytes": 147708,
+      "sha256": "3a05787fc423c4d73c2846beebb56378092f17ac6698ed54765b6ca11fabccc0"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8L6tjPQ.ttf",
+      "bytes": 112092,
+      "sha256": "a1d92abc6b02a87faed23d98067ab1027e8e95242fd7c9978a072ea383b89d1a"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPQ.ttf",
+      "bytes": 112172,
+      "sha256": "44ce4a84f20d60f24539bd0cef11f79c29e38609e0f8adf18551c9794a5d9dc3"
+    }
+  ],
+  "interactions": [],
+  "stress": [],
+  "failures": [
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "capture",
+      "slug": "course-detail",
+      "width": 1280,
+      "message": "page.screenshot: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    }
+  ],
+  "buildRoot": "D:\\orbit-main\\orbit-main\\.agent\\scratch\\iw-a2-20261108-be84ac1c\\build",
+  "base": "http://127.0.0.1:57745",
+  "browser": "156.0.8078.4",
+  "status": "completed-with-observations",
+  "finishedAt": "2026-11-09T07:08:49.420Z"
+}

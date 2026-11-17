@@ -1,0 +1,1 @@
+export function speakerNotes(s,sources){return 'Reading path: headline, hero, panels2-6.\nSpeech ('+s.seconds+' seconds): '+s.speech+'\nSources: '+[...new Set(s.panels.flatMap(p=>p.source))].map(id=>id+': '+JSON.stringify(sources[id])).join('\n')+'\nJudge question: '+s.question+'\nHonest answer: '+s.answer;}

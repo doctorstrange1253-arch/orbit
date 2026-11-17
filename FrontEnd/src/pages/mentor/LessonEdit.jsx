@@ -3,10 +3,12 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { ChevronLeft, Save, Plus, X, Loader2, Sparkles, Crown } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { courses } from '../../services/courses';
 import { proposeLevel, isStubProposal } from '../../services/ai';
 import FuturisticBackdrop from '../../components/common/FuturisticBackdrop';
 import YellowCard from '../../soul/moderation/YellowCard';
+import AICourseQuizPanel from '../../cosmic/AICourseQuizPanel';
 import api from '../../services/api';
 import { StudioMasthead, StudioPanel } from '../../soul/studio/surfaces';
 
@@ -298,6 +300,39 @@ const LessonEdit = () => {
                                 <Plus className="w-3 h-3" /> Add question
                             </button>
                         </div>
+
+                        {/* AI Quiz Generation Panel — Ollama RAG + mentor review queue */}
+                        <AICourseQuizPanel
+                            courseId={id}
+                            lessonId={lessonId}
+                            onSaved={(data) => {
+                                if (data?.published > 0) {
+                                    toast?.success(`Generated ${data.published} question(s)`);
+                                }
+                            }}
+                            onQuestionApproved={(q) => {
+                                if (!form) return;
+                                // Add to the existing quiz questions — only if the form already has questions,
+                                // and never duplicate by prompt text (safety against double-apply).
+                                const hasPrompt = form.quiz?.questions?.some((eq) => eq.prompt === q.question);
+                                if (!hasPrompt) {
+                                    setQuiz({
+                                        ...(form.quiz || { passingScore: 70 }),
+                                        questions: [
+                                            ...((form.quiz?.questions || [])),
+                                            {
+                                                prompt: q.question,
+                                                options: Array.isArray(q.options) ? q.options : [],
+                                                correctIdx: typeof q.correctIndex === 'number' ? q.correctIndex : 0,
+                                                explanation: q.explanation || '',
+                                                coachCopy: q.coachCopy || '',
+                                            },
+                                        ],
+                                    });
+                                }
+                            }}
+                        />
+
                         <div className="flex items-center gap-3 mb-3">
                             <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Passing score</span>
                             <input

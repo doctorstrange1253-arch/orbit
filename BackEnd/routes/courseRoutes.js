@@ -70,6 +70,12 @@ router.get("/", authOptional, c.listCourses);
 router.get("/categories", c.listCategories);
 router.get("/enrollments/me", auth, c.enrollmentsForMe);
 
+// ── Course-Request Engine (must be declared before /:id) ─────────────────
+const reqCtrl = require("../controllers/courseRequestController");
+router.get("/requests", reqCtrl.listRequests);
+router.post("/requests", auth, reqCtrl.submitRequest);
+router.post("/requests/:id/claim", auth, requireRoles("mentor"), reqCtrl.claimRequest);
+
 // ── Mentor authoring ────────────────────────────────────────────────────
 const mentor = [auth, requireRoles("mentor")];
 

@@ -2,7 +2,33 @@
 
 **Owner**: Staff Frontend Engineer + Principal Architect
 **Status**: verified against package.json/node_modules on 2026-11-04; installs pending user approval where marked
-**Rule applied**: runtime tools adding >30 KB gzipped need explicit approval; dev-only tools install as devDependencies; nothing global/system-level without asking.
+**Historical rule**: runtime tools adding >30 KB gzipped needed explicit approval; dev-only tools installed as devDependencies; global/system-level setup needed approval. The dated addendum below supersedes setup restrictions, not phase gates.
+
+## Mission-lock capability self-test - 2026-11-12
+
+Additive tooling test only, no product dependency or gate change. Reused installed Node24.21.0/npm11.19.0/Git2.56.0/Python3.14.8/rg15.2.0/jq1.8.2and Playwright/Chromium156.0.8078.4. A synthetic local browser interaction and640x480PNG succeeded; WebGL2returned expected clear pixel with ANGLESwiftShader. All graphics evidence is software-rendered, not representative of device performance. Owned browserPID2732/loopbackRPCport59332closed after the test.
+
+To verify package installation without modifying in-progress files, installed only is-number7.0.0from the official npm registry into an isolated .agent/scratch probe directory, with lifecycle scripts/audit/funding/lockfile disabled and separate nonsecret configs/cache. MITlicense and18line runtime source inspected; four real smoke cases pass. No app/global dependency or runtime bundle cost. Exact command/log/result paths: [CAPABILITIES](../../.agent/CAPABILITIES.md) and [ENVIRONMENT](../../.agent/ENVIRONMENT.md#mission-lock-capability-round---2026-11-12). This scratch package is a capability probe, not an adopted application library.
+
+## Cross-phase tooling addendum and preflight - 2026-11-09
+
+Necessary official-source installs/setup are now authorized across all phases; check existing tools first, prefer local scope, inspect licenses and test version plus minimal use. Costly/destructive/private-data actions still require consent. CP-A-r2 remains WAITING_FOR_APPROVAL: preflight only, no app design/implementation or A2 capture replay. Full working commands, paths and logs are in [ENVIRONMENT](../../.agent/ENVIRONMENT.md#cross-phase-addendum-preflight---2026-11-09).
+
+| Tool | Action / purpose | Verification | License / runtime cost |
+|---|---|---|---|
+| ripgrep15.2.0 | Installed once with WinGet BurntSushi.ripgrep.MSVC, exact version, official source, user scope; standalone text-search CLI | Version, synthetic stdin match2:verified-tool, Bash/Windows discovery all exit0 | MIT/Unlicense; installed MIT terms read;0bytes frontend bundle |
+| jq1.8.2 | Installed once with WinGet jqlang.jq, exact version, official source, user scope; standalone JSON CLI | Version, synthetic17+25==42 transformation true, Bash/Windows discovery all exit0 | MIT plus permissive component notices; official tag COPYING read;0bytes frontend bundle |
+| Git2.56 / Node24.21 / npm11.19 / Python3.14.8 | Reused; no install | Repository/JSON/package-name/isolated JSON smoke checks pass | No runtime dependency change |
+| Playwright1.64.1 / Chromium156.0.8078.4 | Reused; no browser download or dependency change | Synthetic button, WebGL2 pixel,480x240 PNG visually inspected; owned PID15728/port60790 closed | Tool smoke only, not product/device acceptance |
+| scripts/agent/run.js | Reused unchanged; no duplicate runner |7/7regressions pass, including timeout and stderr handling | No runtime dependency change |
+
+Both WinGet downloads passed installer-hash verification. User-scope CLI installs avoid modifying the application's package/lock files. WinGet added actual package directories to User PATH, not its empty Links directory; use absolute executables or a process-only PATH refresh in the existing editor. New terminals may require restarting VS Code to inherit the changed PATH. No settings.json, shell profile, app source or lockfile edits; no force flags, paid services or gate approval. Earlier missing-tool/browser claims below are historical, not current preflight findings.
+
+## B research PDF capability - 2026-11-09
+
+Needed for actual inspection of a primary leaderboard paper. Initial pdftoppm/pdfinfo discovery and native PDF Read failed. Installed official Windows Poppler25.07.0-0 once via WinGet oschwartz10612.Poppler, exact version/user scope, verified installer hash;90.2s/exit0. Existing VC++ runtime detected, no app dependency/lock change, runtime bundle cost0bytes. Version25.07.0, real15-page PDF metadata and three page-to-PNG renderings passed; images visually opened.
+
+License: the packager repository is MIT, but Poppler is GPL-2.0-or-later and bundled poppler-data carries Adobe/GPL notices. This is a standalone local research tool, not incorporated or redistributed in the application. Full source/commands/bin path/logs are in [ENVIRONMENT](../../.agent/ENVIRONMENT.md#current-identity-worlds-b-research-access---2026-11-09). Native PDF Read still needs refreshed process PATH; absolute executable rendering plus PNG Read worked, with no editor/profile changes. No repeated install or false native-PDF success.
 
 ## 1. Verified installed runtime deps (FrontEnd, read from package.json + node_modules 2026-11-04)
 

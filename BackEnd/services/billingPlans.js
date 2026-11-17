@@ -31,7 +31,7 @@ const PLAN_SEED = Object.freeze([
         intervalCount: 1,
         taxInclusive: true,
         taxRatePct: GST_PCT,
-        platformCutPct: 25,
+        platformCutPct: 20,
         sortOrder: 1,
     },
     {
@@ -44,7 +44,7 @@ const PLAN_SEED = Object.freeze([
         intervalCount: 1,
         taxInclusive: true,
         taxRatePct: GST_PCT,
-        platformCutPct: 25,
+        platformCutPct: 20,
         sortOrder: 2,
     },
     {
@@ -57,7 +57,7 @@ const PLAN_SEED = Object.freeze([
         intervalCount: 1,
         taxInclusive: true,
         taxRatePct: GST_PCT,
-        platformCutPct: 25,
+        platformCutPct: 20,
         sortOrder: 3,
     },
     {
@@ -70,7 +70,7 @@ const PLAN_SEED = Object.freeze([
         intervalCount: 1,
         taxInclusive: true,
         taxRatePct: GST_PCT,
-        platformCutPct: 25,
+        platformCutPct: 20,
         sortOrder: 4,
     },
     {
@@ -83,7 +83,7 @@ const PLAN_SEED = Object.freeze([
         intervalCount: 1,
         taxInclusive: true,
         taxRatePct: GST_PCT,
-        platformCutPct: 25,
+        platformCutPct: 20,
         sortOrder: 5,
     },
     {
@@ -96,7 +96,7 @@ const PLAN_SEED = Object.freeze([
         intervalCount: 1,
         taxInclusive: true,
         taxRatePct: GST_PCT,
-        platformCutPct: 25,
+        platformCutPct: 20,
         sortOrder: 6,
     },
 ]);

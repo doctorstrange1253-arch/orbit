@@ -1,0 +1,155 @@
+{
+  "runId": "iw-a2-20261109-739f2cce",
+  "startedAt": "2026-11-09T06:56:35.667Z",
+  "synthetic": true,
+  "note": "Local current-frontend UI evidence only. These accounts, amounts, grades, records and role states are fixtures, not production authorization or real outcomes.",
+  "mode": "batch",
+  "selection": {
+    "screens": [
+      {
+        "slug": "courses",
+        "route": "/courses"
+      }
+    ],
+    "widths": [
+      360
+    ],
+    "extras": false,
+    "stress": false
+  },
+  "screenshots": [
+    {
+      "path": "docs/progress/screenshots/identity-worlds/iw-a2-20261109-739f2cce/courses-360.png",
+      "bytes": 18441,
+      "sha256": "cec40530fe8c7d4a590b2d67843b21303a28771e91daf909d45355c37e7f0340",
+      "slug": "courses",
+      "width": 360,
+      "pngWidth": 360,
+      "pngHeight": 740,
+      "actualPath": "/courses",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Error: Minified React error #31; visit https://react.dev/errors/31?args[]=object%20with%20keys%20%7Bslug%2C%20name%2C%20label%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at Wa (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:37582)\n    at b (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:42867)\n    at http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:43112\n    at lc (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:66537)\n    at Lc (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:81922)\n    at Nu (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:115526)\n    at Au (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:114609)\n    at ku (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:114448)\n    at _u (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:111317)\n    at ud (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:122934)",
+        "[ErrorBoundary] Minified React error #31; visit https://react.dev/errors/31?args[]=object%20with%20keys%20%7Bslug%2C%20name%2C%20label%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings. Error: Minified React error #31; visit https://react.dev/errors/31?args[]=object%20with%20keys%20%7Bslug%2C%20name%2C%20label%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at Wa (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:37582)\n    at b (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:42867)\n    at http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:43112\n    at lc (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:66537)\n    at Lc (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:81922)\n    at Nu (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:115526)\n    at Au (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:114609)\n    at ku (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:114448)\n    at _u (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:111317)\n    at ud (http://127.0.0.1:62008/assets/react-vendor-ECTslLQ7.js:8:122934) \n    at option (<anonymous>)\n    at select (<anonymous>)\n    at div (<anonymous>)\n    at div (<anonymous>)\n    at div (<anonymous>)\n    at B (http://127.0.0.1:62008/assets/CoursesBrowse-B7lgnqER.js:1:8313)\n    at Suspense (<anonymous>)\n    at Suspense (<anonymous>)\n    at main (<anonymous>)\n    at div (<anonymous>)\n    at Aa (http://127.0.0.1:62008/assets/index-ME4aU5FY.js:22:36063)\n    at $ (http://127.0.0.1:62008/assets/index-ME4aU5FY.js:229:7875)\n    at Ye (http://127.0.0.1:62008/assets/router-Ci29eM5J.js:3:4191)\n    at ut (http://127.0.0.1:62008/assets/router-Ci29eM5J.js:3:9022)\n    at div (<anonymous>)\n    at lc (http://127.0.0.1:62008/assets/motion-B2IWH8J5.js:1:97244)\n    at uc (http://127.0.0.1:62008/assets/motion-B2IWH8J5.js:1:97788)\n    at dc (http://127.0.0.1:62008/assets/motion-B2IWH8J5.js:9:222)\n    at gc (http://127.0.0.1:62008/assets/motion-B2IWH8J5.js:9:1226)\n    at tc (http://127.0.0.1:62008/assets/index-ME4aU5FY.js:215:14406)\n    at Nd (http://127.0.0.1:62008/assets/index-ME4aU5FY.js:229:8866)\n    at lt (http://127.0.0.1:62008/assets/router-Ci29eM5J.js:3:8140)\n    at qt (http://127.0.0.1:62008/assets/router-Ci29eM5J.js:3:18529)\n    at Pd (<anonymous>)\n    at Rt (http://127.0.0.1:62008/assets/query-DWbMdTvr.js:1:36708)\n    at e (http://127.0.0.1:62008/assets/index-ME4aU5FY.js:2:11487)\n    at lu (http://127.0.0.1:62008/assets/index-ME4aU5FY.js:227:13424)"
+      ],
+      "geometry": {
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 740,
+        "title": "Orbit — Exchange Skills, Rise Together",
+        "headings": [
+          "Something went wrong"
+        ],
+        "fonts": [
+          "Open Sans",
+          "Open Sans",
+          "Poppins",
+          "Poppins"
+        ],
+        "canvases": [],
+        "text": "Something went wrong\n\nAn unexpected error occurred. You can try refreshing the page, or click below to recover without a full reload.\n\nTry Again\nGo Home",
+        "memory": 14489543
+      },
+      "requestedRoute": "/courses",
+      "errors": [],
+      "crash": true,
+      "timings": {
+        "navigationAndCaptureMs": 2183
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/cosmic/mentor/account-fixture",
+      "configured": true
+    },
+    {
+      "path": "/mentor-invites/pending",
+      "configured": true
+    },
+    {
+      "path": "/gameology/me",
+      "configured": true
+    },
+    {
+      "path": "/notifications/unread-count",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/notifications",
+      "configured": true
+    },
+    {
+      "path": "/courses/categories",
+      "configured": true
+    },
+    {
+      "path": "/courses",
+      "configured": true
+    }
+  ],
+  "missingFixtures": [],
+  "blocked": [
+    {
+      "kind": "websocket",
+      "url": "ws://127.0.0.1:62008/socket.io/?EIO=4&transport=websocket"
+    }
+  ],
+  "fonts": [
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v23/pxiByp8kv8JHgFVrLCz7Z1xlFd2JQEk.woff2",
+      "bytes": 7848,
+      "sha256": "197a3cbd7290c242c5c765268cdd69a9a39867fdc80cd13071f243a81c56fb76"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&display=swap",
+      "bytes": 8078,
+      "sha256": "760eddf4dac8f25b68d32e2dcbb3fcf771c9100749cfa6b200691cd4c45b6907"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0C4n.ttf",
+      "bytes": 122116,
+      "sha256": "47ed1cfaa7ffca04a04ab850b2938fd52c09d1b44cfa3e2980878e166b0cbd87"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiDyp8kv8JHgFVrJJLmy15lEA.ttf",
+      "bytes": 172720,
+      "sha256": "733b74494c0b5856045e34eea8b899f02458ca8e0b7ebd2a887a86b64d99b0d0"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsgH1y4n.ttf",
+      "bytes": 122060,
+      "sha256": "733eb93b167e6d45de09aa768f6c0355647c2c26f5416dbc7407a08ed41e81c6"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLCz7V1s.ttf",
+      "bytes": 150292,
+      "sha256": "1984efdda0fbe207d7ac20feac2ba7c2768c92a90094b02a206c9d58cc30ff2e"
+    }
+  ],
+  "interactions": [],
+  "stress": [],
+  "failures": [
+    {
+      "kind": "request",
+      "url": "https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2",
+      "message": "Command failed: curl --disable --fail --show-error --silent --max-time 30 -A Mozilla/5.0 Chrome/156.0.0.0 Safari/537.36 https://fonts.gstatic.com/s/opensans/v43/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.woff2\ncurl: (22) The requested URL returned error: 404\r\n"
+    },
+    {
+      "kind": "render",
+      "slug": "courses",
+      "width": 360,
+      "errors": [],
+      "crash": true
+    }
+  ],
+  "buildRoot": "D:\\orbit-main\\orbit-main\\.agent\\scratch\\iw-a2-20261108-be84ac1c\\build",
+  "base": "http://127.0.0.1:62008",
+  "browser": "156.0.8078.4",
+  "status": "completed-with-observations",
+  "finishedAt": "2026-11-09T06:56:38.580Z"
+}

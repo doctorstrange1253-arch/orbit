@@ -1,0 +1,72 @@
+{
+  "results": [
+    {
+      "slug": "journey",
+      "route": "/courses/course-fixture/learn/lesson-3",
+      "image": "assets/fresh-d1/journey.png",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "headings": [
+        "6 lessons",
+        "Patterns and relations",
+        "A short lesson awaits."
+      ],
+      "errors": [],
+      "synthetic": true,
+      "externalTraffic": "BLOCKED",
+      "sourceBuild": "retained2026-11-09; not new source implementation"
+    },
+    {
+      "slug": "course",
+      "route": "/mentor/courses/course-fixture/edit",
+      "image": "assets/fresh-d1/course.png",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "headings": [
+        "Algebra foundations (fixture)"
+      ],
+      "errors": [],
+      "synthetic": true,
+      "externalTraffic": "BLOCKED",
+      "sourceBuild": "retained2026-11-09; not new source implementation"
+    },
+    {
+      "slug": "studio",
+      "route": "/mentor/recorder",
+      "image": "assets/fresh-d1/studio.png",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "headings": [
+        "Orbit Recorder"
+      ],
+      "errors": [],
+      "synthetic": true,
+      "externalTraffic": "BLOCKED",
+      "sourceBuild": "retained2026-11-09; not new source implementation"
+    },
+    {
+      "slug": "student",
+      "route": "/student/universe",
+      "image": "assets/fresh-d1/student.png",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "headings": [
+        "Your universe",
+        "Patterns and relations"
+      ],
+      "errors": [],
+      "synthetic": true,
+      "externalTraffic": "BLOCKED",
+      "sourceBuild": "retained2026-11-09; not new source implementation"
+    }
+  ],
+  "note": "Prototype screenshots, sample data; retained build; no backend/DB, network or media permissions"
+}

@@ -1,0 +1,110 @@
+{
+  "canvas": {
+    "w": 13.333,
+    "h": 7.5
+  },
+  "palette": {
+    "paper": "FAF8F4",
+    "panel": "FFFFFF",
+    "ink": "182C35",
+    "muted": "52646B",
+    "border": "E4DED3",
+    "primary": "256ABF",
+    "warm": "A64B29",
+    "verified": "236B45",
+    "tint": "EDF3FA"
+  },
+  "fonts": {
+    "body": "Segoe UI",
+    "strong": "Segoe UI Semibold",
+    "bodySize": 10.5,
+    "headingSize": 28,
+    "heroSize": 56,
+    "moduleSize": 10,
+    "chipSize": 8
+  },
+  "content": [
+    {
+      "c": 1,
+      "r": 1,
+      "cs": 5,
+      "rs": 3,
+      "hero": true
+    },
+    {
+      "c": 6,
+      "r": 1,
+      "cs": 4,
+      "rs": 3
+    },
+    {
+      "c": 10,
+      "r": 1,
+      "cs": 3,
+      "rs": 3
+    },
+    {
+      "c": 1,
+      "r": 4,
+      "cs": 4,
+      "rs": 3
+    },
+    {
+      "c": 5,
+      "r": 4,
+      "cs": 4,
+      "rs": 3
+    },
+    {
+      "c": 9,
+      "r": 4,
+      "cs": 4,
+      "rs": 3
+    }
+  ],
+  "cover": [
+    {
+      "c": 1,
+      "r": 1,
+      "cs": 7,
+      "rs": 4
+    },
+    {
+      "c": 8,
+      "r": 1,
+      "cs": 5,
+      "rs": 4
+    },
+    {
+      "c": 1,
+      "r": 5,
+      "cs": 4,
+      "rs": 2
+    },
+    {
+      "c": 5,
+      "r": 5,
+      "cs": 4,
+      "rs": 2
+    },
+    {
+      "c": 9,
+      "r": 5,
+      "cs": 4,
+      "rs": 2
+    }
+  ],
+  "limits": {
+    "headline": 64,
+    "moduleTitle": 54,
+    "bodyText": 550,
+    "tableCell": 160,
+    "wordsMin": 160,
+    "wordsMax": 300,
+    "quantitiesMin": 10,
+    "visualsMin": 2,
+    "coverageMin": 0.93,
+    "heroAreaMin": 0.18,
+    "padding": 0.1
+  }
+}

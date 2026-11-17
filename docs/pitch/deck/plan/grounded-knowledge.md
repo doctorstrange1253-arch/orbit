@@ -1,0 +1,5 @@
+# Grounded knowledge
+
+Only facts in outline.md/deck-data.json and the existing source/evidence pack enter this deck. A team exists by founder report; names/count/roles missing. No primary survey, interview, waitlist, revenue or pilot data supplied. Current demo unverified. Source-visible request/journey/recorder work is prototype evidence, not a launched integrated marketplace.
+20% subscription platform /80% learner-enrolled mentor pool and separate15%session fee are founder intent. Core599/Premium1199 are working proposals; source fallbackTwo599/Five1299/Ten2199 remains different. Gateway2%plusGST and CloudflareUSDminute pricing are published baselines, not quotes; INRFX85, usage, AI/support and15000fixedmonthlycost are explicit ESTIMATE scenario inputs. Unknown actual bills do not become zero.
+Organizer images establish cover/topic requirements, up to200000decidedlive and founder/industryjudging, but exactdeckcutoff/format/size not shown. Userfallback23:30IST controls workingdeadline. Prototypeimages are historicaltestdata and must be cropped/labeled.
